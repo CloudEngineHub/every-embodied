@@ -8,7 +8,7 @@
 2. LeRobot 数据集包含正确的图像、状态、动作和语言指令；
 3. 2-step smoke 能完成数据加载、前向、反向和 checkpoint 写出；
 4. 正式训练能稳定使用 AMD GPU，不出现 OOM、NaN 或 kernel 退出；
-5. checkpoint 在未见 seed 的 MuJoCo closed-loop 中通过 `physical_success`，并有视频可以复核。
+5. checkpoint 在真正改变物体初始位置的 MuJoCo closed-loop 中通过 `physical_success`，并有视频可以复核。
 
 训练 loss 下降、open-loop 动作误差变小或者脚本没有报错，都不能单独证明第五项成立。
 
@@ -21,6 +21,7 @@
 | SmolVLA 训练 | [09_smolvla_training_rocm.ipynb](./notebooks/09_smolvla_training_rocm.ipynb) | SmolVLA smoke 与正式 checkpoint |
 | pi_0 训练 | [10_pi0_training_rocm.ipynb](./notebooks/10_pi0_training_rocm.ipynb) | gated 权限检查、pi_0 smoke 与正式 checkpoint |
 | 闭环部署 | [11_mujoco_closed_loop_deploy.ipynb](./notebooks/11_mujoco_closed_loop_deploy.ipynb) | 固定 seed 成功率、JSONL 指标和 rollout 视频 |
+| pi0 strict-input | [12_pi0_strict_input_end_to_end.ipynb](./notebooks/12_pi0_strict_input_end_to_end.ipynb) | raw/head 对照、seed 修复、固定与随机环境分栏 |
 
 第一次学习时建议先用 ACT 完成整条链路。ACT 模型较小，训练速度快，数据或动作定义有问题时更容易定位。ACT 闭环通过后，再在同一份语言数据上训练 SmolVLA，最后处理 pi_0 的 gated 权限、模型加载和小数据接触控制问题。
 
@@ -47,11 +48,17 @@ export OUTPUT_ROOT=/path/to/large-disk/outputs/every_embodied
 
 采集与 GPU 厂商无关。只要 MuJoCo、LeRobot 版本、场景 XML、控制频率、state/action schema 和成功判定一致，就可以在另一台带 NVIDIA GPU 或只有 CPU 的桌面机器采集，再把整个数据集目录同步到 AMD 训练机。
 
-07 Notebook 对上游交互采集做了三项修正：
+07 Notebook 对上游交互采集做了五项修正：
 
 - 每条轨迹保存后关闭记录开关，不把 reset 过程混进下一条 episode；
 - 红杯和蓝杯指令交替出现，减少小数据任务分布偏斜；
-- 只有杯子真实抬升、保持直立并完成释放时才保存，避免“把杯子推到盘子上”被当成成功示教。
+- 只有杯子真实抬升、保持直立、杯盘高度合理并连续稳定 5 步时才保存；
+- 盘子被推动超过 5 cm 时拒绝保存，避免“把杯子挤到盘子上”被当成成功示教；
+- 每条轨迹同步录制 Agent、Egocentric、Top、Side 四视角 MP4，模型仍只使用前两个相机，另两个视角只做人工复核。
+
+AMD 设备上已有的 `demo_data_language` 实测为 20 episodes、2621 frames、20 Hz，state 为 6 维，action 为 7 维。07 Notebook 会直接显示这份摘要和一条实际四视角回放，因此即使尚未开始人工采集，也能先看清数据结构和最终视频应该长什么样。
+
+还要先检查 `mujoco_env/y_env2.py` 的随机种子。旧代码曾写成 `np.random.seed(seed=0)`，传入任意 seed 都会得到同一组物体位置。现在已经修成 `np.random.seed(seed=seed)`；旧数据仍可用于固定场景 smoke，但多位置泛化必须在修复后重新采集。
 
 远端 JupyterHub 或 Code Server 如果无法让 MuJoCo viewer 获得键盘焦点，不要在无显示会话里硬采。可以使用远程桌面，也可以在本地采集后同步数据。
 
@@ -71,6 +78,8 @@ Notebook 中的 `RUN_SMOKE` 和 `RUN_FULL_TRAIN` 默认都是 `False`。先检�
 - 没有把 Hugging Face token 写进 Notebook 或日志。
 
 pi_0 还需要 Hugging Face gated model 权限。Notebook 只检查 `HF_TOKEN` 是否存在，不会打印或保存 token。
+
+08–10 还会读取 AMD 历史训练摘要，显示已经完成的训练步数、闭环结果和文本进度条。它们不是用静态图片冒充本次长训练：真正启动 smoke/full 的代码仍在前面的单元里，训练日志可以在 Notebook 中重复 tail，最终 checkpoint 必须进入 11 再做闭环判断。
 
 ## MuJoCo closed-loop
 
@@ -97,6 +106,14 @@ pi_0 还需要 Hugging Face gated model 权限。Notebook 只检查 `HF_TOKEN` �
 - 终端汇总：严格成功数和总 episode 数。
 
 如果 `legacy_success` 高于 `physical_success`，说明出现了推杯、空抓、运输中掉落或其它几何误判。此时回到任务 02–06，按 observation、action、接触阶段和视频证据继续诊断。
+
+## pi0 strict-input 复核
+
+12 Notebook 记录了当前最严格、也最不容易误读的一组对照：同一个固定环境 seed 0 上，raw pi0 是 `0/12`，加入 visual/history GRU head 后是 `6/12`。这个组合 head 只读取双相机图像、语言、6D robot proprio 和上一条策略自己执行过的 7D EEF/gripper 命令，不读取 target/plate 坐标、GT phase、oracle action 或当前/未来 GT gripper 标签；但它仍是额外 learned head，所以不能写成 raw pi0。
+
+修复环境 seed 后，在真正随机的环境 41–44 上只有 `1/4`。因此重新采多位置数据比继续盲加 pi0 训练步数更优先。固定环境评估回答“同一场景下策略采样稳不稳”，随机环境评估才回答“位置泛化是否成立”，两者必须分栏报告。
+
+四视角素材还记录了一个容易漏掉的输入协议问题：使用训练时的完整指令 `Pick up the blue mug and place it on the plate.`，learned head 激活 269 步并在第 270 步严格成功；换成较短的同义指令 `Place the blue mug on the plate.` 后，prototype gate 全程不接管，结果失败。当前小数据 auxiliary head 还不能宣称具备语言改写泛化，正式评估应先固定 prompt，下一轮再加入同义指令增强和 paraphrase gate。
 
 ## 完成标准
 

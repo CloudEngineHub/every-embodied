@@ -401,45 +401,65 @@ joint6 + timestamp + phase_index_norm + phase_onehot11 + tcp_to_plate3
 
 再做一个很窄的因果对照：EEF/arm 仍然用 Pi0，只有 gripper 改成 phase-scripted open/close。结果 strict 从 `5/10` 提到 `7/10`，成功 seeds 变成 `1000, 1002, 1003, 1004, 1005, 1006, 1008`。这个结果比“感觉夹爪有问题”更可靠：它说明夹爪时序确实能救一批倒杯/滑脱失败，但也不是充分条件。剩余失败 `1001, 1007, 1009` 都是红杯，终态 `xy` 仍在 `0.14-0.24 m`，说明红杯搬运落点和释放高度还要继续补阶段数据或目标表示。
 
-然后把样本量扩大到 unseen seeds `1010-1039`。如果仍按 10 条 schedule 模板循环使用，这个改好版 scaffold 是 strict `21/30`、legacy `23/30`，红杯 `12/18`、蓝杯 `9/12`。这个结果已经说明 22D `tcp_to_plate` 和脚本化夹爪不是偶然有效，但失败还集中得很明显：9 个 strict 失败全部对应 schedule episodes `1, 7, 9`。
+### 先更正 seed 口径
+
+这轮排障完成后，我们又检查了环境随机化代码，发现 `y_env2.py` 曾把任意 seed 都写成 `np.random.seed(seed=0)`。因此下面 `1010-1039` 的历史结果只改变 Pi0 的策略采样随机性，环境里的杯子和盘子位置没有变化。保留这些结果，是因为它们仍然清楚展示了 schedule、gripper head、transition head 和 reset 协议如何影响固定场景稳定性；但本节不再把它们叫作未见位置或空间泛化。
+
+修复为 `np.random.seed(seed=seed)` 后，strict-input visual/history head 在真正随机环境 seeds `41-44` 上只有 `1/4`。这说明旧 scaffold 调试解决了固定场景中的动作时序和状态语义问题，多位置数据覆盖仍是另一道独立门槛。
+
+然后把样本量扩大到策略采样 seeds（环境实际固定为 seed 0）`1010-1039`。如果仍按 10 条 schedule 模板循环使用，这个改好版 scaffold 是 strict `21/30`、legacy `23/30`，红杯 `12/18`、蓝杯 `9/12`。这个结果已经说明 22D `tcp_to_plate` 和脚本化夹爪不是偶然有效，但失败还集中得很明显：9 个 strict 失败全部对应 schedule episodes `1, 7, 9`。
 
 回头数每条模板的 phase 长度，根因就出来了。episodes `1, 7, 9` 的 `move_preplace` 只有 `72-75` 帧；长模板 episodes `0, 2, 3, 4, 5, 6, 8` 是 `120-123` 帧。也就是说，失败不是“这个 seed 天生难”，而是搬运阶段太短，杯子还没到盘心上方，schedule 已经进入 lower / release。这个结论和视频行为一致：失败样本常常已经夹起并保持直立，但终态 y 停在盘前，像是还差一段搬运就提前放手。
 
-只改 schedule 模板就能验证这个判断。把上面 9 个失败 seed 统一换成长模板 episode `0`，得到 `9/9 strict`；再把完整 30 个 unseen seed 全部强制使用 episode `0` 的长 `move_preplace` 模板，得到 strict `30/30`、legacy `30/30`，红杯 `18/18`、蓝杯 `12/12`，平均终态 `xy` 约 `0.0281 m`，最大 `xy` 约 `0.0739 m`。这一步没有换模型，也没有重新训练，说明短 `move_preplace` schedule 是这一轮最大的可修复瓶颈。
+只改 schedule 模板就能验证这个判断。把上面 9 个失败 seed 统一换成长模板 episode `0`，得到 `9/9 strict`；再把完整 30 个策略采样 seed（环境实际固定为 seed 0） 全部强制使用 episode `0` 的长 `move_preplace` 模板，得到 strict `30/30`、legacy `30/30`，红杯 `18/18`、蓝杯 `12/12`，平均终态 `xy` 约 `0.0281 m`，最大 `xy` 约 `0.0739 m`。这一步没有换模型，也没有重新训练，说明短 `move_preplace` schedule 是这一轮最大的可修复瓶颈。
 
-接着开始拆这个 scaffold。先把两个依赖单独拿掉：不用 scripted gripper、仍保留 oracle prefix 和长 schedule 时，unseen seeds `1010-1019` 只有 strict `5/10`；把 oracle prefix 换成当前 policy prefix，即使保留 scripted gripper 和长 schedule，也只有 strict `3/10`。这两个数字说明，gripper timing 是可以优先处理的局部瓶颈，而 prefix policy 还不能马上替代 oracle prefix。
+接着开始拆这个 scaffold。先把两个依赖单独拿掉：不用 scripted gripper、仍保留 oracle prefix 和长 schedule 时，策略采样 seeds（环境实际固定为 seed 0） `1010-1019` 只有 strict `5/10`；把 oracle prefix 换成当前 policy prefix，即使保留 scripted gripper 和长 schedule，也只有 strict `3/10`。这两个数字说明，gripper timing 是可以优先处理的局部瓶颈，而 prefix policy 还不能马上替代 oracle prefix。
 
-于是训练一个小的 logistic gripper head，让它只预测 gripper 开闭，EEF/arm 仍然来自 22D finisher。第一版用完整 22D state，训练集准确率 `100%`，但 seed `1010` 上线就失败；它学到的不只是 phase 窗口，还有 joint/TCP 的训练集相关性，闭环一漂移就不稳。第二版改成 phase-only 输入，只看 `timestamp + phase_index_norm + phase_onehot11`，训练集同样 `100%`，但闭环复核通过：seed `1010` smoke 为 `1/1`，unseen seeds `1010-1019` 为 strict `10/10`，完整 `1010-1039` 为 strict `30/30`、legacy `30/30`，红杯 `18/18`、蓝杯 `12/12`，平均终态 `xy` 约 `0.0272 m`，最大 `xy` 约 `0.0735 m`。
+于是训练一个小的 logistic gripper head，让它只预测 gripper 开闭，EEF/arm 仍然来自 22D finisher。第一版用完整 22D state，训练集准确率 `100%`，但 seed `1010` 上线就失败；它学到的不只是 phase 窗口，还有 joint/TCP 的训练集相关性，闭环一漂移就不稳。第二版改成 phase-only 输入，只看 `timestamp + phase_index_norm + phase_onehot11`，训练集同样 `100%`，但闭环复核通过：seed `1010` smoke 为 `1/1`，策略采样 seeds（环境实际固定为 seed 0） `1010-1019` 为 strict `10/10`，完整 `1010-1039` 为 strict `30/30`、legacy `30/30`，红杯 `18/18`、蓝杯 `12/12`，平均终态 `xy` 约 `0.0272 m`，最大 `xy` 约 `0.0735 m`。
 
 这一步很有教学价值：可学习 head 不是越大越好。对于开闭爪这种短事件，phase-only 输入比 full-state 输入更稳，因为它明确表达了“当前应该处于哪个夹爪窗口”，同时避免把闭环会漂移的机械臂状态细节混进去。现在可以说：手写 gripper 规则已经被一个可训练、可保存的小 head 替代了；但这仍不是 raw pi_0 成功，因为 oracle prefix、手动 `move_preplace` 起点、显式 `tcp_to_plate` 和强制长 schedule 还在。
 
 再拆第二层：强制长 schedule episode0。新的 adaptive `move_preplace` gate 仍使用 schedule episodes `0..9`，但不再让短模板一到 `lower_to_plate` 就立刻释放。如果 live `tcp_to_plate_xy` 还太大，就 hold 最后一帧 `move_preplace`；等 TCP 接近盘心，或者达到安全上限，再进入 lower / release。这个改动不换 checkpoint，不改 EEF/arm 输出，也不改 gripper head，只替换“固定长模板”这一层脚手架。
 
-这轮最稳的是 `xy=0.05m,min_steps=20,max_steps=180`：unseen seeds `1010-1019` 为 strict `10/10`，完整 `1010-1039` 为 strict `30/30`、legacy `30/30`，红杯 `18/18`、蓝杯 `12/12`，平均终态 `xy` 约 `0.0281 m`，最大 `xy` 约 `0.0617 m`。这说明不用强制所有样本走长 episode0，也能把短 schedule 的搬运阶段按 live 进度补足。
+这轮最稳的是 `xy=0.05m,min_steps=20,max_steps=180`：策略采样 seeds（环境实际固定为 seed 0） `1010-1019` 为 strict `10/10`，完整 `1010-1039` 为 strict `30/30`、legacy `30/30`，红杯 `18/18`、蓝杯 `12/12`，平均终态 `xy` 约 `0.0281 m`，最大 `xy` 约 `0.0617 m`。这说明不用强制所有样本走长 episode0，也能把短 schedule 的搬运阶段按 live 进度补足。
 
 但它还不是完整 learned transition head。seed `1011` 的 trace 显示，`0.05m` 是到 step `180` 的 max-step fallback 才切入 `lower_to_plate`，切换时 live `tcp_to_plate_xy` 约 `0.0574 m`。把阈值放宽到 `0.09m` 后，seed `1011` 可以在 step `163` 主动切换，看起来更像 progress gate；可一旦扩到 30 seed，就在 seed `1034` 失败，终态 `xy` 到 `3.16 m`。`0.08m` 也不是稳态：它对 seed `1011/1034` 的 probe 成功，但 full-run 前 9 条里 seed `1012` 已经 strict 失败。这个结果说明，transition head 后面必须同时看 xy、z、lift/upright/contact 和 phase elapsed，不能只靠一个过宽的 xy 阈值。
 
 接着把 adaptive gate 换成 logistic transition head。第一版 head 使用 `tcp_to_plate_x/y/z`、`tcp_to_plate_xy`、`abs_z` 和阶段内步数，训练集准确率约 `99.27%`，但 seed `1010` 上线失败。trace 里它在 finisher step `59-60` 就触发切换，当时 live `tcp_to_plate_xy` 还在 `0.35 m` 左右，杯子还没到盘心上方。这类失败很典型：训练集准确率高，不代表闭环可靠；full-state head 把方向和高度相关性当成了释放条件。
 
-第二版 head 只保留 `tcp_to_plate_xy + local_step_norm`。训练集准确率降到约 `95.01%`，但闭环变稳：seed `1010` 从失败变成 strict 成功，触发点在 finisher step `136`，不是 `max_steps` 兜底。随后 unseen seeds `1010-1019` 是 strict `10/10`；完整 `1010-1039` 是 strict `30/30`、legacy `30/30`，红杯 `18/18`、蓝杯 `12/12`，平均终态 `xy` 约 `0.0279 m`，最大 `xy` 约 `0.0741 m`。30 条里 `29/30` 由 transition head 主动触发，只有 seed `1021` 走到 `max_steps=180` 安全兜底，但仍成功。
+第二版 head 只保留 `tcp_to_plate_xy + local_step_norm`。训练集准确率降到约 `95.01%`，但闭环变稳：seed `1010` 从失败变成 strict 成功，触发点在 finisher step `136`，不是 `max_steps` 兜底。随后 策略采样 seeds（环境实际固定为 seed 0） `1010-1019` 是 strict `10/10`；完整 `1010-1039` 是 strict `30/30`、legacy `30/30`，红杯 `18/18`、蓝杯 `12/12`，平均终态 `xy` 约 `0.0279 m`，最大 `xy` 约 `0.0741 m`。30 条里 `29/30` 由 transition head 主动触发，只有 seed `1021` 走到 `max_steps=180` 安全兜底，但仍成功。
 
-这一步很关键：第二层脚手架已经从“强制长模板”推进到“可学习 transition head + 安全上限”。它还不是 raw pi_0 成功，也还不是完全无规则的 dynamic phase policy；oracle prefix、显式 `tcp_to_plate`、schedule tail 和 `max_steps` 安全网仍在。但现在可以更准确地说：Pi0 后段 finisher 的 gripper timing 和 `move_preplace -> lower_to_plate` 切换，都已经有了可训练的小 head 版本，而且在 30 个未见 seed 上通过了严格物理评估。
+这一步很关键：第二层脚手架已经从“强制长模板”推进到“可学习 transition head + 安全上限”。它还不是 raw pi_0 成功，也还不是完全无规则的 dynamic phase policy；oracle prefix、显式 `tcp_to_plate`、schedule tail 和 `max_steps` 安全网仍在。但现在可以更准确地说：Pi0 后段 finisher 的 gripper timing 和 `move_preplace -> lower_to_plate` 切换，都已经有了可训练的小 head 版本，而且在固定环境的 30 个策略采样 seed 上通过了严格物理评估。
 
 第三层继续拆 contact primitive。最开始的 all-head 反例很有价值：把 `pregrasp_to_descend / descend_to_close / close_to_lift / lift_to_hold` 都按 phase tail 训练，训练集准确率不差，但 smoke seeds `1010/1011` 是 `0/2`。trace 里 `descend_to_close` 在 TCP 还高出抓取 floor 约 `0.08 m` 时就触发，随后 `close_to_lift` 提前，杯子还没进夹爪就开始抬手。这个失败说明 phase tail 不是接触条件，尤其不能用“阶段快结束了”替代“现在可以安全闭爪了”。
 
-修复版只把 `pregrasp_to_descend` 改成几何标签，特征加入 `tcp_to_grasp_xy`、`abs_tcp_to_pregrasp_z`、`tcp_to_floor_z`、`abs_tcp_to_floor_z`；`descend_to_close` 仍学 phase-tail 时序，但部署时加 `descend_floor_guard`，TCP 还没接近 floor 时禁止 close。这样 smoke `1010/1011` 变成 `2/2`，完整 unseen `1010-1039` 是 strict `30/30`、legacy `30/30`。30 条里 `pregrasp->descend`、`descend->close`、`close->lift` 都是 `30/30` 由 head 触发，floor guard 共阻挡 `342` 次高空 close。这个版本比上一版少了 `pregrasp/descend` 手写几何 transition，但仍保留 target-relative contact scaffold、floor safety guard 和后段 finisher。
+修复版只把 `pregrasp_to_descend` 改成几何标签，特征加入 `tcp_to_grasp_xy`、`abs_tcp_to_pregrasp_z`、`tcp_to_floor_z`、`abs_tcp_to_floor_z`；`descend_to_close` 仍学 phase-tail 时序，但部署时加 `descend_floor_guard`，TCP 还没接近 floor 时禁止 close。这样 smoke `1010/1011` 变成 `2/2`，完整 固定环境策略采样 `1010-1039` 是 strict `30/30`、legacy `30/30`。30 条里 `pregrasp->descend`、`descend->close`、`close->lift` 都是 `30/30` 由 head 触发，floor guard 共阻挡 `342` 次高空 close。这个版本比上一版少了 `pregrasp/descend` 手写几何 transition，但仍保留 target-relative contact scaffold、floor safety guard 和后段 finisher。
 
-第四层继续拆 `dataset_schedule` 尾段。新的 `dynamic_timed` finisher 从 `move_preplace` 起步，用在线 phase tracker 生成 timestamp 和 phase one-hot，不再读取数据集 schedule。第一次完整 unseen seeds `1010-1039` 是 strict `27/30`，失败 seeds `1021/1031/1036` 都不是 no-contact：`1021` 抬起后停在盘外，`1031` 被甩飞，`1036` 蓝杯停在盘前。这个现象很像固定 dwell 不合适，但代码复盘发现根因更具体：`--tcpplate-prefix-target-state` 是为 prefix policy 准备的 `tcp_to_target` 状态，却在 dynamic finisher 里也生效了；finisher 模型训练时吃的是 `tcp_to_plate`，上线时却拿到了 `tcp_to_target`。
+第四层继续拆 `dataset_schedule` 尾段。新的 `dynamic_timed` finisher 从 `move_preplace` 起步，用在线 phase tracker 生成 timestamp 和 phase one-hot，不再读取数据集 schedule。第一次完整策略采样 seeds（环境实际固定为 seed 0） `1010-1039` 是 strict `27/30`，失败 seeds `1021/1031/1036` 都不是 no-contact：`1021` 抬起后停在盘外，`1031` 被甩飞，`1036` 蓝杯停在盘前。这个现象很像固定 dwell 不合适，但代码复盘发现根因更具体：`--tcpplate-prefix-target-state` 是为 prefix policy 准备的 `tcp_to_target` 状态，却在 dynamic finisher 里也生效了；finisher 模型训练时吃的是 `tcp_to_plate`，上线时却拿到了 `tcp_to_target`。
 
-修复时把 state builder 改成 stage-aware：prefix 阶段用 `tcp_link - target_mug`，finisher 阶段用 `tcp_link - plate`。同时把 contact primitive 限定为 prefix-only，避免动态后段因为没有 `scheduled_states` 又被 contact scaffold 接管。修复后先跑失败 seeds `1021/1031/1036`，从 `0/3` 变成 `3/3`；旧版同一环境连续跑完整 unseen seeds `1010-1039`，strict/physical `30/30`、legacy `30/30`，红杯 `18/18`、蓝杯 `12/12`，mean `xy=0.0244 m`，max `xy=0.0993 m`。当时最大 `xy` 和最低 upright cos 都来自 seed `1036`，它看起来像边界成功样本。
+修复时把 state builder 改成 stage-aware：prefix 阶段用 `tcp_link - target_mug`，finisher 阶段用 `tcp_link - plate`。同时把 contact primitive 限定为 prefix-only，避免动态后段因为没有 `scheduled_states` 又被 contact scaffold 接管。修复后先跑失败 seeds `1021/1031/1036`，从 `0/3` 变成 `3/3`；旧版同一环境连续跑完整策略采样 seeds（环境实际固定为 seed 0） `1010-1039`，strict/physical `30/30`、legacy `30/30`，红杯 `18/18`、蓝杯 `12/12`，mean `xy=0.0244 m`，max `xy=0.0993 m`。当时最大 `xy` 和最低 upright cos 都来自 seed `1036`，它看起来像边界成功样本。
 
 继续 trace 时，真正有意思的 bug 出来了：同一环境连续评估时，后一个 seed 的初始杯子位置偶尔不在该 seed 的采样范围里。seed `1035` 曾出现约 `[0.2679, 0.1625, 0.8441]` 的初始位置，但单独 reset 的正常位置应约为 `[0.2944, 0.1912, 0.8447]`。这说明不是 seed 本身难，而是前一个 episode 的 qvel / ctrl / free-joint 动态残留污染了下一个 episode。`SimpleEnv2.reset(seed)` 会重设物体 qpos，但没有先完整清掉底层 MuJoCo `mjData`。
 
-这里加了两个评估协议开关：`--fresh-env-per-episode` 每个 seed 新建环境，适合小面板复核；`--hard-reset-sim-data` 在复用同一个环境时先调用底层 parser reset，清掉动力学残留，适合完整批量评估。fresh-env 小面板 `1036/1035/1020/1029` 是 `4/4`，但反复新建环境在大面板中偶发资产 provider 报错，所以最终推荐 hard-reset protocol。用 `--hard-reset-sim-data` 重新跑完整 unseen seeds `1010-1039`，结果仍为 strict/physical `30/30`、legacy `30/30`，红杯 `18/18`、蓝杯 `12/12`；mean `xy=0.0219 m`，max `xy=0.0450 m`，最小 lift `0.1093 m`，最小 upright cos `0.9504`。这次 seed `1036` 不再贴边，之前的 `0.0993 m` 更像跨 episode reset 残留造成的评估伪影。
+这里加了两个评估协议开关：`--fresh-env-per-episode` 每个 seed 新建环境，适合小面板复核；`--hard-reset-sim-data` 在复用同一个环境时先调用底层 parser reset，清掉动力学残留，适合完整批量评估。fresh-env 小面板 `1036/1035/1020/1029` 是 `4/4`，但反复新建环境在大面板中偶发资产 provider 报错，所以最终推荐 hard-reset protocol。用 `--hard-reset-sim-data` 重新跑完整策略采样 seeds（环境实际固定为 seed 0） `1010-1039`，结果仍为 strict/physical `30/30`、legacy `30/30`，红杯 `18/18`、蓝杯 `12/12`；mean `xy=0.0219 m`，max `xy=0.0450 m`，最小 lift `0.1093 m`，最小 upright cos `0.9504`。这次 seed `1036` 不再贴边，之前的 `0.0993 m` 更像跨 episode reset 残留造成的评估伪影。
 
 这个案例很适合当排障模板：同一个 wrapper 同时支持 prefix 和 finisher 时，全局开关很容易越界。`tcp_to_target` 对前段抓取是好特征，放到后段就会变成错误特征；`tcp_to_plate` 对后段搬运是好特征，放到前段又不够直接。这样的 bug 不一定导致报错，也不一定在 2 seed smoke 里暴露，但会在完整 seed panel 里表现为“偶发甩飞、偏盘、过搬运”。同样，评估环境的 reset 不干净也可能把“策略边界失败”伪装成“模型能力问题”。所以调试阶段要同时记录 stage、state 语义、reset 协议和成功口径，不能只看 `physical_success` 的最终数字。
 
-这不是 raw pi_0 成功。更准确的说法是：Pi0 的后段 finisher 在加入盘心相对位姿后第一次出现可重复成功；继续把夹爪窗口和搬运阶段时长修正后，工程 scaffold 已经能在 30 个未见 seed 上稳定完成任务；再把 gripper 规则换成 phase-only learned head、把强制长 episode0 换成 learned transition head，最后把 `dataset_schedule` 尾段换成 stage-aware `dynamic_timed` finisher 后，在 hard-reset clean protocol 下 30 个未见 seed 仍然稳定。下一轮要继续把这个 scaffold 一层层拆掉：让 dynamic phase 的退出和 release/stabilize 条件更学习化，再逐步把 policy prefix 从 contact scaffold 里释放出来。
+这不是 raw pi_0 成功。更准确的说法是：Pi0 的后段 finisher 在加入盘心相对位姿后第一次出现可重复成功；继续把夹爪窗口和搬运阶段时长修正后，工程 scaffold 已经能在固定环境的 30 个策略采样 seed 上稳定完成任务；再把 gripper 规则换成 phase-only learned head、把强制长 episode0 换成 learned transition head，最后把 `dataset_schedule` 尾段换成 stage-aware `dynamic_timed` finisher 后，在 hard-reset clean protocol 下仍然稳定。下一轮除了继续拆 scaffold，更优先的是用修正后的环境 seed 重采多位置数据。
+
+### 从 scaffold 转向 strict-input visual/history head
+
+继续给 raw Pi0 主模型加训练步数没有带来 fresh closed-loop 成功，于是实验改成两层：保留 Pi0 视觉语言主干和原始策略输出，再训练一个只使用部署时可获得信息的 visual/history head。新的完整任务 recovery 数据分成两组，每组 10 episodes，共 20 条；训练 seeds 为 `21-32`，验证 seeds 为 `33-36`。两组经过筛选的 frame 数分别为 3586 和 3164，既包含接近和接触，也包含搬运、释放和终态稳定，不再只训练一小段 contact suffix。
+
+visual keyframe head 的输入是 agent/wrist 图像经过 Pi0/SigLIP 主干得到的视觉 token、语言 embedding、当前 6D robot proprio，以及上一条策略自己执行过的 7D EEF/gripper 命令。这里没有 target/plate 坐标、GT phase、oracle action 或未来标签。gripper GRU 又把 direct head 的最后一维 previous-gripper 特征去掉，只额外使用 previous executed EEF action `[:6]`，避免直接复制上一帧夹爪状态。
+
+第一版线性 gripper head 的 overall validation accuracy 看起来有 `99.66%`，但 held-out release transition 是 `0/4`。原因很直接：一条轨迹几百帧，真正的 close/release 切换只有极少数帧，总体准确率几乎全由“维持当前状态”贡献。改成 GRU sequence head 后，对 transition frame 使用更高 loss weight，并把 close/release event 单独作为选模指标。最终 best epoch 是 20；验证集有 2164 个 sequence samples、5 次 close 和 5 次 release，selected threshold `0.825` 下 close/release 为 `5/5`，balanced accuracy 约 `96.8%`。部署时另用更保守的 `0.5` 阈值做闭环 gate。
+
+闭环成功判定也同步收紧。除了旧几何 success，还要求真实抬升至少 `0.03 m` 且连续 3 步、upright cos 至少 `0.7`、杯盘高度差不超过 `0.08 m`、盘子 XY 位移不超过 `0.05 m`，并连续满足放置条件 5 步。这个改动会拒绝两类旧假阳性：杯子悬在盘子上方，以及夹爪把盘子一起推走。固定环境 seed 0、同一批 12 个 policy sampling seeds 下，raw protected Pi0 是 `0/12`，visual/history GRU head 是最终严格 `6/12`；成功 policy seeds 为 `3, 8, 18, 33, 34, 40`。旧的宽松终态口径曾显示 `8/12`，其中 seed36 和 seed39 分别因推盘约 `12.27 cm`、`5.59 cm` 被最终口径剔除。
+
+这组提升和重新采完整任务数据直接相关，但不能只归因于“数据数量变多”。真正生效的是四件事一起发生：数据覆盖完整任务阶段，visual/history head 有可观测的时序输入，gripper transition 单独加权，执行端把 gripper probability 转成明确的开闭命令。它也没有解决所有问题：修复环境 seed 后，真正随机环境 `41-44` 只有 `1/4`，说明现有 20 条 recovery 数据仍主要覆盖固定场景。
+
+最后还有一个语言协议反例。使用训练时的完整指令 `Pick up the blue mug and place it on the plate.`，seed3 的 head 激活 269 步，并在第 270 步通过最终严格判定；换成短同义句 `Place the blue mug on the plate.` 后，prototype distance gate 全程拒绝接管，结果失败。当前小数据 head 使用了合法语言输入，却还没有语言改写泛化。下一轮应在修正 seed 后重采 30–50 条多位置轨迹，同时加入 prompt paraphrase 增强，再分别做 fixed scene、random position 和 language paraphrase 三组 gate。
 
 <video controls muted preload="metadata" width="100%">
   <source src="./assets/pi0_ep2_raw_vs_finisher_side_by_side.mp4" type="video/mp4">
@@ -451,11 +471,11 @@ joint6 + timestamp + phase_index_norm + phase_onehot11 + tcp_to_plate3
 
 1. 把 episode 边界对齐到真实任务完成点。若“开夹爪、抬手、稳定等待、回到安全姿态”希望模型学会，就必须录在 episode 里；如果它只是评估后的 reset，就不要把它混成任务成功的一部分。
 2. 补阶段化数据。专门采集或生成 release / raise / stabilize 尾段，包含轻微偏移后的纠偏动作，而不只是从完美轨迹中截一小段。
-3. 以 22D `tcp_to_plate` finisher 作为新的后段诊断基线。非脚本夹爪 strict `5/10`，phase-scripted gripper strict `7/10`，更大 unseen 30 seed 中短 schedule 模板为 `21/30`，强制长 `move_preplace` 模板后为 `30/30`；这些数字都要标清 scaffold 条件，不能写成 raw 成功。
-4. 保留 phase-only learned gripper head 作为第一层去脚手架结果。full-state head 虽然训练集 `100%`，但闭环 seed `1010` 失败；phase-only head 在 unseen `1010-1039` 上 strict `30/30`，说明短事件 head 的输入要克制。
-5. 保留 adaptive `move_preplace` gate 作为第二层去脚手架的工程版。`0.05m + max_steps=180` 在 unseen `1010-1039` 上 strict `30/30`，不再强制长 episode0；但 `0.08/0.09m` 的反例说明固定阈值不能写成完整 learned transition head。
-6. 保留 `xy_step` learned transition head 作为第二层去脚手架的可学习版。full-state transition head 训练集更准但 seed `1010` 闭环早放失败；只用 `tcp_to_plate_xy + local_step_norm` 后，unseen `1010-1039` strict `30/30`，且 `29/30` 是 head 主动触发，不靠 max-step 兜底。
-7. 保留 pregrasp-geometry/contact transition head 作为第三层去脚手架结果。naive all-head 会高空 close；加入几何标签和 `descend_floor_guard` 后，unseen `1010-1039` strict `30/30`，但它仍是 contact scaffold，不是 raw policy。
+3. 以 22D `tcp_to_plate` finisher 作为新的后段诊断基线。非脚本夹爪 strict `5/10`，phase-scripted gripper strict `7/10`，更大 固定环境策略采样 30 seed 中短 schedule 模板为 `21/30`，强制长 `move_preplace` 模板后为 `30/30`；这些数字都要标清 scaffold 条件，不能写成 raw 成功。
+4. 保留 phase-only learned gripper head 作为第一层去脚手架结果。full-state head 虽然训练集 `100%`，但闭环 seed `1010` 失败；phase-only head 在 固定环境策略采样 `1010-1039` 上 strict `30/30`，说明短事件 head 的输入要克制。
+5. 保留 adaptive `move_preplace` gate 作为第二层去脚手架的工程版。`0.05m + max_steps=180` 在 固定环境策略采样 `1010-1039` 上 strict `30/30`，不再强制长 episode0；但 `0.08/0.09m` 的反例说明固定阈值不能写成完整 learned transition head。
+6. 保留 `xy_step` learned transition head 作为第二层去脚手架的可学习版。full-state transition head 训练集更准但 seed `1010` 闭环早放失败；只用 `tcp_to_plate_xy + local_step_norm` 后，固定环境策略采样 `1010-1039` strict `30/30`，且 `29/30` 是 head 主动触发，不靠 max-step 兜底。
+7. 保留 pregrasp-geometry/contact transition head 作为第三层去脚手架结果。naive all-head 会高空 close；加入几何标签和 `descend_floor_guard` 后，固定环境策略采样 `1010-1039` strict `30/30`，但它仍是 contact scaffold，不是 raw policy。
 8. 保留 stage-aware dynamic finisher 作为第四层去脚手架结果。未修复前 `dynamic_timed` 为 `27/30`，修复 prefix/finisher 的 target/plate state 边界后为 `30/30`；再用 `--hard-reset-sim-data` 排除跨 episode 动力学残留后仍是 `30/30`。这说明接口语义边界、reset 协议和模型能力同样重要。
 9. 继续拆 scaffold：下一步不是再用一个更复杂的全局开关，而是把 dynamic phase 的退出条件、release/stabilize 条件继续做成可学习 head 或更干净的数据，再逐步把 policy prefix 从 contact scaffold 里释放出来。
 10. 保留 scripted finisher 作为诊断和工程兜底。它能证明尾段是瓶颈之一，但完整 20 条只有 `4/20`，旧 oracle-prefix handoff scan 也只有 `0/2`，所以不能把 `pi_0 + finisher` 写成 raw pi_0 成功，也不能把固定尾段当成泛化方案。

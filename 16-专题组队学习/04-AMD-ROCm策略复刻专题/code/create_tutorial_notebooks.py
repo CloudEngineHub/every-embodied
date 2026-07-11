@@ -224,7 +224,11 @@ def show_rocm_resources():
     if shutil.which(command[0]) is None:
         print("未找到 rocm-smi。确认当前机器是否安装 ROCm。")
         return
-    subprocess.run(command, check=False)
+    result = subprocess.run(command, check=False, capture_output=True, text=True)
+    if result.stdout:
+        print(result.stdout.rstrip())
+    if result.stderr:
+        print(result.stderr.rstrip(), file=sys.stderr)
 '''
 
 
@@ -279,7 +283,14 @@ def load_policy(policy_type, policy_path, dataset_repo_id, dataset_root, device=
     return policy
 
 
-def strict_snapshot(env, initial_target_z, max_target_lift, max_lifted_run):
+def strict_snapshot(
+    env,
+    initial_target_z,
+    initial_plate_pos,
+    max_target_lift,
+    max_lifted_run,
+    stable_place_steps,
+):
     target_pos = np.asarray(env.env.get_p_body(env.obj_target), dtype=np.float64)
     plate_pos = np.asarray(env.env.get_p_body("body_obj_plate_11"), dtype=np.float64)
     target_R = np.asarray(env.env.get_R_body(env.obj_target), dtype=np.float64)
@@ -288,15 +299,19 @@ def strict_snapshot(env, initial_target_z, max_target_lift, max_lifted_run):
     gripper_open = bool(float(env.env.get_qpos_joint("rh_r1")[0]) < 0.1)
     tcp_high = bool(float(env.env.get_p_body("tcp_link")[2]) > 0.9)
     legacy_success = bool(env.check_success())
-    physical_success = bool(
+    plate_xy_displacement = float(np.linalg.norm(plate_pos[:2] - initial_plate_pos[:2]))
+    placement_candidate = bool(
         legacy_success
         and max_target_lift >= 0.03
         and max_lifted_run >= 3
         and upright_cos >= 0.7
-        and abs(float(target_pos[2] - plate_pos[2])) < 0.15
+        and abs(float(target_pos[2] - plate_pos[2])) < 0.08
+        and plate_xy_displacement < 0.05
         and gripper_open
         and tcp_high
     )
+    stable_place_steps = stable_place_steps + 1 if placement_candidate else 0
+    physical_success = bool(placement_candidate and stable_place_steps >= 5)
     return {
         "legacy_success": legacy_success,
         "physical_success": physical_success,
@@ -306,9 +321,12 @@ def strict_snapshot(env, initial_target_z, max_target_lift, max_lifted_run):
         "max_target_lift": float(max_target_lift),
         "max_lifted_run": int(max_lifted_run),
         "upright_cos": upright_cos,
+        "plate_xy_displacement": plate_xy_displacement,
+        "placement_candidate": placement_candidate,
+        "stable_place_steps": int(stable_place_steps),
         "gripper_open": gripper_open,
         "tcp_high": tcp_high,
-    }
+    }, stable_place_steps
 
 
 def run_closed_loop(
@@ -332,14 +350,18 @@ def run_closed_loop(
     for seed in seeds:
         np.random.seed(seed)
         random.seed(seed)
-        env = SimpleEnv2(str(xml_path), action_type="joint_angle", state_type="joint_angle", seed=None)
+        env = SimpleEnv2(str(xml_path), action_type="joint_angle", state_type="joint_angle", seed=seed)
         env.set_instruction(instruction)
         policy.reset()
 
         initial_target_z = float(env.env.get_p_body(env.obj_target)[2])
+        initial_plate_pos = np.asarray(
+            env.env.get_p_body("body_obj_plate_11"), dtype=np.float64
+        ).copy()
         max_target_lift = 0.0
         lifted_run = 0
         max_lifted_run = 0
+        stable_place_steps = 0
         frames = []
         started = time.perf_counter()
         final = None
@@ -368,7 +390,14 @@ def run_closed_loop(
             max_target_lift = max(max_target_lift, lift)
             lifted_run = lifted_run + 1 if lift >= 0.03 else 0
             max_lifted_run = max(max_lifted_run, lifted_run)
-            final = strict_snapshot(env, initial_target_z, max_target_lift, max_lifted_run)
+            final, stable_place_steps = strict_snapshot(
+                env,
+                initial_target_z,
+                initial_plate_pos,
+                max_target_lift,
+                max_lifted_run,
+                stable_place_steps,
+            )
 
             if action_step % 2 == 0:
                 frames.append(np.asarray(agent_image))
@@ -878,6 +907,13 @@ NOTEBOOKS["05_pi0_smoke_gate.ipynb"] = [
         这一节不急着启动长训练，而是先检查 PaliGemma、Hugging Face gated 权限、权重下载、数据加载和 1-step smoke。只有 smoke 通过后，正式训练才有意义。
         """
     ),
+    md(
+        """
+        ## 重要更正：旧 30-seed 面板不是位置泛化
+
+        `y_env2.py` 曾把任意环境 seed 都写成 `np.random.seed(seed=0)`。旧 `1010-1039` 面板只改变了 Pi0 策略采样，杯子和盘子位置始终固定。那些结果仍能分析 scaffold 的动作时序，却不能作为空间泛化证据。修复后，固定环境 raw/head 对照是 `0/12 -> 6/12`，真正随机环境 gate 只有 `1/4`；下一步必须重采多位置数据。
+        """
+    ),
     code(COMMON_SETUP),
     code(DISPLAY_HELPERS),
     md("## Checkpoint 1：权限检查命令模板"),
@@ -922,15 +958,15 @@ RUN_SMOKE=1 RUN_FULL_TRAIN=1 PI0_STEPS=20000 PI0_BATCH_SIZE=4 \\
         """
         raw pi_0 目前还不能写成复刻成功。更有价值的一轮诊断是把后段 finisher 的 state 从 19 维扩到 22 维，额外加入 `tcp_to_plate = tcp_link_xyz - plate_xyz`。这一步让模型显式知道盘心相对 TCP 的方向，避免后段只靠图像和 phase 隐式猜目标。
 
-        这个实验仍然是诊断 scaffold：前缀由 oracle 提供，schedule 从 `move_preplace` 对齐，finisher 使用 22D state。后续 30-seed 排查发现，短 `move_preplace` schedule 会提前 lower / release；强制使用长 schedule 模板后，改好版 scaffold 能稳定通过 30 个未见 seed。这个结果证明瓶颈被定位和修复，但不代表 raw pi_0 已经端到端成功。
+        这个实验仍然是诊断 scaffold：前缀由 oracle 提供，schedule 从 `move_preplace` 对齐，finisher 使用 22D state。后续 30-seed 排查发现，短 `move_preplace` schedule 会提前 lower / release；强制使用长 schedule 模板后，改好版 scaffold 能稳定通过 30 个策略采样 seed（环境实际固定为 seed 0）。这个结果证明瓶颈被定位和修复，但不代表 raw pi_0 已经端到端成功。
 
-        下一步开始拆 scaffold。第一个被替换的是手写 gripper 规则：用 phase-only logistic head 预测夹爪开闭，EEF/arm 仍由 22D finisher 输出。full-state gripper head 虽然训练集准确率 `100%`，但闭环上线失败；phase-only head 只看 `timestamp + phase_index_norm + phase_onehot11`，在完整 unseen seeds `1010-1039` 上仍保持 strict `30/30`。这个对照说明，小数据短事件 head 的输入要克制，不要把闭环会漂移的机械臂状态全塞进去。
+        下一步开始拆 scaffold。第一个被替换的是手写 gripper 规则：用 phase-only logistic head 预测夹爪开闭，EEF/arm 仍由 22D finisher 输出。full-state gripper head 虽然训练集准确率 `100%`，但闭环上线失败；phase-only head 只看 `timestamp + phase_index_norm + phase_onehot11`，在完整策略采样 seeds（环境实际固定为 seed 0） `1010-1039` 上仍保持 strict `30/30`。这个对照说明，小数据短事件 head 的输入要克制，不要把闭环会漂移的机械臂状态全塞进去。
 
-        第二块脚手架先用固定阈值 adaptive gate 替代强制长 `move_preplace` 模板，完整 unseen seeds `1010-1039` 仍是 strict `30/30`，但其中一部分依赖 `max_steps=180` 安全兜底。继续往前走，我们训练了 logistic transition head。第一版 full head 训练集准确率约 `99.27%`，但 seed `1010` 闭环早放失败；第二版只保留 `tcp_to_plate_xy + local_step_norm`，训练集准确率约 `95.01%`，却在完整 unseen seeds `1010-1039` 上达到 strict `30/30`、legacy `30/30`。30 条里 `29/30` 是 transition head 主动触发，只有 seed `1021` 走到 max-step 安全兜底。这个对照说明，小数据 phase head 的输入也要克制，稳定几何线索比训练集高准确率更重要。
+        第二块脚手架先用固定阈值 adaptive gate 替代强制长 `move_preplace` 模板，完整策略采样 seeds（环境实际固定为 seed 0） `1010-1039` 仍是 strict `30/30`，但其中一部分依赖 `max_steps=180` 安全兜底。继续往前走，我们训练了 logistic transition head。第一版 full head 训练集准确率约 `99.27%`，但 seed `1010` 闭环早放失败；第二版只保留 `tcp_to_plate_xy + local_step_norm`，训练集准确率约 `95.01%`，却在完整策略采样 seeds（环境实际固定为 seed 0） `1010-1039` 上达到 strict `30/30`、legacy `30/30`。30 条里 `29/30` 是 transition head 主动触发，只有 seed `1021` 走到 max-step 安全兜底。这个对照说明，小数据 phase head 的输入也要克制，稳定几何线索比训练集高准确率更重要。
 
-        第三层继续拆前段 contact primitive。naive all-head 把所有 transition 都按 phase tail 学，训练集指标不差，但 smoke `1010/1011` 变成 `0/2`，因为 `descend_to_close` 会在 TCP 还高出抓取 floor 约 `0.08 m` 时提前触发。修复版把 `pregrasp_to_descend` 改成几何标签，特征加入 TCP 到 grasp / pregrasp / floor 的相对量，并在部署时加 `descend_floor_guard`。完整 unseen seeds `1010-1039` 为 strict `30/30`、legacy `30/30`；核心切换 `pregrasp->descend`、`descend->close`、`close->lift` 都是 `30/30` 由 head 触发，floor guard 共阻挡 `342` 次高空 close。这仍是 contact scaffold，不是 raw pi_0 端到端成功。
+        第三层继续拆前段 contact primitive。naive all-head 把所有 transition 都按 phase tail 学，训练集指标不差，但 smoke `1010/1011` 变成 `0/2`，因为 `descend_to_close` 会在 TCP 还高出抓取 floor 约 `0.08 m` 时提前触发。修复版把 `pregrasp_to_descend` 改成几何标签，特征加入 TCP 到 grasp / pregrasp / floor 的相对量，并在部署时加 `descend_floor_guard`。完整策略采样 seeds（环境实际固定为 seed 0） `1010-1039` 为 strict `30/30`、legacy `30/30`；核心切换 `pregrasp->descend`、`descend->close`、`close->lift` 都是 `30/30` 由 head 触发，floor guard 共阻挡 `342` 次高空 close。这仍是 contact scaffold，不是 raw pi_0 端到端成功。
 
-        第四层拆掉 `dataset_schedule` 尾段，改成 `dynamic_timed` finisher。第一次完整 30 seed 只有 strict `27/30`，失败 seeds `1021/1031/1036` 看起来像固定 dwell 不合适；复盘代码后发现根因是 `--tcpplate-prefix-target-state` 这个全局开关越界了：prefix 需要 `tcp_to_target`，但 dynamic finisher 也误用了它，而 finisher 训练时应该吃 `tcp_to_plate`。把 state builder 改成 stage-aware 后，prefix 阶段用 target-relative，finisher 阶段用 plate-relative；三个失败 seed 复测 `3/3`，旧版同一环境连续跑完整 unseen seeds `1010-1039` 回到 strict `30/30`、legacy `30/30`。但继续 trace 又发现，连续评估时前一个 episode 的 MuJoCo qvel / ctrl / free-joint 动态残留可能污染下一个 seed，seed `1035` 曾出现采样范围外的初始位置。于是 evaluator 增加 `--fresh-env-per-episode` 和 `--hard-reset-sim-data`。最终用 `--hard-reset-sim-data` clean protocol 重跑完整 unseen seeds `1010-1039`，仍是 strict `30/30`、legacy `30/30`，红杯 `18/18`、蓝杯 `12/12`；mean `xy=0.0219 m`，max `xy=0.0450 m`，最小 lift `0.1093 m`，最小 upright cos `0.9504`。之前 seed `1036` 的 `0.0993 m` 更像 reset 残留造成的评估伪影，不再作为边界样本处理。
+        第四层拆掉 `dataset_schedule` 尾段，改成 `dynamic_timed` finisher。第一次完整 30 seed 只有 strict `27/30`，失败 seeds `1021/1031/1036` 看起来像固定 dwell 不合适；复盘代码后发现根因是 `--tcpplate-prefix-target-state` 这个全局开关越界了：prefix 需要 `tcp_to_target`，但 dynamic finisher 也误用了它，而 finisher 训练时应该吃 `tcp_to_plate`。把 state builder 改成 stage-aware 后，prefix 阶段用 target-relative，finisher 阶段用 plate-relative；三个失败 seed 复测 `3/3`，旧版同一环境连续跑完整策略采样 seeds（环境实际固定为 seed 0） `1010-1039` 回到 strict `30/30`、legacy `30/30`。但继续 trace 又发现，连续评估时前一个 episode 的 MuJoCo qvel / ctrl / free-joint 动态残留可能污染下一个 seed，seed `1035` 曾出现采样范围外的初始位置。于是 evaluator 增加 `--fresh-env-per-episode` 和 `--hard-reset-sim-data`。最终用 `--hard-reset-sim-data` clean protocol 重跑完整策略采样 seeds（环境实际固定为 seed 0） `1010-1039`，仍是 strict `30/30`、legacy `30/30`，红杯 `18/18`、蓝杯 `12/12`；mean `xy=0.0219 m`，max `xy=0.0450 m`，最小 lift `0.1093 m`，最小 upright cos `0.9504`。之前 seed `1036` 的 `0.0993 m` 更像 reset 残留造成的评估伪影，不再作为边界样本处理。
         """
     ),
     code(
@@ -942,8 +978,8 @@ rows = [
     ("旧 19D finisher handoff", "prefix 120/180/240/300 均为 0/2", "后段目标仍偏在杯子侧"),
     ("22D tcp_to_plate finisher", "strict 5/10，legacy 6/10", "plate-relative state 是有效线索，但仍是 scaffold"),
     ("22D + phase-scripted gripper", "strict 7/10，legacy 7/10", "夹爪时序能救一批失败，剩余主要是红杯落点"),
-    ("unseen 30，schedule 0..9 重复", "strict 21/30，legacy 23/30", "失败全部来自短 move_preplace 模板"),
-    ("unseen 30，强制长 schedule episode 0", "strict 30/30，legacy 30/30", "改好版 scaffold 稳定，但仍不是 raw pi_0"),
+    ("固定环境 30 个 policy seeds，schedule 0..9", "strict 21/30，legacy 23/30", "失败全部来自短 move_preplace 模板"),
+    ("固定环境 30 个 policy seeds，强制长 schedule", "strict 30/30，legacy 30/30", "仅证明固定场景 scaffold 稳定"),
     ("长 schedule + phase-only learned gripper head", "strict 30/30，legacy 30/30", "第一块脚手架被可学习 head 替代"),
     ("schedule 0..9 + adaptive move gate + learned gripper", "strict 30/30，legacy 30/30", "第二块脚手架工程版：不再强制长 episode0"),
     ("schedule 0..9 + xy-step transition head + learned gripper", "strict 30/30，legacy 30/30", "第二块脚手架可学习版：29/30 主动触发"),
@@ -1008,7 +1044,7 @@ python code/pi0/train_tcpplate_gripper_head.py \\
   --output "$MODEL_ROOT/pi0_tcpplate_finisher/gripper_head_phase_logreg.npz" \\
   --summary-json "$MODEL_ROOT/pi0_tcpplate_finisher/gripper_head_phase_logreg_summary.json"
 
-# 5. 用 learned gripper head 复核 30 个 unseen seed。
+# 5. 用 learned gripper head 复核 30 个策略采样 seed（环境实际固定为 seed 0）。
 PYTHONPATH="$PWD:$TOPIC_ROOT/code/pi0:${PYTHONPATH:-}" \\
 python code/pi0/evaluate_pi0_two_stage_tcpplate.py \\
   --tcpplate-base-evaluator code/pi0/evaluate_pi0_two_stage_eef_abs.py \\
@@ -1162,7 +1198,7 @@ python code/pi0/evaluate_pi0_two_stage_tcpplate.py \\
 """)
 '''
     ),
-    md("如果要跑夹爪脚本化对照，在评估命令里额外加入 `--finisher-scripted-gripper`。这一项只改 gripper，不改 EEF/arm，用来判断开闭爪时序是不是主要瓶颈。`--tcpplate-force-schedule-episode 0` 用于复核长 `move_preplace` 模板是否能消掉提前释放问题。`--tcpplate-gripper-head-path` 会在 `--finisher-scripted-gripper` 的钩子里加载 learned head，把手写 phase 规则替换成可训练的小模型。`--tcpplate-adaptive-move-preplace` 把强制长模板换成 live progress gate；`--tcpplate-transition-head-path` 则把固定阈值 gate 换成 logistic transition head；`--tcpplate-contact-transition-head-path` 进一步替代前段 contact primitive 的部分 phase 切换。`dynamic_timed` 版本要特别注意 stage-aware state：prefix 可以用 `tcp_to_target`，finisher 必须用 `tcp_to_plate`。批量评估建议加 `--hard-reset-sim-data`，先清掉跨 episode 的 MuJoCo 动力学残留；`--fresh-env-per-episode` 更干净但反复创建环境时可能遇到资产 provider 偶发报错。当前 stage-aware dynamic finisher 在 hard-reset clean protocol 的 30 个 unseen seed 上是 strict `30/30`，但仍保留 target-relative contact scaffold、floor guard、learned gripper head 和后段 finisher。"),
+    md("如果要跑夹爪脚本化对照，在评估命令里额外加入 `--finisher-scripted-gripper`。这一项只改 gripper，不改 EEF/arm，用来判断开闭爪时序是不是主要瓶颈。`--tcpplate-force-schedule-episode 0` 用于复核长 `move_preplace` 模板是否能消掉提前释放问题。`--tcpplate-gripper-head-path` 会在 `--finisher-scripted-gripper` 的钩子里加载 learned head，把手写 phase 规则替换成可训练的小模型。`--tcpplate-adaptive-move-preplace` 把强制长模板换成 live progress gate；`--tcpplate-transition-head-path` 则把固定阈值 gate 换成 logistic transition head；`--tcpplate-contact-transition-head-path` 进一步替代前段 contact primitive 的部分 phase 切换。`dynamic_timed` 版本要特别注意 stage-aware state：prefix 可以用 `tcp_to_target`，finisher 必须用 `tcp_to_plate`。批量评估建议加 `--hard-reset-sim-data`，先清掉跨 episode 的 MuJoCo 动力学残留；`--fresh-env-per-episode` 更干净但反复创建环境时可能遇到资产 provider 偶发报错。当前 stage-aware dynamic finisher 在 hard-reset clean protocol 的 30 个策略采样 seed（环境实际固定为 seed 0） 上是 strict `30/30`，但仍保留 target-relative contact scaffold、floor guard、learned gripper head 和后段 finisher。"),
     md("如果旧 checkpoint 的 state normalizer 是 19 维，而新数据是 22 维，会出现 `mean/std` shape mismatch。诊断实验里可以复制 checkpoint 并删除 `normalize_inputs.buffer_observation_state.mean/std`，让 22D 数据集统计重新初始化；不要把这个临时处理误写成模型结构创新。"),
 ]
 
@@ -1242,14 +1278,18 @@ INSTRUCTIONS = [
     "Place the red mug on the plate.",
     "Place the blue mug on the plate.",
 ]
-
 RUN_INTERACTIVE_COLLECTION = False
 OVERWRITE_DATASET = False
+RECORD_FOUR_VIEW_VIDEO = True
+COLLECTION_VIDEO_DIR = Path(
+    os.environ.get("COLLECTION_VIDEO_DIR", OUTPUT_ROOT / "collection_four_view")
+).expanduser()
 
 print("dataset repo_id =", DATASET_REPO_ID)
 print("collection root =", COLLECTION_ROOT)
 print("num demos =", NUM_DEMOS)
 print("instructions =", INSTRUCTIONS)
+print("four-view videos =", COLLECTION_VIDEO_DIR)
 '''
     ),
     md(
@@ -1313,23 +1353,30 @@ md_table(
 import numpy as np
 
 
-def collection_success(env, initial_target_z, max_target_lift, max_lifted_run):
+def collection_snapshot(env, initial_target_z, initial_plate_pos, max_target_lift, max_lifted_run):
     target_pos = np.asarray(env.env.get_p_body(env.obj_target), dtype=np.float64)
     plate_pos = np.asarray(env.env.get_p_body("body_obj_plate_11"), dtype=np.float64)
     target_R = np.asarray(env.env.get_R_body(env.obj_target), dtype=np.float64)
     legacy_success = bool(env.check_success())
     upright_cos = float(target_R[2, 2])
-    physical_success = bool(
+    z_gap = abs(float(target_pos[2] - plate_pos[2]))
+    plate_xy_displacement = float(
+        np.linalg.norm(plate_pos[:2] - np.asarray(initial_plate_pos)[:2])
+    )
+    placement_candidate = bool(
         legacy_success
         and max_target_lift >= 0.03
         and max_lifted_run >= 3
         and upright_cos >= 0.7
-        and abs(float(target_pos[2] - plate_pos[2])) < 0.15
+        and z_gap < 0.08
+        and plate_xy_displacement < 0.05
     )
     return {
         "legacy_success": legacy_success,
-        "physical_success": physical_success,
+        "placement_candidate": placement_candidate,
         "xy_dist": float(np.linalg.norm(target_pos[:2] - plate_pos[:2])),
+        "plate_z_gap": z_gap,
+        "plate_xy_displacement": plate_xy_displacement,
         "max_target_lift": float(max_target_lift),
         "max_lifted_run": int(max_lifted_run),
         "upright_cos": upright_cos,
@@ -1374,27 +1421,91 @@ def collect_demonstrations():
 
     dataset = create_or_load_dataset()
     xml_path = PROJECT_ROOT / "asset" / "example_scene_y2.xml"
+    COLLECTION_VIDEO_DIR.mkdir(parents=True, exist_ok=True)
+
+    try:
+        import cv2
+    except ImportError:
+        cv2 = None
+        if RECORD_FOUR_VIEW_VIDEO:
+            print("未安装 OpenCV，数据仍会采集，但跳过四视角 MP4。")
+
+    video_writer = None
+    video_tmp_path = None
+
+    def open_episode_video(episode_id):
+        nonlocal video_writer, video_tmp_path
+        if not RECORD_FOUR_VIEW_VIDEO or cv2 is None:
+            return
+        video_tmp_path = COLLECTION_VIDEO_DIR / f"episode_{episode_id:03d}.recording.mp4"
+        video_writer = cv2.VideoWriter(
+            str(video_tmp_path),
+            cv2.VideoWriter_fourcc(*"mp4v"),
+            20.0,
+            (640, 480),
+        )
+        if not video_writer.isOpened():
+            raise RuntimeError(f"无法创建四视角视频：{video_tmp_path}")
+
+    def write_episode_video(env, agent_image, wrist_image):
+        if video_writer is None:
+            return
+        views = [
+            ("Agent", agent_image),
+            ("Egocentric", wrist_image),
+            ("Top", env.env.get_fixed_cam_rgb(cam_name="topview")),
+            ("Side", env.env.get_fixed_cam_rgb(cam_name="sideview")),
+        ]
+        panels = []
+        for label, image in views:
+            panel = cv2.resize(np.asarray(image), (320, 240), interpolation=cv2.INTER_AREA)
+            panel = cv2.cvtColor(panel, cv2.COLOR_RGB2BGR)
+            cv2.rectangle(panel, (0, 0), (150, 28), (20, 20, 20), thickness=-1)
+            cv2.putText(
+                panel, label, (8, 20), cv2.FONT_HERSHEY_SIMPLEX,
+                0.55, (255, 255, 255), 1, cv2.LINE_AA,
+            )
+            panels.append(panel)
+        video_writer.write(np.vstack([np.hstack(panels[:2]), np.hstack(panels[2:])]))
+
+    def close_episode_video(episode_id, keep):
+        nonlocal video_writer, video_tmp_path
+        if video_writer is not None:
+            video_writer.release()
+        if video_tmp_path is not None and video_tmp_path.exists():
+            if keep:
+                final_path = COLLECTION_VIDEO_DIR / f"episode_{episode_id:03d}_success.mp4"
+                video_tmp_path.replace(final_path)
+                print("saved four-view video:", final_path)
+            else:
+                video_tmp_path.unlink()
+        video_writer = None
+        video_tmp_path = None
 
     def reset_episode(env, episode_id):
         seed = SEED_START + episode_id
         np.random.seed(seed)
         random.seed(seed)
-        env.reset(seed=None)
+        env.reset(seed=seed)
         instruction = INSTRUCTIONS[episode_id % len(INSTRUCTIONS)]
         env.set_instruction(instruction)
         initial_z = float(env.env.get_p_body(env.obj_target)[2])
+        initial_plate_pos = np.asarray(
+            env.env.get_p_body("body_obj_plate_11"), dtype=np.float64
+        ).copy()
         print(f"episode={episode_id} seed={seed} task={instruction}")
-        return initial_z
+        return initial_z, initial_plate_pos
 
     np.random.seed(SEED_START)
     random.seed(SEED_START)
-    env = SimpleEnv2(str(xml_path), seed=None, state_type="joint_angle")
+    env = SimpleEnv2(str(xml_path), seed=SEED_START, state_type="joint_angle")
     episode_id = 0
     record_flag = False
-    initial_target_z = reset_episode(env, episode_id)
+    initial_target_z, initial_plate_pos = reset_episode(env, episode_id)
     max_target_lift = 0.0
     lifted_run = 0
     max_lifted_run = 0
+    stable_place_steps = 0
 
     try:
         while env.env.is_viewer_alive() and episode_id < NUM_DEMOS:
@@ -1407,36 +1518,52 @@ def collect_demonstrations():
             max_target_lift = max(max_target_lift, lift)
             lifted_run = lifted_run + 1 if lift >= 0.03 else 0
             max_lifted_run = max(max_lifted_run, lifted_run)
-            status = collection_success(env, initial_target_z, max_target_lift, max_lifted_run)
+            status = collection_snapshot(
+                env,
+                initial_target_z,
+                initial_plate_pos,
+                max_target_lift,
+                max_lifted_run,
+            )
+            stable_place_steps = stable_place_steps + 1 if status["placement_candidate"] else 0
+            status["stable_place_steps"] = stable_place_steps
+            status["physical_success"] = bool(stable_place_steps >= 5)
 
             if record_flag and status["physical_success"]:
                 dataset.save_episode()
+                close_episode_video(episode_id, keep=True)
                 print("saved:", json.dumps(status, ensure_ascii=False))
                 episode_id += 1
                 record_flag = False
                 if episode_id >= NUM_DEMOS:
                     break
-                initial_target_z = reset_episode(env, episode_id)
+                initial_target_z, initial_plate_pos = reset_episode(env, episode_id)
                 max_target_lift = 0.0
                 lifted_run = 0
                 max_lifted_run = 0
+                stable_place_steps = 0
                 continue
 
             teleop_delta, reset = env.teleop_robot()
             if reset:
                 dataset.clear_episode_buffer()
+                close_episode_video(episode_id, keep=False)
                 record_flag = False
-                initial_target_z = reset_episode(env, episode_id)
+                initial_target_z, initial_plate_pos = reset_episode(env, episode_id)
                 max_target_lift = 0.0
                 lifted_run = 0
                 max_lifted_run = 0
+                stable_place_steps = 0
                 continue
 
             if not record_flag and np.any(np.abs(teleop_delta) > 1e-8):
                 record_flag = True
+                open_episode_video(episode_id)
                 print("Start recording")
 
             agent_image, wrist_image = env.grab_image()
+            if record_flag:
+                write_episode_video(env, agent_image, wrist_image)
             state = env.get_joint_state()[:6].astype(np.float32)
             env.step(teleop_delta)
             target_action = env.q[:7].astype(np.float32)
@@ -1454,6 +1581,7 @@ def collect_demonstrations():
                 )
             env.render(teleop=True, idx=episode_id)
     finally:
+        close_episode_video(episode_id, keep=False)
         env.env.close_viewer()
         shutil.rmtree(dataset.root / "images", ignore_errors=True)
     print(f"采集完成：{episode_id}/{NUM_DEMOS}")
@@ -1467,7 +1595,7 @@ else:
 '''
     ),
     md(
-        "键位与上游教程一致：`W/A/S/D` 控制平面移动，`R/F` 控制高度，`Q/E` 与方向键控制姿态，空格切换夹爪，`Z` 丢弃当前失败回合。每次成功保存后会重新关闭记录开关，避免把 reset 过程混进下一条 episode。"
+        "键位与上游教程一致：`W/A/S/D` 控制平面移动，`R/F` 控制高度，`Q/E` 与方向键控制姿态，空格切换夹爪，`Z` 丢弃当前失败回合。每次成功保存后会重新关闭记录开关，避免把 reset 过程混进下一条 episode。模型训练仍只使用固定相机和腕部相机；Top/Side 视角写入独立 MP4，专门用于人工复核，不偷偷扩充模型输入。"
     ),
     md("## Checkpoint 6：采集后审计"),
     code(
@@ -1494,6 +1622,60 @@ else:
         "数据表通过后，再打开上游 `6.visualize_data.ipynb` 随机回放若干 episode。至少检查图像、state/action shape、夹爪开闭时序、是否真的抬起，以及红蓝杯指令是否平衡。完成这些检查后再进入 08–10 的训练 Notebook。"
     ),
 ]
+
+
+NOTEBOOKS["07_data_collection_and_audit.ipynb"].extend(
+    [
+        md("## Checkpoint 7：查看已经跑过的数据集实测结果"),
+        code(
+            r'''
+snapshot = json.loads(
+    (ASSET_DIR / "collection_dataset_snapshot.json").read_text(encoding="utf-8")
+)
+rows = [
+    ("repo_id", snapshot["dataset_repo_id"]),
+    ("episodes", snapshot["total_episodes"]),
+    ("frames", snapshot["total_frames"]),
+    ("fps", snapshot["fps"]),
+    ("state / action", f'{snapshot["state_shape"]} / {snapshot["action_shape"]}'),
+    ("模型输入相机", " / ".join(snapshot["stored_cameras"])),
+    ("复核视频视角", " / ".join(snapshot["recorder_views"])),
+]
+md_table(["数据项", "AMD 实测值"], rows)
+print("平均每条轨迹帧数 =", round(snapshot["total_frames"] / snapshot["total_episodes"], 1))
+'''
+        ),
+        md("## Checkpoint 8：四视角采集/回放样例"),
+        md(
+            """
+            下面的视频是在 AMD 设备上用与键盘采集相同的四视角 recorder 实际录制的严格成功策略回放。它用于先检查画面布局、接触、抬升、搬运和释放是否清楚；它不是人工键盘示教。真正采集时，将 `RUN_INTERACTIVE_COLLECTION=True`，每条成功示教会在 `COLLECTION_VIDEO_DIR` 生成同样布局的 MP4。
+
+            ![MuJoCo 四视角严格成功序列](../assets/pnp_four_view_strict_success_sequence.jpg)
+
+            <video controls width="960" src="../assets/pnp_four_view_strict_success.mp4"></video>
+            """
+        ),
+        md("## Checkpoint 9：确认环境 seed 真的改变物体位置"),
+        code(
+            r'''
+source_path = PROJECT_ROOT / "mujoco_env" / "y_env2.py"
+source = source_path.read_text(encoding="utf-8")
+bad_pattern = "np.random.seed(seed=0)"
+good_pattern = "np.random.seed(seed=seed)"
+print("seed source =", source_path)
+print("发现旧的固定 seed 写法：", bad_pattern in source)
+print("发现修正后的 seed 写法：", good_pattern in source)
+if bad_pattern in source:
+    raise RuntimeError(
+        "当前 y_env2.py 会把所有环境固定成 seed 0。先修复它，再采集位置随机化数据。"
+    )
+'''
+        ),
+        md(
+            "这个检查很重要。旧实现曾把任意传入 seed 都改成 `0`，导致多 seed 评估只改变了策略采样，杯子和盘子位置并没有真正变化。修复后要重新采 30–50 条覆盖不同位置的轨迹；旧固定场景数据仍可用于链路 smoke，但不能作为空间泛化训练集。"
+        ),
+    ]
+)
 
 
 make_training_notebook(
@@ -1536,6 +1718,58 @@ make_training_notebook(
     n_action_steps=5,
     model_note="pi_0 的训练 loss 下降并不保证闭环抓取成功。小数据接触任务尤其容易出现 gripper 时序和误差累积问题。raw policy、learned auxiliary head 和带脚手架的 hybrid 结果必须分开报告。",
 )
+
+
+for notebook_name, model_name in [
+    ("08_act_training_rocm.ipynb", "ACT"),
+    ("09_smolvla_training_rocm.ipynb", "SmolVLA"),
+    ("10_pi0_training_rocm.ipynb", "pi0"),
+]:
+    NOTEBOOKS[notebook_name].extend(
+        [
+            md("## 已完成训练的日志快照"),
+            code(
+                f'''
+progress = json.loads(
+    (ASSET_DIR / "training_progress_snapshot.json").read_text(encoding="utf-8")
+)
+records = [row for row in progress["records"] if row["model"] == {model_name!r}]
+for row in records:
+    ratio = row["current_step"] / max(1, row["total_steps"])
+    filled = round(36 * ratio)
+    bar = "#" * filled + "." * (36 - filled)
+    print(f'{{row["model"]:>18}} [{{bar}}] {{row["current_step"]}}/{{row["total_steps"]}}')
+    print("stage:", row["stage"])
+    print("closed-loop physical_success:", row["physical_success"])
+    print("note:", row["note"])
+'''
+            ),
+            md(
+                """
+                ![AMD ROCm 历史训练进度与闭环结果](../assets/training_progress_overview.png)
+
+                这张图来自已经完成的 AMD 实验日志，不是假装本次打开 Notebook 后重新跑完的训练。上面的 smoke/full 单元提供真实启动代码；运行长训练时，终端进度会继续写入输出目录，完成后再用 11 的闭环评估决定 checkpoint 是否可用。
+                """
+            ),
+            md("## 在 Notebook 中跟踪后台训练日志"),
+            code(
+                r'''
+def tail_training_log(log_path, lines=25):
+    log_path = Path(log_path)
+    if not log_path.exists():
+        print("训练日志尚不存在：", log_path)
+        return
+    content = log_path.read_text(encoding="utf-8", errors="replace").splitlines()
+    print("\n".join(content[-lines:]))
+
+
+TRAIN_LOG = Path(os.environ.get("TRAIN_LOG", FULL_OUTPUT / "train.log"))
+print("训练运行后可重复执行：tail_training_log(TRAIN_LOG)")
+tail_training_log(TRAIN_LOG)
+'''
+            ),
+        ]
+    )
 
 
 NOTEBOOKS["11_mujoco_closed_loop_deploy.ipynb"] = [
@@ -1661,13 +1895,267 @@ else:
 ]
 
 
+NOTEBOOKS["11_mujoco_closed_loop_deploy.ipynb"].extend(
+    [
+        md("## Checkpoint 5：严格判定与四视角实测结果"),
+        code(
+            r'''
+strict_results = json.loads(
+    (ASSET_DIR / "pi0_strict_input_results.json").read_text(encoding="utf-8")
+)
+predicate = strict_results["strict_predicate"]
+md_table(
+    ["严格条件", "阈值"],
+    [
+        ("真实抬升", f'>= {predicate["min_lift_m"]:.2f} m，连续 {predicate["min_lift_steps"]} 步'),
+        ("终态直立", f'>= {predicate["min_upright_cos"]:.1f}'),
+        ("杯盘高度差", f'<= {predicate["max_plate_z_gap_m"]:.2f} m'),
+        ("盘子位移", f'<= {predicate["max_plate_xy_displacement_m"]:.2f} m'),
+        ("稳定放置", f'连续 {predicate["stable_place_steps"]} 步'),
+    ],
+)
+'''
+        ),
+        md(
+            """
+            ![pi0 strict-input 闭环结果](../assets/pi0_strict_input_progress.png)
+
+            <video controls width="960" src="../assets/pnp_four_view_strict_success.mp4"></video>
+
+            视频对应环境 seed 0、策略采样 seed 3 的严格成功回放。注意它属于 `pi0 + visual/history learned head`，不是 raw pi0；模型输入只有双相机图像、语言、robot proprio 和历史执行动作，没有读取杯子坐标、盘子坐标、GT phase 或 oracle action。
+            """
+        ),
+        md(
+            "随机环境 gate 只有 `1/4`，所以本章没有把固定场景 `6/12` 写成空间泛化成功。下一步应先用修正后的环境 seed 重新采集多位置示教，再扩大到至少 20–30 个真正随机环境评估。"
+        ),
+    ]
+)
+
+
+NOTEBOOKS["12_pi0_strict_input_end_to_end.ipynb"] = [
+    md(
+        """
+        # 12 pi0 strict-input 端到端诊断
+
+        这一节把 pi0 调试中最容易混淆的四件事拆开：raw policy、只用 VLA 合法输入的 learned head、固定场景策略采样稳定性、真正随机物体位置泛化。所有表格都来自 AMD 设备实测结果。
+        """
+    ),
+    code(COMMON_SETUP),
+    code(DISPLAY_HELPERS),
+    md("## Checkpoint 1：读取最终严格评估结果"),
+    code(
+        r'''
+results = json.loads(
+    (ASSET_DIR / "pi0_strict_input_results.json").read_text(encoding="utf-8")
+)
+fixed = results["fixed_scene"]
+randomized = results["randomized_environment_gate"]
+rows = [
+    (
+        "raw pi0",
+        "env seed 0；12 个 policy sampling seeds",
+        f'{fixed["raw_pi0"]["success"]}/{fixed["raw_pi0"]["total"]}',
+    ),
+    (
+        "pi0 + visual/history GRU head",
+        "env seed 0；同一批 12 个 policy sampling seeds",
+        f'{fixed["pi0_visual_history_gru"]["success"]}/{fixed["pi0_visual_history_gru"]["total"]}',
+    ),
+    (
+        "pi0 + visual/history GRU head",
+        "修正 seed 后的随机环境 41–44",
+        f'{randomized["pi0_visual_history_gru"]["success"]}/{randomized["pi0_visual_history_gru"]["total"]}',
+    ),
+]
+md_table(["策略", "协议", "final strict"], rows)
+'''
+    ),
+    md(
+        """
+        ![pi0 strict-input 对照](../assets/pi0_strict_input_progress.png)
+
+        固定场景从 `0/12` 提到 `6/12` 是实质进步，但不能跳过随机环境 `1/4`。这也是为什么教程把“固定场景拟合”和“位置泛化”分开写。
+        """
+    ),
+    md("## Checkpoint 2：learned head 到底看了什么"),
+    code(
+        r'''
+rows = [
+    ("允许", "agent/wrist 图像、语言、6D robot proprio、上一条策略自己执行过的 7D EEF/gripper 命令"),
+    ("禁止", "target xyz、plate xyz、GT phase、oracle action、当前或未来 GT gripper 标签"),
+    ("输出", "EEF keyframe/历史动作与 gripper close probability"),
+    ("部署", "gripper probability threshold=0.5，再转成二值执行命令"),
+]
+md_table(["类别", "内容"], rows)
+'''
+    ),
+    md(
+        "这个 head 具备 VLA-compatible 的输入边界，但它是额外训练的视觉/历史控制头，因此报告时写 `pi0 + learned head`，不能写成 raw pi0。它学的是图像与机器人历史中的阶段线索，不依赖鲜艳标记或手工目标坐标。"
+    ),
+    md("## Checkpoint 3：visual/history head 的实际训练命令"),
+    code(
+        r'''
+import shlex
+
+HEAD_SOURCE_REPO = os.environ.get("HEAD_SOURCE_REPO", "your_multiseed_fulltask_dataset")
+HEAD_SOURCE_ROOT = Path(os.environ.get("HEAD_SOURCE_ROOT", DATA_ROOT / HEAD_SOURCE_REPO))
+HEAD_SOURCE_JSONL = Path(os.environ.get("HEAD_SOURCE_JSONL", OUTPUT_ROOT / "collection_results.jsonl"))
+HEAD_POLICY_PATH = Path(os.environ.get("HEAD_POLICY_PATH", MODEL_ROOT / "pi0_base" / "pretrained_model"))
+HEAD_DIR = Path(os.environ.get("HEAD_DIR", MODEL_ROOT / "pi0_visual_history_head"))
+FEATURE_CACHE = HEAD_DIR / "visual_features.npz"
+DIRECT_HEAD = HEAD_DIR / "visual_keyframe_head.npz"
+GRU_HEAD = HEAD_DIR / "visual_keyframe_gru_head.npz"
+RUN_AUXILIARY_TRAIN = False
+
+commands = [
+    [
+        sys.executable,
+        str(TOPIC_ROOT / "code" / "pi0" / "train_pi0_visual_contact_head.py"),
+        "--source", HEAD_SOURCE_REPO, str(HEAD_SOURCE_ROOT), str(HEAD_SOURCE_JSONL),
+        "--policy-path", str(HEAD_POLICY_PATH),
+        "--stats-repo-id", HEAD_SOURCE_REPO,
+        "--stats-dataset-root", str(HEAD_SOURCE_ROOT),
+        "--train-seeds", "21-32",
+        "--val-seeds", "33-36",
+        "--append-prev-action",
+        "--feature-cache", str(FEATURE_CACHE),
+        "--output", str(DIRECT_HEAD),
+        "--summary-json", str(HEAD_DIR / "visual_keyframe_head_summary.json"),
+    ],
+    [
+        sys.executable,
+        str(TOPIC_ROOT / "code" / "pi0" / "train_pi0_visual_gripper_gru.py"),
+        "--source", HEAD_SOURCE_REPO, str(HEAD_SOURCE_ROOT), str(HEAD_SOURCE_JSONL),
+        "--feature-cache", str(FEATURE_CACHE),
+        "--direct-head", str(DIRECT_HEAD),
+        "--train-seeds", "21-32",
+        "--val-seeds", "33-36",
+        "--epochs", "300",
+        "--transition-weight", "20",
+        "--release-weight", "40",
+        "--output", str(GRU_HEAD),
+        "--summary-json", str(HEAD_DIR / "visual_keyframe_gru_summary.json"),
+    ],
+    [
+        sys.executable,
+        str(TOPIC_ROOT / "code" / "pi0" / "test_pi0_visual_gripper_gru_parity.py"),
+        "--head", str(GRU_HEAD),
+        "--steps", "32",
+    ],
+]
+
+for command in commands:
+    print("$", shlex.join(command))
+if RUN_AUXILIARY_TRAIN:
+    HEAD_DIR.mkdir(parents=True, exist_ok=True)
+    for command in commands:
+        subprocess.run(command, cwd=PROJECT_ROOT, check=True)
+else:
+    print("默认只预览。先替换多位置数据、collector JSONL 和 base policy 路径，再打开 RUN_AUXILIARY_TRAIN。")
+'''
+    ),
+    md("## Checkpoint 4：语言表述也属于部署协议"),
+    code(
+        r'''
+rows = [
+    (
+        "Place the blue mug on the plate.",
+        "0 active steps",
+        "0/1",
+        "短 prompt 超出小头训练分布，prototype gate 一直拒绝接管",
+    ),
+    (
+        "Pick up the blue mug and place it on the plate.",
+        "269 active steps",
+        "1/1",
+        "与训练指令一致；seed3 在 270 步通过 final strict",
+    ),
+]
+md_table(["instruction", "learned head", "strict", "现象"], rows)
+'''
+    ),
+    md(
+        "这不是说 VLA 永远不能接受同义指令，而是当前 4 条小数据训练出来的 auxiliary head 还没有语言改写泛化。部署时要先固定训练/评估 prompt；下一轮再加入同义指令增强，并单独测试 language paraphrase gate。"
+    ),
+    md("## Checkpoint 5：为什么 overall accuracy 会骗人"),
+    code(
+        r'''
+rows = [
+    ("旧线性 gripper head", "99.66%", "0/4", "release 只有极少帧，总体准确率掩盖了全漏"),
+    ("GRU sequence head", "96.8% balanced", "5/5", "按 close/release transition 单独选阈值"),
+]
+md_table(["模型", "验证指标", "held-out release", "解读"], rows)
+'''
+    ),
+    md("## Checkpoint 6：用代码复现最终成功谓词"),
+    code(
+        r'''
+def final_strict_success(row):
+    p = results["strict_predicate"]
+    return bool(
+        row["legacy_success"]
+        and row["max_target_lift"] >= p["min_lift_m"]
+        and row["max_lifted_run"] >= p["min_lift_steps"]
+        and row["upright_cos"] >= p["min_upright_cos"]
+        and row["plate_z_gap"] <= p["max_plate_z_gap_m"]
+        and row["plate_xy_displacement"] <= p["max_plate_xy_displacement_m"]
+        and row["stable_place_steps"] >= p["stable_place_steps"]
+    )
+
+
+known_success = {
+    "legacy_success": True,
+    "max_target_lift": 0.11,
+    "max_lifted_run": 8,
+    "upright_cos": 0.95,
+    "plate_z_gap": 0.0448,
+    "plate_xy_displacement": 0.0105,
+    "stable_place_steps": 5,
+}
+print("示例是否通过最终严格判定：", final_strict_success(known_success))
+'''
+    ),
+    md("## Checkpoint 7：seed bug 对结论的影响"),
+    code(
+        r'''
+seed_bug = results["seed_bug"]
+print("旧代码：", seed_bug["old_code"])
+print("修复后：", seed_bug["fixed_code"])
+print("影响：", seed_bug["impact"])
+'''
+    ),
+    md(
+        """
+        ## Checkpoint 8：四视角成功回放
+
+        ![四视角成功回放关键帧](../assets/pnp_four_view_strict_success_sequence.jpg)
+
+        <video controls width="960" src="../assets/pnp_four_view_strict_success.mp4"></video>
+        """
+    ),
+    md("## Checkpoint 9：下一轮数据计划"),
+    code(
+        r'''
+plan = [
+    ("采集", "修正 seed 后采 30–50 条多位置完整成功轨迹"),
+    ("分层", "按红/蓝杯、起点区域、contact miss、transport tip、release fail 分桶"),
+    ("训练", "先保护 fixed-scene 6/12，再训练 visual/history head；不要继续盲加 raw pi0 steps"),
+    ("评估", "fixed scene 与 random env 分开；随机环境至少 20–30 条"),
+    ("替换门槛", "新模型同协议超过保护基线，且视频无推杯/悬空误判"),
+]
+md_table(["阶段", "动作"], plan)
+'''
+    ),
+]
+
+
 NOTEBOOKS["06_rocm_debug_playbook.ipynb"].extend([
     md("## Checkpoint 3：pi0 hard-reset 评估协议案例"),
     md(
         """
         `dynamic_timed` finisher 的一次排障很典型：stage-aware state 修复后，旧版连续环境评估已经能跑到 strict `30/30`，但 seed `1036` 的终态 `xy` 一度贴近阈值。继续 trace 时发现，后一个 seed 的初始杯子位置偶尔跑出该 seed 的采样范围，说明前一个 episode 的 qvel / ctrl / free-joint 动态状态污染了下一个 episode。
 
-        这里不要急着把它归因成模型泛化问题。更干净的做法是先修评估协议：小面板可以用 `--fresh-env-per-episode` 每个 seed 新建环境；完整批量评估推荐 `--hard-reset-sim-data`，在每次 `env.reset(seed)` 前先清掉底层 MuJoCo sim data。用 hard-reset clean protocol 重跑 unseen seeds `1010-1039` 后，结果仍是 strict `30/30`、legacy `30/30`，mean `xy=0.0219 m`，max `xy=0.0450 m`，seed `1036` 不再贴边。
+        这里不要急着把它归因成模型泛化问题。更干净的做法是先修评估协议：小面板可以用 `--fresh-env-per-episode` 每个 seed 新建环境；完整批量评估推荐 `--hard-reset-sim-data`，在每次 `env.reset(seed)` 前先清掉底层 MuJoCo sim data。用 hard-reset clean protocol 重跑 策略采样 seeds（环境实际固定为 seed 0） `1010-1039` 后，结果仍是 strict `30/30`、legacy `30/30`，mean `xy=0.0219 m`，max `xy=0.0450 m`，seed `1036` 不再贴边。
         """
     ),
     code(

@@ -1,0 +1,45 @@
+{
+  "records": [
+    {
+      "model": "ACT",
+      "stage": "best DAgger",
+      "current_step": 5000,
+      "total_steps": 5000,
+      "progress": "5000/5000 steps",
+      "loss": null,
+      "physical_success": "17/30",
+      "note": "训练约 40 分钟，显存约 3.8 GB；成功率按严格物理口径统计"
+    },
+    {
+      "model": "SmolVLA",
+      "stage": "weighted blue2 step500",
+      "current_step": 500,
+      "total_steps": 1000,
+      "progress": "selected step 500/1000",
+      "loss": null,
+      "physical_success": "53/60",
+      "note": "step500 的红蓝杯平衡优于 step1000，因此保留中间 checkpoint"
+    },
+    {
+      "model": "pi0",
+      "stage": "public raw baseline",
+      "current_step": 1500,
+      "total_steps": 1500,
+      "progress": "1500/1500 steps",
+      "loss": 0.046,
+      "physical_success": "0/20",
+      "note": "loss 从 step500 约 0.179 降到 step1500 约 0.046，但 raw closed-loop 没有成功"
+    },
+    {
+      "model": "pi0 learned head",
+      "stage": "visual/history GRU",
+      "current_step": 20,
+      "total_steps": 20,
+      "progress": "best epoch 20",
+      "loss": null,
+      "physical_success": "fixed 6/12; random 1/4",
+      "note": "只使用图像、语言、proprio 和历史执行动作；不是 raw pi0 主模型"
+    }
+  ],
+  "source": "AMD ROCm 实验日志与严格闭环评估摘要；不是一次 Notebook 会话内重新完成的长训练"
+}

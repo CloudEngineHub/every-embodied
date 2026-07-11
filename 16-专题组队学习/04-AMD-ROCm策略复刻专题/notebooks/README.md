@@ -1,6 +1,8 @@
 # Notebook 实操入口
 
-本目录保存 AMD ROCm 策略复刻专题的配套 Notebook。01–06 负责环境、指标和诊断；07–11 补齐从键盘采集、正式训练到 MuJoCo closed-loop 的完整执行链。Markdown 章节负责讲清楚概念、判断口径和实验结论，Notebook 负责逐格运行代码、生成配置、启动任务和整理结果表。
+本目录保存 AMD ROCm 策略复刻专题的配套 Notebook。01–06 负责环境、指标和诊断；07–12 补齐从键盘采集、正式训练、MuJoCo closed-loop 到 pi0 strict-input 诊断的完整执行链。Markdown 章节负责讲清楚概念、判断口径和实验结论，Notebook 负责逐格运行代码、生成配置、启动任务和整理结果表。
+
+07–12 已在 AMD 教学环境中逐格执行并保存文本输出。交互式键盘采集、正式长训练和批量 closed-loop 仍由 `RUN_*` 开关控制，仓库里展示的是路径审计、真实数据摘要、已完成训练进度、严格成功率、关键帧和四视角视频，不会在读者打开 Notebook 时自动启动数小时任务。
 
 建议从专题根目录启动 Jupyter：
 
@@ -26,12 +28,29 @@ export MODEL_ROOT="$PROJECT_ROOT/ckpt"
 | [04_smolvla_weighted_sampling.ipynb](./04_smolvla_weighted_sampling.ipynb) | 04 SmolVLA 加权采样 | 比较红/蓝杯成功率，重新生成图表 |
 | [05_pi0_smoke_gate.ipynb](./05_pi0_smoke_gate.ipynb) | 05 pi_0 训练门控 | 检查 gated 权限、1-step smoke 和训练命令模板 |
 | [06_rocm_debug_playbook.ipynb](./06_rocm_debug_playbook.ipynb) | 06 排障复盘 | 按“现象、证据、根因、修复、验证”整理问题 |
-| [07_data_collection_and_audit.ipynb](./07_data_collection_and_audit.ipynb) | 07 数据采集 | 键盘采集红/蓝杯 LeRobot 数据，并拦截推杯误判 |
-| [08_act_training_rocm.ipynb](./08_act_training_rocm.ipynb) | 08 ACT 训练 | 生成配置，完成 2-step smoke 和 5,000 步基线训练 |
-| [09_smolvla_training_rocm.ipynb](./09_smolvla_training_rocm.ipynb) | 09 SmolVLA 训练 | 完成基础权重加载、smoke 和分指令训练准备 |
-| [10_pi0_training_rocm.ipynb](./10_pi0_training_rocm.ipynb) | 10 pi_0 训练 | 检查 gated 权限，完成 smoke 和正式训练 |
-| [11_mujoco_closed_loop_deploy.ipynb](./11_mujoco_closed_loop_deploy.ipynb) | 11 闭环部署 | 在 MuJoCo 中运行 checkpoint，保存 JSONL、视频和严格成功率 |
+| [07_data_collection_and_audit.ipynb](./07_data_collection_and_audit.ipynb) | 07 数据采集 | 键盘采集、严格保存门槛、四视角录像、20 条已有数据实测审计 |
+| [08_act_training_rocm.ipynb](./08_act_training_rocm.ipynb) | 08 ACT 训练 | 生成 smoke/full 配置、启动训练、查看 5000-step 历史进度和日志 |
+| [09_smolvla_training_rocm.ipynb](./09_smolvla_training_rocm.ipynb) | 09 SmolVLA 训练 | 完成基础权重加载、训练配置、历史进度和分指令检查 |
+| [10_pi0_training_rocm.ipynb](./10_pi0_training_rocm.ipynb) | 10 pi_0 训练 | 检查 gated 权限，完成 smoke/full 配置和历史训练结果复盘 |
+| [11_mujoco_closed_loop_deploy.ipynb](./11_mujoco_closed_loop_deploy.ipynb) | 11 闭环部署 | 运行 checkpoint，保存 JSONL、严格成功率、关键帧和四视角视频 |
+| [12_pi0_strict_input_end_to_end.ipynb](./12_pi0_strict_input_end_to_end.ipynb) | 12 pi0 strict-input | 对照 raw/learned head、固定/随机环境，复现最终严格判定 |
 
-第一次从零学习时，推荐顺序是 `01 → 07 → 08 → 11 → 02/03`。ACT 闭环跑通后，再执行 `09 → 11 → 04` 和 `10 → 11 → 05/06`。如果已经有数据和 checkpoint，可以直接从 02–06 学习诊断。
+第一次从零学习时，推荐顺序是 `01 → 07 → 08 → 11 → 02/03`。ACT 闭环跑通后，再执行 `09 → 11 → 04` 和 `10 → 11 → 12 → 05/06`。如果已经有数据和 checkpoint，可以直接从 02–06、11–12 学习诊断。
 
 07 的交互采集和 11 的可视化 rollout 需要可用的 `DISPLAY`；08–10 的长训练需要足够的模型缓存、checkpoint 空间和稳定电源。所有 `RUN_*` 开关默认关闭，先检查命令和路径，再显式打开。
+
+## 重新执行与验收
+
+AMD 教学镜像如果没有安装 `jupyter`、`nbclient` 或 `ipykernel`，可以使用仓库里的轻量执行器。它按 Notebook 顺序共享命名空间，执行普通 Python code cell，并把 stdout/stderr 写回标准 `.ipynb` outputs；交互采集和长训练仍由 Notebook 内的开关决定。
+
+```bash
+python code/execute_tutorial_notebooks.py \
+  notebooks/07_data_collection_and_audit.ipynb \
+  notebooks/08_act_training_rocm.ipynb \
+  notebooks/09_smolvla_training_rocm.ipynb \
+  notebooks/10_pi0_training_rocm.ipynb \
+  notebooks/11_mujoco_closed_loop_deploy.ipynb \
+  notebooks/12_pi0_strict_input_end_to_end.ipynb
+```
+
+当前提交的执行结果是：07 为 `11/11` code cells、08 为 `11/11`、09 为 `11/11`、10 为 `12/12`、11 为 `9/9`、12 为 `10/10`，总计 64 个代码单元，错误数为 0。执行器会把机器绝对路径替换成 `$PROJECT_ROOT` 等变量，避免把远端用户名和私有目录写进公开 Notebook。

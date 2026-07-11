@@ -46,6 +46,7 @@
 | 09 | [SmolVLA smoke 与正式训练](./README_07_ROCm端到端采集训练部署.md#smoke-与正式训练) | [09_smolvla_training_rocm.ipynb](./notebooks/09_smolvla_training_rocm.ipynb) |
 | 10 | [pi_0 权限门控与正式训练](./README_07_ROCm端到端采集训练部署.md#smoke-与正式训练) | [10_pi0_training_rocm.ipynb](./notebooks/10_pi0_training_rocm.ipynb) |
 | 11 | [MuJoCo closed-loop 部署](./README_07_ROCm端到端采集训练部署.md#mujoco-closed-loop) | [11_mujoco_closed_loop_deploy.ipynb](./notebooks/11_mujoco_closed_loop_deploy.ipynb) |
+| 12 | [pi0 strict-input 与随机环境复核](./README_07_ROCm端到端采集训练部署.md#pi0-strict-input-复核) | [12_pi0_strict_input_end_to_end.ipynb](./notebooks/12_pi0_strict_input_end_to_end.ipynb) |
 
 Markdown 章节主要负责讲清楚背景、判断口径和实验结论；Notebook 负责逐格运行检查、读取指标、生成图表和整理命令模板。可以先读 Markdown，再打开对应 Notebook 跟着跑。
 
@@ -53,7 +54,7 @@ Markdown 章节主要负责讲清楚背景、判断口径和实验结论；Noteb
 
 | 学习目标 | 入口 |
 | --- | --- |
-| 从零采数据、训练模型并部署到 MuJoCo | Task 07–11 |
+| 从零采数据、训练模型并部署到 MuJoCo | Task 07–12 |
 | 理解原始场景和历史 Notebook | 上游 `04mujoco复现ACT、Pi0、SmolVLA` |
 | 已有结果，重点学习物理评估和失败修复 | Task 02–06 |
 
@@ -61,11 +62,11 @@ Markdown 章节主要负责讲清楚背景、判断口径和实验结论；Noteb
 
 ## 阶段性复刻状态
 
-本专题的示例实验中，ACT、SmolVLA 和 pi_0 都已经形成了训练、评估和视频复核链路，但三者的成熟度不同。SmolVLA 是相对稳定的结果案例，ACT 是典型的闭环诊断案例，pi_0 则是“大模型策略已经能训练和接近目标，但 raw policy 仍卡在尾段动作”的排障案例。
+本专题的示例实验中，ACT、SmolVLA 和 pi_0 都已经形成了训练、评估和视频复核链路，但三者的成熟度不同。SmolVLA 是相对稳定的结果案例，ACT 是典型的闭环诊断案例。pi_0 raw policy 在当前严格闭环协议中仍未成功；加入只读取图像、语言、robot proprio 和历史执行动作的 visual/history learned head 后，固定环境由 `0/12` 提升到 `6/12`，但修正环境随机 seed 后只有 `1/4`。因此它是“固定场景能力已经提升、空间泛化仍需补数据”的排障案例，不是 raw pi0 已复刻成功。
 
 ![当前复刻状态总览](./assets/model_status_summary.png)
 
-图 1：本专题示例实验的阶段性状态。这里使用的是更严格的 `physical_success`：SmolVLA 当前最稳，ACT 已经能作为 DAgger 诊断案例，pi_0 raw policy 在 20 seed closed-loop 严格评估中为 `0/20`，完整 20 条 open-loop replay 为 `1/20`。脚本收尾器在 2 蓝 2 红小集上能把诊断结果提升到 `4/4`，但扩到完整 20 条 template-tail open-loop 只有 `4/20`。后者说明尾段确实是瓶颈之一，也说明固定收尾器不是泛化解法，不能写成纯 pi_0 复刻成功。
+图 1：本专题示例实验的阶段性状态。这里使用更严格的 `physical_success`，并把 raw policy、learned head 和 scaffold 分开。SmolVLA 当前最稳，ACT 已经能作为 DAgger 诊断案例；pi_0 的固定场景 learned-head 提升是真实的，但随机环境 `1/4` 说明位置泛化还没有跑通。旧 30-seed scaffold 面板后来发现环境一直固定为 seed 0，只能解释为策略采样稳定性，不能再当作空间泛化证据。
 
 ## 推荐学习节奏
 
@@ -82,6 +83,7 @@ Markdown 章节主要负责讲清楚背景、判断口径和实验结论；Noteb
 | Task 9 | 1 天 | SmolVLA smoke、正式 checkpoint 和分指令评估 |
 | Task 10 | 1 到 2 天 | pi_0 权限门控、正式 checkpoint 和 raw policy 结果 |
 | Task 11 | 0.5 天 | held-out seeds 成功率、JSONL 和成功/失败视频 |
+| Task 12 | 0.5 天 | pi0 raw/learned-head 对照、seed 审计和随机环境 gate |
 
 ## Notebook 还是 Python 脚本
 

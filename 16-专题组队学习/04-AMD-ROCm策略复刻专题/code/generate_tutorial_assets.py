@@ -447,31 +447,10 @@ def save_best_summary(act_stages: list[dict], out_path: Path) -> None:
         ("ACT best DAgger", act_stages[-1]["success"], act_stages[-1]["total"], "#20866d"),
         ("SmolVLA weighted 500", 53, 60, "#2878d7"),
         ("pi0 raw closed20", PI0_CLOSEDLOOP_RAW["success"], PI0_CLOSEDLOOP_RAW["total"], "#d76445"),
-        ("pi0 + finisher full20", PI0_FULL20_FINISHER["success"], PI0_FULL20_FINISHER["total"], "#6d60c8"),
-        (
-            "pi0 tcpplate scripted",
-            PI0_TCPPLATE_SCAFFOLD["long_schedule_success"],
-            PI0_TCPPLATE_SCAFFOLD["long_schedule_total"],
-            "#8a6f18",
-        ),
-        (
-            "pi0 tcpplate learned grip",
-            PI0_TCPPLATE_SCAFFOLD["phase_head_success"],
-            PI0_TCPPLATE_SCAFFOLD["phase_head_total"],
-            "#1f8a99",
-        ),
-        (
-            "pi0 adaptive gate",
-            PI0_TCPPLATE_SCAFFOLD["adaptive_gate_success"],
-            PI0_TCPPLATE_SCAFFOLD["adaptive_gate_total"],
-            "#6d8b2c",
-        ),
-        (
-            "pi0 transition head",
-            PI0_TCPPLATE_SCAFFOLD["transition_head_success"],
-            PI0_TCPPLATE_SCAFFOLD["transition_head_total"],
-            "#9a4d8f",
-        ),
+        ("pi0 raw fixed scene", 0, 12, "#b54a5e"),
+        ("pi0 learned head fixed", 6, 12, "#7b5fb5"),
+        ("pi0 learned head random", 1, 4, "#d08a28"),
+        ("pi0 scaffold fixed env", 30, 30, "#7b858f"),
     ]
     width, height = 1500, 780
     img = Image.new("RGB", (width, height), "#f7f8fb")
@@ -501,7 +480,7 @@ def save_best_summary(act_stages: list[dict], out_path: Path) -> None:
 
     draw.text(
         (52, 705),
-        "Figure: pi0 transition-head scaffold still uses oracle prefix; raw pi0 closed-loop remains 0/20.",
+        "Figure: old scaffold 30/30 used a fixed environment; only the 1/4 random-env gate tests position changes.",
         fill="#55606d",
         font=load_font(18),
     )
@@ -638,6 +617,112 @@ def sample_video_frames(video_path: Path, title: str, out_path: Path) -> None:
     img.save(out_path)
 
 
+def save_training_progress(snapshot_path: Path, out_path: Path) -> None:
+    snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
+    records = snapshot["records"]
+    width, height = 1600, 720
+    img = Image.new("RGB", (width, height), "#f7f8fb")
+    draw = ImageDraw.Draw(img)
+    draw_header(
+        draw,
+        "Measured ROCm training checkpoints",
+        "Historical runs recorded on the AMD device; progress bars show completed training steps",
+    )
+
+    colors = ["#20866d", "#2878d7", "#d76445", "#7b5fb5"]
+    label_font = load_font(21, bold=True)
+    text_font = load_font(19)
+    y = 155
+    for index, row in enumerate(records):
+        ratio = min(1.0, row["current_step"] / max(1, row["total_steps"]))
+        draw.text((70, y), row["model"], fill="#18202a", font=label_font)
+        draw.text((285, y), row["stage"], fill="#55606d", font=text_font)
+        bar = (70, y + 39, 900, y + 67)
+        draw.rounded_rectangle(bar, radius=5, fill="#dfe4ea")
+        draw.rounded_rectangle(
+            (bar[0], bar[1], bar[0] + int((bar[2] - bar[0]) * ratio), bar[3]),
+            radius=5,
+            fill=colors[index % len(colors)],
+        )
+        step_text = row.get("progress", f'{row["current_step"]}/{row["total_steps"]} steps')
+        draw.text((930, y + 36), step_text, fill="#26313d", font=text_font)
+        draw.text(
+            (1320, y + 36),
+            row["physical_success"],
+            fill=colors[index % len(colors)],
+            font=label_font,
+        )
+        y += 122
+
+    draw.text(
+        (70, 655),
+        "Training completion is not task success: every checkpoint is evaluated again in MuJoCo closed loop.",
+        fill="#55606d",
+        font=load_font(19),
+    )
+    img.save(out_path)
+
+
+def save_pi0_strict_input_progress(snapshot_path: Path, out_path: Path) -> None:
+    snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
+    fixed = snapshot["fixed_scene"]
+    randomized = snapshot["randomized_environment_gate"]
+    rows = [
+        (
+            "raw pi0 / fixed env",
+            fixed["raw_pi0"]["success"],
+            fixed["raw_pi0"]["total"],
+            "#d76445",
+        ),
+        (
+            "visual-history head / fixed env",
+            fixed["pi0_visual_history_gru"]["success"],
+            fixed["pi0_visual_history_gru"]["total"],
+            "#20866d",
+        ),
+        (
+            "visual-history head / random env",
+            randomized["pi0_visual_history_gru"]["success"],
+            randomized["pi0_visual_history_gru"]["total"],
+            "#2878d7",
+        ),
+    ]
+    width, height = 1260, 740
+    img = Image.new("RGB", (width, height), "#f7f8fb")
+    draw = ImageDraw.Draw(img)
+    draw_header(
+        draw,
+        "pi0 strict-input closed-loop audit",
+        "Final strict predicate includes lift, upright, placement height, plate motion and 5-step stability",
+    )
+    chart = (120, 165, 1140, 560)
+    draw_axes(draw, chart)
+    x0, y0, x1, y1 = chart
+    label_font = load_font(18)
+    value_font = load_font(22, bold=True)
+    for index, (label, success, total, color) in enumerate(rows):
+        rate = success / total
+        center = x0 + int((x1 - x0) * (index + 1) / (len(rows) + 1))
+        bar_w = 155
+        top = y1 - int((y1 - y0) * rate)
+        draw.rounded_rectangle((center - bar_w // 2, top, center + bar_w // 2, y1), radius=5, fill=color)
+        value = f"{success}/{total} ({percent_text(rate)})"
+        value_w = draw.textlength(value, font=value_font)
+        draw.text((center - value_w / 2, top - 38), value, fill="#18202a", font=value_font)
+        parts = label.split(" / ")
+        for line_index, part in enumerate(parts):
+            part_w = draw.textlength(part, font=label_font)
+            draw.text((center - part_w / 2, y1 + 22 + line_index * 25), part, fill="#26313d", font=label_font)
+
+    draw.text(
+        (58, 678),
+        "Fixed-scene gains are real, but 1/4 on corrected random environments is not spatial generalization.",
+        fill="#55606d",
+        font=load_font(19),
+    )
+    img.save(out_path)
+
+
 def write_metrics_snapshot(smolvla: list[dict], act_stages: list[dict], out_path: Path) -> None:
     snapshot = {
         "smolvla_forced_instruction_n10": smolvla,
@@ -709,7 +794,7 @@ def write_metrics_snapshot(smolvla: list[dict], act_stages: list[dict], out_path
             "tcpplate_scaffold_short_schedule_episodes": PI0_TCPPLATE_SCAFFOLD["short_schedule_episodes"],
             "tcpplate_scaffold_short_move_preplace_frames": PI0_TCPPLATE_SCAFFOLD["short_move_preplace_frames"],
             "tcpplate_scaffold_long_move_preplace_frames": PI0_TCPPLATE_SCAFFOLD["long_move_preplace_frames"],
-            "note": "pi0 + finisher is a diagnostic hybrid result, not pure pi0 raw success; phase-only gripper head and xy-step transition head replace two scaffold rules, but oracle prefix and schedule tail remain",
+            "note": "pi0 + finisher is a diagnostic hybrid result, not pure pi0 raw success; the old 30-seed panels changed policy sampling but the environment stayed at seed 0, so they are fixed-scene stability evidence rather than spatial generalization",
         },
         "best_summary": {
             "act_best_dagger": {"physical_success": "17/30"},
@@ -720,10 +805,12 @@ def write_metrics_snapshot(smolvla: list[dict], act_stages: list[dict], out_path
             "pi0_raw_balanced_2b2r_batch_rerun": {"physical_success": "1/4"},
             "pi0_scripted_finisher_balanced_2b2r": {"physical_success": "4/4"},
             "pi0_template_tail_full20": {"physical_success": "4/20"},
-            "pi0_tcpplate_scaffold_unseen30_long_schedule": {"physical_success": "30/30"},
-            "pi0_tcpplate_scaffold_phase_head_unseen30": {"physical_success": "30/30"},
-            "pi0_tcpplate_scaffold_adaptive_gate_unseen30": {"physical_success": "30/30"},
-            "pi0_tcpplate_scaffold_transition_head_unseen30": {"physical_success": "30/30"},
+            "pi0_tcpplate_scaffold_fixed_env_policy_seeds30_long_schedule": {"physical_success": "30/30"},
+            "pi0_tcpplate_scaffold_fixed_env_phase_head_seeds30": {"physical_success": "30/30"},
+            "pi0_tcpplate_scaffold_fixed_env_adaptive_gate_seeds30": {"physical_success": "30/30"},
+            "pi0_tcpplate_scaffold_fixed_env_transition_head_seeds30": {"physical_success": "30/30"},
+            "pi0_visual_history_gru_fixed_env": {"physical_success": "6/12"},
+            "pi0_visual_history_gru_random_env_gate": {"physical_success": "1/4"},
         },
     }
     out_path.write_text(json.dumps(snapshot, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -759,11 +846,25 @@ def main() -> None:
     save_act_progress(act_stages, asset_dir / "act_dagger_progress_curve.png")
     save_best_summary(act_stages, asset_dir / "model_status_summary.png")
     save_pi0_diagnostic(asset_dir / "pi0_raw_vs_finisher_diagnostic.png")
+    save_training_progress(
+        asset_dir / "training_progress_snapshot.json",
+        asset_dir / "training_progress_overview.png",
+    )
+    save_pi0_strict_input_progress(
+        asset_dir / "pi0_strict_input_results.json",
+        asset_dir / "pi0_strict_input_progress.png",
+    )
     write_metrics_snapshot(smolvla, act_stages, asset_dir / "metrics_snapshot.json")
 
     for filename, title, rel_path in VIDEO_SPECS:
         video_path = source_root / rel_path if source_root else Path(rel_path)
         sample_video_frames(video_path, title, asset_dir / filename)
+
+    sample_video_frames(
+        asset_dir / "pnp_four_view_strict_success.mp4",
+        "MuJoCo four-view strict success (pi0 + learned visual/history head)",
+        asset_dir / "pnp_four_view_strict_success_sequence.jpg",
+    )
 
 
 if __name__ == "__main__":
