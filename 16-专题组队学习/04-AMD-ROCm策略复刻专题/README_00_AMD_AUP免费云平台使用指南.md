@@ -462,5 +462,3 @@ python -m http.server 8080
 - ⭐ 重要文件记得存到 `/home/jovyan` 目录
 
 - ⭐ Code Server 用户建议记录常用插件列表，方便重装
-
-> (注：内容由 AI 生成，请谨慎参考）
