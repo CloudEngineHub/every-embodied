@@ -1,8 +1,8 @@
 # Notebook 实操入口
 
-本目录保存 AMD ROCm 策略复刻专题的配套 Notebook。01–06 负责环境、指标和诊断；07–12 补齐从键盘采集、正式训练、MuJoCo closed-loop 到 pi0 strict-input 诊断的完整执行链。Markdown 章节负责讲清楚概念、判断口径和实验结论，Notebook 负责逐格运行代码、生成配置、启动任务和整理结果表。
+本目录保存 AMD ROCm 策略复刻专题的配套 Notebook。01–06 负责环境、指标和诊断；07–13 补齐从键盘采集、正式训练、MuJoCo closed-loop、pi0 strict-input 到 Pi0.5 EEF-delta/chunk 对齐诊断的完整执行链。Markdown 章节负责讲清楚概念、判断口径和实验结论，Notebook 负责逐格运行代码、生成配置、启动任务和整理结果表。
 
-07–12 已在 AMD 教学环境中逐格执行并保存文本输出。交互式键盘采集、正式长训练和批量 closed-loop 仍由 `RUN_*` 开关控制，仓库里展示的是路径审计、真实数据摘要、已完成训练进度、严格成功率、关键帧和四视角视频，不会在读者打开 Notebook 时自动启动数小时任务。
+07–13 已逐格执行并保存输出。07–12 使用 AMD 教学环境，13 使用同一批 AMD 实验摘要在隔离 Jupyter 环境中复算表格和图像。交互式键盘采集、正式长训练和批量 closed-loop 仍由 `RUN_*` 开关控制，仓库里展示的是路径审计、真实数据摘要、已完成训练进度、严格成功率、关键帧和四视角视频，不会在读者打开 Notebook 时自动启动数小时任务。
 
 建议从专题根目录启动 Jupyter：
 
@@ -34,8 +34,9 @@ export MODEL_ROOT="$PROJECT_ROOT/ckpt"
 | [10_pi0_training_rocm.ipynb](./10_pi0_training_rocm.ipynb) | 10 pi_0 训练 | 检查 gated 权限，完成 smoke/full 配置和历史训练结果复盘 |
 | [11_mujoco_closed_loop_deploy.ipynb](./11_mujoco_closed_loop_deploy.ipynb) | 11 闭环部署 | 运行 checkpoint，保存 JSONL、严格成功率、关键帧和四视角视频 |
 | [12_pi0_strict_input_end_to_end.ipynb](./12_pi0_strict_input_end_to_end.ipynb) | 12 pi0 strict-input | 对照 raw/learned head、固定/随机环境，复现最终严格判定 |
+| [13_pi05_random_position_eef_delta.ipynb](./13_pi05_random_position_eef_delta.ipynb) | 13 Pi0.5 EEF-delta | 审计阶段方向、coherent recovery、parquet 行序、prefix DAgger、action chunk 和全新 seed strict 结果 |
 
-第一次从零学习时，推荐顺序是 `01 → 07 → 08 → 11 → 02/03`。ACT 闭环跑通后，再执行 `09 → 11 → 04` 和 `10 → 11 → 12 → 05/06`。如果已经有数据和 checkpoint，可以直接从 02–06、11–12 学习诊断。
+第一次从零学习时，推荐顺序是 `01 → 07 → 08 → 11 → 02/03`。ACT 闭环跑通后，再执行 `09 → 11 → 04` 和 `10 → 11 → 12 → 13 → 05/06`。如果已经有数据和 checkpoint，可以直接从 02–06、11–13 学习诊断。
 
 07 的交互采集和 11 的可视化 rollout 需要可用的 `DISPLAY`；08–10 的长训练需要足够的模型缓存、checkpoint 空间和稳定电源。所有 `RUN_*` 开关默认关闭，先检查命令和路径，再显式打开。
 
@@ -50,7 +51,8 @@ python code/execute_tutorial_notebooks.py \
   notebooks/09_smolvla_training_rocm.ipynb \
   notebooks/10_pi0_training_rocm.ipynb \
   notebooks/11_mujoco_closed_loop_deploy.ipynb \
-  notebooks/12_pi0_strict_input_end_to_end.ipynb
+  notebooks/12_pi0_strict_input_end_to_end.ipynb \
+  notebooks/13_pi05_random_position_eef_delta.ipynb
 ```
 
-当前提交的执行结果是：07 为 `11/11` code cells、08 为 `11/11`、09 为 `11/11`、10 为 `12/12`、11 为 `9/9`、12 为 `10/10`，总计 64 个代码单元，错误数为 0。执行器会把机器绝对路径替换成 `$PROJECT_ROOT` 等变量，避免把远端用户名和私有目录写进公开 Notebook。
+当前提交的执行结果是：07 为 `11/11` code cells、08 为 `11/11`、09 为 `11/11`、10 为 `12/12`、11 为 `9/9`、12 为 `10/10`、13 为 `13/13`，总计 77 个代码单元，错误数为 0。公开 Notebook 使用 `$PROJECT_ROOT` 等变量表达机器相关路径，不包含远端用户名、私有 IP 或本机绝对目录。
