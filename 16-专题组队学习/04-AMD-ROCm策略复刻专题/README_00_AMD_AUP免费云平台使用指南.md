@@ -1,8 +1,113 @@
-# 📘 远程 JupyterHub/Code Server 使用指南
+# AMD ROCm 云平台使用指南
 
-> 本篇是 AMD / AUP Learning Cloud 免费云平台的远程 JupyterHub / Code Server 使用指南。平台面向课程和学习提供一定免费额度，可用于在没有本地 AMD ROCm 设备时完成浏览器端开发、Notebook 实验和本专题的环境准备；具体额度、镜像和授权方式以平台页面与管理员通知为准。
+> 这一页把 AMD Radeon Cloud（开发者云）和 AUP Learning Cloud（ALC）放在同一条学习路径中。两者都可以用来完成本专题的浏览器端开发、Notebook 实验和 ROCm 环境准备；具体额度、镜像、硬件和授权方式以平台当前页面与管理员通知为准。
 
-欢迎使用本课程/实验室提供的 **远程 JupyterHub/Code Server 开发环境**！
+开发者云部分参考并整理自 [hello-rocm 的 AMD Radeon Cloud 使用文档](https://github.com/datawhalechina/hello-rocm/blob/master/docs/zh/cloud/amd-radeon-cloud.md)，图片已下载到本专题仓库并改为统一的本地相对路径。
+
+## 一、两个平台怎么选
+
+| 项目 | AMD Radeon Cloud（开发者云） | AUP Learning Cloud（ALC） |
+|---|---|---|
+| 入口 | [AMD AI 开发者计划中文站](https://developer.amd.com.cn/login?source=91kadjjnI) | [tpe.aupcloud.io](https://tpe.aupcloud.io) |
+| 本专题记录的硬件 | AMD Radeon PRO 7900D，约 48 GB 显存 | AMD Ryzen AI MAX+ 395，约 64 GB 统一内存 |
+| 工作区 | Radeon Cloud Gallery 中的 Notebook / Workspace | JupyterHub 或 Code Server GPU Environment |
+| 模型和数据下载 | 优先使用魔搭 ModelScope，国内网络更方便 | 本专题环境中 Hugging Face 直连不稳定或不可用，优先使用预下载文件、共享目录或浏览器上传 |
+| 适合的任务 | 直接启动现成 AMD ROCm 模板，快速验证教程 | 进行长时间训练、Notebook 调试和本专题的 Pi0.5 / ACT / SmolVLA 复刻 |
+| 使用前确认 | 额度、工作区模板、ModelScope 登录状态 | 额度、GPU 镜像、持久化目录和 Hugging Face 权重是否已经准备好 |
+
+两边的**代码、数据格式和评估口径可以保持一致**。真正需要按平台切换的主要是硬件探测、模型下载方式、缓存目录和可用的 GPU/统一内存容量。不要因为平台不同而复制两套训练脚本。
+
+本专题统一使用以下原则：
+
+- 代码和 Notebook 放在仓库或持久化目录中；
+- 数据集、模型权重和 Hugging Face / ModelScope 缓存放在容量明确的持久化目录；
+- 模型下载失败先判断网络和缓存，不要直接改训练代码；
+- 训练完成必须用同一套 MuJoCo strict rollout 和 physical success 复核。
+
+## 二、AMD 开发者云（Radeon Cloud）
+
+AMD Radeon Cloud 是 AMD AI 开发者计划中文站提供的浏览器云算力入口。它适合先启动现成模板，确认 ROCm、PyTorch、Notebook 和本专题代码能否运行。
+
+![AMD ROCm Embodied AI Policy Replication](./assets/amd_radeon_cloud/amd_rocm_embodied_ai_policy_replication.png)
+
+图：Radeon Cloud Gallery 中的 `AMD ROCm Embodied AI Policy Replication` 工作区示例。平台页面、模板名称和可用硬件会更新，以当前 Gallery 为准。
+
+### 1. 登录与创建工作区
+
+打开 [AMD 开发者云登录入口](https://developer.amd.com.cn/login?source=91kadjjnI)。中文站通常提供微信、魔搭账号和手机号 / 邮箱验证码等登录方式。
+
+![Radeon Cloud 登录二维码](./assets/amd_radeon_cloud/qr-radeon-cloud.png)
+
+![Radeon Cloud 六大权益](./assets/amd_radeon_cloud/08-six-benefits.png)
+
+登录后，按“进入 Radeon Cloud → 选择 Notebook / Workspace → 选择 AMD GPU → Launch”的顺序启动工作区。可以先在 Gallery 中搜索 `ROCm` 或 `Embodied AI`，优先选择与本专题名称对应的工作区。
+
+![Radeon Cloud 工作区模板](./assets/amd_radeon_cloud/05-workspace-templates.png)
+
+### 2. 开发者云的模型下载方式
+
+开发者云优先使用魔搭 ModelScope 下载模型和数据，不把 Hugging Face 直连作为前置条件。示例命令如下，具体模型名和保存目录按任务替换：
+
+```bash
+pip install modelscope
+modelscope download --model <model-id> --local_dir <model-dir>
+```
+
+下载后先检查文件是否完整，再把训练脚本的模型路径指向本地目录。大文件不要反复下载到临时工作区；如果平台提供持久化 Workspace，把缓存目录放到持久化位置。
+
+### 3. 开发者云的登录与工作区参考图
+
+![Radeon Cloud 登录方式](./assets/amd_radeon_cloud/01-login-methods.png)
+
+![Radeon Cloud 注册表单](./assets/amd_radeon_cloud/02-login-methods-alt.png)
+
+![Radeon Cloud 完善信息](./assets/amd_radeon_cloud/03-profile-points.png)
+
+![Radeon Cloud 进入云平台](./assets/amd_radeon_cloud/04-enter-cloud.png)
+
+活动期间可能有免费算力、积分兑换和魔搭联动任务。额度、兑换规则和有效期会变化，教程只保留操作思路，不把活动额度当成永久配置。
+
+### 开发者云额度与魔搭联动
+
+如果平台当前账号有积分或活动额度，可以在开发者云页面完成兑换。下面的图片保留了上游平台教程中的操作顺序，图片路径已经统一到本专题的 `assets/amd_radeon_cloud/`：
+
+![积分兑换算力券](./assets/amd_radeon_cloud/06-points-exchange.png)
+
+![魔搭联动任务路径](./assets/amd_radeon_cloud/07-modelscope-paths.png)
+
+兑换流程通常是：在 AMD 开发者计划页面生成兑换链接，进入 Radeon Cloud 的 Profile，打开 Redeem Credits，把兑换链接粘贴到 Coupon Link 后提交。兑换比例、起兑门槛和有效期以平台当前规则为准。
+
+![兑换入口一](./assets/amd_radeon_cloud/01-convert-01.png)
+
+![兑换入口二](./assets/amd_radeon_cloud/02-convert-02.png)
+
+![兑换规则](./assets/amd_radeon_cloud/03-convert-03.png)
+
+### 本专题在开发者云上的运行入口
+
+进入工作区后，直接打开本专题的 [AMD ROCm 策略复刻专题](./README.md)，推荐从以下顺序开始：
+
+1. [设备与环境确认](./README_01_AMD_ROCm设备与环境确认.md)；
+2. [端到端采集、训练与 MuJoCo 部署](./README_07_ROCm端到端采集训练部署.md)；
+3. 对应的 ACT、SmolVLA 或 Pi0.5 Notebook；
+4. [物理成功评估与视频复核](./README_02_物理成功评估与视频复核.md)。
+
+这里不再跳转到与本专题无关的入门课程；开发者云在本专题中的用途是运行 ROCm 具身策略复刻代码。
+
+## 三、AUP Learning Cloud 登录说明
+
+### AUP 的模型和数据准备
+
+本专题使用 AUP 时，Hugging Face 直连在当前网络环境中可能不可用。遇到模型下载超时、连接失败或反复重试时，优先采用下面的顺序：
+
+1. 在网络正常的工作站提前下载模型、数据集或缓存；
+2. 通过共享目录、SFTP 或浏览器上传到 AUP 的持久化目录；
+3. 在 Notebook / 训练脚本中把模型路径和数据路径指向已上传的本地目录；
+4. 先做文件大小、校验和、权重文件数量检查，再启动训练。
+
+不要把 Hugging Face token 写进公开 Notebook、Markdown、截图或日志。AUP 的持久化目录只保存源码、数据、模型和实验结果，临时工作区结束后会被重置的目录不要放唯一副本。
+
+欢迎使用本课程/实验室提供的 **AUP Learning Cloud 远程 JupyterHub / Code Server 开发环境**！
 本指南将帮助你从 **第一次登录** 到 **日常开发使用**，快速上手远程编程与学习。
 
 ## 🌐 什么是 JupyterHub / Code Server？
@@ -13,7 +118,7 @@
 
 ---
 
-## 🔐 二、登录说明
+## 🔐 AUP Learning Cloud 登录说明
 
 ### 1️⃣ 获取 GitHub Name 授权 / 本地账号密码
 
@@ -91,10 +196,6 @@ JupyterHub 平台提供两种登录方式: **GitHub 账户登录 \(推荐\)** �
 
     - HIP Programming Course
 
-    - Large Language Models Course
-
-    - Large Language Models Course \(ROCm 7\.13\.0\)
-
     - Genesis Physical Simulation Course
 
     - Genesis Physical Simulation Course \(ROCm 7\.13\.0\)
@@ -123,7 +224,7 @@ JupyterHub 平台提供两种登录方式: **GitHub 账户登录 \(推荐\)** �
 > 
 > 
 
-## 🧑‍💻 三、基本使用说明
+## 🧑‍💻 AUP 基本使用说明
 
 ### ✨ 1\. 新建一个 Notebook
 
@@ -169,7 +270,7 @@ bash
 cp <需要保存的文件> /home/jovyan
 ```
 
-## 💻 四、Code Server（VSCode Server）使用说明
+## 💻 AUP Code Server（VSCode Server）使用说明
 
 ### 🚀 1\. 启动 Code Server 环境
 
@@ -311,7 +412,7 @@ python train.py
 python -m http.server 8080
 ```
 
-## 🚪 五、正确退出方式（很重要）
+## 🚪 AUP 正确退出方式（很重要）
 
 使用完成后，请 **正确退出**：
 
@@ -325,7 +426,7 @@ python -m http.server 8080
 
 ---
 
-## ❓ 六、常见问题答疑（FAQ）
+## ❓ AUP 常见问题答疑（FAQ）
 
 ### Q1：页面打不开 / 加载很慢怎么办？ 🐢
 
@@ -359,7 +460,6 @@ python -m http.server 8080
 
 - 是否按顺序运行了所有单元
 
-👉 善用 DeepSeek / ChatGPT / 同学讨论 😉
 
 ---
 
@@ -385,7 +485,7 @@ python -m http.server 8080
 
 ---
 
-## 📌 七、使用小建议（强烈推荐）
+## 📌 AUP 使用小建议
 
 - ⭐ 经常保存代码
 
