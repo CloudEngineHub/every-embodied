@@ -120,59 +120,23 @@ modelscope download --model <model-id> --local_dir <model-dir>
 
 ## 🔐 AUP Learning Cloud 登录说明
 
-### 1️⃣ 获取 GitHub Name 授权 / 本地账号密码
+### 1️⃣ 使用 GitHub 授权登录
 
-#### GitHub 授权登录
+AUP Learning Cloud 现在直接使用 GitHub 账户授权，无需额外登记或申请。
 
-- 直接点击授权登录即可
+1. 在浏览器地址栏打开：https://tpe\.aupcloud\.io
 
----
+2. 点击 **Use GitHub Login** 按钮
 
-#### 本地账号密码登录
+3. 按页面提示完成 GitHub 授权
 
-- 填写授权登记表
+4. 授权完成后，浏览器会自动返回 JupyterHub
 
-    - [https://zcnijjcepfie\.feishu\.cn/share/base/form/shrcnIZD8Z8pFjFWEj7OEV9IDra](https://zcnijjcepfie.feishu.cn/share/base/form/shrcnIZD8Z8pFjFWEj7OEV9IDra)
+![GitHub 授权登录](./assets/aup_cloud_guide/screenshot_07.jpg)
 
-- 由管理员开设并发邮件通知
+> 首次使用也直接通过 GitHub 授权进入平台，不需要提前填写表格或等待管理员开通。
 
----
-
-### 2️⃣ 打开登录页面（github id/local）
-
-在浏览器地址栏输入：https://tpe\.aupcloud\.io
-
-![test\.jpg](./assets/aup_cloud_guide/screenshot_00.jpg)
-
-### 3️⃣ 选择登录方式
-
-JupyterHub 平台提供两种登录方式: **GitHub 账户登录 \(推荐\)** 和 **本地账户登录**
-
-- 本地账户需管理员提供，需要填写申请表
-
-![image\.png](./assets/aup_cloud_guide/image_01.png)
-
-#### 3\.1 方式1: GitHub 账户登录 \(推荐\)
-
-1. 点击 "Use GitHub Login" 按钮
-
-2. 系统将跳转到 GitHub 授权页面，选择已授权的 GitHub 账户
-
-![test\.jpg](./assets/aup_cloud_guide/screenshot_07.jpg)
-
-#### 3\.2 方式2: 本地账户登录
-
-从邮件中获取账号密码
-
-1. 在登录框中输入:
-
-    - Username: 您的用户名
-
-    - Password: 您的密码
-
-2. 点击 "Use LocalAccount Login" 按钮，**首次登录需要修改密码，忘记密码请联系管理员**
-
-### 4️⃣ 成功登录后的界面
+### 2️⃣ 成功登录后的界面
 
 #### JupyterHub
 
