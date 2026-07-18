@@ -204,6 +204,12 @@ const homeModules = [
         doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/16-Agentic-VLA在线适应导读/README.md",
       },
       {
+        title: "Robots That Know What to Ask 奖励对齐",
+        copy: "理解机器人如何识别欠指定奖励特征，并用解释引导人类补充示教。",
+        image: "05-具身场景的深度和强化学习/04-Robots-That-Know-What-to-Ask奖励对齐导读/assets/method_overview.png",
+        doc: "05-具身场景的深度和强化学习/04-Robots-That-Know-What-to-Ask奖励对齐导读/README.md",
+      },
+      {
         title: "春晚舞蹈机器人复刻",
         copy: "把动作迁移到机器人仿真，理解运动控制实践。",
         image: "assets/chunwan_robot.gif",
