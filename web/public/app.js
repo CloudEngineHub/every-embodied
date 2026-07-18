@@ -186,6 +186,12 @@ const homeModules = [
         doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/13-Dexora高自由度双臂灵巧VLA导读/README.md",
       },
       {
+        title: "LWD 真机机群强化学习",
+        copy: "拆解智元 LWD 如何用 DIVL、QAM 和部署数据飞轮持续强化通用 VLA。",
+        image: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/14-LWD真机机群强化学习导读/assets/teaser.png",
+        doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/14-LWD真机机群强化学习导读/README.md",
+      },
+      {
         title: "春晚舞蹈机器人复刻",
         copy: "把动作迁移到机器人仿真，理解运动控制实践。",
         image: "assets/chunwan_robot.gif",
