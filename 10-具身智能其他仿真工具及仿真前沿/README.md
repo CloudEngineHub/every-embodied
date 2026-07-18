@@ -11,6 +11,7 @@
 - [SIM1 柔体仿真与数据生成](09SIM1柔体仿真与数据生成/01SIM1环境配置与运行.md) - 双臂布料操作的遥操作、replay、扩散轨迹生成与过滤流程。
 - [UniLab + MotrixSim 异构机器人 RL 训练复现](11UniLab-MotrixSim异构RL训练/README.md) - 在 6GB 显卡上跑通 UniLab 的 MotrixSim 后端、PPO 训练、资源监控和视频回放。
 - [HumanoidMimicGen 全身规划数据生成导读](12HumanoidMimicGen全身规划数据生成导读/README.md) - 拆解 NVIDIA 等提出的少量人形遥操作示教到千级 loco-manipulation 数据生成方法，覆盖技能标注、全身 IK、运动规划、G1 benchmark 和 sim-and-real co-training。
+- [PhysicsNeMo 物理 AI 求解器导读](13-PhysicsNeMo物理AI求解器导读/README.md) - 了解 NVIDIA PhysicsNeMo / Modulus 迁移后的 Physics-ML 框架，区分 neural operator / PINN surrogate 与机器人交互仿真器的边界。
 
 ## 平台专题
 
@@ -24,6 +25,7 @@
 - [GenieSim3 配置](08GenieSim3配置.md) - GenieSim3 环境配置。
 - [UniLab + MotrixSim 异构训练](11UniLab-MotrixSim异构RL训练/README.md) - CPU 仿真与 GPU learner 分离的机器人 RL 训练实践。
 - [HumanoidMimicGen 全身规划数据生成](12HumanoidMimicGen全身规划数据生成导读/README.md) - 人形机器人全身操作数据生成、MuJoCo/robosuite benchmark 与 GR00T/策略学习连接。
+- [PhysicsNeMo 物理 AI 求解器](13-PhysicsNeMo物理AI求解器导读/README.md) - 面向 CFD、结构、天气、PDE surrogate 和 Physics-ML 的扩展工具，不作为机器人仿真主线。
 
 ## 仿真资源
 
@@ -39,6 +41,7 @@
 5. 柔体操作方向：学习 [SIM1 柔体仿真与数据生成](09SIM1柔体仿真与数据生成/01SIM1环境配置与运行.md)。
 6. 强化学习训练基础设施方向：学习 [UniLab + MotrixSim 异构机器人 RL 训练复现](11UniLab-MotrixSim异构RL训练/README.md)，理解 CPU 物理仿真与 GPU 策略学习如何拆分。
 7. 人形全身操作数据方向：阅读 [HumanoidMimicGen 全身规划数据生成导读](12HumanoidMimicGen全身规划数据生成导读/README.md)，理解少量遥操作示教如何通过技能约束、全身规划和随机化扩成策略训练数据。
+8. 物理 AI 扩展方向：阅读 [PhysicsNeMo 物理 AI 求解器导读](13-PhysicsNeMo物理AI求解器导读/README.md)，了解 neural operator、PINN 和 surrogate model 与机器人仿真器的区别。
 
 ## 环境要求
 

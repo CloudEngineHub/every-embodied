@@ -291,6 +291,12 @@ const homeModules = [
         doc: "10-具身智能其他仿真工具及仿真前沿/12HumanoidMimicGen全身规划数据生成导读/README.md",
       },
       {
+        title: "PhysicsNeMo 物理 AI 求解器",
+        copy: "理解 neural operator、PINN 和物理 surrogate model 与机器人仿真的边界。",
+        image: "10-具身智能其他仿真工具及仿真前沿/13-PhysicsNeMo物理AI求解器导读/assets/physicsnemo-card.svg",
+        doc: "10-具身智能其他仿真工具及仿真前沿/13-PhysicsNeMo物理AI求解器导读/README.md",
+      },
+      {
         title: "ManiSkill 强化学习",
         copy: "学习任务、数据集和强化学习实验如何连接仿真世界。",
         image: "10-具身智能其他仿真工具及仿真前沿/assets/2025-03-07-16-20-07-e32f0eaa26b84a2f2dfa61d5d594f7e.png",
