@@ -174,6 +174,12 @@ const homeModules = [
         doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/11-PRTS强化学习原生VLA导读/README.md",
       },
       {
+        title: "Galaxea G0.5 自回归 VLA",
+        copy: "拆解视觉记忆、结构化 CoT 与 ActionCodec 如何统一成动作 token 流。",
+        image: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/12-Galaxea-G0.5自回归VLA导读/assets/images_teaser.png",
+        doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/12-Galaxea-G0.5自回归VLA导读/README.md",
+      },
+      {
         title: "春晚舞蹈机器人复刻",
         copy: "把动作迁移到机器人仿真，理解运动控制实践。",
         image: "assets/chunwan_robot.gif",
