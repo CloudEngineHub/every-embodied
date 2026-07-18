@@ -185,19 +185,19 @@ run.sh
 
 ## Hugging Face 链接
 
-当前本机没有 Datawhale Hugging Face CLI token，因此未能直接从命令行上传。建议创建模型仓库，例如：
-
-```text
-Datawhale/atec2026-task-e-act-seed1-best
-```
-
-上传完成后，把链接写回本 README：
+权重与完整提交压缩包已上传到 Datawhale Hugging Face：
 
 ```text
 https://huggingface.co/Datawhale/atec2026-task-e-act-seed1-best
 ```
 
-上传命令见 `hf_model_package/README.md`。
+对应上传 commit：
+
+```text
+https://huggingface.co/Datawhale/atec2026-task-e-act-seed1-best/commit/4583bda9e3118e75987a0f91de62c155a70a2bed
+```
+
+上传命令、文件清单和 SHA256 见 `hf_model_package/README.md`。
 
 ## 能否安全删除本地内容
 
