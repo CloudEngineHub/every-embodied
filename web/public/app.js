@@ -213,6 +213,12 @@ const homeModules = [
         doc: "17-具身世界模型/Gamma-World多智能体世界模型导读/README.md",
       },
       {
+        title: "BWM 动作条件世界模型",
+        copy: "理解 Wan2.2 基座如何接入机器人动作轨迹并自回归生成未来操作视频。",
+        image: "17-具身世界模型/BWM动作条件世界模型导读/assets/track1_open_source.png",
+        doc: "17-具身世界模型/BWM动作条件世界模型导读/README.md",
+      },
+      {
         title: "HumanoidMimicGen 全身规划数据生成",
         copy: "学习少量人形遥操作示教如何扩成千级 loco-manipulation 数据。",
         image: "10-具身智能其他仿真工具及仿真前沿/12HumanoidMimicGen全身规划数据生成导读/assets/hmgen_benchmark.png",
