@@ -335,6 +335,12 @@ const homeModules = [
         image: "21-机械臂和机器人设计/04-Shape-Your-Body价值梯度机器人设计导读/assets/hero.png",
         doc: "21-机械臂和机器人设计/04-Shape-Your-Body价值梯度机器人设计导读/README.md",
       },
+      {
+        title: "FlashLib 高速机器学习库",
+        copy: "把 KMeans、KNN、PCA、SVD、ANN 等经典 ML 算子迁移到现代 GPU pipeline。",
+        image: "11-其他辅助工具/assets/flashlib-card.svg",
+        doc: "11-其他辅助工具/FlashLib高速机器学习库.md",
+      },
     ],
   },
 ];
