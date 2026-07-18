@@ -150,6 +150,12 @@ const homeModules = [
         doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/07WALL-OSS开源VLA模型导读/README.md",
       },
       {
+        title: "3DVLA 三维空间实例增强",
+        copy: "理解 3D 空间、实例和遮挡补全 token 如何增强 VLA 动作预测。",
+        image: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/09-3DVLA三维空间实例增强VLA导读/assets/3dvla_architecture.png",
+        doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/09-3DVLA三维空间实例增强VLA导读/README.md",
+      },
+      {
         title: "春晚舞蹈机器人复刻",
         copy: "把动作迁移到机器人仿真，理解运动控制实践。",
         image: "assets/chunwan_robot.gif",
@@ -193,6 +199,12 @@ const homeModules = [
         copy: "理解 robot-only 轨迹、场景先验和物体先验如何合成机器人示教数据。",
         image: "17-具身世界模型/RoboDream可组合世界模型数据合成导读/assets/robodream_architecture.png",
         doc: "17-具身世界模型/RoboDream可组合世界模型数据合成导读/README.md",
+      },
+      {
+        title: "HumanoidMimicGen 全身规划数据生成",
+        copy: "学习少量人形遥操作示教如何扩成千级 loco-manipulation 数据。",
+        image: "10-具身智能其他仿真工具及仿真前沿/12HumanoidMimicGen全身规划数据生成导读/assets/hmgen_benchmark.png",
+        doc: "10-具身智能其他仿真工具及仿真前沿/12HumanoidMimicGen全身规划数据生成导读/README.md",
       },
       {
         title: "ManiSkill 强化学习",
