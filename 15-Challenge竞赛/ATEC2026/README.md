@@ -509,14 +509,19 @@ code/l0_b2piper_option_moe/
 c932411fb326d732ba4f42eb74e56406b65b8bcacfbbc0a9ccaa823cfb287c84
 ```
 
-模型仓库里还额外保留了赛后清理说明和压缩后的项目记忆：
+模型仓库里还额外保留了赛后清理说明、压缩后的项目记忆，以及清盘前剩余工作区归档：
 
 ```text
 archive_notes/local_cleanup_manifest.md
 archive_notes/WORKSPACE_MEMORY.md
+local_archive/ATEC2026_Simulation_Challenge.tar.zst
+local_archive/official_materials.tar.zst
+local_archive/tools.tar.zst
+local_archive/WORKSPACE_MEMORY.md
+local_archive/SHA256SUMS.txt
 ```
 
-清理时我们没有把本地 `robot_lab`、`competition_refs`、`runs`、`feishu_docs` 原样上传到 Hugging Face。原因是：`feishu_docs` 含飞书缓存和 token 索引文件，可能涉及协作资料权限；`robot_lab` / `competition_refs` 主要是第三方仓库、训练日志和中间产物，更适合在教程里链接原项目；真正需要长期保留的是教程、提交骨架、模型权重和 workspace memory。
+其中 `local_archive/` 是赛后为了释放本地磁盘额外补传的归档，覆盖清理前仍留在本机的 `ATEC2026_Simulation_Challenge`、`tools`、`官方资料` 和 `WORKSPACE_MEMORY.md`。第一轮已清理的 `robot_lab`、`competition_refs`、`runs`、`feishu_docs` 没有补传原始目录；尤其 `feishu_docs` 曾含飞书缓存和 token 索引文件，可能涉及协作资料权限。长期复现优先看教程、提交骨架、HF 模型包和 `archive_notes/WORKSPACE_MEMORY.md`。
 
 核心思想：
 
