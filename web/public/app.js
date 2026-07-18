@@ -116,6 +116,12 @@ const homeModules = [
         image: "assets/ETPNav.gif",
         doc: "08-具身导航及VLN/03前沿VLN复现/01VLNCE/02ETPNav代码复现.md",
       },
+      {
+        title: "NBS 主动感知路径规划",
+        copy: "理解节点级 Beam Search、Expected Gain 和 RRAG 如何服务移动机器人主动建图。",
+        image: "08-具身导航及VLN/03前沿VLN复现/03-主动感知NBS导读/assets/hardware_surface_reconstruction.png",
+        doc: "08-具身导航及VLN/03前沿VLN复现/03-主动感知NBS导读/README.md",
+      },
     ],
   },
   {
