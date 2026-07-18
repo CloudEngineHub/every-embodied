@@ -180,6 +180,12 @@ const homeModules = [
         doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/12-Galaxea-G0.5自回归VLA导读/README.md",
       },
       {
+        title: "Dexora 高自由度双臂灵巧 VLA",
+        copy: "理解 36-DoF 双臂双手、混合遥操作和质量感知训练如何推进灵巧操作。",
+        image: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/13-Dexora高自由度双臂灵巧VLA导读/assets/img_teaser.JPG",
+        doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/13-Dexora高自由度双臂灵巧VLA导读/README.md",
+      },
+      {
         title: "春晚舞蹈机器人复刻",
         copy: "把动作迁移到机器人仿真，理解运动控制实践。",
         image: "assets/chunwan_robot.gif",
