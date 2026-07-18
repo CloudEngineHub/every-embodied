@@ -423,10 +423,186 @@ torch.Size([1, 12])
 
 如果大家继续做这条线，下一步应该先修 reward 和观测，而不是继续堆训练时长。
 
+## 15. 赛后开源更新：我们实际走过的完整路线
+
+比赛截止后，我们把这次 ATEC2026 线上赛的复现、提分、误判和修正过程整理到本目录。它不是“榜一代码”，而是一份真实工程记录：从官方 baseline 出分，到尝试 RobotLab / RoboGauge / SAC / MoE，再回到可解释的 high-level tracker 和 option gate。
+
+### 15.1 我们最终确认的几个事实
+
+第一，官方 baseline 很重要。它不是高分方案，但它能验证提交链路、动作维度和平台环境。我们第一次线上有效分数是：
+
+| 任务 | 机器人 | 分数 | 仿真用时 | 物理用时 |
+|---|---|---:|---:|---:|
+| 赛道1 L0 机器人徒步 | `B2Piper` | `2.35` | `00:03:18.40` | `00:07:25.55` |
+
+第二，中间 checkpoint 不能只看训练 reward。我们曾经把本地分数推到 `5.x`，线上也出现过 `7.x` 左右的有效分数，但策略仍会在 rough、坡顶或边界附近失败。这说明它已经比不少 baseline 队伍更好，但还没有学到完整的 400 m 长距离通过能力。
+
+第三，RobotLab / RoboGauge 很有价值，但不能直接当作 ATEC B2Piper 的现成权重。我们跑过：
+
+- RobotLab B2 fixed-forward 原生评估；
+- RobotLab B2Piper 带 Piper 负载训练；
+- PPO 20K 长训；
+- SAC-RSL-RL 分支；
+- RoboGauge Go2 MoE checkpoint 原生评估；
+- ATEC 直迁快评。
+
+最后的结论是：这些项目适合作为 reward、terrain curriculum、MoE、teacher-student、评估协议的参考；但如果不对齐 ATEC 的 `B2Piper` 资产、actuator、action scale、45D actor observation、TaskA 赛道分布和提交端约束，直接迁移 checkpoint 往往会低分甚至原地打转。
+
+第四，L0 和 L1 要分清。L0 是赛道自己的基础任务：
+
+| 赛道 | L0 |
+|---|---|
+| 赛道1 | 机器人徒步 |
+| 赛道2 | 桌面整理 |
+
+L1 是两个赛道共享的高阶任务：
+
+```text
+L1 终榜 = 垃圾拾取与投放 + 越障
+```
+
+线下预选赛资格看 `L1终榜前100名`，不是 L0 排名。我们在赛道2 L0「桌面整理」榜中曾看到 `DatawhaleEAI` 第 `28/70`，分数 `15`；这说明 L0 桌面整理有不错成绩，但不等价于线下入围，线下资格仍要看 L1 合并终榜。
+
+### 15.2 我们全网检索到的开源情况
+
+截至 2026-07-18，我们用 `ATEC2026 机器人徒步 26 分 开源`、`ATEC2026 B2Piper policy.pt`、`ATEC2026 Simulation Challenge locomotion open source` 等关键词检索，没有发现明确公开的「ATEC2026 L0 机器人徒步 26 分 / 冠军完整提交代码与权重」。
+
+能找到的主要是：
+
+- ATEC 官方 baseline 仓库；
+- 算力自由 / 知乎等复现教程；
+- ATEC 新闻稿和赛事介绍；
+- RobotLab、RoboGauge、MoE-Loco、Unitree RL Lab 等通用机器人 locomotion 项目。
+
+所以，公开复现时不要误以为“已经有满分包可以直接抄”。更现实的方式是站在这些项目的结构经验上继续做：
+
+```text
+官方 baseline 保护步态
++ TaskA 本地评估
++ rough/slope/stairs 分地形诊断
++ high-level command tracker
++ MoE / option gate
++ repeat gate 选择提交包
+```
+
+### 15.3 我们最终开源的代码骨架
+
+本目录提供一个可读、可改的 L0 B2Piper 提交骨架：
+
+```text
+code/l0_b2piper_option_moe/
+  README.md
+  solution.py
+  solution_rl.py
+  requirements.txt
+```
+
+这份代码来自我们赛后整理的 `protected04 option-MoE rough escape progress gate` 版本。它不附带二进制 `policy.pt`，读者需要自己放入官方 baseline 或自己的 TorchScript actor。
+
+核心思想：
+
+```text
+保持低层 actor 不变
+根据 score / progress 判断当前地形阶段
+rough 段使用更谨慎的速度命令
+卡住时触发短脉冲 escape option
+避免手动或规则控制长期大 yaw 把机器人拧到 illegal_contact
+```
+
+示例提交目录：
+
+```text
+solution.py
+solution_rl.py
+policy.pt
+requirements.txt
+```
+
+如果 `policy.pt` 是 `45 -> 12` 的 TorchScript actor，可以先做 smoke：
+
+```bash
+cd code/l0_b2piper_option_moe
+python - <<'PY'
+import torch
+m = torch.jit.load("policy.pt", map_location="cpu")
+print(m(torch.zeros(1, 45)).shape)
+PY
+```
+
+输出应为：
+
+```text
+torch.Size([1, 12])
+```
+
+### 15.4 为什么会卡在 rough 地形
+
+我们通过人工可视化和轨迹日志发现一个很典型的失败模式：
+
+```text
+平滑段能走
+进入沙石 / rough 后仍在路中间
+没有掉边
+但脚步陷入接触坏状态
+大 yaw 能临时把它“摇出来”
+大 yaw 持续太久又会拧身、illegal_contact
+```
+
+这说明问题不是纯导航，也不是中线画错，而是低层 gait 对 rough 接触的适应能力不足。解决它不能只靠“再按大一点 yaw”，更合理的是引入可控的 escape option：
+
+```text
+普通推进 option
+rough 谨慎推进 option
+rough 卡住脱困 option
+slope 保持推进 option
+near-edge recovery option
+```
+
+这就是我们后来引入 option-MoE 的原因。第一阶段不一定要多个神经网络，先用同一个 `policy.pt` 的不同 velocity command option 就能验证思路；如果某个 option 确实有效，再训练真正的 rough expert / slope expert。
+
+### 15.5 我们踩过的坑
+
+1. **不要把训练 reward 当排行榜分数。**
+   PPO reward 涨，可能只是学会在训练地形里“活着”，不代表能沿 TaskA 路线拿分。
+
+2. **不要随便洗掉官方 gait prior。**
+   从 04 初始化长训，如果 reward 没对齐，很容易把本来能走的步态洗坏。
+
+3. **不要把 RobotLab 原生 gate 通过当作 ATEC 可提交。**
+   原生 B2/B2Piper rough gate 和 ATEC TaskA 不是同一个任务。必须导出后跑 ATEC 本地评估。
+
+4. **不要让人工/规则大 yaw 长期接管。**
+   大 yaw 可以脱困，但也会把机器人拧歪。应该做短脉冲、换向、进展检测。
+
+5. **提交包结构必须干净。**
+   官网源码上传常见要求是根目录直接放 `solution.py`、`solution_rl.py`、`policy.pt`、`requirements.txt`，不要再套一层文件夹。
+
+6. **逐文件上传时文件名要清楚。**
+   我们后来约定版本名前面加数字，例如 `77-...`、`78-...`、`79-...`，方便在官网逐个核对。
+
+### 15.6 如果重新打一遍，我会怎么做
+
+如果比赛重来，我会按下面顺序推进：
+
+1. 先保护官方 baseline，建立本地评估、视频录制、提交包检查。
+2. 用 `B2Piper` 先出有效分，不急着换 `B2wPiper`、`Tron2AWheel`。
+3. 做 TaskA 手绘中线和奖励段可视化，所有失败都录视频。
+4. 冻结低层 actor，先做 high-level command tracker。
+5. rough / slope / stairs 分组采集轨迹，分别分析失败原因。
+6. 把 RobotLab / RoboGauge 当训练结构参考，而不是直接权重来源。
+7. 用 option-MoE 先验证地形切换，再考虑真正多专家神经网络。
+8. 每个候选提交至少跑 3 次 repeat gate，再决定是否线上提交。
+
+这条路线没有“玄学冲榜”的浪漫，但它更像工程比赛真正能复用的方法。
+
 ## 参考资料
 
 - ATEC 官网：[https://www.atecup.com/competitions/ATEC2026](https://www.atecup.com/competitions/ATEC2026)
 - ATEC2026 Simulation Challenge GitHub：[https://github.com/atecup/ATEC2026_Simulation_Challenge](https://github.com/atecup/ATEC2026_Simulation_Challenge)
-- ATEC2026 公开新闻稿与报名信息：BusinessWire、CUHK T Stone Robotics Institute 等公开页面
+- ATEC2026 赛事介绍：量子位《谁能通过真实世界考验？ATEC2026发起具身智能“图灵测试”》[https://www.qbitai.com/2026/04/403753.html](https://www.qbitai.com/2026/04/403753.html)
+- 算力自由 ATEC baseline 复现教程：[https://blog.gpufree.cn/blogs/ATEC2026.html](https://blog.gpufree.cn/blogs/ATEC2026.html)
 - RobotLab 项目：[https://github.com/fan-ziqi/robot_lab](https://github.com/fan-ziqi/robot_lab)
+- RoboGauge 项目：[https://github.com/wty-yy/RoboGauge](https://github.com/wty-yy/RoboGauge)
+- MoE-Loco 项目：[https://github.com/hrh6666/MoE-Loco](https://github.com/hrh6666/MoE-Loco)
+- Unitree RL Lab：[https://github.com/unitreerobotics/unitree_rl_lab](https://github.com/unitreerobotics/unitree_rl_lab)
 - 本仓库 LeHome 教程：[../LeHome/README.md](../LeHome/README.md)
