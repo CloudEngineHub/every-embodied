@@ -267,6 +267,12 @@ const homeModules = [
         doc: "17-具身世界模型/tau0-WM统一视频动作世界模型导读/README.md",
       },
       {
+        title: "GE-Sim 2.0 闭环世界模拟器",
+        copy: "理解动作条件多视角视频、状态专家和 RewardClient 如何组成可闭环调用的 learned simulator。",
+        image: "17-具身世界模型/GE-Sim-V2闭环视频世界模拟器导读/assets/gesim2_overview.png",
+        doc: "17-具身世界模型/GE-Sim-V2闭环视频世界模拟器导读/README.md",
+      },
+      {
         title: "HumanoidMimicGen 全身规划数据生成",
         copy: "学习少量人形遥操作示教如何扩成千级 loco-manipulation 数据。",
         image: "10-具身智能其他仿真工具及仿真前沿/12HumanoidMimicGen全身规划数据生成导读/assets/hmgen_benchmark.png",
