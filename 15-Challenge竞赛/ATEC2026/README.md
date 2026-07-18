@@ -509,6 +509,15 @@ code/l0_b2piper_option_moe/
 c932411fb326d732ba4f42eb74e56406b65b8bcacfbbc0a9ccaa823cfb287c84
 ```
 
+模型仓库里还额外保留了赛后清理说明和压缩后的项目记忆：
+
+```text
+archive_notes/local_cleanup_manifest.md
+archive_notes/WORKSPACE_MEMORY.md
+```
+
+清理时我们没有把本地 `robot_lab`、`competition_refs`、`runs`、`feishu_docs` 原样上传到 Hugging Face。原因是：`feishu_docs` 含飞书缓存和 token 索引文件，可能涉及协作资料权限；`robot_lab` / `competition_refs` 主要是第三方仓库、训练日志和中间产物，更适合在教程里链接原项目；真正需要长期保留的是教程、提交骨架、模型权重和 workspace memory。
+
 核心思想：
 
 ```text
