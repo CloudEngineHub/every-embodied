@@ -156,6 +156,12 @@ const homeModules = [
         doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/09-3DVLA三维空间实例增强VLA导读/README.md",
       },
       {
+        title: "PhysBrain 1.0 物理常识增强 VLA",
+        copy: "理解人类第一人称视频如何转成物理常识监督并迁移到机器人控制。",
+        image: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/10-PhysBrain物理常识增强VLA导读/assets/physbrain_system_overview.png",
+        doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/10-PhysBrain物理常识增强VLA导读/README.md",
+      },
+      {
         title: "春晚舞蹈机器人复刻",
         copy: "把动作迁移到机器人仿真，理解运动控制实践。",
         image: "assets/chunwan_robot.gif",
