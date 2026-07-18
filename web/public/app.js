@@ -198,6 +198,12 @@ const homeModules = [
         doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/15-VisualThink-VLA视觉证据推理导读/README.md",
       },
       {
+        title: "Agentic-VLA 在线适应",
+        copy: "拆解奖励合成、语言引导探索和经验记忆如何提升 VLA 在线后训练效率。",
+        image: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/16-Agentic-VLA在线适应导读/assets/agentic_vla_framework.png",
+        doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/16-Agentic-VLA在线适应导读/README.md",
+      },
+      {
         title: "春晚舞蹈机器人复刻",
         copy: "把动作迁移到机器人仿真，理解运动控制实践。",
         image: "assets/chunwan_robot.gif",
