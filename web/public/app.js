@@ -168,6 +168,12 @@ const homeModules = [
         doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/10-PhysBrain物理常识增强VLA导读/README.md",
       },
       {
+        title: "PRTS 强化学习原生 VLA",
+        copy: "理解 reward-label-free contrastive RL 如何让 VLA 具备目标可达性意识。",
+        image: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/11-PRTS强化学习原生VLA导读/assets/prts-overview-v1.png",
+        doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/11-PRTS强化学习原生VLA导读/README.md",
+      },
+      {
         title: "春晚舞蹈机器人复刻",
         copy: "把动作迁移到机器人仿真，理解运动控制实践。",
         image: "assets/chunwan_robot.gif",
