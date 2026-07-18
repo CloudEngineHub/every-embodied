@@ -225,6 +225,12 @@ const homeModules = [
         doc: "17-具身世界模型/BWM动作条件世界模型导读/README.md",
       },
       {
+        title: "τ0-WM 统一视频动作世界模型",
+        copy: "拆解 VAM、ACVS 和测试时动作评估修正如何组成 5B 级机器人世界模型。",
+        image: "17-具身世界模型/tau0-WM统一视频动作世界模型导读/assets/tau0wm_teaser.jpg",
+        doc: "17-具身世界模型/tau0-WM统一视频动作世界模型导读/README.md",
+      },
+      {
         title: "HumanoidMimicGen 全身规划数据生成",
         copy: "学习少量人形遥操作示教如何扩成千级 loco-manipulation 数据。",
         image: "10-具身智能其他仿真工具及仿真前沿/12HumanoidMimicGen全身规划数据生成导读/assets/hmgen_benchmark.png",
