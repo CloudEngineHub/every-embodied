@@ -499,6 +499,16 @@ code/l0_b2piper_option_moe/
 
 这份代码来自我们赛后整理的 `protected04 option-MoE rough escape progress gate` 版本。它不附带二进制 `policy.pt`，读者需要自己放入官方 baseline 或自己的 TorchScript actor。
 
+为了便于复现，我们也把对应的轻量模型包上传到了 Hugging Face：
+
+- Hugging Face 模型仓库：[https://huggingface.co/Datawhale/atec2026-b2piper-l0](https://huggingface.co/Datawhale/atec2026-b2piper-l0)
+
+该模型仓库包含 `policy.pt`、`solution.py`、`solution_rl.py` 和 `requirements.txt`。其中 `policy.pt` 的 SHA256 为：
+
+```text
+c932411fb326d732ba4f42eb74e56406b65b8bcacfbbc0a9ccaa823cfb287c84
+```
+
 核心思想：
 
 ```text
@@ -605,4 +615,5 @@ near-edge recovery option
 - RoboGauge 项目：[https://github.com/wty-yy/RoboGauge](https://github.com/wty-yy/RoboGauge)
 - MoE-Loco 项目：[https://github.com/hrh6666/MoE-Loco](https://github.com/hrh6666/MoE-Loco)
 - Unitree RL Lab：[https://github.com/unitreerobotics/unitree_rl_lab](https://github.com/unitreerobotics/unitree_rl_lab)
+- Datawhale ATEC2026 B2Piper L0 Hugging Face 模型包：[https://huggingface.co/Datawhale/atec2026-b2piper-l0](https://huggingface.co/Datawhale/atec2026-b2piper-l0)
 - 本仓库 LeHome 教程：[../LeHome/README.md](../LeHome/README.md)
