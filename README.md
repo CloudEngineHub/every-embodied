@@ -206,6 +206,7 @@
 | **第三阶段** | 模仿学习、大模型(VLA/VLN)、Sim2Real | 复现大模型导航VLN、OpenVLA、SmolVLA 等前沿项目，实现仿真或真实部署 |
 
   ## 🔥 News & Highlights
+  - **[2026-07-18]** 新增 [Shape Your Body 价值梯度机器人设计导读](./21-机械臂和机器人设计/04-Shape-Your-Body价值梯度机器人设计导读/README.md)：归入 `21-机械臂和机器人设计`，系统讲解 TU Darmstadt / RIG / DFKI 的 *Value Gradients for Multi-Embodiment Robot Design*，重点拆解如何先训练多具身 policy 和 value function，再冻结 critic 并通过 Value-Gradient Design Search 优化新的机器人身体参数，覆盖 URMA、direct-design critic、soft trust region、50 机器人训练集、190-1177 维连续设计空间、单机器人与 held-out robot 设计结果、设计分析热力图，以及当前项目页显示 `Code (soon)` 的开源边界。
   - **[2026-07-18]** 新增 [VisualThink-VLA 视觉证据推理导读](./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/15-VisualThink-VLA视觉证据推理导读/README.md)：归入现有 VLA 章节，系统拆解 *Visual Intermediate Reasoning for Effective and Low-Latency VLA Policies*，重点讲清为什么文本 CoT 不适合实时机器人闭环控制，VisualThink-VLA 如何用 `bbox / edge / motion / relation` 四类 routed visual evidence 替代长文本推理，覆盖 frozen VLA backbone、Visual State Composer、FullSoft teacher、soft-hard collaborative routing、VisualEvidence-Kit、754.7k VisualEvidence-Set、BridgeData V2 22.8x 延迟加速和当前 MIT 代码骨架复现入口。
   - **[2026-07-18]** 新增 [LWD 真机机群强化学习导读](./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/14-LWD真机机群强化学习导读/README.md)：归入现有 VLA 章节，系统拆解智元 AGIBOT Finch / Shanghai Innovation Institute 的 *Learning while Deploying*，重点讲清真机部署如何变成数据飞轮，覆盖 16 台 AgiBot G1 双臂机器人、8 个真实操作任务、离线到在线 replay、Distributional Implicit Value Learning、Q-learning with Adjoint Matching、flow-based VLA action head、长时程任务收益，以及当前项目页公开但尚未提供一键复现代码入口的复现边界。
   - **[2026-07-18]** 新增 [Dexora 高自由度双臂灵巧 VLA 导读](./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/13-Dexora高自由度双臂灵巧VLA导读/README.md)：归入现有 VLA 章节，系统拆解清华、智源、港大、北大等团队的 ICRA 2026 Manipulation and Locomotion 最佳论文候选工作，重点讲清 Dexora 为什么是 36-DoF 双臂双灵巧手 VLA，覆盖外骨骼 + Apple Vision Pro 混合遥操作、MuJoCo 数字孪生、100K 级仿真轨迹、10K+ 真实遥操作 episodes、discriminator-guided quality-aware diffusion-transformer 训练、双手灵巧任务、跨本体泛化和当前代码/数据公开入口。
@@ -295,7 +296,7 @@
 | **1. 具身智能概述** | [定义背景、发展历程、未来趋势](./01-具身智能概述/01具身智能概述.md) | ✅    |
 | **2. 机器人学基础** | [运动学(DH参数)](<./02-机器人基础和控制、手眼协调/02机器人运动学与 DH 参数.md>)、[动力学](02-机器人基础和控制、手眼协调/03机器人动力学.md)、[坐标变换](02-机器人基础和控制、手眼协调/01机器人空间描述与坐标变换.md) | ✅    |
 | **3. 硬件与电子**   | [地瓜开发板实战](03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/01RDKX5超新手入门教程.md)、[LeRobot遥操作](03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/03RDK-X5连接lerobot机械臂进行遥操作.md)、[传感器选型](03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/06传感器选型与数据采集.md)、[执行器原理](03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/05执行器原理与选型.md)、阿加犀开发板实战 | ✅    |
-| **4. 软件基础设施** | ROS/ROS2 通信机制、[Build123d / Text-to-CAD / ForgeCAD 代码建模](./21-机械臂和机器人设计/README.md)、AutoCAD/SolidWorks 基础                   | 🚧    |
+| **4. 软件基础设施** | ROS/ROS2 通信机制、[Build123d / Text-to-CAD / ForgeCAD / Shape Your Body 机器人设计](./21-机械臂和机器人设计/README.md)、AutoCAD/SolidWorks 基础                   | 🚧    |
 
   ### 二、核心技术 - 给机器人装上大脑
 

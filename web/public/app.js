@@ -305,6 +305,12 @@ const homeModules = [
         image: "assets/plane.gif",
         doc: "13-其他前沿项目复现/无人机大模型+Groundingdino实践/无人机多模态大模型.md",
       },
+      {
+        title: "Shape Your Body 价值梯度机器人设计",
+        copy: "理解多具身价值函数如何通过梯度优化机器人身体参数。",
+        image: "21-机械臂和机器人设计/04-Shape-Your-Body价值梯度机器人设计导读/assets/hero.png",
+        doc: "21-机械臂和机器人设计/04-Shape-Your-Body价值梯度机器人设计导读/README.md",
+      },
     ],
   },
 ];
