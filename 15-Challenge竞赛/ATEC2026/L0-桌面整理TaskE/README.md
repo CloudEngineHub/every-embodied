@@ -24,6 +24,15 @@ code/act_seed1_best_submission/
 
 注意：`policy_act.pt` 未放入 GitHub，需要从本地提交包或 Hugging Face 模型仓库下载后放到同一目录。
 
+## HF 复现资源入口
+
+本地 ATEC 仿真副本已清理，复现所需的大文件统一从 Hugging Face 获取：
+
+- 最终模型权重：[Datawhale/atec2026-task-e-act-seed1-best](https://huggingface.co/Datawhale/atec2026-task-e-act-seed1-best)
+- 完整 Task E 复现仓库：[Datawhale/atec2026-task-e-reproducibility](https://huggingface.co/datasets/Datawhale/atec2026-task-e-reproducibility)
+
+复现仓库包含 `source/`、`scripts/`、`demo/`、`atec_robot_model/`、`third_party/GraspGen/` 以及 `code/task_e_collection/`。过滤后的 HDF5 位于 `data/` 分片目录，使用仓库根目录的 `RESTORE_FILTERED_DATASET.sh` 恢复。
+
 ## 最终分数与提交包
 
 | 项目 | 结果 |
@@ -35,11 +44,7 @@ code/act_seed1_best_submission/
 | 本地历史现象 | 单次可到 `18`，但多 seed 方差大 |
 | 是否满分稳定 | 否 |
 
-最终保护包来源：
-
-```text
-/home/ubuntu/Documents/01Proj/13atec/ATEC2026_Simulation_Challenge/submissions/task_e_act_seed1_best_20260608_upload
-```
+最终保护包来源：Hugging Face 模型仓库中的 `task_e_act_seed1_best_20260608_upload.zip`。
 
 关键 SHA256：
 

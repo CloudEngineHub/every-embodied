@@ -38,6 +38,14 @@ ATEC2026/
 - 官方仿真挑战仓库：[https://github.com/atecup/ATEC2026_Simulation_Challenge](https://github.com/atecup/ATEC2026_Simulation_Challenge)
 - Every Embodied 仓库：[https://github.com/datawhalechina/every-embodied](https://github.com/datawhalechina/every-embodied)
 
+## Hugging Face 复现资源
+
+ATEC2026 Task E 的大文件、完整源码和机器人资产不放在 GitHub 中，请从以下 Hugging Face 仓库获取：
+
+- 最终 ACT 模型：[Datawhale/atec2026-task-e-act-seed1-best](https://huggingface.co/Datawhale/atec2026-task-e-act-seed1-best)
+- Task E 完整复现仓库（源码、Piper 模型、GraspGen、采集脚本、数据分片和日志）：[Datawhale/atec2026-task-e-reproducibility](https://huggingface.co/datasets/Datawhale/atec2026-task-e-reproducibility)
+- 数据集恢复入口：在复现仓库中运行 `RESTORE_FILTERED_DATASET.sh`，再按 `SHA256_FILTERED_ORIGINAL.txt` 校验。
+
 ## 模型权重
 
 GitHub 目录默认不直接存放大权重。权重建议放到 Hugging Face，并在对应子目录 README 中维护链接和 SHA256。
