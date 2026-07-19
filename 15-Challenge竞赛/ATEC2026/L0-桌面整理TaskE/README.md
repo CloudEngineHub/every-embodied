@@ -199,13 +199,40 @@ https://huggingface.co/Datawhale/atec2026-task-e-act-seed1-best/commit/4583bda9e
 
 上传命令、文件清单和 SHA256 见 `hf_model_package/README.md`。
 
+复现用数据集与日志单独放在 Hugging Face Dataset 仓库：
+
+```text
+https://huggingface.co/datasets/Datawhale/atec2026-task-e-reproducibility
+```
+
+其中 `trajectory_filtered.hdf5` 约 33 GiB，为 100 条三物体 `3,2,1` calibrated-servo 成功演示经过 ACT 过滤后的训练数据。为提高网页和 CLI 传输稳定性，文件被拆成 337 个 100 MiB 分片：
+
+```text
+data/final_100demos_filtered_split_100m/trajectory_filtered.hdf5.part-0000
+...
+data/final_100demos_filtered_split_100m/trajectory_filtered.hdf5.part-0336
+```
+
+恢复方式：
+
+```bash
+bash RESTORE_FILTERED_DATASET.sh
+sha256sum -c SHA256_FILTERED_ORIGINAL.txt
+```
+
+原始完整 filtered HDF5 的 SHA256：
+
+```text
+4b85980e72b8e76261ad037bfba97b4795210e3f77cdb5b71479846b9230ac02
+```
+
 ## 能否安全删除本地内容
 
 可以删，但建议按顺序：
 
 1. 确认本目录已经 push 到 GitHub；
-2. 确认 Hugging Face 已上传 `policy_act.pt` 和提交 zip；
-3. 确认 SHA256 对得上；
+2. 确认 Hugging Face 已上传 `policy_act.pt`、提交 zip、复现数据集分片和日志；
+3. 确认模型 SHA256、分片 SHA256、恢复后 filtered HDF5 SHA256 都对得上；
 4. 保留本目录和 `docs/WORKSPACE_MEMORY_TaskE_完整调试记录.md`；
 5. 再删除 `/home/ubuntu/Documents/01Proj/13atec/ATEC2026_Simulation_Challenge` 下的大型训练输出、datasets、runs、logs/videos、openpi checkpoints。
 

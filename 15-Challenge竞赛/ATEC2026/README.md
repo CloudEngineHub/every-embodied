@@ -43,7 +43,7 @@ ATEC2026/
 GitHub 目录默认不直接存放大权重。权重建议放到 Hugging Face，并在对应子目录 README 中维护链接和 SHA256。
 
 - `L0-机器人徒步/` 已记录 Hugging Face 模型仓库链接。
-- `L0-桌面整理TaskE/` 已提供 HF-ready 清单和上传命令；需要 Datawhale Hugging Face 账号或 token 才能真正上传。
+- `L0-桌面整理TaskE/` 已记录 Hugging Face 模型仓库和复现数据集仓库；数据集仓库包含 filtered HDF5 的 100 MiB 分片、日志归档、恢复脚本和 SHA256。
 
 ## 本地清理建议
 
