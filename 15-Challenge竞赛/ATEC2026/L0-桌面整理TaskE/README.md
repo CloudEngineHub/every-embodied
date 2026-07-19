@@ -205,6 +205,8 @@ https://huggingface.co/Datawhale/atec2026-task-e-act-seed1-best/commit/4583bda9e
 https://huggingface.co/datasets/Datawhale/atec2026-task-e-reproducibility
 ```
 
+上传状态：2026-07-19 已完成远端校验，337/337 个分片齐全；`README.md`、恢复脚本、SHA256 清单和日志归档均已在仓库中。
+
 其中 `trajectory_filtered.hdf5` 约 33 GiB，为 100 条三物体 `3,2,1` calibrated-servo 成功演示经过 ACT 过滤后的训练数据。为提高网页和 CLI 传输稳定性，文件被拆成 337 个 100 MiB 分片：
 
 ```text
