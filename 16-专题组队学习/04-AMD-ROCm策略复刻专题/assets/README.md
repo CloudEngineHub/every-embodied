@@ -31,5 +31,5 @@ python code/generate_tutorial_assets.py --source-root "$OUTPUT_ROOT"
 | `pi0_strict_input_progress.png` | pi0 strict-input 固定场景与随机环境对照图 |
 | `pnp_four_view_strict_success.mp4` | Agent/Egocentric/Top/Side 四视角严格成功实测视频 |
 | `pnp_four_view_strict_success_sequence.jpg` | 四视角视频 5 个时刻的关键帧序列 |
-| `aup_cloud_guide/` | AUP Learning Cloud JupyterHub / Code Server 使用指南截图 |
-| `amd_radeon_cloud/` | AMD Radeon Cloud 开发者云官方教程图片与 AMD ROCm Embodied AI Policy Replication 工作区截图 |
+| `aup_cloud_guide/` | AUP Learning Cloud JupyterHub / Code Server 使用指南截图（优先入口） |
+| `amd_radeon_cloud/` | AMD Radeon Cloud 开发者云官方教程图片与 AMD ROCm Embodied AI Policy Replication 工作区截图（备用入口） |

@@ -2,7 +2,7 @@
 
 本专题在 AMD Ryzen AI MAX+ / Radeon GPU 设备上复刻 LeRobot、ACT、SmolVLA 和 pi_0。它不是单纯的环境安装笔记，也不再假设模型已经训练完成：从设备资源检查开始，先完成 MuJoCo 键盘采集、LeRobot 数据审计、三类模型的 smoke 与正式训练，再进入闭环部署、ACT DAgger、SmolVLA 加权采样、pi_0 尾段诊断和实验报告整理。
 
-如果暂时没有本地 AMD 设备，也可以先参考 [AMD 开发者云 + AUP Learning Cloud 使用指南](./README_00_AMD_AUP免费云平台使用指南.md)，用 Radeon Cloud、远程 JupyterHub 或 Code Server 完成浏览器端开发和本专题的环境准备。两种平台的硬件、缓存和模型下载方式不同，指南中已分开说明；具体额度和开通方式以平台当前页面或管理员通知为准。
+如果暂时没有本地 AMD 设备，也可以先参考 [AUP Learning Cloud（优先）+ AMD 开发者云备用使用指南](./README_00_AMD_AUP免费云平台使用指南.md)，优先用 AUP Learning Cloud 的远程 JupyterHub 或 Code Server 完成本专题的开发、训练和评估；开发者云作为备用入口，用于快速验证 ROCm 模板。两种平台的硬件、缓存和使用方式不同，指南中已分开说明；具体额度和开通方式以平台当前页面或管理员通知为准。
 
 如果要把本专题组织成 Datawhale 组队学习活动，可以先参考：[00_组队学习招募参考稿.md](./00_组队学习招募参考稿.md)。其中的开营时间、领学员、报名入口和二维码需要在正式发布前替换。
 
@@ -51,7 +51,7 @@ Task 11 已内置一条约 2 MB 的严格成功回放，不需要模型权重，
 
 | 任务 | Markdown 概述 | Notebook 实操 |
 | --- | --- | --- |
-| 00 | [AMD 开发者云 + AUP Learning Cloud 使用指南](./README_00_AMD_AUP免费云平台使用指南.md) | - |
+| 00 | [AUP Learning Cloud（优先）+ AMD 开发者云备用使用指南](./README_00_AMD_AUP免费云平台使用指南.md) | - |
 | 01 | [AMD ROCm 设备与环境确认](./README_01_AMD_ROCm设备与环境确认.md) | [01_device_env_check.ipynb](./notebooks/01_device_env_check.ipynb) |
 | 02 | [物理成功评估与视频复核](./README_02_物理成功评估与视频复核.md) | [02_physical_success_review.ipynb](./notebooks/02_physical_success_review.ipynb) |
 | 03 | [ACT 在 ROCm 上的迁移与 DAgger 诊断](./README_03_ACT_ROCm迁移与DAgger诊断.md) | [03_act_dagger_diagnostics.ipynb](./notebooks/03_act_dagger_diagnostics.ipynb) |
