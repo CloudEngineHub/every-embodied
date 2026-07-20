@@ -203,6 +203,64 @@ def make_pi0_policy_for_dataset(device: str, policy_path: Path, repo_id: str, da
     return policy
 
 
+class Pi05PolicyAdapter:
+    def __init__(self, policy, preprocessor, postprocessor):
+        self.policy = policy
+        self.preprocessor = preprocessor
+        self.postprocessor = postprocessor
+        self.config = policy.config
+
+    def reset(self) -> None:
+        self.policy.reset()
+
+    @torch.no_grad()
+    def select_action(self, batch: dict) -> torch.Tensor:
+        processed = self.preprocessor(batch)
+        action = self.policy.select_action(processed)
+        return self.postprocessor(action)
+
+
+def make_pi05_policy_for_dataset(
+    device: str,
+    policy_path: Path,
+    repo_id: str,
+    dataset_root: Path,
+    n_action_steps: int | None = None,
+):
+    os.environ.setdefault("HF_HOME", str(Path.home() / ".cache" / "huggingface"))
+    os.environ.setdefault("HF_DATASETS_CACHE", str(Path.home() / ".cache" / "huggingface" / "datasets_pi05"))
+    os.environ.setdefault("HF_HUB_OFFLINE", "1")
+    os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
+
+    from lerobot.configs.policies import PreTrainedConfig
+    from lerobot.datasets.lerobot_dataset import LeRobotDatasetMetadata
+    from lerobot.policies.pi05 import PI05Policy, make_pi05_pre_post_processors
+
+    metadata = LeRobotDatasetMetadata(repo_id, root=dataset_root)
+    config = PreTrainedConfig.from_pretrained(policy_path)
+    if config.type != "pi05":
+        raise ValueError(f"Expected a Pi0.5 checkpoint, got policy type {config.type!r}")
+    config.device = device
+    if n_action_steps is not None:
+        if n_action_steps <= 0 or n_action_steps > config.chunk_size:
+            raise ValueError(
+                f"Pi0.5 execution horizon must be in 1..{config.chunk_size}, got {n_action_steps}"
+            )
+        config.n_action_steps = n_action_steps
+    policy = PI05Policy.from_pretrained(
+        policy_path,
+        config=config,
+        local_files_only=True,
+        strict=True,
+    )
+    policy.eval()
+    preprocessor, postprocessor = make_pi05_pre_post_processors(
+        config,
+        dataset_stats=metadata.stats,
+    )
+    return Pi05PolicyAdapter(policy, preprocessor, postprocessor)
+
+
 def expected_state_dim(policy) -> int | None:
     config = getattr(policy, "config", None)
     input_features = getattr(config, "input_features", None)
@@ -222,8 +280,8 @@ def expected_state_dim(policy) -> int | None:
 def assert_fair_vla_policy(args: argparse.Namespace, policy) -> None:
     if not args.fair_vla:
         return
-    if args.policy_type != "pi0":
-        raise ValueError("--fair-vla is only defined for Pi0 VLA evaluation")
+    if args.policy_type not in {"pi0", "pi05"}:
+        raise ValueError("--fair-vla is only defined for Pi0/Pi0.5 VLA evaluation")
     dim = expected_state_dim(policy)
     if dim != 6:
         raise ValueError(
@@ -1071,17 +1129,26 @@ def action_for_environment(action: np.ndarray, env, args: argparse.Namespace) ->
     policy_action = np.asarray(action, dtype=np.float32).reshape(-1)[:7].copy()
     env_action = policy_action.copy()
     info: dict = {"pi0_action_mode": args.pi0_action_mode}
-    if args.policy_type == "pi0" and args.pi0_action_mode == "joint_delta":
+    if args.policy_type in {"pi0", "pi05"} and args.pi0_action_mode == "joint_delta":
         state = np.asarray(env.get_joint_state()[:6], dtype=np.float32).reshape(-1)
         env_action[:6] = state[:6] + policy_action[:6]
         env_action[6] = policy_action[6]
         info["joint_state"] = round_list(state, 5)
         info["policy_delta_action"] = round_list(policy_action, 5)
         info["env_action"] = round_list(env_action, 5)
-    elif args.policy_type == "pi0" and args.pi0_action_mode == "eef_delta":
+    elif args.policy_type in {"pi0", "pi05"} and args.pi0_action_mode == "eef_delta":
         info["policy_eef_delta_action"] = round_list(policy_action, 5)
+        if args.eef_delta_max_step is not None:
+            if args.eef_delta_max_step <= 0:
+                raise ValueError("--eef-delta-max-step must be positive")
+            env_action[:3] = np.clip(
+                env_action[:3],
+                -float(args.eef_delta_max_step),
+                float(args.eef_delta_max_step),
+            )
+            info["eef_delta_max_step"] = float(args.eef_delta_max_step)
         info["env_action"] = round_list(env_action, 5)
-    elif args.policy_type == "pi0" and args.pi0_action_mode == "eef_abs":
+    elif args.policy_type in {"pi0", "pi05"} and args.pi0_action_mode == "eef_abs":
         current_tcp = np.asarray(env.env.get_p_body("tcp_link")[:3], dtype=np.float32).reshape(3)
         target_tcp = policy_action[:3].copy()
         env_action = np.zeros(7, dtype=np.float32)
@@ -1364,7 +1431,7 @@ def select_pi0_action(
 
 
 def configure_env_action_space(env, args: argparse.Namespace) -> None:
-    if args.policy_type == "pi0" and args.pi0_action_mode in ("eef_delta", "eef_abs"):
+    if args.policy_type in {"pi0", "pi05"} and args.pi0_action_mode in ("eef_delta", "eef_abs"):
         from mujoco_env.transforms import rpy2r
 
         env.action_type = "eef_pose"
@@ -1387,7 +1454,11 @@ def rollout(
     video_writer = None
     video_path: Path | None = None
     if env is None:
-        env = SimpleEnv2("./asset/example_scene_y2.xml", action_type="joint_angle")
+        env = SimpleEnv2(
+            "./asset/example_scene_y2.xml",
+            action_type="joint_angle",
+            position_profile=args.position_profile,
+        )
     try:
         if args.hard_reset_sim_data:
             hard_reset_sim_data(env)
@@ -1581,13 +1652,19 @@ def rollout(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--policy-type", choices=["smolvla", "pi0"], default="smolvla")
+    parser.add_argument("--policy-type", choices=["smolvla", "pi0", "pi05"], default="smolvla")
     parser.add_argument("--policy-path", type=Path, required=True)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--episodes", type=int, default=5)
     parser.add_argument("--seed-start", type=int, default=0)
     parser.add_argument("--seeds", type=int, nargs="*", default=None)
     parser.add_argument("--instruction", default=None)
+    parser.add_argument(
+        "--position-profile",
+        choices=["legacy", "pnp_generalization_v1"],
+        default="legacy",
+        help="Object and plate placement distribution. Default preserves the original environment.",
+    )
     parser.add_argument("--hz", type=float, default=20.0)
     parser.add_argument("--max-action-steps", type=int, default=300)
     parser.add_argument("--physical-min-lift", type=float, default=0.03)
@@ -1624,7 +1701,7 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=1,
         help=(
-            "For Pi0 only: sample this many full action chunks from the same observation when the "
+            "For Pi0/Pi0.5: sample this many full action chunks from the same observation when the "
             "policy action queue is empty, then reduce them before execution. This is a fair "
             "inference-time denoising diagnostic because it uses no target/plate/phase state."
         ),
@@ -1677,7 +1754,7 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=0,
         help=(
-            "For Pi0 only: after sampling a full action chunk, execute at most this many "
+            "For Pi0/Pi0.5: after sampling a full action chunk, execute at most this many "
             "actions before forcing a new visual observation/action chunk. 0 keeps the "
             "policy checkpoint's native n_action_steps."
         ),
@@ -1687,7 +1764,7 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=0,
         help=(
-            "For Pi0 only: skip this many leading actions from each freshly sampled chunk before "
+            "For Pi0/Pi0.5: skip this many leading actions from each freshly sampled chunk before "
             "execution. This is a strict-input waypoint-horizon diagnostic; it uses only the "
             "policy's own action chunk. 0 preserves the historical behavior."
         ),
@@ -1726,7 +1803,7 @@ def parse_args() -> argparse.Namespace:
         choices=["absolute", "joint_delta", "eef_delta", "eef_abs"],
         default="absolute",
         help=(
-            "For Pi0 only: interpret policy action as absolute joint target, "
+            "For Pi0/Pi0.5: interpret policy action as absolute joint target, "
             "joint delta plus absolute gripper, EEF/TCP delta plus absolute gripper, "
             "or next TCP xyz target plus absolute gripper."
         ),
@@ -1736,6 +1813,15 @@ def parse_args() -> argparse.Namespace:
         type=float,
         default=0.004,
         help="Maximum per-axis TCP delta used when --pi0-action-mode=eef_abs.",
+    )
+    parser.add_argument(
+        "--eef-delta-max-step",
+        type=float,
+        default=None,
+        help=(
+            "Optional fixed per-axis controller limit for eef_delta actions. "
+            "This does not read target/plate state or dataset statistics."
+        ),
     )
     parser.add_argument(
         "--pi0-phase-state",
@@ -2007,6 +2093,14 @@ def main() -> int:
             args.dataset_repo_id,
             args.dataset_root,
         )
+    elif args.policy_type == "pi05":
+        policy = make_pi05_policy_for_dataset(
+            args.device,
+            args.policy_path,
+            args.dataset_repo_id,
+            args.dataset_root,
+            n_action_steps=args.pi0_exec_chunk_steps if args.pi0_exec_chunk_steps > 0 else None,
+        )
     else:
         policy = make_smolvla_policy(args.device, args.policy_path)
     assert_fair_vla_policy(args, policy)
@@ -2018,7 +2112,11 @@ def main() -> int:
             if env is None or args.fresh_env_per_episode:
                 if env is not None:
                     close_env(env)
-                env = SimpleEnv2("./asset/example_scene_y2.xml", action_type="joint_angle")
+                env = SimpleEnv2(
+                    "./asset/example_scene_y2.xml",
+                    action_type="joint_angle",
+                    position_profile=args.position_profile,
+                )
             row = rollout(args, policy, seed, env=env, scheduled_states=phase_schedule_states.get(int(seed)))
             results.append(row)
             with args.output_jsonl.open("a", encoding="utf-8") as f:
@@ -2044,6 +2142,7 @@ def main() -> int:
         "physical_max_plate_xy_displacement": args.physical_max_plate_xy_displacement,
         "physical_stable_place_steps": args.physical_stable_place_steps,
         "fixed_env_seed": args.fixed_env_seed,
+        "position_profile": args.position_profile,
         "fair_vla": bool(args.fair_vla),
         "hard_reset_sim_data": bool(args.hard_reset_sim_data),
         "fresh_env_per_episode": bool(args.fresh_env_per_episode),
@@ -2052,6 +2151,7 @@ def main() -> int:
         "pi0_action_samples": int(args.pi0_action_samples),
         "pi0_action_sample_reducer": args.pi0_action_sample_reducer,
         "pi0_exec_chunk_steps": int(args.pi0_exec_chunk_steps),
+        "eef_delta_max_step": args.eef_delta_max_step,
         "pi0_action_chunk_offset": int(args.pi0_action_chunk_offset),
         "pi0_sample_log_jsonl": str(args.pi0_sample_log_jsonl) if args.pi0_sample_log_jsonl else None,
         "pre_action_physics_steps": int(args.pre_action_physics_steps),

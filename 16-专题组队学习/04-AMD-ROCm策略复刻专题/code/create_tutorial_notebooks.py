@@ -1784,6 +1784,29 @@ NOTEBOOKS["11_mujoco_closed_loop_deploy.ipynb"] = [
     ),
     code(COMMON_SETUP),
     code(DISPLAY_HELPERS),
+    md(
+        """
+        ## 零训练成功预览：先看正确行为
+
+        这一格不加载模型、不启动 MuJoCo，也不会消耗训练额度。它直接显示仓库内置的四视角严格成功回放，先确认接近、夹取、抬升、搬运、释放和稳定放置的正确顺序。视频来自固定环境上的 `pi0 + visual/history learned head`，不是 raw pi0，也不能代表随机位置泛化。
+        """
+    ),
+    code(
+        r'''
+SUCCESS_PREVIEW = ASSET_DIR / "pnp_four_view_strict_success.mp4"
+if not SUCCESS_PREVIEW.exists():
+    raise FileNotFoundError(f"缺少成功预览视频：{SUCCESS_PREVIEW}")
+
+try:
+    from IPython.display import Video
+except ImportError:
+    print("当前是纯 Python 执行器；在 Jupyter 中运行本单元格即可嵌入播放视频。")
+else:
+    display(Video(filename=str(SUCCESS_PREVIEW), embed=True, html_attributes="controls muted"))
+
+print("严格成功预览：", SUCCESS_PREVIEW)
+'''
+    ),
     code(TRAINING_HELPERS),
     code(ROLLOUT_HELPERS),
     md("## Checkpoint 1：选择模型、数据统计和评估 seed"),

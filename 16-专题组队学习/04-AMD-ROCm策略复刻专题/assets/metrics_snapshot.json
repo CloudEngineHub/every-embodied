@@ -63,7 +63,27 @@
       "rate": 0.43333333333333335
     },
     {
-      "label": "best DAgger",
+      "label": "stable61 fallback current",
+      "success": 7,
+      "total": 30,
+      "rate": 0.23333333333333334
+    },
+    {
+      "label": "protected repair15 current exact",
+      "success": 15,
+      "total": 30,
+      "rate": 0.5,
+      "panel_breakdown": "3/10 + 4/10 + 8/10",
+      "model_sha256": "b9b178377995a674a06bc5d1500c8e7e7fc5d02649268855f892b3987bf5bfeb4"
+    },
+    {
+      "label": "protected DAgger current exact",
+      "success": 2,
+      "total": 30,
+      "rate": 0.06666666666666667
+    },
+    {
+      "label": "historical best DAgger summary (unverified)",
       "success": 17,
       "total": 30,
       "rate": 0.5666666666666667
@@ -161,7 +181,14 @@
     "note": "pi0 + finisher is a diagnostic hybrid result, not pure pi0 raw success; the old 30-seed panels changed policy sampling but the environment stayed at seed 0, so they are fixed-scene stability evidence rather than spatial generalization"
   },
   "best_summary": {
-    "act_best_dagger": {
+    "act_stable61_fallback": {
+      "physical_success": "7/30"
+    },
+    "act_protected_dagger_current_exact": {
+      "physical_success": "2/30",
+      "model_sha256": "3f98b40c5d0557ea6b4fb171b47ebfced0db60adc11199e56ea94db3efa4a7f0"
+    },
+    "act_historical_summary_unverified": {
       "physical_success": "17/30"
     },
     "smolvla_weighted_blue2_step500_expand30": {
@@ -202,6 +229,12 @@
     },
     "pi0_visual_history_gru_random_env_gate": {
       "physical_success": "1/4"
+    },
+    "act_protected_repair15_current_exact": {
+      "physical_success": "15/30",
+      "panel_breakdown": "3/10 + 4/10 + 8/10",
+      "model_sha256": "b9b178377995a674a06bc5d1500c8e7e7fc5d02649268855f892b3987bf5bfeb4",
+      "artifact": "AMD395 protected/act_stable61_to_dagger_nomemleak_step1500_strict15of30"
     }
   }
 }
