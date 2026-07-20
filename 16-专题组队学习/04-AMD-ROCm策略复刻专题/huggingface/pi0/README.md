@@ -18,6 +18,7 @@ This is the protected Pi0 fine-tuning checkpoint used in the Datawhale Every Emb
 - Hard subset: `6/8`
 - Task: MuJoCo mug-to-plate pick and place
 - Recipe: clean-success-only data, blue-task reweighting, protected continuation to the selected checkpoint
+- Model SHA256: `44aa854a5f084d39ba375d1ffe951ca0c8b6d147bacdb1a9e637ed1725514eeb`
 
 This is a fine-tuned Pi0 checkpoint. The result depends on the matching `eef_abs` action bridge, 8-D state (`6DoF + gripper + timestamp`), action-chunk execution, normalization statistics, camera order, and strict physical-success predicate. It must not be described as raw Pi0 zero-shot success.
 

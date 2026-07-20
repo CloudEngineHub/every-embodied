@@ -20,6 +20,7 @@ This is the protected SmolVLA checkpoint used by the Datawhale Every Embodied AM
 - Task: MuJoCo mug-to-plate pick and place
 - Training recipe: weighted blue sampling, selected checkpoint at step 500
 - Hardware path: AMD ROCm teaching environment
+- Model SHA256: `9e372a2babf79ec9530ecf75719cb62f02974485278751333867cedb5aa744fa`
 
 The score is reported with the tutorial's strict physical predicate. It is not a zero-shot claim: this is a fine-tuned checkpoint and must be loaded with the matching environment, action normalization, camera order, and instruction format.
 

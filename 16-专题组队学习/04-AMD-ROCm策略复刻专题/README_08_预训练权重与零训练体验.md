@@ -4,6 +4,16 @@
 
 正式权重统一发布到 Datawhale Hugging Face 组织。课程只提供经过复核的模型文件、配置、SHA256、评估 JSON 和加载说明；不上传优化器状态、完整训练缓存或个人机器路径。学习者可以先下载权重观看成功回放，再选择从零训练。
 
+当前计划的模型仓库为：
+
+```text
+Datawhale/every-embodied-smolvla-mujoco-pnp
+Datawhale/every-embodied-pi0-mujoco-pnp
+Datawhale/every-embodied-act-mujoco-pnp
+```
+
+模型文件和模型卡已经整理在 `huggingface/`，并完成 SHA256 记录。正式链接需要由 Datawhale Hugging Face 组织管理员创建或授予模型仓库写权限后写入；在此之前不要把个人仓库当作课程正式入口。
+
 ## 零训练成功预览
 
 打开 [11_mujoco_closed_loop_deploy.ipynb](./notebooks/11_mujoco_closed_loop_deploy.ipynb)，依次运行环境定位和“零训练成功预览”单元格。Notebook 会用 `IPython.display.Video` 显示：
