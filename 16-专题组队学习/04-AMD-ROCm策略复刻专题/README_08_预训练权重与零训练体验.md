@@ -12,6 +12,31 @@
 
 三个仓库均包含模型卡、配置文件、评估摘要和 `weights/model.safetensors`。本地 `huggingface/` 目录保留同一份发布清单与模型卡，便于后续维护；不上传优化器状态、完整训练缓存或个人机器路径。
 
+## 重新下载与复现
+
+本地清理历史 checkpoint 后，学习者可以直接从 Datawhale Hugging Face 仓库恢复课程权重。下面只下载推理和评估所需文件，不下载优化器状态：
+
+```bash
+export HF_HOME=/data/cache/huggingface
+
+# SmolVLA
+hf download Datawhale/every-embodied-smolvla-mujoco-pnp \
+  weights/model.safetensors weights/config.json weights/train_config.json \
+  --repo-type model --local-dir "$HF_HOME/every-embodied-smolvla"
+
+# Pi0
+hf download Datawhale/every-embodied-pi0-mujoco-pnp \
+  weights/model.safetensors weights/config.json weights/train_config.json \
+  --repo-type model --local-dir "$HF_HOME/every-embodied-pi0"
+
+# ACT
+hf download Datawhale/every-embodied-act-mujoco-pnp \
+  weights/model.safetensors weights/config.json \
+  --repo-type model --local-dir "$HF_HOME/every-embodied-act"
+```
+
+下载后，将对应的 `weights/` 目录通过 Notebook 的 `SMOLVLA_EVAL_POLICY_PATH` / `SMOLVLA_POLICY_PATH`、`PI0_EVAL_POLICY_PATH` / `PI0_POLICY_PATH` 或 `ACT_EVAL_POLICY_PATH` / `ACT_POLICY_PATH` 传入，即可进行零训练加载和闭环评估；要从保护 recipe 继续训练时，再使用 `PI0_PRETRAINED_PATH_OVERRIDE` 或 `POLICY_PRETRAINED_PATH_OVERRIDE`。正式发布的权重 SHA256 已记录在 `huggingface/upload_manifest.json`。
+
 ## 零训练成功预览
 
 打开 [11_mujoco_closed_loop_deploy.ipynb](./notebooks/11_mujoco_closed_loop_deploy.ipynb)，依次运行环境定位和“零训练成功预览”单元格。Notebook 会用 `IPython.display.Video` 显示：
