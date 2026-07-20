@@ -4,15 +4,13 @@
 
 正式权重统一发布到 Datawhale Hugging Face 组织。课程只提供经过复核的模型文件、配置、SHA256、评估 JSON 和加载说明；不上传优化器状态、完整训练缓存或个人机器路径。学习者可以先下载权重观看成功回放，再选择从零训练。
 
-当前计划的模型仓库为：
+当前模型仓库已创建并完成权重上传：
 
-```text
-Datawhale/every-embodied-smolvla-mujoco-pnp
-Datawhale/every-embodied-pi0-mujoco-pnp
-Datawhale/every-embodied-act-mujoco-pnp
-```
+- [SmolVLA：every-embodied-smolvla-mujoco-pnp](https://huggingface.co/Datawhale/every-embodied-smolvla-mujoco-pnp)
+- [Pi0：every-embodied-pi0-mujoco-pnp](https://huggingface.co/Datawhale/every-embodied-pi0-mujoco-pnp)
+- [ACT：every-embodied-act-mujoco-pnp](https://huggingface.co/Datawhale/every-embodied-act-mujoco-pnp)
 
-模型文件和模型卡已经整理在 `huggingface/`，并完成 SHA256 记录。正式链接需要由 Datawhale Hugging Face 组织管理员创建或授予模型仓库写权限后写入；在此之前不要把个人仓库当作课程正式入口。
+三个仓库均包含模型卡、配置文件、评估摘要和 `weights/model.safetensors`。本地 `huggingface/` 目录保留同一份发布清单与模型卡，便于后续维护；不上传优化器状态、完整训练缓存或个人机器路径。
 
 ## 零训练成功预览
 
