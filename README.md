@@ -37,7 +37,7 @@
     <img src="./assets/shanghaiailab.png" height="45" style="margin: 0 10px;"> 
     <img src="./assets/damo1.png" height="52" style="margin: 0 10px;"> 
     <img src="./assets/damo2.png" height="50" style="margin: 0 10px;"> 
-    <img src="./assets/amd-logo.svg" height="30" style="margin: 0 12px;" alt="AMD">
+    <img src="./assets/aup-logo.svg" height="34" style="margin: 0 12px;" alt="AUP — AMD University Program">
     <img src="./assets/rocm-logo.png" height="34" style="margin: 0 12px;" alt="ROCm">
   </div>
 
