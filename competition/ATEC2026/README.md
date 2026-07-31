@@ -25,6 +25,7 @@
 | [问题清单与解决方案](./docs/02_问题清单与解决方案.md) | 比赛中遇到的场景、相机、得分、训练、提交和复现问题 |
 | [公开方案与 Logic-TARS 解读](./docs/03_公开方案与Logic-TARS.md) | 公开仓库分级、Logic-TARS 的 Task D 方案和迁移边界 |
 | [复现、HF 与 GitHub 发布](./docs/04_复现、HF与GitHub发布.md) | 目录规划、smoke test、权重发布、公开前检查 |
+| [归档对账与本地清理](./docs/05_归档对账与本地清理.md) | 上传映射、脱敏处理、删除清单和最终复现边界 |
 | [中文 Workspace Memory](./docs/WORKSPACE_MEMORY_ATEC2026_赛后复盘.md) | 后续继续工作时需要保留的事实、假设和实验纪律 |
 
 轻量代码在 [code/](./code/)；外部方案索引在 [references/](./references/)。
