@@ -61,4 +61,4 @@ bash code/fetch_reference_repos.sh "${TMPDIR:-.reference-cache}"
 
 ## Hugging Face
 
-公开归档说明见 [`hf/README.md`](./hf/README.md)。HF 数据集仓库只承载轻量复现材料和发布清单，不上传官方资产、私有权重和未经授权的外部大文件。
+公开归档说明见 [`hf/README.md`](./hf/README.md)。HF 数据集仓库承载本专题文档、发布清单、经检查的官方公开源码快照、调试媒体和必要的历史资料；不上传私有权重、私有日志和未经授权的外部大文件。完整上传映射与本地删除清单见 [归档对账与本地清理](../docs/05_归档对账与本地清理.md)。
