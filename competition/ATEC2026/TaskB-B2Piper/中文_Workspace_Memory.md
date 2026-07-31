@@ -43,3 +43,12 @@
 ## 发布边界
 
 GitHub 放教程、轻量脚本、配置、结果边界和外部链接；Datawhale HF 放与教程一致的小型公开归档。官方资产、数据、checkpoint、原始视频和私有日志只有在明确获得再分发许可后才能进入公开仓库。
+
+## 2026-07-31 公开归档与清理状态
+
+- Datawhale HF：`Datawhale/atec2026-task-b-reproducibility`，公开分支已包含 Task B 文档、脚本、媒体清单、5 个视频、4 张截图和官方源码快照。
+- 官方源码快照：`source/ATEC2026_Simulation_Challenge_20260518.zip`，大小 `431182199` bytes，SHA-256 为 `84ccfdc3903e4e03a5de8a7dedd90314b15ed09382c136bbeee6a858dae802d9`。
+- 视频和截图均为脱敏 debug/evaluation preview；其中 top-down/global 画面使用 privileged trace，只用于解释行为，不是正式 policy 输入或官方成功证明。
+- 官方选手指南归档在 HF `official_docs/`；历史 Task E XSA 插件归档在 HF `historical_task_e/`。
+- HF 归档可复现公开教程、源码快照和证据阅读；完整仿真仍需官方匹配版本的 Isaac Sim/Isaac Lab、GPU 驱动和 Python 环境，不应写成“只靠下载 HF 就能直接运行”。
+- 原始 ATEC 工作目录、官方压缩包、指南副本、XSA 副本和本地 Task B 视频在远端 SHA/大小核验通过后删除；原始 Workspace Memory 不上传，保留本文件作为脱敏替代。
