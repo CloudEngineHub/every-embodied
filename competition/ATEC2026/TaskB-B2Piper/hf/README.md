@@ -1,3 +1,15 @@
+---
+language:
+- zh
+license: other
+pretty_name: ATEC2026 Task B reproducibility archive
+tags:
+- embodied-ai
+- robotics
+- atec2026
+- b2-piper
+---
+
 # Hugging Face 公开归档
 
 对应的 Datawhale 公开数据集仓库：
