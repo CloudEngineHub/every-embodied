@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
-mkdir -p /home/admin/logs/atec2026/robot/solution
-cd /home/admin/appspace/atec2026/robot
+APP_ROOT="${APP_ROOT:-.}"
+LOG_ROOT="${LOG_ROOT:-logs/solution}"
+mkdir -p "$LOG_ROOT"
+cd "$APP_ROOT"
 source ./venv/bin/activate
-python solution/server.py 2>&1 | tee /home/admin/logs/atec2026/robot/solution/server.stdout
+python solution/server.py 2>&1 | tee "$LOG_ROOT/server.stdout"

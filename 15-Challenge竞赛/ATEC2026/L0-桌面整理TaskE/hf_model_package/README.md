@@ -19,20 +19,20 @@ https://huggingface.co/Datawhale/atec2026-task-e-act-seed1-best/commit/4583bda9e
 已从本机暂存目录上传：
 
 ```text
-/data/Data14TB/01Proj/ATEC2026/hf_task_e_act_seed1_best
+$DATA_ROOT/ATEC2026/hf_task_e_act_seed1_best
 ```
 
 原始来源：
 
 ```text
-/home/ubuntu/Documents/01Proj/13atec/ATEC2026_Simulation_Challenge/submissions/task_e_act_seed1_best_20260608_upload/policy_act.pt
-/home/ubuntu/Documents/01Proj/13atec/ATEC2026_Simulation_Challenge/submissions/task_e_act_seed1_best_20260608_upload.zip
+$PROJECT_ROOT/submissions/task_e_act_seed1_best_20260608_upload/policy_act.pt
+$PROJECT_ROOT/submissions/task_e_act_seed1_best_20260608_upload.zip
 ```
 
 也可以上传完整目录：
 
 ```text
-/home/ubuntu/Documents/01Proj/13atec/ATEC2026_Simulation_Challenge/submissions/task_e_act_seed1_best_20260608_upload/
+$PROJECT_ROOT/submissions/task_e_act_seed1_best_20260608_upload/
 ```
 
 ## SHA256
@@ -61,12 +61,12 @@ pip install -U huggingface_hub
 huggingface-cli login
 
 huggingface-cli upload Datawhale/atec2026-task-e-act-seed1-best \
-  /home/ubuntu/Documents/01Proj/13atec/ATEC2026_Simulation_Challenge/submissions/task_e_act_seed1_best_20260608_upload/policy_act.pt \
+  $PROJECT_ROOT/submissions/task_e_act_seed1_best_20260608_upload/policy_act.pt \
   policy_act.pt \
   --repo-type model
 
 huggingface-cli upload Datawhale/atec2026-task-e-act-seed1-best \
-  /home/ubuntu/Documents/01Proj/13atec/ATEC2026_Simulation_Challenge/submissions/task_e_act_seed1_best_20260608_upload.zip \
+  $PROJECT_ROOT/submissions/task_e_act_seed1_best_20260608_upload.zip \
   task_e_act_seed1_best_20260608_upload.zip \
   --repo-type model
 ```

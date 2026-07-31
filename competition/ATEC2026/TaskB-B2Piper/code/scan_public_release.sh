@@ -10,7 +10,7 @@ if rg -n --hidden \
   --glob '!.git/**' \
   --glob '!scan_public_release.sh' \
   --glob '!*.ipynb' \
-  'BEGIN (RSA|OPENSSH|EC|PRIVATE) KEY|HF_TOKEN|AWS_SECRET|password=|token=[A-Za-z0-9_./+=-]{12,}|/home/[A-Za-z0-9_.-]+|/data/Data|/run/user/[0-9]+|https://[^ ]+:[^ ]+@' .; then
+  'BEGIN (RSA|OPENSSH|EC|PRIVATE) KEY|HF_TOKEN|AWS_SECRET|password=|token=[A-Za-z0-9_./+=-]{12,}|/[h]ome/[A-Za-z0-9_.-]+|/[d]ata/Data|/run/user/[0-9]+|https://[^ ]+:[^ ]+@' .; then
   echo "sensitive-looking content found"
   status=1
 else

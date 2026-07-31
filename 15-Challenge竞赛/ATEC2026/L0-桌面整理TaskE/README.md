@@ -241,6 +241,6 @@ sha256sum -c SHA256_FILTERED_ORIGINAL.txt
 2. 确认 Hugging Face 已上传 `policy_act.pt`、提交 zip、复现数据集分片和日志；
 3. 确认模型 SHA256、分片 SHA256、恢复后 filtered HDF5 SHA256 都对得上；
 4. 保留本目录和 `docs/WORKSPACE_MEMORY_TaskE_完整调试记录.md`；
-5. 再删除 `/home/ubuntu/Documents/01Proj/13atec/ATEC2026_Simulation_Challenge` 下的大型训练输出、datasets、runs、logs/videos、openpi checkpoints。
+5. 再删除 `$PROJECT_ROOT` 下的大型训练输出、datasets、runs、logs/videos、openpi checkpoints。
 
 不要在确认 HF 权重可下载前删除唯一的本地 `policy_act.pt`。

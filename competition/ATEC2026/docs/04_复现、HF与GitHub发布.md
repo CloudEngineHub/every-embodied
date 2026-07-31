@@ -95,14 +95,14 @@ videos/
 
 ```bash
 rg -n -i \
-  'hf_[A-Za-z0-9]{20,}|token|password|secret|api[_-]?key|/home/|/data/' \
+  'hf_[A-Za-z0-9]{20,}|token|password|secret|api[_-]?key|/[h]ome/|/[d]ata/' \
   competition/ATEC2026
 ```
 
 检查结果中：
 
 - token、密码和私钥必须为零；
-- `/home/...`、`/data/...` 只能出现在说明“替换成自己的路径”的示例中；
+- 机器绝对路径只能出现在说明“替换成自己的路径”的示例中；
 - 本地绝对路径改成 `$PROJECT_ROOT`、`$DATA_ROOT` 或 `/path/to/...`；
 - 日志中删除私有服务器名、内网 IP、订阅 URL 和账号信息；
 - 大文件使用 Git LFS 或 Hugging Face，不直接进入普通 Git history；
