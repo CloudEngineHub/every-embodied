@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Run this from the repository root or pass the competition directory path.
-ROOT="${1:-competition/TRONCamp-Mani}"
+ROOT="${1:-competition/challenge/TRONCamp-Mani}"
 
 echo "[1/4] forbidden names"
 if find "$ROOT" -type f \( \

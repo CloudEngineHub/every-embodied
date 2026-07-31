@@ -17,7 +17,7 @@ python code/audit_processed_t4.py \
 ## 生成公开材料 SHA 清单
 
 ```bash
-python code/build_public_manifest.py competition/TRONCamp-Mani \
+python code/build_public_manifest.py competition/challenge/TRONCamp-Mani \
   --output /tmp/troncamp_public_manifest.json
 ```
 
@@ -26,7 +26,7 @@ python code/build_public_manifest.py competition/TRONCamp-Mani \
 ## 发布前扫描
 
 ```bash
-bash code/scan_public_release.sh competition/TRONCamp-Mani
+bash code/scan_public_release.sh competition/challenge/TRONCamp-Mani
 ```
 
 扫描通过后，仍应人工检查 Markdown、CSV 和 JSON；自动扫描不能识别所有个人信息、专有资产或错误的实验结论。
