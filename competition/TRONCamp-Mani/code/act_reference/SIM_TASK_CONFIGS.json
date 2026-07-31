@@ -1,0 +1,642 @@
+{
+    "sim-adjust_bottle-adjust_bottle_200ep-10": {
+        "dataset_dir": "./processed_data/sim-adjust_bottle/adjust_bottle_200ep-10",
+        "num_episodes": 10,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_200ep-3": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_200ep-3",
+        "num_episodes": 3,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_200ep-8": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_200ep-8",
+        "num_episodes": 8,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_three-stack_bowls_three_200ep-2": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_three/stack_bowls_three_200ep-2",
+        "num_episodes": 2,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-adjust_bottle-adjust_bottle_200ep-114": {
+        "dataset_dir": "./processed_data/sim-adjust_bottle/adjust_bottle_200ep-114",
+        "num_episodes": 114,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-adjust_bottle-adjust_bottle_200ep-159": {
+        "dataset_dir": "./processed_data/sim-adjust_bottle/adjust_bottle_200ep-159",
+        "num_episodes": 159,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-adjust_bottle-adjust_bottle_200ep-174": {
+        "dataset_dir": "./processed_data/sim-adjust_bottle/adjust_bottle_200ep-174",
+        "num_episodes": 174,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-adjust_bottle-adjust_bottle_200ep-200": {
+        "dataset_dir": "./processed_data/sim-adjust_bottle/adjust_bottle_200ep-200",
+        "num_episodes": 200,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_200ep-100": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_200ep-100",
+        "num_episodes": 100,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_mergedAB_150ep-150": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_mergedAB_150ep-150",
+        "num_episodes": 150,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_mergedAB_200ep-200": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_mergedAB_200ep-200",
+        "num_episodes": 200,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_merged_200ep-200": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_merged_200ep-200",
+        "num_episodes": 200,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_mergedAB_200ep-200": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_mergedAB_200ep-200",
+        "num_episodes": 200,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_200ep-200": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_200ep-200",
+        "num_episodes": 200,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_merged_200ep-200": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_merged_200ep-200",
+        "num_episodes": 200,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_highlift_probe1-1": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_highlift_probe1-1",
+        "num_episodes": 1,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_highlift_dense_probe1-1": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_highlift_dense_probe1-1",
+        "num_episodes": 1,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-adjust_bottle-adjust_bottle_replayclean_20ep-1": {
+        "dataset_dir": "./processed_data/sim-adjust_bottle/adjust_bottle_replayclean_20ep-1",
+        "num_episodes": 1,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-adjust_bottle-adjust_bottle_replayclean_20ep-20": {
+        "dataset_dir": "./processed_data/sim-adjust_bottle/adjust_bottle_replayclean_20ep-20",
+        "num_episodes": 20,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_200ep-200": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_200ep-200",
+        "num_episodes": 200,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_three-stack_bowls_three_mergedAB_200ep-200": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_three/stack_bowls_three_mergedAB_200ep-200",
+        "num_episodes": 200,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_highlift_replay_10ep-10": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_highlift_replay_10ep-10",
+        "num_episodes": 10,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_lift095_replay_10ep-10": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_lift095_replay_10ep-10",
+        "num_episodes": 10,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-adjust_bottle-adjust_bottle_replayclean_quick80-80": {
+        "dataset_dir": "./processed_data/sim-adjust_bottle/adjust_bottle_replayclean_quick80-80",
+        "num_episodes": 80,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-adjust_bottle-adjust_bottle_replayclean_quick100b-100": {
+        "dataset_dir": "./processed_data/sim-adjust_bottle/adjust_bottle_replayclean_quick100b-100",
+        "num_episodes": 100,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-adjust_bottle-adjust_bottle_replayclean_quick80b-80": {
+        "dataset_dir": "./processed_data/sim-adjust_bottle/adjust_bottle_replayclean_quick80b-80",
+        "num_episodes": 80,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-adjust_bottle-adjust_bottle_replayclean_merged200-200": {
+        "dataset_dir": "./processed_data/sim-adjust_bottle/adjust_bottle_replayclean_merged200-200",
+        "num_episodes": 200,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_highlift_replay_merged100-100": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_highlift_replay_merged100-100",
+        "num_episodes": 100,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-adjust_bottle-adjust_bottle_mix400_v1-400": {
+        "dataset_dir": "./processed_data/sim-adjust_bottle/adjust_bottle_mix400_v1-400",
+        "num_episodes": 400,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_replayclean_quick37_20260710a-37": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_replayclean_quick37_20260710a-37",
+        "num_episodes": 37,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_replaymix37_200_v1-200": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_replaymix37_200_v1-200",
+        "num_episodes": 200,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_replayclean_AB100_v1-100": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_replayclean_AB100_v1-100",
+        "num_episodes": 100,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_armbalanced180_v1-180": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_armbalanced180_v1-180",
+        "num_episodes": 180,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-adjust_bottle-adjust_bottle_official200_neg40_v1-240": {
+        "dataset_dir": "./processed_data/sim-adjust_bottle/adjust_bottle_official200_neg40_v1-240",
+        "num_episodes": 240,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-adjust_bottle-adjust_bottle_official200_neg100_balanced_v2-300": {
+        "dataset_dir": "./processed_data/sim-adjust_bottle/adjust_bottle_official200_neg100_balanced_v2-300",
+        "num_episodes": 300,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_armbalanced280_v2-280": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_armbalanced280_v2-280",
+        "num_episodes": 280,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_pi_hard60_balanced_v1-60": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_pi_hard60_balanced_v1-60",
+        "num_episodes": 60,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_official200_pi_hard60_v1-260": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_official200_pi_hard60_v1-260",
+        "num_episodes": 260,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_pi_near_xleft_pos_m0_10ep-10": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_pi_near_xleft_pos_m0_10ep-10",
+        "num_episodes": 10,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_pi_near_xleft_pos_m2_10ep-10": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_pi_near_xleft_pos_m2_10ep-10",
+        "num_episodes": 10,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_pi_near_xright_neg_m0_10ep-10": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_pi_near_xright_neg_m0_10ep-10",
+        "num_episodes": 10,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_pi_near_xright_neg_m2_10ep-10": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_pi_near_xright_neg_m2_10ep-10",
+        "num_episodes": 10,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_pi_near40_balanced_v1-40": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_pi_near40_balanced_v1-40",
+        "num_episodes": 40,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_official200_pi_far60_near40_v1-300": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_official200_pi_far60_near40_v1-300",
+        "num_episodes": 300,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-grab_roller-grab_roller_official200_pi_publicfreq45_v1-245": {
+        "dataset_dir": "./processed_data/sim-grab_roller/grab_roller_official200_pi_publicfreq45_v1-245",
+        "num_episodes": 245,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_publicknn400_v1-400": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_publicknn400_v1-400",
+        "num_episodes": 400,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_200ep_extraA-47": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_200ep_extraA-47",
+        "num_episodes": 47,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_200ep_extraB-51": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_200ep_extraB-51",
+        "num_episodes": 51,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_merged298_v1-298": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_merged298_v1-298",
+        "num_episodes": 298,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_merged378_unique_samearm80_v1-378": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_merged378_unique_samearm80_v1-378",
+        "num_episodes": 378,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_merged378_recovery_c4v1_local-383": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_merged378_recovery_c4v1_local-383",
+        "num_episodes": 383,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_base378_recovery_event22_latelift_v1-408": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_base378_recovery_event22_latelift_v1-408",
+        "num_episodes": 408,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_base378_recovery_event22_latelift_v2-418": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_base378_recovery_event22_latelift_v2-418",
+        "num_episodes": 418,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_base378_recovery_event22_latelift_v3-442": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_base378_recovery_event22_latelift_v3-442",
+        "num_episodes": 442,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_base378_recovery_event22_latelift_v3_crosszone-463": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_base378_recovery_event22_latelift_v3_crosszone-463",
+        "num_episodes": 463,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_robotwin_official235_tron2-235": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_robotwin_official235_tron2-235",
+        "num_episodes": 235,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_base378_plus_stage_recovery30_v1-408": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_base378_plus_stage_recovery30_v1-408",
+        "num_episodes": 408,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_base378_plus_stage2only7_v1-385": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_base378_plus_stage2only7_v1-385",
+        "num_episodes": 385,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-recovery_round2_transport1-1": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/recovery_round2_transport1-1",
+        "num_episodes": 1,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-recovery_round2_stage2A3-3": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/recovery_round2_stage2A3-3",
+        "num_episodes": 3,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-recovery_round2_stage2B2-2": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/recovery_round2_stage2B2-2",
+        "num_episodes": 2,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_base378_plus_stage2_held13_v1-391": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_base378_plus_stage2_held13_v1-391",
+        "num_episodes": 391,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_e5500base400_publicfail_expert_wave1_v1-450": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_e5500base400_publicfail_expert_wave1_v1-450",
+        "num_episodes": 450,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    },
+    "sim-stack_bowls_two-stack_bowls_two_e5500base400_publicfail_expert_v1-459": {
+        "dataset_dir": "./processed_data/sim-stack_bowls_two/stack_bowls_two_e5500base400_publicfail_expert_v1-459",
+        "num_episodes": 459,
+        "episode_len": 1000,
+        "camera_names": [
+            "cam_high",
+            "cam_right_wrist",
+            "cam_left_wrist"
+        ]
+    }
+}
