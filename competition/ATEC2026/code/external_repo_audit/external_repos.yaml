@@ -1,0 +1,20 @@
+# Public references pinned for reproducible code review.
+# These are upstream projects, not Datawhale-owned code.
+
+- name: logic-tars-atec2026
+  url: https://github.com/Logic-TARS/ATEC2026.git
+  commit: b78c4afd1b84302fe8f88bcfd287eac64c33692c
+  license: MIT
+  use: Task D B2W locomotion/action adapter/state-machine reference
+
+- name: zsn2024-atec2026
+  url: https://github.com/ZSN2024/ATEC2026_Simulation_Challenge.git
+  commit: ee4e0eb97928754d9404a3acd5d644020ac7794c
+  license: MIT
+  use: Task B B2wPiper Stage1 training and adapter reference
+
+- name: yma867-atec2026-ril
+  url: https://github.com/yma867/ATEC2026_Simulation_Challenge_RIL.git
+  commit: e56a2a9e39c5231a91c0a8b1cce8ab1bc0e72403
+  license: MIT
+  use: Task B RGB-D perception and coordinate-transform reference
