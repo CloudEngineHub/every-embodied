@@ -20,6 +20,7 @@
 
 | 文档 | 内容 |
 |---|---|
+| [Task B 专题归档](./TaskB-B2Piper/README.md) | B2-Piper 垃圾收集的观测边界、问题复盘、阶段状态机和最接近完整的公开参考方案 |
 | [任务定义与观测边界](./docs/01_任务定义与观测边界.md) | Task A/B/D/E 的关系、全局相机边界、动作与观测契约 |
 | [问题清单与解决方案](./docs/02_问题清单与解决方案.md) | 比赛中遇到的场景、相机、得分、训练、提交和复现问题 |
 | [公开方案与 Logic-TARS 解读](./docs/03_公开方案与Logic-TARS.md) | 公开仓库分级、Logic-TARS 的 Task D 方案和迁移边界 |
@@ -39,6 +40,7 @@
 - [Datawhale/atec2026-b2piper-l0](https://huggingface.co/Datawhale/atec2026-b2piper-l0)：B2Piper L0 徒步 baseline / Option-MoE 模型包。
 - [Datawhale/atec2026-task-e-act-seed1-best](https://huggingface.co/Datawhale/atec2026-task-e-act-seed1-best)：Task E ACT 模型权重。
 - [Datawhale/atec2026-task-e-reproducibility](https://huggingface.co/datasets/Datawhale/atec2026-task-e-reproducibility)：Task E 完整复现资料和大文件。
+- [Datawhale/atec2026-task-b-reproducibility](https://huggingface.co/datasets/Datawhale/atec2026-task-b-reproducibility)：Task B 中文复盘、公开方案索引和发布检查。
 
 本目录新增的 Task D 外部方案审计、适配代码和发布清单会先进入 GitHub；需要保存的完整源码快照、日志和大文件放入 Datawhale 的公开 Hugging Face 数据集，并在这里记录版本与 SHA256。
 
@@ -47,5 +49,5 @@
 ## 一句话结论
 
 - 如果研究 **Task D 推箱越障**，优先阅读 [Logic-TARS/ATEC2026](https://github.com/Logic-TARS/ATEC2026)，重点看 61D/16D policy 接口、16D 到 24D 官方动作适配、状态机、LiDAR 箱体跟踪和 stuck recovery。
-- 如果研究 **Task B 垃圾收集**，建议把 [ZSN2024/ATEC2026_Simulation_Challenge](https://github.com/ZSN2024/ATEC2026_Simulation_Challenge) 的 B2wPiper Stage1 训练链路与 [yma867/ATEC2026_Simulation_Challenge_RIL](https://github.com/yma867/ATEC2026_Simulation_Challenge_RIL/tree/main/taskb_perception) 的 RGB-D 感知接口组合起来，再自行完成行走、抓取和投放闭环。
+- 如果研究 **Task B 垃圾收集**，优先阅读 [Task B 专题归档](./TaskB-B2Piper/README.md) 和最接近完整流程的 [SLAM_ATEC2026_Simulation_Challenge](https://github.com/cicaburnwood-crypto/SLAM_ATEC2026_Simulation_Challenge)；训练可参考 [ZSN2024/ATEC2026_Simulation_Challenge](https://github.com/ZSN2024/ATEC2026_Simulation_Challenge) 的 B2wPiper Stage1 链路，感知可参考 [yma867/ATEC2026_Simulation_Challenge_RIL](https://github.com/yma867/ATEC2026_Simulation_Challenge_RIL/tree/main/taskb_perception)，再自行完成行走、抓取和投放闭环。
 - 这些仓库是公开选手实现或 fork，不等于官方冠军方案。凡是自报排名，都在文档中标成“自报”，不替代官方成绩证明。
