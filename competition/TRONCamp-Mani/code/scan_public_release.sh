@@ -15,7 +15,7 @@ fi
 
 echo "[2/4] private-looking content"
 if rg -n -i --hidden --glob '!*.pyc' --glob '!*.mp4' --glob '!scan_public_release.sh' \
-  '(BEGIN (OPENSSH|RSA|EC) PRIVATE KEY|ghp_[A-Za-z0-9]|hf_[A-Za-z0-9]|sk-[A-Za-z0-9]|TRONCAMP_TOKEN|ssh-rsa )' \
+  '(BEGIN (OPENSSH|RSA|EC) PRIVATE KEY|(^|[^A-Za-z0-9])(ghp_|hf_|sk-)[A-Za-z0-9]{20,}|TRONCAMP_TOKEN|(^|[^A-Za-z0-9])ssh-rsa )' \
   "$ROOT"; then
   echo "found a private-looking string" >&2
   exit 1
