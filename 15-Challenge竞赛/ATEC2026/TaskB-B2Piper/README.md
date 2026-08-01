@@ -38,7 +38,7 @@
 ## 快速检查
 
 ```bash
-cd /path/to/every-embodied/competition/ATEC2026/TaskB-B2Piper
+cd /path/to/every-embodied/15-Challenge竞赛/ATEC2026/TaskB-B2Piper
 bash code/scan_public_release.sh .
 python3 code/build_public_manifest.py . --output public_manifest.json
 ```

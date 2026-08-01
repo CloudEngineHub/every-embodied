@@ -1,65 +1,52 @@
-# ATEC2026 线上赛赛后开源复盘
+# ATEC2026 线上赛：赛后复盘、公开方案与复现入口
 
-本目录的统一发布入口已迁移到 [competition/ATEC2026](../../competition/ATEC2026/README.md)。这里保留早期 L0 徒步和 Task E 的任务专项材料；新的 Task D、Task B 外部方案审计、Logic-TARS 解读和 GitHub/Hugging Face 发布规范统一从 competition 入口阅读。
+本目录是 Every Embodied 第 15 章中的 ATEC2026 统一入口，集中收录任务定义、L0 任务实践、Task B 垃圾收集复盘、Task D 公开方案分析、Task E 桌面整理复现、轻量代码和公开资源说明。
 
-本目录整理 DatawhaleEAI / Every Embodied 在 ATEC2026 线上赛中的两条 L0 任务实践记录。它不是“满分秘笈”，而是一次真实参赛工程的赛后开源：保留能复现的代码骨架、提交包结构、调试日志摘要、失败路线和最终判断，方便后来者学习 Isaac Lab 竞赛、机器人策略训练和提交工程。
+这不是冠军方案，也不保证任何线上分数。教程把一次真实具身智能竞赛拆成可阅读、可检查、可复现的工程材料，并明确区分官方证据、局部调试证据和外部选手自报结果。
 
 ## 目录结构
 
 ```text
-ATEC2026/
-  README.md
-  L0-机器人徒步/
-    README.md
-    assets/
-    code/l0_b2piper_option_moe/
-  L0-桌面整理TaskE/
-    README.md
-    code/act_seed1_best_submission/
-    docs/
-    hf_model_package/
+15-Challenge竞赛/ATEC2026/
+├── README.md
+├── L0-机器人徒步/                 # Task A / B2Piper locomotion 复现与评估
+├── L0-桌面整理TaskE/              # Task E / Piper 桌面抓取与 ACT 复盘
+├── TaskB-B2Piper/                 # Task B / B2-Piper 垃圾收集专题
+├── docs/                          # Task A/B/D/E 共性边界与发布文档
+├── code/                          # 轻量 adapter、参考仓库审计和检查脚本
+└── references/                    # 外部公开方案、固定 commit 与许可证索引
 ```
 
-## 已整理任务
+## 任务总览
 
-| 子目录 | 对应任务 | 机器人 | 最终公开内容 | 备注 |
-|---|---|---|---|---|
-| `L0-机器人徒步/` | 赛道1 L0 机器人徒步 | `B2Piper` | 复现教程、曲线图、option-MoE 代码骨架、HF 链接 | 线上有效分从 baseline 附近起步，教程重点是 RL 评估闭环 |
-| `L0-桌面整理TaskE/` | 赛道2 L0 桌面整理 Task E | `Piper` | ACT 提交代码骨架、技术复盘、Workspace Memory、HF 上传说明 | 线上最好回报为 `15.00`，不是满分方案 |
+| 任务 | 机器人/能力 | 本目录入口 | 公开结论边界 |
+|---|---|---|---|
+| Task A / L0 | B2Piper 越野徒步 | [`L0-机器人徒步/`](./L0-机器人徒步/) | 重点是官方 baseline、局部评估、轨迹跟踪和 checkpoint 选择 |
+| Task B | B2-Piper 垃圾收集 | [`TaskB-B2Piper/`](./TaskB-B2Piper/) | 公开完整调试与观测边界；没有核验过的完整最终 policy |
+| Task D | 推箱越障 | [`docs/03_公开方案与Logic-TARS.md`](./docs/03_公开方案与Logic-TARS.md) | 重点参考公开 Logic-TARS 的状态机、LiDAR 和动作适配 |
+| Task E / L0 | Piper 桌面整理 | [`L0-桌面整理TaskE/`](./L0-桌面整理TaskE/) | ACT seed1 best 线上最好回报为 `15.00`，不是满分方案 |
 
-## 公开结论
+## 推荐阅读
 
-- L0 机器人徒步：官方 baseline 是最重要的起点，能帮助跑通提交链路；继续冲榜必须让训练 reward 对齐 TaskA 长距离路线进度，而不是盲目长训。
-- L0 桌面整理 Task E：最终保护方案是 ACT seed1 best，线上用户回报 `15.00`。我们尝试过 XSA-ACT、ACT seed2、PCA/GraspGen-style、AnyGrasp/GraspNet、SAM3、pi0.5/OpenPI 等路线；赛后复盘显示短期最可靠的是 ACT 提交包，而不是尚未稳定的规划抓取或 VLA 分支。
-- 公开检索：截至 2026-07-18，未发现明确开源的 ATEC2026 Task E 满分/18 分完整提交包。能检索到的主要是官方仓库、赛事介绍和通用机器人项目，不能当成可直接提交的高分方案。
+1. [任务定义与观测边界](./docs/01_任务定义与观测边界.md)
+2. [问题清单与解决方案](./docs/02_问题清单与解决方案.md)
+3. [公开方案与 Logic-TARS 解读](./docs/03_公开方案与Logic-TARS.md)
+4. [复现、HF 与 GitHub 发布](./docs/04_复现、HF与GitHub发布.md)
+5. [归档对账与本地清理](./docs/05_归档对账与本地清理.md)
+6. [Task B 专题归档](./TaskB-B2Piper/README.md)
 
-## 官方与外部链接
+## 公开资源
 
-- ATEC 官网：[https://www.atecup.com/](https://www.atecup.com/)
-- ATEC2026 页面：[https://www.atecup.com/competitions/ATEC2026](https://www.atecup.com/competitions/ATEC2026)
-- 官方仿真挑战仓库：[https://github.com/atecup/ATEC2026_Simulation_Challenge](https://github.com/atecup/ATEC2026_Simulation_Challenge)
-- Every Embodied 仓库：[https://github.com/datawhalechina/every-embodied](https://github.com/datawhalechina/every-embodied)
+- 官方仿真仓库：[atecup/ATEC2026_Simulation_Challenge](https://github.com/atecup/ATEC2026_Simulation_Challenge)
+- B2Piper L0 模型包：[Datawhale/atec2026-b2piper-l0](https://huggingface.co/Datawhale/atec2026-b2piper-l0)
+- Task B 公开复现归档：[Datawhale/atec2026-task-b-reproducibility](https://huggingface.co/datasets/Datawhale/atec2026-task-b-reproducibility)
+- Task E 模型：[Datawhale/atec2026-task-e-act-seed1-best](https://huggingface.co/Datawhale/atec2026-task-e-act-seed1-best)
+- Task E 数据与日志：[Datawhale/atec2026-task-e-reproducibility](https://huggingface.co/datasets/Datawhale/atec2026-task-e-reproducibility)
 
-## Hugging Face 复现资源
+## 复现约定
 
-ATEC2026 Task E 的大文件、完整源码和机器人资产不放在 GitHub 中，请从以下 Hugging Face 仓库获取：
-
-- 最终 ACT 模型：[Datawhale/atec2026-task-e-act-seed1-best](https://huggingface.co/Datawhale/atec2026-task-e-act-seed1-best)
-- Task E 完整复现仓库（源码、Piper 模型、GraspGen、采集脚本、数据分片和日志）：[Datawhale/atec2026-task-e-reproducibility](https://huggingface.co/datasets/Datawhale/atec2026-task-e-reproducibility)
-- 数据集恢复入口：在复现仓库中运行 `RESTORE_FILTERED_DATASET.sh`，再按 `SHA256_FILTERED_ORIGINAL.txt` 校验。
-
-## 模型权重
-
-GitHub 目录默认不直接存放大权重。权重建议放到 Hugging Face，并在对应子目录 README 中维护链接和 SHA256。
-
-- `L0-机器人徒步/` 已记录 Hugging Face 模型仓库链接。
-- `L0-桌面整理TaskE/` 已记录 Hugging Face 模型仓库和复现数据集仓库；数据集仓库包含 filtered HDF5 的 100 MiB 分片、日志归档、恢复脚本和 SHA256。
-
-## 本地清理建议
-
-在确认 GitHub push 成功、Hugging Face 权重上传成功、并且 `WORKSPACE_MEMORY` 已备份后，可以删除本地训练中间产物、日志视频和大型 checkpoint。不要删除以下轻量归档：
-
-- 本目录；
-- 对应 Hugging Face 模型仓库；
-- `L0-桌面整理TaskE/docs/WORKSPACE_MEMORY_TaskE_完整调试记录.md`；
-- SHA256 清单。
+- GitHub 只保存教程、轻量代码、实验边界、固定外部 commit 和脱敏 Workspace Memory。
+- 大数据、模型权重、官方源码快照、视频和日志按许可证与 SHA-256 记录在 Hugging Face。
+- 完整仿真仍需要匹配的 Isaac Sim/Isaac Lab、GPU、Python 依赖、官方 runner 和评测器；不能把 GitHub 教程当成一键启动环境。
+- 环境相机、真值状态、oracle prefix、脚本夹爪和阶段状态机可以用于诊断，但必须标注协议边界，不能冒充正式 policy 输入或完整成功证据。
+- 原始训练缓存、私有日志、token、服务器凭据和未授权 SDK 不进入公开仓库。

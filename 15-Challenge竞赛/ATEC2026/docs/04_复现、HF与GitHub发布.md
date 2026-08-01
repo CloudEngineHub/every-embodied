@@ -6,7 +6,7 @@
 
 | 位置 | 放什么 | 不放什么 |
 |---|---|---|
-| GitHub `competition/ATEC2026/` | Markdown、轻量 Python、配置模板、许可证、固定 commit、问题复盘 | 权重、数据集、缓存、私有日志、token |
+| GitHub `15-Challenge竞赛/ATEC2026/` | Markdown、轻量 Python、配置模板、许可证、固定 commit、问题复盘 | 权重、数据集、缓存、私有日志、token |
 | Datawhale Hugging Face | 完整源码快照、模型权重、过滤后数据、视频、日志归档、SHA256 | token、私有 IP、未清理的完整服务器目录 |
 | 本地 / 服务器 | Isaac Sim、conda 环境、原始训练输出、缓存和中间 checkpoint | 不作为教程默认路径 |
 
@@ -96,7 +96,7 @@ videos/
 ```bash
 rg -n -i \
   'hf_[A-Za-z0-9]{20,}|token|password|secret|api[_-]?key|/[h]ome/|/[d]ata/' \
-  competition/ATEC2026
+  15-Challenge竞赛/ATEC2026
 ```
 
 检查结果中：

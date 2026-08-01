@@ -4,7 +4,7 @@
 
 ## 工作边界
 
-- GitHub 公开入口：`competition/ATEC2026/`。
+- GitHub 公开入口：`15-Challenge竞赛/ATEC2026/`。
 - 原始 ATEC 工程、训练缓存、环境和大 checkpoint 不放入 Every Embodied Git history。
 - 大文件、过滤后的数据、视频和完整源码快照进入 Datawhale Hugging Face，并记录版本和 SHA256。
 - 不能把外部选手仓库的自报成绩写成官方成绩。

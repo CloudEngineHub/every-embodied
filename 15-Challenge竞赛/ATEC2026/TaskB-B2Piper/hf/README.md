@@ -31,13 +31,13 @@ HF 归档与 GitHub 教程保持一致，保存轻量文档、配置、检查脚
 
 源快照 SHA-256：`84ccfdc3903e4e03a5de8a7dedd90314b15ed09382c136bbeee6a858dae802d9`。
 
-所有已上传大文件都在 HF 目录中单独列出来源、版本和 SHA-256；没有把它们塞进 GitHub 普通 Git 历史。对应的完整上传和本地删除清单见 [GitHub 归档对账与本地清理说明](https://github.com/datawhalechina/every-embodied/blob/agent/atec2026-open-source-postmortem/competition/ATEC2026/docs/05_%E5%BD%92%E6%A1%A3%E5%AF%B9%E8%B4%A6%E4%B8%8E%E6%9C%AC%E5%9C%B0%E6%B8%85%E7%90%86.md)。
+所有已上传大文件都在 HF 目录中单独列出来源、版本和 SHA-256；没有把它们塞进 GitHub 普通 Git 历史。对应的完整上传和本地删除清单见 [GitHub 归档对账与本地清理说明](https://github.com/datawhalechina/every-embodied/blob/main/15-Challenge%E7%AB%9E%E8%B5%9B/ATEC2026/docs/05_%E5%BD%92%E6%A1%A3%E5%AF%B9%E8%B4%A6%E4%B8%8E%E6%9C%AC%E5%9C%B0%E6%B8%85%E7%90%86.md)。
 
 ## 从 GitHub 复现
 
 ```bash
 git clone https://github.com/datawhalechina/every-embodied.git
-cd every-embodied/competition/ATEC2026/TaskB-B2Piper
+cd every-embodied/15-Challenge竞赛/ATEC2026/TaskB-B2Piper
 bash code/scan_public_release.sh .
 python3 code/build_public_manifest.py . --output public_manifest.json
 ```

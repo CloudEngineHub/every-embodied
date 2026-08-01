@@ -18,11 +18,7 @@
 ## 项目结构
 
 ```text
-<<<<<<<< HEAD:15-Challenge竞赛/TRONCamp-Mani/README.md
 15-Challenge竞赛/TRONCamp-Mani/
-========
-challenge/TRONCamp-Mani/
->>>>>>>> origin/agent/atec2026-open-source-postmortem:competition/challenge/TRONCamp-Mani/README.md
 ├── README.md                         # 总览、结果、快速复现路线
 ├── docs/
 │   ├── 01_完整工程复盘.md              # 从数据到提交的时间线

@@ -630,4 +630,4 @@ near-edge recovery option
 - MoE-Loco 项目：[https://github.com/hrh6666/MoE-Loco](https://github.com/hrh6666/MoE-Loco)
 - Unitree RL Lab：[https://github.com/unitreerobotics/unitree_rl_lab](https://github.com/unitreerobotics/unitree_rl_lab)
 - Datawhale ATEC2026 B2Piper L0 Hugging Face 模型包：[https://huggingface.co/Datawhale/atec2026-b2piper-l0](https://huggingface.co/Datawhale/atec2026-b2piper-l0)
-- 本仓库 LeHome 教程：[../LeHome/README.md](../LeHome/README.md)
+- 本仓库 LeHome 教程：[../../LeHome/README.md](../../LeHome/README.md)
