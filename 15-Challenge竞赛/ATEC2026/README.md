@@ -1,5 +1,7 @@
 # ATEC2026 线上赛赛后开源复盘
 
+本目录的统一发布入口已迁移到 [competition/ATEC2026](../../competition/ATEC2026/README.md)。这里保留早期 L0 徒步和 Task E 的任务专项材料；新的 Task D、Task B 外部方案审计、Logic-TARS 解读和 GitHub/Hugging Face 发布规范统一从 competition 入口阅读。
+
 本目录整理 DatawhaleEAI / Every Embodied 在 ATEC2026 线上赛中的两条 L0 任务实践记录。它不是“满分秘笈”，而是一次真实参赛工程的赛后开源：保留能复现的代码骨架、提交包结构、调试日志摘要、失败路线和最终判断，方便后来者学习 Isaac Lab 竞赛、机器人策略训练和提交工程。
 
 ## 目录结构

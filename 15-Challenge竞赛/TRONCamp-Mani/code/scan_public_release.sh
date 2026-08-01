@@ -2,7 +2,11 @@
 set -euo pipefail
 
 # Run this from the repository root or pass the competition directory path.
+<<<<<<<< HEAD:15-Challenge竞赛/TRONCamp-Mani/code/scan_public_release.sh
 ROOT="${1:-15-Challenge竞赛/TRONCamp-Mani}"
+========
+ROOT="${1:-competition/challenge/TRONCamp-Mani}"
+>>>>>>>> origin/agent/atec2026-open-source-postmortem:competition/challenge/TRONCamp-Mani/code/scan_public_release.sh
 
 echo "[1/4] forbidden names"
 if find "$ROOT" -type f \( \
