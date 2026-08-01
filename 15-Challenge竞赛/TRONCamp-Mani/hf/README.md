@@ -6,7 +6,7 @@
 
 如果后续要发布到 Hugging Face，建议分成两个仓库：
 
-1. **代码仓库**：发布 `competition/challenge/TRONCamp-Mani` 下的配置、审计脚本、评测协议和复盘文档。
+1. **代码仓库**：发布 `15-Challenge竞赛/TRONCamp-Mani` 下的配置、审计脚本、评测协议和复盘文档。
 2. **数据或模型仓库**：只有在确认比赛规则、数据许可和第三方资产许可后，才发布脱敏后的 manifest、权重或可公开样例。
 
 不要把比赛原始数据、完整 HDF5、checkpoint、评测服务凭据、机器地址、SSH 密钥或内部日志直接上传到公共仓库。大文件应使用 Hugging Face 官方的 Git LFS / 分片机制，并在仓库 README 中记录 SHA256、版本、许可和恢复方法。
@@ -16,7 +16,7 @@
 在本地完成以下检查，并使用环境变量或交互式登录提供令牌，不要把令牌写进脚本：
 
 ```bash
-cd competition/challenge/TRONCamp-Mani
+cd 15-Challenge竞赛/TRONCamp-Mani
 bash code/scan_public_release.sh .
 python3 code/build_public_manifest.py . --output /tmp/troncamp-manifest.json
 ```

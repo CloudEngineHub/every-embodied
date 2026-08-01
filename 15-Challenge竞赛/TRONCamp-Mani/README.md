@@ -18,7 +18,7 @@
 ## 项目结构
 
 ```text
-challenge/TRONCamp-Mani/
+15-Challenge竞赛/TRONCamp-Mani/
 ├── README.md                         # 总览、结果、快速复现路线
 ├── docs/
 │   ├── 01_完整工程复盘.md              # 从数据到提交的时间线
