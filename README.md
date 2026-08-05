@@ -37,7 +37,7 @@
     <img src="./assets/shanghaiailab.png" height="45" style="margin: 0 10px;"> 
     <img src="./assets/damo1.png" height="52" style="margin: 0 10px;"> 
     <img src="./assets/damo2.png" height="50" style="margin: 0 10px;"> 
-    <img src="./assets/amd-logo.svg" height="30" style="margin: 0 12px;" alt="AMD">
+    <img src="./assets/aup-logo.svg" height="34" style="margin: 0 12px;" alt="AUP — AMD University Program">
     <img src="./assets/rocm-logo.png" height="34" style="margin: 0 12px;" alt="ROCm">
   </div>
 
@@ -206,6 +206,7 @@
 | **第三阶段** | 模仿学习、大模型(VLA/VLN)、Sim2Real | 复现大模型导航VLN、OpenVLA、SmolVLA 等前沿项目，实现仿真或真实部署 |
 
   ## 🔥 News & Highlights
+  - **[2026-08-01]** 新增 [ATEC2026 赛后复盘与开源方案教程](./15-Challenge竞赛/ATEC2026/README.md)：将 Task A/B/D/E 的任务边界、观测契约、环境视角调试、Task B 公开方案对照、评估与复现边界，以及中文 Workspace Memory 统一归入第 15 章，并配套 [Task B 公开复现归档](https://huggingface.co/datasets/Datawhale/atec2026-task-b-reproducibility) 与 Task E 开源资源。
   - **[2026-07-18]** 新增 [Dexbotic-RLinf 工程化 VLA 后训练导读](./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/17-Dexbotic-RLinf工程化VLA后训练导读/README.md)：归入现有 VLA 章节，系统讲解 Dexbotic 如何把 RLinf 作为分布式强化学习后端，用 PPO 对 Dexbotic π0 / DM0 在 LIBERO 上做在线 fine-tuning，覆盖 Dexbotic 三层工具箱架构、RLinf frontend 与 Dexbotic backend 两种启动方式、`dexbotic_pi0` / `dexbotic_dm0` 动态模型注册、actor / rollout / env worker 分工、checkpoint 下载、TensorBoard 指标、standalone evaluation，以及该链路更适合作为工程化后训练导读而非轻量一键复现的边界。
   - **[2026-08-05]** 新增 [DM0.5 高性能推理与 OpenDM 开源导读](./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/18-DM0.5高性能推理与OpenDM导读/README.md)：归入现有 VLA 章节，系统拆解 DM0.5 的 Gemma3 VLM prefix、Action Expert suffix、KV cache、Flow Matching action chunk 和公开 OpenDM 代码入口；进一步分析官网公告中的 Vision TensorRT、Tuned FlexAttention、FP8 E4M3 Tensor Core MLP、Triton fused kernels 与启动期 CUDA Graph 如何组成 9.29× 推理优化链路，并明确 OpenDM 当前可复现的模型/训练/推理/评测范围，以及 DM0.5 专用 9.29× 部署代码尚未在公开仓库完整出现的边界。
   - **[2026-07-18]** 新增 [Robots That Know What to Ask 奖励对齐导读](./05-具身场景的深度和强化学习/04-Robots-That-Know-What-to-Ask奖励对齐导读/README.md)：归入 `05-具身场景的深度和强化学习`，系统拆解 RSS 2026 论文 *Robots That Know What to Ask: Recovering Misaligned Rewards through Targeted Explanations*，重点讲清 ASQ 如何从示教特征方差中识别欠指定奖励维度，用自然语言解释引导人类补充 corrective demonstrations，并覆盖 JacoRobot 仿真、Franka 真实用户实验、LLM filtering、demo-specific rationality / weighting、与 VLA / 世界模型后训练的接口，以及当前未检索到官方代码仓库的复现边界。

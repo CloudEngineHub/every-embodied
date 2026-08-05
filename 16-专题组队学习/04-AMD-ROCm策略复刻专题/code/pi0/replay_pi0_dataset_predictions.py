@@ -34,6 +34,21 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--settle-actions", type=int, default=20)
     parser.add_argument("--max-episode-frames", type=int, default=0)
     parser.add_argument(
+        "--env-reset-seed",
+        type=int,
+        default=0,
+        help=(
+            "Seed passed to env.reset before replay. Default keeps historical "
+            "behavior; set this to the data-collection seed when auditing "
+            "whether recorded actions are exactly replayable."
+        ),
+    )
+    parser.add_argument(
+        "--hard-reset-sim-data",
+        action="store_true",
+        help="Call the inner MuJoCo reset before env.reset(...), matching collection runs that used this cleanup.",
+    )
+    parser.add_argument(
         "--headless-no-viewer",
         action="store_true",
         help="Run MuJoCo physics without creating a GLFW viewer; useful for SSH/headless evaluation.",
@@ -44,7 +59,29 @@ def parse_args() -> argparse.Namespace:
         help="Diagnostic/deployment option: stop replay as soon as the stricter physical success criterion is reached.",
     )
     parser.add_argument("--reset-policy-each-frame", action="store_true")
+    parser.add_argument(
+        "--pi0-action-mode",
+        choices=["absolute", "joint_delta", "eef_delta", "eef_abs"],
+        default="absolute",
+        help=(
+            "How to bridge replay actions into MuJoCo. absolute uses joint_angle, "
+            "joint_delta adds action[:6] to current joint state, and eef_delta uses "
+            "SimpleEnv2 eef_pose with action[:3] as TCP delta. eef_abs interprets "
+            "action[:3] as the next TCP xyz target and converts it to a bounded delta."
+        ),
+    )
+    parser.add_argument(
+        "--eef-abs-max-step",
+        type=float,
+        default=0.004,
+        help="Maximum per-axis TCP delta used when --pi0-action-mode=eef_abs.",
+    )
     parser.add_argument("--clamp-action-to-episode-gt", action="store_true")
+    parser.add_argument(
+        "--clip-gripper",
+        action="store_true",
+        help="Fair actuator postprocess: clip the gripper command to the executable [0, 1] range.",
+    )
     parser.add_argument("--binarize-gripper", action="store_true")
     parser.add_argument("--gripper-threshold", type=float, default=0.5)
     parser.add_argument("--gripper-open-until-step", type=int, default=-1)
@@ -59,6 +96,22 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=0,
         help="Diagnostic: replace the last N replay actions with dataset GT actions.",
+    )
+    parser.add_argument(
+        "--replace-prefix-with-gt",
+        type=int,
+        default=0,
+        help="Diagnostic: replace the first N replay actions with dataset GT actions.",
+    )
+    parser.add_argument(
+        "--replace-arm-with-gt",
+        action="store_true",
+        help="Diagnostic: use dataset GT for action[:6] and policy prediction for gripper.",
+    )
+    parser.add_argument(
+        "--replace-gripper-with-gt",
+        action="store_true",
+        help="Diagnostic: use policy prediction for action[:6] and dataset GT for gripper.",
     )
     parser.add_argument(
         "--append-template-tail",
@@ -87,6 +140,15 @@ def parse_args() -> argparse.Namespace:
         help="Force the appended template tail gripper command to 0.0/open.",
     )
     parser.add_argument("--output-json", type=Path, required=True)
+    parser.add_argument(
+        "--output-actions-npz",
+        type=Path,
+        default=None,
+        help=(
+            "Optional diagnostic archive containing raw policy actions, GT actions, "
+            "postprocessed actions, bridged env actions, and per-step replay metrics."
+        ),
+    )
     parser.add_argument("--output-video", type=Path, default=None)
     parser.add_argument("--video-camera", default="agentview")
     parser.add_argument("--video-width", type=int, default=640)
@@ -163,6 +225,18 @@ def tensor_to_np(value: Any) -> np.ndarray:
     if isinstance(value, torch.Tensor):
         return value.detach().cpu().numpy()
     return np.asarray(value)
+
+
+def maybe_hard_reset_sim_data(env: Any, enabled: bool) -> None:
+    if not enabled:
+        return
+    inner = getattr(env, "env", None)
+    if inner is None:
+        return
+    try:
+        inner.reset(step=False)
+    except TypeError:
+        inner.reset()
 
 
 def build_template_tail_actions(
@@ -264,6 +338,46 @@ def physical_debug(env, tracker: dict, args: argparse.Namespace) -> dict:
     return base
 
 
+def action_for_environment(action: np.ndarray, env: Any, args: argparse.Namespace) -> np.ndarray:
+    env_action = np.asarray(action, dtype=np.float32).reshape(-1).copy()
+    if args.pi0_action_mode in ("absolute", "eef_delta"):
+        return env_action
+    if args.pi0_action_mode == "eef_abs":
+        if env_action.shape[0] < 7:
+            raise ValueError(f"Expected 7-D action, got {env_action.shape}")
+        current_tcp = np.asarray(env.env.get_p_body("tcp_link")[:3], dtype=np.float32).reshape(3)
+        target_tcp = env_action[:3].copy()
+        bridged = np.zeros(7, dtype=np.float32)
+        bridged[:3] = np.clip(
+            target_tcp - current_tcp,
+            -float(args.eef_abs_max_step),
+            float(args.eef_abs_max_step),
+        )
+        bridged[6] = env_action[6]
+        return bridged
+    if args.pi0_action_mode == "joint_delta":
+        state = np.asarray(env.get_joint_state()[:6], dtype=np.float32).reshape(-1)
+        if env_action.shape[0] < 7 or state.shape[0] != 6:
+            raise ValueError(f"Expected 7-D action and 6-D joint state, got {env_action.shape}, {state.shape}")
+        bridged = env_action[:7].copy()
+        bridged[:6] = state + env_action[:6]
+        return bridged.astype(np.float32)
+    raise ValueError(f"Unsupported pi0_action_mode: {args.pi0_action_mode}")
+
+
+def configure_env_action_space(env: Any, action_mode: str) -> None:
+    if action_mode in ("eef_delta", "eef_abs"):
+        from mujoco_env.transforms import rpy2r
+
+        env.action_type = "eef_pose"
+        env.p0, _ = env.env.get_pR_body(body_name="tcp_link")
+        env.R0 = rpy2r(np.deg2rad([90.0, 0.0, 90.0]))
+    elif action_mode in ("absolute", "joint_delta"):
+        env.action_type = "joint_angle"
+    else:
+        raise ValueError(f"Unsupported pi0_action_mode: {action_mode}")
+
+
 def main() -> int:
     args = parse_args()
     os.environ.setdefault("HF_HOME", str(Path.home() / ".cache" / "huggingface"))
@@ -275,8 +389,12 @@ def main() -> int:
     if args.headless_no_viewer and "pyautogui" not in sys.modules:
         sys.modules["pyautogui"] = SimpleNamespace(size=lambda: (1920, 1080))
 
-    from lerobot.common.datasets.lerobot_dataset import LeRobotDataset, LeRobotDatasetMetadata
-    from lerobot.common.policies.pi0.modeling_pi0 import PI0Policy
+    try:
+        from lerobot.datasets.lerobot_dataset import LeRobotDataset, LeRobotDatasetMetadata
+        from lerobot.policies.pi0 import PI0Policy
+    except ModuleNotFoundError:
+        from lerobot.common.datasets.lerobot_dataset import LeRobotDataset, LeRobotDatasetMetadata
+        from lerobot.common.policies.pi0.modeling_pi0 import PI0Policy
     from mujoco_env.y_env2 import SimpleEnv2
     import cv2
     import mujoco
@@ -310,10 +428,16 @@ def main() -> int:
     actions = []
     gt_actions = []
     pred_errors = []
+    dataset_timestamps = []
+    dataset_states = []
     for raw_idx in raw_indices:
         item = dataset[int(raw_idx)]
         gt = tensor_to_np(item["action"]).reshape(-1)[:7].astype(np.float32)
         gt_actions.append(gt)
+        if "timestamp" in item:
+            dataset_timestamps.append(float(np.asarray(tensor_to_np(item["timestamp"])).reshape(-1)[0]))
+        if "observation.state" in item:
+            dataset_states.append(tensor_to_np(item["observation.state"]).reshape(-1).astype(np.float32))
         if args.mode == "gt":
             actions.append(gt)
             continue
@@ -329,31 +453,45 @@ def main() -> int:
     raw_actions_np = actions_np.copy()
     postprocess = {
         "clamp_action_to_episode_gt": bool(args.clamp_action_to_episode_gt),
+        "clip_gripper": bool(args.clip_gripper),
         "binarize_gripper": bool(args.binarize_gripper),
         "gripper_threshold": float(args.gripper_threshold),
         "gripper_open_until_step": int(args.gripper_open_until_step),
         "gripper_open_tail": int(args.gripper_open_tail),
         "replace_tail_with_gt": int(args.replace_tail_with_gt),
+        "replace_prefix_with_gt": int(args.replace_prefix_with_gt),
+        "replace_arm_with_gt": bool(args.replace_arm_with_gt),
+        "replace_gripper_with_gt": bool(args.replace_gripper_with_gt),
         "append_template_tail": args.append_template_tail,
         "template_tail_steps": int(args.template_tail_steps),
         "template_blend_steps": int(args.template_blend_steps),
         "template_force_open_gripper": bool(args.template_force_open_gripper),
         "stop_on_physical_success": bool(args.stop_on_physical_success),
+        "pi0_action_mode": args.pi0_action_mode,
         "template_tail_meta": None,
     }
     if args.clamp_action_to_episode_gt:
         actions_np = np.clip(actions_np, gt_np.min(axis=0), gt_np.max(axis=0))
+    if args.clip_gripper:
+        actions_np[:, 6] = np.clip(actions_np[:, 6], 0.0, 1.0)
     if args.binarize_gripper:
         actions_np[:, 6] = (actions_np[:, 6] >= float(args.gripper_threshold)).astype(np.float32)
     if int(args.gripper_open_until_step) >= 0:
         open_steps = min(int(args.gripper_open_until_step), len(actions_np))
-        actions_np[:open_steps, 6] = 1.0
+        actions_np[:open_steps, 6] = 0.0
     if int(args.gripper_open_tail) > 0:
         tail_open_steps = min(int(args.gripper_open_tail), len(actions_np))
         actions_np[-tail_open_steps:, 6] = 0.0
     if int(args.replace_tail_with_gt) > 0:
         tail_steps = min(int(args.replace_tail_with_gt), len(actions_np))
         actions_np[-tail_steps:] = gt_np[-tail_steps:]
+    if int(args.replace_prefix_with_gt) > 0:
+        prefix_steps = min(int(args.replace_prefix_with_gt), len(actions_np))
+        actions_np[:prefix_steps] = gt_np[:prefix_steps]
+    if args.replace_arm_with_gt:
+        actions_np[:, :6] = gt_np[:, :6]
+    if args.replace_gripper_with_gt:
+        actions_np[:, 6] = gt_np[:, 6]
     if args.append_template_tail != "none":
         template_tail, template_meta = build_template_tail_actions(
             dataset=dataset,
@@ -388,13 +526,27 @@ def main() -> int:
     physical_success_ever = False
     first_physical_success_step = None
     first_legacy_success_step = None
+    replay_step_indices = []
+    replay_phase_codes = []
+    replay_actions = []
+    replay_env_actions = []
+    replay_tcp_pos = []
+    replay_target_pos = []
+    replay_xy_dist = []
+    replay_max_lift = []
+    replay_upright_cos = []
+    replay_gripper = []
+    replay_legacy_success = []
+    replay_physical_success = []
     renderer = None
     video_writer = None
     video_frame_count = 0
     try:
-        env.reset(seed=0)
+        maybe_hard_reset_sim_data(env, bool(args.hard_reset_sim_data))
+        env.reset(seed=int(args.env_reset_seed))
         env.set_instruction(task)
         env.set_obj_pose(obj_init[:3], obj_init[3:6], obj_init[6:9])
+        configure_env_action_space(env, args.pi0_action_mode)
         tracker = init_tracker(env)
         last_debug = physical_debug(env, tracker, args)
         if args.output_video is not None:
@@ -426,9 +578,24 @@ def main() -> int:
             else:
                 action = last_action
                 phase = "settle"
-            env.step(action)
+            env_action = action_for_environment(action, env, args)
+            env.step(env_action)
             update_tracker(env, tracker, args)
             last_debug = physical_debug(env, tracker, args)
+            replay_step_indices.append(int(action_steps))
+            replay_phase_codes.append(0 if phase == "replay" else 1)
+            replay_actions.append(np.asarray(action, dtype=np.float32).reshape(-1)[:7])
+            replay_env_actions.append(np.asarray(env_action, dtype=np.float32).reshape(-1)[:7])
+            replay_tcp_pos.append(np.asarray(last_debug.get("tcp_pos", [np.nan, np.nan, np.nan]), dtype=np.float32))
+            replay_target_pos.append(
+                np.asarray(last_debug.get("final_target_pos", [np.nan, np.nan, np.nan]), dtype=np.float32)
+            )
+            replay_xy_dist.append(float(last_debug.get("xy_dist", np.nan)))
+            replay_max_lift.append(float(last_debug.get("max_target_lift", np.nan)))
+            replay_upright_cos.append(float(last_debug.get("final_target_upright_cos", np.nan)))
+            replay_gripper.append(float(last_debug.get("gripper", np.nan)))
+            replay_legacy_success.append(bool(last_debug.get("success", False)))
+            replay_physical_success.append(bool(last_debug.get("physical_success", False)))
             if last_debug["success"] and first_legacy_success_step is None:
                 first_legacy_success_step = action_steps
             if last_debug["physical_success"] and first_physical_success_step is None:
@@ -490,6 +657,7 @@ def main() -> int:
         "first_legacy_success_step": first_legacy_success_step,
         "first_physical_success_step": first_physical_success_step,
         "prediction_error": error_summary,
+        "actions_npz": str(args.output_actions_npz) if args.output_actions_npz is not None else None,
         "postprocess": postprocess,
         "action_stats": {
             "pred_or_replay_min": round_list(actions_np.min(axis=0), 5),
@@ -501,6 +669,46 @@ def main() -> int:
         },
         "debug": last_debug,
     }
+    if args.output_actions_npz is not None:
+        args.output_actions_npz.parent.mkdir(parents=True, exist_ok=True)
+        pred_error_np = np.stack(pred_errors).astype(np.float32) if pred_errors else np.empty((0, 7), dtype=np.float32)
+        timestamp_np = (
+            np.asarray(dataset_timestamps, dtype=np.float32)
+            if dataset_timestamps
+            else np.empty((0,), dtype=np.float32)
+        )
+        state_np = (
+            np.stack(dataset_states).astype(np.float32)
+            if dataset_states
+            else np.empty((0, 0), dtype=np.float32)
+        )
+        np.savez_compressed(
+            args.output_actions_npz,
+            raw_actions=raw_actions_np,
+            postprocessed_actions=actions_np,
+            gt_actions=gt_np,
+            pred_abs_error=pred_error_np,
+            dataset_timestamps=timestamp_np,
+            dataset_states=state_np,
+            raw_indices=np.asarray(raw_indices, dtype=np.int64),
+            replay_step_indices=np.asarray(replay_step_indices, dtype=np.int64),
+            replay_phase_codes=np.asarray(replay_phase_codes, dtype=np.int8),
+            replay_actions=np.asarray(replay_actions, dtype=np.float32),
+            replay_env_actions=np.asarray(replay_env_actions, dtype=np.float32),
+            replay_tcp_pos=np.asarray(replay_tcp_pos, dtype=np.float32),
+            replay_target_pos=np.asarray(replay_target_pos, dtype=np.float32),
+            replay_xy_dist=np.asarray(replay_xy_dist, dtype=np.float32),
+            replay_max_lift=np.asarray(replay_max_lift, dtype=np.float32),
+            replay_upright_cos=np.asarray(replay_upright_cos, dtype=np.float32),
+            replay_gripper=np.asarray(replay_gripper, dtype=np.float32),
+            replay_legacy_success=np.asarray(replay_legacy_success, dtype=np.bool_),
+            replay_physical_success=np.asarray(replay_physical_success, dtype=np.bool_),
+            task=np.asarray(task),
+            episode=np.asarray(int(args.episode), dtype=np.int64),
+            mode=np.asarray(args.mode),
+            postprocess_json=np.asarray(json.dumps(postprocess, ensure_ascii=False)),
+            summary_json=np.asarray(json.dumps(summary, ensure_ascii=False)),
+        )
     args.output_json.parent.mkdir(parents=True, exist_ok=True)
     args.output_json.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(summary, ensure_ascii=False), flush=True)

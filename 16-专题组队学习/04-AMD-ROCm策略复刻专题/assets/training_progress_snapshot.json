@@ -2,13 +2,13 @@
   "records": [
     {
       "model": "ACT",
-      "stage": "best DAgger",
-      "current_step": 5000,
-      "total_steps": 5000,
-      "progress": "5000/5000 steps",
-      "loss": null,
-      "physical_success": "17/30",
-      "note": "训练约 40 分钟，显存约 3.8 GB；成功率按严格物理口径统计"
+      "stage": "protected repair15 continuation",
+      "current_step": 2500,
+      "total_steps": 2500,
+      "progress": "2500/2500 continuation steps; selected eval checkpoint step1500",
+      "loss": 0.040088,
+      "physical_success": "15/30",
+      "note": "从 stable61 step2500 保护权重低学习率续训；chunk20/n10；按闭环选择 step1500；三面板 3/10 + 4/10 + 8/10；模型 SHA b9b178377995a674a06bc5d1500c8e7e7fc5d02649268855f892b3987bf5bfeb4。"
     },
     {
       "model": "SmolVLA",
@@ -41,5 +41,5 @@
       "note": "只使用图像、语言、proprio 和历史执行动作；不是 raw pi0 主模型"
     }
   ],
-  "source": "AMD ROCm 实验日志与严格闭环评估摘要；不是一次 Notebook 会话内重新完成的长训练"
+  "source": "AMD ROCm 实验日志与严格闭环评估摘要；ACT repair15 结果已由 AMD395 实测并保护。"
 }

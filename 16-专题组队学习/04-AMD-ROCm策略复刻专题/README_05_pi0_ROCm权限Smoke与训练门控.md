@@ -4,7 +4,7 @@
 
 配套实操 Notebook：[05_pi0_smoke_gate.ipynb](./notebooks/05_pi0_smoke_gate.ipynb)。
 
-## 重要更正：旧 30-seed 面板不是位置泛化
+## 重要更正：旧 30 条评估不是位置泛化
 
 复盘 `mujoco_env/y_env2.py` 时发现，旧代码写成了 `if seed != None: np.random.seed(seed=0)`。评估虽然传入了 `1010-1039`，也确实改变了 Pi0 的动作采样随机性，但杯子和盘子的初始位置始终来自环境 seed 0。旧 scaffold 的 `30/30` 仍能证明“同一场景下，不同策略采样能稳定完成”，却不能证明位置泛化。
 
@@ -315,6 +315,388 @@ joint-delta 让关节数值误差变小，但几百步累积后仍会造成 TCP 
 
 现有实验里，`eef_abs` 是最有学习迹象的一支：teacher-forced 小集曾到 `1/2`，但 closed-loop 仍失败。后续可以保留它作为主动作表示，再配合阶段标签和 on-policy 纠偏数据。不要把“换成 EEF action”单独当成成功路线，它必须和阶段化数据一起用。
 
+<a id="pi05-eef-delta"></a>
+
+#### Pi0.5 随机位置实验：为什么 `eef_abs` 仍会走错方向
+
+固定 4 条轨迹只能说明训练链路可用，不能检验视觉定位。于是下一轮在修复环境 seed 后，先从 80 个随机位置候选中筛出 53 条严格物理成功的蓝杯完整轨迹，再补 11 条 Pi0.5 跑偏后的连续专家恢复轨迹，最终得到 64 episodes、26014 frames、20 Hz 的数据集。所有轨迹都保留双相机图像、语言、6D robot proprio 和 7D EEF/gripper action，不添加杯子坐标、盘子坐标或 GT phase。
+
+这批数据的训练结果很有代表性。恢复轨迹加权续训后，离线 gripper MAE 从 `0.25659` 降到 `0.08261`，但 xyz MAE 从 `0.10312` 变成 `0.10612`；全新随机 seeds `2120-2123` 的 strict fair-VLA 仍是 `0/4`，四条都没有形成有效抬升。视频和终态坐标显示，TCP 一直向盘子所在的负 Y 一侧移动，而蓝杯位于正 Y。
+
+这时不能只说“视觉没学会”，还要检查标签本身在时间上的结构。对 64 条轨迹做方向审计后得到：
+
+| 审计项 | 结果 |
+| --- | --- |
+| 目标蓝杯位于正 Y 的 episode | `100%` |
+| 盘子位于负 Y 的 episode | `100%` |
+| 前 80 帧净 Y 位移朝杯子 | `100%` |
+| 前 80 帧 absolute action Y 均值 | `+0.1498 m` |
+| 进度 60%-80% action Y 均值 | `-0.0937 m` |
+| 进度 80%-100% action Y 均值 | `-0.1823 m` |
+| checkpoint 首帧 probe 的负 Y 比例 | `6/6` |
+| 首帧预测相对标签的平均 Y 偏差 | `-0.1086 m` |
+
+表 4：`eef_abs` 的世界坐标标签随任务阶段发生方向反转。早期要去正 Y 的杯子，后期要去负 Y 的盘子；模型在首帧却直接输出了后段方向。
+
+绝对 EEF 目标不是错误表示，但它把任务阶段和世界坐标强耦合了。一个 action chunk 在接近阶段主要包含正 Y 目标，在搬运阶段又主要包含负 Y 目标；当小数据模型没有可靠识别当前 phase 时，最容易出现的不是随机抖动，而是直接塌缩到数据中另一个高频阶段。继续增加 gripper 权重只能让开合爪更准，不能修复这个空间方向错误。
+
+#### 用 MuJoCo FK 精确转换为局部 EEF delta
+
+这批轨迹不需要重新采集。每一帧已经保存了动作执行前的 6D 关节状态 `q_t`，而原始 action 的前三维是下一 TCP 绝对目标。因此可以用 MuJoCo 正运动学恢复当前 TCP，再计算局部增量：
+
+```text
+tcp_t = FK(q_t)
+delta_xyz_t = eef_abs_target_xyz_t - tcp_t
+```
+
+不能直接用 `action[t] - action[t-1]` 代替。前一帧目标不一定等于下一帧真实 TCP，接触、控制误差和物理步进都会造成差异；用当前关节状态做 FK 才与实际执行命令对齐。转换时图像、语言、6D proprio、gripper 标签、episode 边界和任务文本全部保持不变，只替换 action 的前三维，并重新计算 LeRobot quantile stats。
+
+本次转换的完整性检查如下：
+
+| 检查项 | 结果 |
+| --- | --- |
+| episodes / frames | `64 / 26014` |
+| 第一帧 delta xyz | 约 `[+0.004,+0.004,-0.004] m` |
+| 全数据最大单轴 delta | `0.00407564 m` |
+| `tcp + delta` 反重建最大误差 | `2.33e-10 m` |
+| 源 parquet 抽样哈希 | 转换前后不变 |
+| 新 quantile stats | 已重新计算 |
+
+表 5：EEF-delta 转换没有重采图像或改写原数据，只把世界坐标目标精确改写成当前状态下的局部动作。
+
+#### 聚合后不能只检查 `index` 集合，还要检查物理行序
+
+EEF-delta 的第一轮 64 条数据训练完成后，我们又在全新随机位置上做了执行 horizon 对照。相同 checkpoint、相同 strict fair-VLA 协议下，horizon 10 在 seeds `2130-2133` 为 `0/4`，horizon 5 仍为 `0/4`，horizon 1 在 seed `2133` 也失败。逐步轨迹显示，模型并非始终忘记闭爪：它会在错误的空间位置或错误高度闭合；真正靠近杯子时反而可能重新打开。频繁重新看图没有修复阶段顺序和 chunk 时序。
+
+![Pi0.5 EEF-delta horizon5 失败序列](./assets/pi05_eefdelta_h5_seed2133_montage.png)
+
+图 3：seed `2133`、horizon 5 的四视角时间序列。机械臂在杯子上方和周围移动，但没有进入稳定抓取高度，也没有形成抬升。关键帧图应和逐步 TCP/gripper 日志一起看，不能仅凭“夹爪动过”判断抓取成功。
+
+<video controls muted preload="metadata" width="100%">
+  <source src="./assets/pi05_eefdelta_h5_seed2133.mp4" type="video/mp4">
+</video>
+
+视频 2：同一条 seed `2133`、horizon 5 的 25 秒四视角完整 rollout。视频保留失败过程，是为了观察接近高度、闭爪时机和动作顺序，不应剪成只剩“看起来接近”的片段。
+
+随后继续采集 coherent recovery。Pi0.5 分别执行 40、80、120 步真实 prefix，专家从当前状态连续接管到 strict success，只保存完整成功轨迹：
+
+| prefix | 候选数 | strict 成功并保存 | frames |
+| --- | ---: | ---: | ---: |
+| 40 | 10 | 9 | 3076 |
+| 80 | 11（含 1 条 smoke） | 11 | 3859 |
+| 120 | 10 | 7 | 2335 |
+| 合计 | 31 | 27 | 9270 |
+
+表 6：prefix 越长，策略进入的偏差状态越深。这里保存的是“策略真实执行 prefix + 专家真实连续执行 suffix”的完整成功轨迹，不是把未执行的反事实 oracle 标签拼成 chunk。模型输入仍然只有图像、语言和 6D proprio。
+
+把原 64 条和新增 27 条聚合成 91 episodes、35284 frames 后，常规检查显示 episode 数量正确，`index` 排序后也恰好是 `0..35283`。但继续检查 `LeRobotDataset(..., delta_timestamps=...)` 时发现：某些位置的 `action_chunk[0]` 居然不等于当前行的 action。根因不是 action 数值被改坏，而是 parquet 的**物理行序**与全局 `index` 不一致。
+
+原聚合数据有 `4909/35284` 行存在 `physical_position != index`。第一个错误出现在物理位置 `21105`，该行存储的 `index` 是 `21510`。LeRobot 先用物理位置 `idx` 取当前 observation，再用 `idx + delta` 取未来 action；因此只检查“所有 index 是否齐全”会漏掉这个问题，action chunk 仍可能跨到错误帧。此前 64 条数据也存在后段文件乱序，所以第一轮 800-step checkpoint 不能再作为干净训练结果继续微调。
+
+修复时不要原地重命名或手改 metadata。使用独立输出目录，把每个 episode 写成一个 parquet，按 `frame_index` 排序，重建全局 `index`、episode 边界、文件映射和数值统计：
+
+```bash
+export AGGREGATED_ROOT=/path/to/pi05_eef_delta_aggregated_v30
+export CANONICAL_ROOT=/path/to/pi05_eef_delta_canonical_v30
+export AGGREGATED_REPO_ID=datawhale_eai_pnp_pi05_eef_delta_aggregated_v30
+export CANONICAL_REPO_ID=datawhale_eai_pnp_pi05_eef_delta_canonical_v30
+
+python "$TOPIC_ROOT/code/pi0/pi05_canonicalize_lerobot_v3.py" \
+  --source-root "$AGGREGATED_ROOT" \
+  --source-repo-id "$AGGREGATED_REPO_ID" \
+  --output-root "$CANONICAL_ROOT" \
+  --output-repo-id "$CANONICAL_REPO_ID"
+
+HF_HUB_OFFLINE=1 PYTHONPATH="/path/to/lerobot/src:${PYTHONPATH:-}" \
+python "$TOPIC_ROOT/code/pi0/pi05_validate_chunk_alignment.py" \
+  --root "$CANONICAL_ROOT" \
+  --repo-id "$CANONICAL_REPO_ID" \
+  --horizons 10 50 \
+  --uniform-samples 512 \
+  --summary ./chunk_alignment_summary.json
+```
+
+规范化副本仍是 91 episodes、35284 frames，所有非 `index` Arrow 列在逐 episode 写回后做了完整等值比较。LeRobot 真实查询验证又覆盖了每条 episode 的开头、中段、末尾、末端前 1/2/5/9/10/49 帧和全局均匀采样：horizon 10 与 50 各检查 1318 个位置，共对账 553560 个 action 标量和 28240 个 padding step，最大绝对误差均为 `0`。这才是允许启动下一轮训练的数据门槛。
+
+先在 MuJoCo PnP 项目根目录定义路径，再运行审计和转换。`DELTA_ROOT` 必须是一个不存在的新目录，脚本不会覆盖原数据：
+
+```bash
+export PROJECT_ROOT=/path/to/04mujoco复现ACT、Pi0、SmolVLA
+export TOPIC_ROOT=/path/to/every-embodied/16-专题组队学习/04-AMD-ROCm策略复刻专题
+export ABS_ROOT=/path/to/lerobot_eef_abs_v30
+export DELTA_ROOT=/path/to/lerobot_eef_delta_v30
+
+cd "$PROJECT_ROOT"
+
+python "$TOPIC_ROOT/code/pi0/pi05_dataset_direction_audit.py" \
+  --dataset-root "$ABS_ROOT" \
+  --target-object blue \
+  --early-frames 80 \
+  --output ./notebook_runs/pi05_direction_audit.json
+
+DISPLAY="${DISPLAY:-:0}" PYTHONPATH="$PROJECT_ROOT:${PYTHONPATH:-}" \
+python "$TOPIC_ROOT/code/pi0/pi05_convert_eef_abs_to_delta.py" \
+  --source-root "$ABS_ROOT" \
+  --output-root "$DELTA_ROOT" \
+  --repo-id datawhale_eai_pnp_pi05_eef_delta_v30 \
+  --scene "$PROJECT_ROOT/asset/example_scene_y2.xml" \
+  --position-profile pnp_generalization_v1
+```
+
+转换成功时，终端会打印 episodes、frames、第一条 delta、最大空间增量、反重建误差和新的 action stats。若 `max_spatial_abs` 明显超过采集器配置的 EEF 单步上限，先不要训练；优先检查 `observation.state` 是否真的是动作执行前状态、机器人关节顺序是否一致，以及 scene/XML 是否与采集时相同。
+
+这里还要注意模型初始化。`eef_abs` 和 `eef_delta` 的数值范围与语义完全不同，不能直接沿用已经微调过的 `eef_abs` action head。新的 delta 分支应从官方 Pi0.5 基座重新训练 action expert，并先检查首帧 delta-Y 是否从负方向变为正方向，再进入 closed-loop。若只看到 loss 下降，却没有检查新种子上的抬升、杯盘位置和视频，仍然不能判断动作表示是否真正有效。
+
+下面是对应的 ROCm 微调模板。示例冻结 PaliGemma VLM，只更新 Pi0.5 action expert；`action-loss-weights` 不监督恒为 0 的姿态占位维，并给 gripper 两倍权重。episode-start、恢复 episode 和 gripper transition 都通过 sampler 加权，但没有作为模型输入，因此仍属于 image + language + proprio 的 raw-compatible 训练：
+
+本专题测试的 LeRobot 源码提交为 `00b5f657`。该版本的 Pi0.5 loader 用 `safetensors.torch.load_file()` 读取权重时没有恢复 tied-weight metadata，strict load 失败后又可能返回未加载权重的随机模型。仓库中保留了一份针对该提交验证过的最小 fail-fast 补丁；先在自己的 LeRobot 源码仓运行 `--check`，只有补丁与当前版本匹配时才应用：
+
+```bash
+export LEROBOT_SRC=/path/to/lerobot
+
+cd "$LEROBOT_SRC"
+git apply --check \
+  "$TOPIC_ROOT/code/pi0/patches/lerobot_pi05_strict_safetensors_load.patch"
+git apply \
+  "$TOPIC_ROOT/code/pi0/patches/lerobot_pi05_strict_safetensors_load.patch"
+```
+
+如果 `git apply --check` 失败，不要强行加 `--reject`。先检查当前 LeRobot 是否已经在新版中修复 strict safetensors 加载；若代码结构不同，应按当前上游实现重新核对。补丁生效后，模型加载日志应包含 `Resolved tied weight alias: ...` 和 `All keys loaded successfully!`。任何 `Returning model without loading pretrained weights` 都应立即终止训练。
+
+```bash
+export PI05_BASE=/path/to/lerobot_pi05_base
+export DELTA_ROOT=/path/to/pi05_eef_delta_canonical_v30
+export DELTA_REPO_ID=datawhale_eai_pnp_pi05_eef_delta_canonical_v30
+export OUTPUT_ROOT=/path/to/outputs
+export STAGE1_DIR="$OUTPUT_ROOT/pi05_eef_delta_s800/pretrained_model"
+export STAGE2_DIR="$OUTPUT_ROOT/pi05_eef_delta_s2400/pretrained_model"
+
+PYTHONPATH="/path/to/lerobot/src:$PROJECT_ROOT:${PYTHONPATH:-}" \
+python "$TOPIC_ROOT/code/pi0/pi05_rocm_finetune.py" \
+  --model-dir "$PI05_BASE" \
+  --dataset-root "$DELTA_ROOT" \
+  --repo-id "$DELTA_REPO_ID" \
+  --output-dir "$STAGE1_DIR" \
+  --steps 800 \
+  --batch-size 4 \
+  --chunk-size 10 \
+  --learning-rate 1e-5 \
+  --warmup-steps 50 \
+  --action-loss-weights 1,1,1,0,0,0,2 \
+  --open-frame-sample-weight 1.4 \
+  --episode-start-frame-sample-weight 4 \
+  --episode-start-window 60 \
+  --tail-episode-frame-sample-weight 2.5 \
+  --tail-episode-count 27 \
+  --transition-frame-sample-weight 4 \
+  --transition-radius 10 \
+  --eval-samples 24 \
+  --eval-start-samples 8
+```
+
+800-step gate 完成后，再从该权重分支低学习率续训。换一个 sampler seed，可以避免完全重放第一段的加权抽样序列：
+
+```bash
+PYTHONPATH="/path/to/lerobot/src:$PROJECT_ROOT:${PYTHONPATH:-}" \
+python "$TOPIC_ROOT/code/pi0/pi05_rocm_finetune.py" \
+  --model-dir "$STAGE1_DIR" \
+  --dataset-root "$DELTA_ROOT" \
+  --repo-id "$DELTA_REPO_ID" \
+  --output-dir "$STAGE2_DIR" \
+  --steps 1600 \
+  --batch-size 4 \
+  --chunk-size 10 \
+  --learning-rate 5e-6 \
+  --warmup-steps 50 \
+  --seed 1 \
+  --action-loss-weights 1,1,1,0,0,0,2 \
+  --open-frame-sample-weight 1.4 \
+  --episode-start-frame-sample-weight 4 \
+  --episode-start-window 60 \
+  --tail-episode-frame-sample-weight 2.5 \
+  --tail-episode-count 27 \
+  --transition-frame-sample-weight 4 \
+  --transition-radius 10 \
+  --eval-samples 32 \
+  --eval-start-samples 16
+```
+
+当前训练器只写模型权重，不写 AdamW 与 scheduler state。因此第二段是从 800-step 权重重新建立优化器，不严格等价于 uninterrupted 2400-step 训练；合并曲线应在 step 800 标出重启边界，不把续训初期的 loss 回升误判为模型突然退化。
+
+`tail-episode-count=27` 只适用于“最后 27 个 episode 确实是本轮 coherent recovery”的这个数据布局。换成自己的数据时，应根据 manifest 调整或设为 0，不能照抄数字。`chunk-size=10` 是针对本轮短闭环执行长度的实验变量，不是 Pi0.5 的通用最优值。训练脚本会先检查物理行位置、全局 `index`、episode 边界、`frame_index` 和 `chunk[0]`；旧的乱序数据会在加载大模型前直接失败。训练日志还必须出现 `All keys loaded successfully!`；结束时检查 `trainable_head_max_delta > 0` 且 `frozen_vlm_max_delta = 0`，分别证明 action expert 真的更新、冻结的视觉语言主干没有被误改。
+
+#### canonical91 的 800-step gate：离线变好，不等于闭环已学会
+
+从官方 Pi0.5 基座重新训练 800 steps 后，结构门禁仍是 `91 episodes / 35284 frames / 0 行错位`，273 个 episode 边界 probe 的 `chunk[0]` 最大误差为 0。训练峰值显存约 `11.14 GiB`，没有 OOM、kernel crash 或 NaN；action expert 参数确实发生变化，冻结 VLM 的抽样参数变化为 0。
+
+| 指标 | 训练前 | 800 steps 后 |
+| --- | ---: | ---: |
+| flow loss | 1.86613 | 0.72765 |
+| action MAE | 0.07255 | 0.04588 |
+| xyz MAE | 0.003005 | 0.002332 |
+| gripper MAE | 0.49882 | 0.31419 |
+
+表 7：这些指标证明加载、反向传播和优化方向正常，但只是在数据状态上的离线结果。
+
+严格 closed-loop 使用完整训练指令、`eef_delta`、执行 horizon 10、fresh env、hard reset 和相同物理成功判据。结果如下：
+
+| 评估面板 | seeds | strict physical success | legacy success |
+| --- | --- | ---: | ---: |
+| 训练内位置 | `1000-1003` | `0/4` | `0/4` |
+| 全新随机位置 | `2180-2183` | `0/4` | `0/4` |
+
+表 8：训练内位置和全新位置同时失败，因此当前先归为整体欠拟合/阶段时序失败，不能只写成“泛化不足”。
+
+![Pi0.5 canonical EEF-delta 训练与 recovery 覆盖](./assets/pi05_canonical_chunk10_training_and_recovery.png)
+
+图 4：左图显示 800-step flow loss 已下降，右图显示不同 policy prefix 下连续专家接管数据的保存率。prefix 120 的保存率下降到 70%，说明更长 prefix 确实覆盖了更深的策略跑偏状态。
+
+这里还要正确计算训练覆盖。800 steps、batch size 4 只抽取了 `3200` 个当前 observation，相当于全数据 `35284` 帧的约 `9.1%`；加权 sampler 还会重复抽取 episode 起步、recovery 尾段和 gripper transition 窗口。一个 observation 虽监督未来 10 个动作，但不能算成 10 个独立视觉状态。因此 800 steps 是有意义的 gate，不是充分训练轮数。
+
+官方配置也能帮助校准量级，但不能机械照抄。[LeRobot 的 Pi0.5 文档](https://github.com/huggingface/lerobot/blob/main/docs/source/pi05.mdx)给出的自定义数据示例是 `3000 steps × batch 32`，LIBERO 对照还使用了额外 6000 steps；[OpenPI 官方训练配置](https://github.com/Physical-Intelligence/openpi/blob/main/src/openpi/training/config.py)中的不少微调任务以数万步为量级。它们的数据规模、冻结策略和 batch 都与本实验不同，所以不能据此宣布“必须训多少步”；但可以确认 `800 × 4` 更适合作为链路和方向 gate，而不是收敛证据。
+
+逐步日志进一步缩小了问题范围。四个全新 seed 中，TCP 最接近杯子时的平面距离约 `5.4-6.7 cm`，但仍比杯体中心高约 `10.4-13.8 cm`，夹爪已经接近闭合；随后 TCP 继续越过杯子，最后才在杯子外下降。也就是说，模型不是完全没有识别蓝杯，而是把“继续接近、下降、闭合”三个阶段排错了。
+
+日志还暴露了控制幅值问题：记录到的 432 个动作行中有 123 行至少一个 XYZ 分量超过 `4 mm`，最大单轴增量达到 `9.56 mm`，而专家数据的最大单轴增量约为 `4.08 mm`。因此后续增加一个固定 `--eef-delta-max-step 0.004` 对照。它只表达控制器物理步长上限，不读取数据集 min/max、杯盘坐标或 phase；但它确实改变了执行动作，所以必须标为 actuator-bound protocol，不能把结果和完全不限幅的 raw rollout 混在一起。
+
+![Pi0.5 canonical91 训练内 seed1003 失败序列](./assets/pi05_canonical_s800_seed1003_montage.png)
+
+图 5：seed `1003` 来自训练数据覆盖的位置。策略靠近蓝杯后在上方/侧面闭合，接着将杯子推倒并越过目标。杯子最大瞬时抬升约 `1.63 cm`，没有达到连续 3 步、至少 `3 cm` 的严格抬升条件。
+
+<video controls muted preload="metadata" width="100%">
+  <source src="./assets/pi05_canonical_s800_seed1003.mp4" type="video/mp4">
+</video>
+
+视频 3：canonical91、800-step checkpoint 在训练内 seed1003 上的完整 raw Pi0.5 失败 rollout。它没有使用 target/plate 坐标、oracle prefix、外置 head 或 scripted finisher。
+
+#### s2400 复核：gripper 更准，闭环方向仍没有学稳
+
+从 s800 权重重新建立 AdamW 和 cosine scheduler，再训练 1600 steps；累计虽叫 s2400，但第二段没有恢复优化器状态。第二段仍是 `batch=4`、action-expert-only，实际新增 `1600 × 4 = 6400` 个当前观测，两个阶段合计 `9600`，约等于 canonical91 全部 35284 帧的 `27.2%`。
+
+| 指标 | s800 阶段终点 | s2400 阶段终点 |
+| --- | ---: | ---: |
+| flow loss | `0.72765` | `0.76586` |
+| action MAE | `0.04588` | `0.01265` |
+| xyz MAE | `0.002332` | `0.002616` |
+| gripper MAE | `0.31419` | `0.08073` |
+
+表 9：续训主要把 gripper 数值压得更准，XYZ 方向并没有同步变好。不同阶段的 flow loss 受随机噪声和验证样本影响，不应只比较最后一位小数。
+
+这次不再只跑 4 条。s800 与 s2400 都使用 10 条训练内环境和同一组 10 条全新环境，s2400 另加固定 `4 mm` 单步控制上限对照：
+
+| checkpoint / 协议 | 训练内 10 seed | 全新 `2180-2189` | strict | legacy |
+| --- | --- | --- | ---: | ---: |
+| s800 raw | `1000,1001,1002,1003,1006,1007,1009,1010,1011,1012` | - | `0/10` | `0/10` |
+| s800 raw | - | 是 | `0/10` | `0/10` |
+| s2400 raw | 同上 | - | `0/10` | `0/10` |
+| s2400 raw | - | 是 | `0/10` | `0/10` |
+| s2400 + `4 mm` actuator bound | - | 是 | `0/10` | `0/10` |
+
+表 10：训练内、全新位置和执行限幅都没有通过。限幅会改变执行动作，必须单独列为 actuator-bound protocol；这里它也没有救回任务。
+
+这个结果把问题从“是不是只差 unseen 泛化”推进了一步：模型连训练分布的 reset 状态都没有闭环完成。首动作方向探针也显示，s2400 对全部 probe 的 XYZ 三轴符号同时正确率约 `21.9%`，平均方向 cosine 约 `0.15`；继续 action-expert-only 主要学会了更像标签的夹爪数值，没有建立稳定视觉定位和阶段方向。
+
+#### 先做 GT delta 回放：训练上限不是默认 100%
+
+下一步没有立刻加训练步数，而是问一个更基础的问题：把数据集 action 原样送回环境，能否按当前 strict 协议完成？这个负对照必须复原采集时的全部状态语义：
+
+1. 使用每条轨迹保存的环境 seed 和 `pnp_generalization_v1`；
+2. 每条 episode 前完整清理 MuJoCo `qpos/qvel/ctrl/free-joint`；
+3. 使用 reset 后自然 settle 的物体姿态，不把逻辑 spawn `obj_init` 的 Z 强写回仿真；
+4. recovery episode 先执行当时真实保存的 Pi0 prefix，再执行专家 suffix；
+5. 批量回放复用同一环境并 hard reset，避免反复创建资产 provider 和文件句柄。
+
+这几项少一项，数字都会误导：把 `obj_init` 强写回 reset 后状态时，前 10 条只有 `6/10`；改用 settled pose、但漏掉位置随机 profile 时只有 `2/10`；profile 与 settled pose 都对齐后，前 10 条变成 `9/10`。扩大到全部 91 条后，结果如下：
+
+| GT 回放协议 | strict | legacy | 解释 |
+| --- | ---: | ---: | --- |
+| 不恢复 recovery 保存的 Pi0 prefix | `57/91` | `59/91` | 从 reset 直接播放 suffix，takeover state 不成立 |
+| 恢复真实 prefix + 原 seed/profile + settled pose | `82/91` | `84/91` | 与采集状态链一致 |
+| 上一行中的 38 条 recovery | `38/38` | `38/38` | coherent suffix 全部可严格复放 |
+| 上一行中的 53 条 base | `44/53` | `46/53` | 9 条原始 base 本身脆弱 |
+
+表 11：`GT delta` 指当前帧数据里保存的专家 EEF-delta/gripper action。它不是模型预测，也不是“给模型看目标坐标”；它是用来检查数据、reset 和控制桥是否自洽的负对照。
+
+严格失败的 base episode 是 `1,13,17,20,22,25,37,45,47`，对应环境 seeds `1001,1020,1026,1030,1033,1039,1057,1067,1070`。它们不是 recovery，不能靠恢复 prefix 解释。继续把这些轨迹当作 BC 正样本，会把仿真中无法稳定复现的动作序列当成监督上限。
+
+#### replayable82：只过滤 9 条脆弱 base，保留全部 recovery
+
+新的训练副本从 canonical91 中删除上面 9 条 strict GT 回放失败的 base episode，保留 44 条完整任务和全部 38 条 coherent recovery，共 `82 episodes / 31592 frames`。过滤不是简单删 parquet：episode/index 要重新编号，global/episode stats 要重算，所有非 index 内容要逐列比较，最后再走真实 LeRobot chunk 查询。
+
+| 检查 | 结果 |
+| --- | ---: |
+| 每 episode 单独 parquet | 是 |
+| `physical_position != index` | `0` 行 |
+| horizon 10 | `1235` 个位置，`86450` 个 action 值，最大误差 `0` |
+| horizon 50 | `1235` 个位置，`432250` 个 action 值，最大误差 `0` |
+| episode 末端 padding | horizon 10 检查 `2318` 步；horizon 50 检查 `23253` 步 |
+
+表 12：replayable82 的 `82/82` 表示这些 GT 轨迹具备严格复放资格，不是 Pi0.5 模型成功率。
+
+把 GT 回放通过的 source episode id 写成一个 JSON 数组，再让 canonicalizer 完成筛选与重新编号：
+
+```bash
+python "$TOPIC_ROOT/code/pi0/pi05_canonicalize_lerobot_v3.py" \
+  --source-root "$CANONICAL91_ROOT" \
+  --source-repo-id "$CANONICAL91_REPO_ID" \
+  --output-root "$REPLAYABLE82_ROOT" \
+  --output-repo-id "$REPLAYABLE82_REPO_ID" \
+  --include-episodes-json ./replayable_source_episodes.json
+```
+
+`replayable_source_episodes.json` 的内容来自 GT 回放结果，不要按 episode 长度、loss 或最终视频观感手工挑选。脚本会把 source episode 到新 episode 的映射写进 summary，后续追溯某条训练轨迹时仍能回到原始编号。
+
+过滤后还修了一个容易被忽略的 sampler 偏差。82 条里只有前 44 条从任务 reset 开始，后 38 条是 takeover suffix。旧写法会给全部 82 条的前 60 帧都乘“episode start”权重，把 recovery 的 takeover state 错当成 reset start。现在增加 `--episode-start-episode-count 44`，真正起步窗口从 `4920` 帧缩到 `2640` 帧；recovery 则由 `--tail-episode-count 38` 单独加权。模型输入没有 episode id、prefix 长度或 phase，这只是训练抽样概率修正。
+
+#### `expert_vision`：让视觉定位参与学习，但继续冻结语言塔
+
+s2400 的 action expert 已有 4.30 亿可训练参数，视觉与语言主干全部冻结。固定一句蓝杯指令时，继续解冻语言模型的收益有限，视觉定位却是当前明显缺口。因此训练器新增三个模式：
+
+| 模式 | 更新参数 | 用途 |
+| --- | --- | --- |
+| `expert_only` | action expert / action projection | 低显存 smoke 和旧基线 |
+| `expert_vision` | action expert + vision tower + multimodal projector | 当前主线，语言模型冻结 |
+| `full` | 除未使用 expert LM head 外的完整模型 | 高风险对照，不作为 64 GiB 设备默认配置 |
+
+`expert_vision` 仍是 raw-compatible VLA：输入只有双相机图像、语言和 robot proprio，没有 target/plate 坐标、oracle prefix、外置 gripper head 或 scripted finisher。LeRobot 官方 Pi0.5 示例也明确给出 `freeze_vision_encoder=false`、`train_expert_only=false` 和 `batch_size=32` 的完整微调方向；本实验没有照抄全量解冻，而是在统一内存范围内先解冻最相关的视觉路径：[LeRobot Pi0.5 文档](https://github.com/huggingface/lerobot/blob/main/docs/source/pi05.mdx)。
+
+只看 `requires_grad=True` 不够。训练器在 FP32 vision patch embedding、action head 和语言层各放一个参数探针：前两者必须发生非零变化，语言层必须保持 0。BF16 参数若只更新约 `1e-6`，直接比较可能被量化成 0，所以视觉探针选的是 FP32 patch embedding。
+
+| smoke | gradient checkpointing | 峰值显存 | 结果 |
+| --- | --- | ---: | --- |
+| batch 1，1 step | 开 | `14.27 GiB` | vision `1.01e-6`，language `0` |
+| batch 4，1 step | 开 | `14.29 GiB` | 通过 |
+| batch 8，1 step | 开 | `14.31 GiB` | 通过 |
+| batch 32，10 steps | 开 | `24.89 GiB` | 视觉持续更新，`377.91 s` |
+| batch 8，1 step | 关 | `29.89 GiB` | 通过，但吞吐优势有限 |
+| batch 16，1 step | 关 | `52.80 GiB` | 能跑但余量过小，不采用 |
+
+表 13：64 GiB 是 CPU/GPU 统一内存，不应把 52.8 GiB 的 PyTorch 峰值当成“还有 11 GiB 显存”。桌面、ROCm runtime、文件缓存和系统服务都要占内存；数小时训练选择 batch 32 + checkpointing，保留故障余量。
+
+阶段门控命令如下。`44` 和 `38` 来自当前 replayable82 manifest，换数据集时必须重新计算：
+
+```bash
+python "$TOPIC_ROOT/code/pi0/pi05_rocm_finetune.py" \
+  --model-dir "$PI05_S2400" \
+  --dataset-root "$REPLAYABLE82_ROOT" \
+  --repo-id "$REPLAYABLE82_REPO_ID" \
+  --output-dir "$EXPERT_VISION_OUT" \
+  --train-mode expert_vision \
+  --steps 400 --batch-size 32 --chunk-size 10 \
+  --learning-rate 2e-6 --warmup-steps 20 \
+  --action-loss-weights 1,1,1,0,0,0,2 \
+  --open-frame-sample-weight 1.4 \
+  --episode-start-frame-sample-weight 4 \
+  --episode-start-window 60 \
+  --episode-start-episode-count 44 \
+  --tail-episode-frame-sample-weight 2.5 \
+  --tail-episode-count 38 \
+  --transition-frame-sample-weight 4 \
+  --transition-radius 10
+```
+
+这段训练处理 `400 × 32 = 12800` 个加权当前观测。结束后仍要分别跑“与训练数据相近的位置”和“未见过的位置”两组固定 10-seed strict 评估；前一组仍为 0 时不能写成“视觉泛化差”，而要继续检查整体拟合和阶段时序。
+
 ### 路线 5：给每个新实验设置门槛
 
 pi_0 后续实验建议用三层门槛，不再只看单个视频：
@@ -340,7 +722,7 @@ pi_0 后续实验建议用三层门槛，不再只看单个视频：
 6. 用 phase + EEF/TCP action 训练阶段化 policy 或 finisher 子策略；如果继续做 finisher，保留盘心相对位姿、当前 TCP-to-plate 向量和阶段内进度，并给红杯搬运/落点单独补纠偏样本。
 7. 每个 checkpoint 先跑 full20 teacher-forced open-loop，再跑 20 seed closed-loop strict；低于 baseline 的分支直接停。
 
-这条路线的目标不是马上追上 SmolVLA 的 `53/60`。更现实的第一目标是让 pi_0 raw closed-loop 从 `0/20` 变成可重复的 `3/20` 到 `5/20`。只要这一步成立，就说明阶段化和纠偏数据开始真正起作用；后面再扩大数据和 seed，去追 ACT 的 `17/30`。
+这条路线的目标不是马上追上 SmolVLA 的 `57/60`。更现实的第一目标是让 pi_0 raw closed-loop 从 `0/20` 变成可重复的 `3/20` 到 `5/20`。只要这一步成立，就说明阶段化和纠偏数据开始真正起作用；后面再扩大数据和 seed，去追 ACT 的 `17/30`。
 
 ## 常见问题
 
@@ -382,4 +764,4 @@ pi_0 会下载较大的 gated model 权重，调试时也会涉及 Hugging Face 
 
 ![当前复刻状态总览](./assets/model_status_summary.png)
 
-图 3：pi_0 raw 与 pi_0 + scripted finisher 是两个不同口径。前者是模型本身，后者是定位尾段瓶颈的诊断工具。
+图 6：pi_0 raw 与 pi_0 + scripted finisher 是两个不同口径。前者是模型本身，后者是定位尾段瓶颈的诊断工具。

@@ -1,21 +1,25 @@
-# AMD ROCm 云平台使用指南
+# AMD ROCm 云平台使用指南（AUP Learning Cloud 优先）
 
-> 这一页把 AMD Radeon Cloud（开发者云）和 AUP Learning Cloud（ALC）放在同一条学习路径中。两者都可以用来完成本专题的浏览器端开发、Notebook 实验和 ROCm 环境准备；具体额度、镜像、硬件和授权方式以平台当前页面与管理员通知为准。
+> 推荐顺序：优先使用 AUP Learning Cloud 完成本专题的代码开发、模型准备、训练和 Notebook 实验；AMD Radeon Cloud 作为备用入口，用于快速验证 ROCm、PyTorch 和现成模板。具体额度、镜像、硬件和授权方式以平台当前页面与管理员通知为准。
 
-开发者云部分参考并整理自 [hello-rocm 的 AMD Radeon Cloud 使用文档](https://github.com/datawhalechina/hello-rocm/blob/master/docs/zh/cloud/amd-radeon-cloud.md)，图片已下载到本专题仓库并改为统一的本地相对路径。
+开发者云部分参考并整理自 [hello-rocm 的 AMD Radeon Cloud 使用文档](https://github.com/datawhalechina/hello-rocm/blob/master/docs/zh/cloud/amd-radeon-cloud.md)，图片已下载到本专题仓库并改为统一的本地相对路径。AUP Learning Cloud 的登录、Notebook、Code Server 和持久化目录说明也整理在本页中。
 
 ## 一、两个平台怎么选
 
-| 项目 | AMD Radeon Cloud（开发者云） | AUP Learning Cloud（ALC） |
+| 项目 | AUP Learning Cloud（ALC，推荐） | AMD Radeon Cloud（开发者云，备用） |
 |---|---|---|
-| 入口 | [AMD AI 开发者计划中文站](https://developer.amd.com.cn/login?source=91kadjjnI) | [tpe.aupcloud.io](https://tpe.aupcloud.io) |
-| 本专题记录的硬件 | AMD Radeon PRO 7900D，约 48 GB 显存 | AMD Ryzen AI MAX+ 395，约 64 GB 统一内存 |
-| 工作区 | Radeon Cloud Gallery 中的 Notebook / Workspace | JupyterHub 或 Code Server GPU Environment |
-| 模型和数据下载 | 优先使用魔搭 ModelScope，国内网络更方便 | 本专题环境中 Hugging Face 直连不稳定或不可用，优先使用预下载文件、共享目录或浏览器上传 |
-| 适合的任务 | 直接启动现成 AMD ROCm 模板，快速验证教程 | 进行长时间训练、Notebook 调试和本专题的 Pi0.5 / ACT / SmolVLA 复刻 |
-| 使用前确认 | 额度、工作区模板、ModelScope 登录状态 | 额度、GPU 镜像、持久化目录和 Hugging Face 权重是否已经准备好 |
+| 入口 | [tpe.aupcloud.io](https://tpe.aupcloud.io)，使用 GitHub 授权登录 | [AMD AI 开发者计划中文站](https://developer.amd.com.cn/login?source=91kadjjnI) |
+| 本专题记录的硬件 | AMD Ryzen AI MAX+ 395，约 64 GB 统一内存 | AMD Radeon PRO 7900D，约 48 GB 显存 |
+| 工作区 | JupyterHub 或 Code Server GPU Environment | Radeon Cloud Gallery 中的 Notebook / Workspace |
+| 模型和数据准备 | 可按 Notebook 使用 Hugging Face、GitHub 及本地持久化目录 | 按当前模板与平台提供的方式准备模型和数据，优先使用魔搭 ModelScope |
+| 适合的任务 | 本专题正式训练、Notebook 调试、闭环评估和长任务续跑 | 直接启动现成 AMD ROCm 模板，快速验证教程 |
+| 使用前确认 | GitHub 授权、GPU 镜像、持久化目录和可用额度 | 额度、工作区模板和 ModelScope 登录状态 |
 
 两边的**代码、数据格式和评估口径可以保持一致**。真正需要按平台切换的主要是硬件探测、模型下载方式、缓存目录和可用的 GPU/统一内存容量。不要因为平台不同而复制两套训练脚本。
+
+当前课程沟通中，AUP Learning Cloud 处于内测/学习支持阶段，常见初始额度约为 10 小时，优秀学习者可由课程组织者汇总后申请增加；也有活动期赠送使用的安排。这个数字和追加方式不是永久承诺，实际可用时长以登录页面和管理员当期通知为准。建议先在 AUP 上完成本专题主流程，再根据需要使用开发者云做快速验证。
+
+无论使用哪一个平台，都先用内置成功视频完成零训练预览，再启动正式训练。这样即使当前额度较少，也能先理解任务、输出格式和严格成功判定。
 
 本专题统一使用以下原则：
 
@@ -24,7 +28,19 @@
 - 模型下载失败先判断网络和缓存，不要直接改训练代码；
 - 训练完成必须用同一套 MuJoCo strict rollout 和 physical success 复核。
 
-## 二、AMD 开发者云（Radeon Cloud）
+## 二、AUP Learning Cloud（推荐入口）
+
+AUP Learning Cloud 是本专题的优先实践入口，适合直接打开 Notebook、使用 Code Server、准备公开模型和数据，并在持久化目录中完成训练与闭环评估。建议第一次学习按下面的顺序操作：
+
+1. 打开 [AUP Learning Cloud](https://tpe.aupcloud.io)，使用 GitHub 授权登录；
+2. 选择 GPU Environment，确认课程目录、项目目录和持久化存储可用；
+3. 克隆本专题仓库，按 Notebook 中的环境检查单元格确认 ROCm、PyTorch 和 GPU；
+4. 优先运行零训练成功预览，再开始 smoke、正式训练和视频评估；
+5. 将源码、数据、模型权重、checkpoint 和结果保存到持久化目录，并保留校验信息。
+
+AUP 的完整登录、JupyterHub、Code Server、持久化目录和退出方式见下方的详细章节。学习者不需要先申请本地账号，直接使用 GitHub 授权即可进入。
+
+## 三、AMD 开发者云（Radeon Cloud，备用入口）
 
 AMD Radeon Cloud 是 AMD AI 开发者计划中文站提供的浏览器云算力入口。它适合先启动现成模板，确认 ROCm、PyTorch、Notebook 和本专题代码能否运行。
 
@@ -46,7 +62,7 @@ AMD Radeon Cloud 是 AMD AI 开发者计划中文站提供的浏览器云算力�
 
 ### 2. 开发者云的模型下载方式
 
-开发者云优先使用魔搭 ModelScope 下载模型和数据，不把 Hugging Face 直连作为前置条件。示例命令如下，具体模型名和保存目录按任务替换：
+开发者云中优先使用魔搭 ModelScope 准备模型和数据。示例命令如下，具体模型名和保存目录按任务替换：
 
 ```bash
 pip install modelscope
@@ -88,22 +104,24 @@ modelscope download --model <model-id> --local_dir <model-dir>
 进入工作区后，直接打开本专题的 [AMD ROCm 策略复刻专题](./README.md)，推荐从以下顺序开始：
 
 1. [设备与环境确认](./README_01_AMD_ROCm设备与环境确认.md)；
-2. [端到端采集、训练与 MuJoCo 部署](./README_07_ROCm端到端采集训练部署.md)；
-3. 对应的 ACT、SmolVLA 或 Pi0.5 Notebook；
-4. [物理成功评估与视频复核](./README_02_物理成功评估与视频复核.md)。
+2. 打开 [MuJoCo closed-loop Notebook](./notebooks/11_mujoco_closed_loop_deploy.ipynb)，先运行零训练成功预览；
+3. [端到端采集、训练与 MuJoCo 部署](./README_07_ROCm端到端采集训练部署.md)；
+4. 对应的 ACT、SmolVLA 或 Pi0.5 Notebook；
+5. [物理成功评估与视频复核](./README_02_物理成功评估与视频复核.md)。
 
 这里不再跳转到与本专题无关的入门课程；开发者云在本专题中的用途是运行 ROCm 具身策略复刻代码。
 
-## 三、AUP Learning Cloud 登录说明
+## 四、AUP Learning Cloud 详细说明
 
 ### AUP 的模型和数据准备
 
-本专题使用 AUP 时，Hugging Face 直连在当前网络环境中可能不可用。遇到模型下载超时、连接失败或反复重试时，优先采用下面的顺序：
+本专题在 AUP 上优先使用 Hugging Face、GitHub 和本地持久化目录准备模型、数据与源码。建议按下面的顺序操作：
 
-1. 在网络正常的工作站提前下载模型、数据集或缓存；
-2. 通过共享目录、SFTP 或浏览器上传到 AUP 的持久化目录；
-3. 在 Notebook / 训练脚本中把模型路径和数据路径指向已上传的本地目录；
-4. 先做文件大小、校验和、权重文件数量检查，再启动训练。
+1. 通过 GitHub 授权进入 AUP，并在 GPU Environment 中打开终端或 Notebook；
+2. 使用 Hugging Face 官方仓库或 GitHub 仓库准备模型、数据和代码，并将缓存目录指向持久化存储；
+3. 需要跨设备准备文件时，可使用共享目录、SFTP 或浏览器上传到 AUP 的持久化目录；
+4. 在 Notebook / 训练脚本中把模型路径和数据路径指向持久化目录；
+5. 启动训练前检查文件大小、校验和、权重文件数量和磁盘空间。
 
 不要把 Hugging Face token 写进公开 Notebook、Markdown、截图或日志。AUP 的持久化目录只保存源码、数据、模型和实验结果，临时工作区结束后会被重置的目录不要放唯一副本。
 

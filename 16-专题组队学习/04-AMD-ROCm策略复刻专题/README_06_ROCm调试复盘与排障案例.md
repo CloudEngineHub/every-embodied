@@ -482,6 +482,280 @@ visual keyframe head 的输入是 agent/wrist 图像经过 Pi0/SigLIP 主干得�
 
 更完整的实验路线写在 [pi_0 权限 smoke 与训练门控](./README_05_pi0_ROCm权限Smoke与训练门控.md) 的“pi_0 成功率怎么往上提”一节。那一节把当前 baseline、已经排除的路线、阶段化 policy、EEF/TCP action、on-policy 纠偏数据和新的评估门槛放在一起，后续实验直接按那张路线图推进。
 
+## 案例 11：逐帧 oracle 标签不一定能组成 action chunk
+
+**现象**：为了给 Pi0.5 补跑偏状态，第一版采集器让策略先执行 40 步，并在每个策略状态上计算一个 oracle 纠偏 action。5 条数据加入训练后，gripper 离线误差有所下降，但全新 seeds 和采集过的旧 seeds 都仍是 `0/4`。这不是简单的“DAgger 数据太少”，而是数据的时间语义不成立。
+
+Pi0.5 一次监督的是未来 50 个动作。第一版采集逻辑等价于：
+
+```text
+obs_0 --student_action_0--> obs_1 --student_action_1--> obs_2 ...
+  |                          |
+  +-- oracle_label_0         +-- oracle_label_1
+```
+
+`oracle_label_0` 只表示“如果在 `obs_0` 接管，第一步应该怎么纠偏”，但它没有被执行。`obs_1` 是执行 `student_action_0` 后得到的，不是执行 `oracle_label_0` 后得到的。同理，`oracle_label_1` 也只是另一个反事实单步标签。把 `[oracle_label_0, oracle_label_1, ...]` 当成一个未来 action chunk，相当于告诉模型执行一条从未在环境中发生过的轨迹。
+
+这个问题对单步行为克隆不一定马上暴露，因为每个 `(observation, one_step_label)` 单独看都合理；对 action-chunk policy 却是结构性错误。chunk 内第 2 到第 50 个动作默认建立在前一个标签已执行的状态上，而这里的观测状态由 student action 推进，两条状态链不一致。
+
+**修复**：改成连续专家接管。Pi0.5 先执行 10 步，专家从当前跑偏状态开始真正控制环境，采集器只保存接管后的连续后缀：
+
+```text
+student prefix --> takeover_state
+takeover_state --oracle_0--> state_1 --oracle_1--> state_2 ...
+                    |                    |
+                  save                 save
+```
+
+这样每个未来 action 都建立在前一个 oracle action 已执行的状态上，50-step chunk 才有真实动力学含义。候选 seeds `2100-2119` 共 20 条，严格物理成功后保存 11 条，合计 4504 frames；失败轨迹不进入训练集。长时间 fresh-env 采集还遇到一次 `Too many open files`，最终改为每批 5 个候选并用 `--resume` 追加，收齐后检查 episode index、frame count 和 manifest，没有靠手改 metadata 修补。
+
+修正数据后仍要诚实看闭环。clean53 与 coherent recovery11 聚合训练后，gripper MAE 从 `0.25659` 降到 `0.08261`，说明连续恢复数据确实教会了一部分开闭时序；但 xyz MAE没有改善，全新随机 seeds `2120-2123` 仍为 strict `0/4`。因此本例有两个独立结论：第一版 DAgger chunk 在时间上无效，必须修；修正连续性后，空间接近方向仍是另一个瓶颈，不能因为数据工程问题解决了就宣称模型成功。
+
+以后审计 action-chunk DAgger，可以逐项检查：
+
+| 检查项 | 通过条件 |
+| --- | --- |
+| observation 的下一状态由谁产生 | 与保存 label 的执行者一致 |
+| chunk 内动作是否连续执行过 | 是，或由同一动力学 rollout 生成 |
+| policy prefix 是否写入训练集 | 只有标签与状态链一致时才写 |
+| takeover suffix 是否物理成功 | 用 strict success 和视频共同确认 |
+| 失败轨迹如何处理 | 单独留作诊断，不默认混入成功 BC 数据 |
+| resume 后 episode 是否完整 | 核对 manifest、episode set、frame count 和索引连续性 |
+
+表 6：DAgger 的关键不是“有 oracle 标签”，而是标签、观测和环境状态转移必须属于同一条可执行轨迹。
+
+## 案例 12：`index` 全部存在，action chunk 仍可能串帧
+
+**现象**：64 条 EEF-delta 数据加 27 条 coherent recovery 聚合后，metadata 显示 91 episodes、35284 frames；所有 `index` 排序后也恰好是 `0..35283`。这些检查都通过了，但训练抽样时，某些位置的 `action_chunk[0]` 与当前 parquet 行的 action 不相等。继续训练会让 observation 和未来动作监督错配，loss 仍可能下降，闭环却学不到稳定阶段顺序。
+
+LeRobot 的 chunk 查询可以简化为：
+
+```text
+current_observation = physical_rows[idx]
+future_actions = physical_rows[clamp(idx + delta, episode_start, episode_end - 1)]
+```
+
+这里的 `idx` 是 Hugging Face Dataset 的物理行位置，不是读取当前行的 `index` 值后再查一次。若 parquet 文件按文件名加载后，在 physical position `21105` 放的是 stored index `21510`，即使 `index` 集合最终仍然完整，`idx + delta` 也会指向错误帧。原聚合数据共有 `4909` 行物理位置错位，第一个错位正是 `21105 -> 21510`。
+
+这个问题还会污染 sampler。旧训练摘要中的 gripper transition center 在某处从 `21028` 跳到 `25707/25937`，随后又回到 `21195`；transition center 本应随 episode 顺序单调增加，这个反常顺序就是物理行乱序留下的证据。
+
+**根因**：聚合工具验证了“全局 index 排序后连续”和“episode 都存在”，却没有验证“按 parquet 实际加载顺序，位置 `i` 的 stored index 就是 `i`”。缺失 episode 被追加恢复后，文件编号、episode 编号和全局 index 的顺序不再一致；旧 per-episode action stats 还残留为 `eef_abs`，进一步增加了误判风险。
+
+**修复**：源数据保持只读，写一个独立 canonical 副本：
+
+1. 按实际 `episode_index` 找到每条轨迹的源 parquet；
+2. 每条 episode 内按 `frame_index` 排序；
+3. 每个 episode 写入单独文件 `file-{episode_index}.parquet`；
+4. 按 episode 顺序重建全局 `index` 和 `dataset_from/to_index`；
+5. 修复 data/meta 文件映射并从实际数值重新计算 per-episode/global stats；
+6. 写回后完整比较所有非 `index` Arrow 列，图像字节、状态、动作和任务信息不得变化。
+
+配套脚本是 [`pi05_canonicalize_lerobot_v3.py`](./code/pi0/pi05_canonicalize_lerobot_v3.py) 和 [`pi05_validate_chunk_alignment.py`](./code/pi0/pi05_validate_chunk_alignment.py)。本轮 canonical91 的结构错位从 `4909` 降到 `0`。随后通过 LeRobot 的真实 `delta_timestamps` 接口，horizon 10/50 各检查 1318 个代表位置；553560 个 action 标量、28240 个 episode 末端 padding 全部对齐，最大绝对误差为 `0`。
+
+**训练处置**：已经在乱序数据上训练过的 checkpoint 不能因为 loss 好看就继续当干净基座。部分帧的 observation-action chunk 监督已经错配，最稳妥的做法是从官方 Pi0.5 基座重新训练。`pi05_rocm_finetune.py` 也加入了启动门禁：物理位置、全局 `index`、episode 边界、`frame_index` 或边界 `chunk[0]` 任一不一致，就在加载 7GB 模型前报错退出。
+
+以后聚合 action-chunk 数据，最少同时检查下面四层：
+
+| 层级 | 必须满足 |
+| --- | --- |
+| 集合 | episodes、frames、index 集合完整 |
+| 物理行序 | 第 `i` 行的 stored index 等于 `i` |
+| episode 边界 | 每条轨迹连续、frame 从 0 递增、metadata from/to 一致 |
+| 模型读取 | `chunk[0] == current action`，未来动作不跨 episode，末尾 padding 正确 |
+
+表 7：对 action-chunk policy 来说，第四层才最接近训练时真正读取的数据。只做第一层会留下最危险的静默错误。
+
+## 案例 13：离线误差下降，但训练内 seed 和全新 seed 都是 0/4
+
+**现象**：canonical91 通过物理行序和 action-chunk 门禁后，从官方 Pi0.5 基座重新训练 800 steps。flow loss 从 `1.86613` 降到 `0.72765`，action MAE 从 `0.07255` 降到 `0.04588`，gripper MAE 也从 `0.49882` 降到 `0.31419`。如果只看这些数字，很容易把下一步直接写成“扩大 unseen 评估”。
+
+严格 closed-loop 给出了不同结论：训练数据覆盖的位置 `1000-1003` 是 `0/4`，全新位置 `2180-2183` 也是 `0/4`。两组都没有形成连续 3 步、至少 `3 cm` 的有效抬升。与训练数据相近的位置都没有通过时，当前问题还不能主要归因于空间泛化。
+
+这轮评估还遇到一个工具层假故障。新 launcher 通过 SSH 启动时没有继承桌面变量，`pyautogui` 在 import 阶段报 `KeyError: 'DISPLAY'`，rollout 根本没有开始。远端实际存在 `:0` 图形会话，旧 ACT/SmolVLA/Pi0 脚本也都使用 `DISPLAY=:0` 和 `MUJOCO_GL=glfw`。补齐这两个环境变量后，模型 strict load、MuJoCo 初始化和四条 rollout 正常完成。第一次失败应归为评估环境问题，不能计入模型成功率分母。
+
+逐步轨迹比最终 `0/4` 更有信息。四条全新 seed 中，TCP 最接近杯子时的平面距离约为 `5.4-6.7 cm`，但仍高出杯体中心约 `10.4-13.8 cm`，夹爪已经接近闭合。随后机械臂越过杯子，在平面距离约 `24.6-34.3 cm` 时才下降到杯体高度以下。失败顺序可以概括成：
+
+```text
+识别并靠近蓝杯 -> 高处提前闭合 -> 继续平移越过目标 -> 杯子外下降
+```
+
+**根因判断**：800 steps、batch size 4 只抽样了 `3200` 个当前 observation，相当于 35284 帧的约 `9.1%`。加权 sampler 还会重复 episode 起步、recovery 尾段和 gripper transition 窗口。虽然每个样本监督未来 10 个动作，但这 10 个动作共享同一个当前视觉状态，不能按 10 个独立 observation 计算覆盖率。因此当前更符合“整体欠拟合 + 阶段切换时序未学稳”，不是单独的 unseen 泛化失败。
+
+**后续门控**：保留 800-step checkpoint 作为干净基线，用新 sampler seed 和较低学习率分段续训。每个分段结束后固定跑两组面板：
+
+| 面板 | 先回答什么问题 |
+| --- | --- |
+| 训练内位置 | 当前模型是否连已见状态分布都没有学会 |
+| 全新随机位置 | 已见分布通过后，视觉定位是否能迁移到新位置 |
+
+只有与训练数据相近的位置开始成功、未见位置仍失败时，才把主问题切换为泛化和数据覆盖。若两组都不成功，就继续检查训练覆盖、阶段标签、动作表示和 on-policy correction，不应靠放宽 success 判据制造进展。
+
+## 案例 14：GT action 回放失败，不一定是 action 数值错了
+
+**现象**：canonical91 已通过 parquet 行序与 chunk 对齐，理论上把每帧 GT EEF-delta/gripper action 送回环境，应该接近 `91/91`。第一次批量回放却只有 `6/10`；换一种 reset 写法后甚至降到 `2/10`。如果直接把这个数字解释成“专家轨迹质量差”，会误删大量有效 recovery。
+
+这里有三类状态很容易混在一起：
+
+1. `obj_init` 记录的是逻辑 spawn 信息，不一定等于 reset 后经过重力和接触 settle 的最终 free-joint 状态；
+2. `seed` 只有和原 `position_profile` 一起使用，才对应采集时的随机位置；
+3. recovery 数据不是从 reset 开始，专家 suffix 的第一帧建立在 Pi0 已执行 prefix 的 takeover state 上。
+
+逐项对齐后的结果形成了一条很有用的诊断阶梯：
+
+| 回放设置 | strict |
+| --- | ---: |
+| reset 后强写逻辑 `obj_init`，前 10 条 | `6/10` |
+| 使用 settled pose，但漏掉 `pnp_generalization_v1` | `2/10` |
+| seed + profile + settled pose，前 10 条 | `9/10` |
+| 全 91 条，但 recovery 不恢复保存 prefix | `57/91` |
+| 全 91 条，恢复真实 prefix | `82/91` |
+| 其中 38 条 recovery | `38/38` |
+
+**根因**：GT action 是相对当前仿真状态定义的控制量。环境 reset、物体 settle、位置随机 profile 或 takeover prefix 任一不一致，动作本身即使逐位完全相同，也已经不再对应同一条动力学轨迹。
+
+**修复**：`batch_replay_pi0_dataset_predictions.py` 新增并固化这些协议：
+
+- 从 episode metadata 读取原环境 seed；
+- reset 时显式使用原 `position_profile`；
+- 复用 reset 后自然 settled 的物体 pose；
+- 每条 episode 前 hard reset 全部 MuJoCo 动态状态；
+- recovery 通过 `--prefix-replay-map-json` 重放采集时保存的 prefix；
+- 大面板复用一个环境，避免反复创建环境导致文件句柄/资产 provider 耗尽。
+
+最终 9 条 strict 失败全部来自 base episodes `1,13,17,20,22,25,37,45,47`；38 条 recovery 在正确 prefix 下全部成功。新的 replayable82 只过滤这 9 条 base，保留所有 recovery，再重新编号、重算 stats 和验证 horizon 10/50。
+
+这个案例的通用结论是：GT replay 不是“读 action 然后调用 env.step”这么简单。对 delta action、contact task、suffix DAgger，必须复原 action 定义时的状态链。GT replay 不通过时，先审计 reset/profile/settle/prefix，不能先怪模型，也不能先删数据。
+
+## 案例 15：名义上解冻视觉，不代表视觉真的更新
+
+**现象**：action-expert-only 从 s800 续到 s2400 后，gripper MAE 从 `0.31419` 降到 `0.08073`，但 s800/s2400 的训练内与全新位置 10-seed 面板全部 `0/10`。固定 `4 mm` actuator bound 仍是 `0/10`。继续只更新 action expert，很可能是在更精确地拟合已有视觉表征下的平均动作，而没有修复随机位置定位。
+
+第一版视觉参数探针放在 BF16 post-layernorm 上。一次 `1e-6` 量级更新可能被 BF16 量化后仍显示为 0，容易把“探针精度不够”误判成“视觉没有梯度”。修复后改查 FP32 vision patch embedding，并同时保留 action head 与语言层探针：
+
+```text
+expert_vision 通过条件：
+action head delta > 0
+vision FP32 patch embedding delta > 0
+language layer delta == 0
+```
+
+1-step smoke 得到 action/vision 最大变化都约 `1.0e-6`，language 为 `0`。这证明当前模式确实更新 action expert、vision tower 和 multimodal projector，同时冻结语言模型。
+
+第二个坑是统一内存容量判断。batch 16、关闭 gradient checkpointing 的单步 smoke 能跑，但 PyTorch 峰值已到 `52.80 GiB`；这还没算桌面、ROCm runtime、系统服务和缓存，不能作为长训练配置。batch 32、开启 checkpointing 的 10-step 连续 smoke 峰值为 `24.89 GiB`，视觉持续更新，语言仍为 0，因此选择后者。
+
+第三个坑是 recovery sampler。replayable82 的前 44 条是完整 reset-to-success episode，后 38 条是 takeover suffix。若给所有 episode 的前 60 帧乘 start weight，会把 suffix 起点错当成任务起点。新增 `--episode-start-episode-count 44` 后，start window 从 4920 帧变为 2640 帧；`--tail-episode-count 38` 单独负责 recovery 加权。采样信息不作为模型输入，因此没有引入 target/phase/oracle 泄漏。
+
+这套门控把问题拆成了四个可验证问题：数据能否严格复放、action chunk 是否对齐、视觉参数是否真的更新、64 GiB 统一内存配置是否有余量。只有四项都通过，才值得花数小时训练；结束后仍要用 raw strict closed-loop 判断成绩，不能用参数 delta 或 offline loss 代替成功率。
+
+## 案例 16：修正 prefix DAgger 后，raw strict 仍然是 0/10
+
+前面的案例已经修复了两个容易被忽略的数据问题：第一版 prefix DAgger 的 oracle 标签没有真正执行，后来改成了连续专家接管；聚合后的 LeRobot 数据也重新按物理 parquet 行序 canonicalize，避免 `index` 看似连续、实际 action chunk 串帧。接下来要验证的是：数据语义修正后，Pi0.5 是否真的学会了从视觉输入开始的闭环接近。
+
+这轮实验先做了三个分支，全部使用 raw strict 评估：部署时只给策略图像、语言、robot proprio 和历史执行动作，不读取 target/plate 坐标、GT phase、oracle action 或脚手架状态。
+
+| 分支 | 训练设置 | 离线结果 | strict 结果 |
+| --- | --- | --- | --- |
+| action-only correction | 97 条 contact recovery，expert-only，240 steps | action MAE `0.00264`，gripper MAE `0.01313` | 固定训练面板 `0/10`，全新位置 `0/10` |
+| expert_vision | canonical92，vision + action expert，400 steps | action MAE `0.01169`，xyz MAE `0.00206`，gripper MAE `0.07566` | 固定训练面板 `0/10`，全新位置 `0/10` |
+| clean S400 对照 | 从 clean S400 继续 160 steps | 常规权重 action MAE `0.01205`；z 权重 4 倍时 `0.01174` | 常规分支 `0/2 + 0/2`；z 权重分支 `0/4`；chunk 5 对照 `0/1` |
+
+这里最值得保留的不是某个 loss 数字，而是失败的排除顺序：action-only 能把离线误差压得很低，却没有把已见位置的闭环成功率带起来；解冻视觉后，FP32 vision patch embedding 确实发生了更新，语言层保持冻结，说明“视觉没有训练”不是原因；把执行 chunk 从 10 改成 5 仍然失败，说明问题也不只是 action chunk 太长；全局提高 z 方向损失权重同样没有通过 strict gate。
+
+逐步轨迹给出了更具体的行为模式。部分 seed 的前段动作会向杯子靠近，最近平面距离可以到 `4–15 cm`，但 `z` 方向的预测幅度明显小于 prefix 标签：早期 rollout 的前 20 个记录步，z delta 均值约为 `-0.0002 m`，而对应标签约为 `-0.004 m`。模型随后经常提前闭合夹爪，继续沿平面方向越过杯子，最后在杯子外侧下降；有的 seed 能接近杯子，却没有形成连续的有效抬升。这是“看到了目标但没有稳定执行接近—接触—闭合时序”，不是单纯的空间泛化失败。
+
+这轮还验证了一个数据量边界。稳定抬升 suffix 数据在 15 条样本上可以得到 `15/15` 的 stable-lift，但真实物理成功仍是 `0/15`，因为这些样本从接触后才开始，不能教会模型 reset 后如何依靠视觉走到接触状态。prefix-only 的有效修正数据增加到 canonical92 后，物理行序、episode 边界和 chunk 起点均通过，但“数据结构正确”仍不等于“闭环足够覆盖”。
+
+因此当前结论是：Pi0.5 还没有 raw 端到端成功；继续盲目增加普通训练步数、重复 suffix、扫描 chunk 或只调一个全局 z 权重，都缺少新的可证伪假设。下一条实验应该采集更长的连续 on-policy prefix correction，例如 80–120 个执行步，让 oracle 从策略实际跑偏的状态连续接管并保存每个真实后继状态，再从 clean S400 基座开始做一个小步数对照。新数据必须同时记录 prefix action 是否真的执行、prefix 状态是否写入、oracle phase 来源、episode seed/profile 和物理成功审计；评估仍只用 raw strict，不把训练期 oracle 标签当成部署输入。
+
+### 这轮实验的验收门槛
+
+1. 先检查数据：物理行序、episode 边界、`chunk[0]`、状态和动作维度全部通过。
+2. 再做离线检查：分别报告 xyz、gripper 和总 action MAE，避免 gripper 下降掩盖空间动作没有改善。
+3. 每个小训练段结束后，至少跑一组固定训练位置和一组全新位置；训练内也为 `0` 时，不把问题写成泛化失败。
+4. 只有 raw strict 在训练内先出现成功，才继续扩大 unseen 面板；如果仍为 `0`，回到 z/阶段覆盖和 on-policy 数据语义，不用更宽松的 success 口径替代。
+
+## 案例 17：训练前改 HF cache 变量，可能触发 ROCm 的 libamdhip64 崩溃
+
+这类问题容易被误认为“模型太大”或“显存不够”。本轮 Pi0.5 训练前，数据集物理行序、episode 边界和 action chunk 起点都已经通过门禁，但进程在模型搬到 GPU 时退出，内核日志是 `libamdhip64.so.7` 的 SIGSEGV；没有 OOM 记录。
+
+排查时要把缓存变量拆开验证，而不是一次性把所有临时目录都搬到 tmpfs：
+
+```text
+纯 HIP tensor smoke                         通过
+CPU 加载模型                                通过
+默认环境加载模型到 GPU                     通过
+只设置 HF_DATASETS_CACHE                   通过
+同时把 HF_HOME/TMPDIR 指向 tmpfs            SIGSEGV
+```
+
+在这台 ROCm 运行时上，稳妥的做法是：数据集 Arrow/cache 可以单独放到容量明确的 cache 目录；`HF_HOME` 和 `TMPDIR` 保持默认，或者放到稳定的磁盘目录，不要随意指向 `/dev/shm`。修复后先跑 1-step smoke，再启动长训练；1-step 通过只说明运行时稳定，不代表模型已经收敛。
+
+本轮修复后的 1-step smoke 通过，峰值约 `14.27 GiB`；400-step 训练也稳定完成，峰值约 `15.68 GiB`，没有新的 kernel error。但 final offline MAE 几乎没有变化，raw strict 仍是 `legacy 1/10、physical 0/10`。因此要把“运行时修复”和“策略能力修复”分成两个独立结论。
+
+## 案例 18：更长 prefix correction 和 400 步训练仍不能替代闭环接触学习
+
+为了验证“prefix 太短、训练步数不够”这个假设，从 clean S400 expert-vision 基座继续使用 80 步连续 prefix correction：合并数据共 `102 episodes / 32792 frames`，EEF-delta action-chunk 的物理行序 mismatch 为 `0`。训练采用 `expert_vision`、batch8、chunk10、400 steps；部署评估不使用 oracle prefix、target/plate 坐标、GT phase、scripted gripper 或 finisher。
+
+离线结果如下：
+
+| 指标 | baseline | final |
+| --- | ---: | ---: |
+| action MAE | 0.01550 | 0.01550 |
+| xyz MAE | 0.00225 | 0.00220 |
+| gripper MAE | 0.10173 | 0.10189 |
+
+在 10 个 train-seed 上，旧几何口径只有 `1/10`，严格 physical success 是 `0/10`。唯一旧几何成功的 seed 抬升了 `0.1286 m`，但杯子最终倾倒，upright cosine 只有 `0.207`；其他种子多数没有达到 `3 cm` 连续抬升。这个结果说明：更长 prefix 数据的格式和 chunk 语义可以是正确的，视觉参数也确实更新，但覆盖不足或动作目标不适合接触闭环时，继续加步数仍不会自动得到 raw VLA 成功。
+
+排障结论应写成三层：
+
+1. 数据层：canonical 合并和 chunk 对齐通过；
+2. 运行层：ROCm cache 配置修复，400 步稳定完成；
+3. 能力层：视觉接近、下降接触、闭合和抬升的时序仍未学稳。
+
+下一步应改动可证伪的建模假设，例如只依赖图像、语言和 robot proprio 的 phase/progress/contact head、学习型 EEF residual 或 temporal aggregation，并先用固定 train-seed gate 验证；不要继续用更宽松的 success 口径包装 raw 失败。
+
+
+## 案例 19：800 steps 训练完成，但 raw Pi0.5 仍为 0/10
+
+### 问题背景
+
+案例 18 已经说明：canonical102 的数据物理行序和 action chunk 对齐没有问题，400-step expert-vision continuation 也能稳定完成，但 raw strict 仍没有物理成功。于是本轮只验证一个较窄的假设：是不是训练步数还不够，继续从已经验证过的 clean S400 训练到 800 steps，能不能把接触阶段学出来。
+
+本轮输入和评估协议保持不变：双相机图像、语言、robot proprio；EEF-delta 7D action；chunk10；fresh environment 和 hard reset。训练标签里的 prefix correction 只用于监督，部署端不读取 target、plate 坐标、oracle prefix、GT phase、scripted gripper 或外置 finisher/contact head。
+
+### 先处理 checkpoint 截断，而不是误判模型失败
+
+第一次 800-step 任务的 optimizer update 已经跑完，但保存阶段发现 /dev/shm 空间不足。模型文件头部声明需要 7473096344 bytes，实际输出只有 6865059840 bytes。用 safe_open 检查时得到 file not fully covered，严格加载失败。
+
+这个现象要和训练失败分开记录：日志没有 OOM、NaN、SIGSEGV 或 kernel error，根因是旧 checkpoint、模型缓存和临时文件把 tmpfs 填满，保存写入被截断。删除本轮失败输出和过期缓存后重跑，避免把半截文件继续拿去评估。
+
+### 重跑结果
+
+重跑后的 checkpoint 大小与文件头期望值一致，safe_open 成功读取 812 个 tensor，峰值统一内存约 33.56 GiB，训练过程没有新的 ROCm 崩溃。训练前后离线指标如下：
+
+| 指标 | baseline | final |
+| --- | ---: | ---: |
+| flow loss | 0.90623 | 0.87770 |
+| action MAE | 0.011642 | 0.011985 |
+| xyz MAE | 0.002580 | 0.002533 |
+| gripper MAE | 0.073754 | 0.076300 |
+
+flow loss 下降并不等于闭环成功。action MAE 和 gripper MAE 没有改善，xyz 只有很小的变化，说明这次继续训练没有产生足够强的新行为。
+
+### 严格 raw 评估
+
+在 10 个 fresh seeds（1000、1009、1018、1023、1037、1044、1055、1060、1068、1078）上，旧几何口径 legacy success 为 0/10，严格 physical success 也为 0/10。评估时 visual contact head active steps 为 0，因而这不是 head 或 finisher 没有触发导致的结果，而是纯 raw Pi0.5 行为没有完成任务。
+
+失败分型比单个成功率更有信息：大多数轨迹没有形成有效抬升；1009 和 1068 在接近后出现高位闭合或姿态倾斜；1078 的最大抬升约 0.0278 m，接近 0.03 m 门槛但最终倒置。也就是说，模型已经偶尔进入“像是在抓”的局部状态，却没有稳定完成接触、闭爪、抬升和保持直立这一整段闭环。
+
+### 三层结论
+
+1. 运行层已经通过：官方 Pi0.5 权重能在 ROCm 上严格加载，800 steps 能稳定更新，checkpoint 截断也已定位并修复。
+2. 数据层已经通过：canonical102 的物理行序、episode 边界和 chunk 起点门禁为 0 mismatch。
+3. 能力层仍未通过：视觉到首段 EEF-delta 的方向、接触时机、夹爪事件和抬升保持没有形成可泛化闭环。
+
+因此下一步不应继续重复同一数据和同一动作表示的 steps/lr/chunk 网格。更有信息量的实验是让当前 Pi0.5 自己运行到 no-lift、high-close、tilt-release 等失败状态，再由专家从这些真实状态连续接管，形成 on-policy correction；同时可以实现只读取图像、语言和 robot proprio 的 learned phase/progress/contact 或 EEF residual，并把 temporal aggregation 作为动作块稳定化候选。所有候选都必须在 raw strict、独立 seeds 上单独验收，不能重新引入 oracle 或手写 finisher。
+
 ## 最小排障记录模板
 
 后续遇到新问题，可以直接复制这个模板写实验记录：
@@ -510,4 +784,5 @@ visual keyframe head 的输入是 agent/wrist 图像经过 Pi0/SigLIP 主干得�
 - 为什么 SmolVLA 要拆成红杯、蓝杯固定指令评估；
 - 为什么 weighted sampler 比简单复制 episode 更适合这次蓝杯修复；
 - 为什么 pi_0 raw policy 还不能写成成功复刻，而 pi_0 + scripted finisher 只能作为尾段诊断；
+- 为什么 LeRobot 数据的 `index` 集合连续仍不够，还要验证 parquet 物理行序和真实 action chunk；
 - 如何把自己的调试记录整理成可复盘的实验案例，而不是照搬原始流水账。

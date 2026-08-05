@@ -4,6 +4,18 @@
 
 配套实操 Notebook：[03_act_dagger_diagnostics.ipynb](./notebooks/03_act_dagger_diagnostics.ipynb)。
 
+## 先看结论
+
+学习时先记住下面三条，不需要先区分很多评估组：
+
+| 模型 | 当前可复核结果 | 学习定位 |
+| --- | --- | --- |
+| SmolVLA | `57/60`（红杯 `27/30`，蓝杯 `30/30`） | 主案例：先看成功回放，再学习训练与评估 |
+| Pi0 | `12/14`；其中未见位置 `9/10`、hard 组 `6/8` | 进阶案例：学习大模型权限、动作对齐和失败诊断 |
+| ACT | 当前保护候选 `15/30`；历史教程参考 `17/30` | 诊断案例：学习闭环分布偏移、DAgger 和严格成功判定 |
+
+这里的 `15/30` 是 AMD395 上已经完成的保护候选结果；Notebook 中已经写入同一套原生训练配方，但还需要在具备 Jupyter kernel 的环境里从零实际执行一次，才能把这个分数称为“Notebook 原生复现”。因此，教程会同时展示可运行配方和可审计结果，不把两者混为一谈。
+
 ## ACT 诊断路线
 
 建议按照下面顺序排查：
@@ -54,7 +66,7 @@ flowchart LR
 
 ## 本轮 ACT 到底改了什么
 
-这次 ACT 不是原装脚本跑一遍就得到 `17/30`。原始 closed-loop 基线几乎不能通过严格物理成功判定，后面的提升来自一串可复查的改动。
+旧教程摘要曾记录 `17/30`，当前 repair15 保护候选已经在同一严格协议下达到 `15/30`，但还没有完全恢复历史 17/30。W7900 普通 ACT 是 `0/30`，AMD395 stable61 fallback 是 `7/30`，旧 protected DAgger artifact 是 `2/30`。ACT 原始 closed-loop 基线几乎不能通过严格物理成功判定，后续诊断仍然来自一串可复查的改动。
 
 第一步是把评估口径改严。旧 `success` 只看环境几何条件，可能把推杯、挤杯、倒杯误判成成功。本专题统一报告 `physical_success`：杯子要被抬起、移动到盘上，并且终态基本直立。没有这一步，后面的训练改动很容易被旧指标误导。
 
@@ -85,13 +97,22 @@ flowchart LR
 | `0.5` | 0/15 | 纠偏数据太强，破坏 reset-start 主分布 |
 | `0.25` | 13/30 | 当时最好的折中 |
 
-最后再用 best025 checkpoint 对失败 seed 做一轮 prefix40 DAgger v1，采到 3 条有效纠偏轨迹，并继续用 timestamp offset `2.0` 和 sample weight `0.25` 合并训练，得到当前 protected checkpoint：
+最后再用 best025 checkpoint 对失败 seed 做一轮 prefix40 DAgger v1，采到 3 条有效纠偏轨迹，并继续用 timestamp offset `2.0` 和 sample weight `0.25` 合并训练，得到旧 protected DAgger checkpoint。它的当前 exact 复核是 `2/30`。随后从 stable61 fallback 保护权重出发，使用同一纠偏数据做低学习率、无内存泄漏的 2500-step continuation，得到当前 repair15 保护候选：
 
 ```text
 ckpt/act_scripted_reset_oracle_plus_prefix40_dagger_best025_toffset2_downweight025_chunk20_n10_novae_gpu_5000_20260629_031208/step_5000
 ```
 
-扩大评估得到 seen `6/10`、mixed `4/10`、heldout `7/10`，合计 `17/30 physical_success`。后续的 DAgger v2 和 full-reset failure-bucket 直接混入都没有超过它，full-reset failure-bucket 甚至会退化到 `0/15`。因此教程里把这个 v1 best 当作 ACT 保护基线，而不是把所有后续尝试都写成改进。
+```text
+AMD395 protected/act_stable61_to_dagger_nomemleak_step1500_strict15of30
+physical_success = 15/30
+fixed_seed_groups = 3 组，每组 10 条
+model_sha256 = b9b178377995a674a06bc5d1500c8e7e7fc5d02649268855f892b3987bf5bfeb4
+```
+
+当前可审计的分支是：AMD395 上 stable61/step2500 fallback 为 `7/30`；旧 protected DAgger artifact 为 `2/30`；新的 repair15 protected candidate 为 `15/30`。历史摘要中的 `17/30` 尚未由当前保护权重完全恢复，暂列为历史目标。注意，日志里的专家恢复采集本身有 `17/40` 条成功，不能把数据采集成功数当作策略闭环成功率。
+
+Notebook 口径必须单独说明：此前 `15/30` 保护权重来自 AMD395 的低学习率续训 wrapper，不是 Notebook 已执行出来的结果。`notebooks/16_act_end_to_end.ipynb` 现已内置同一套 native protected recipe（数据包装、轨迹加权采样、no-VAE、gripper BCE、tqdm、checkpoint 和严格评估），但在 Jupyter runtime 完成一次原生执行前，不把 `15/30` 标成 Notebook 复现结果。
 
 ## ROCm 上要记录什么
 
@@ -110,7 +131,7 @@ ACT 训练通常显存占用不算高，但仍然要记录：
 
 ## 本轮复刻结果示例
 
-本轮 ACT 复刻中，单纯 clean closed-loop 基线几乎不能通过严格物理成功判定。加入 timestamp offset、downweight correction 和更合适的 DAgger 数据后，`physical_success` 逐步提升到 `17/30`。这个结果说明 ACT 已经形成了一个完整的 ROCm 闭环诊断案例，但它还不是“随机泛化已经解决”的状态。
+本轮 ACT 复刻中，单纯 clean closed-loop 基线几乎不能通过严格物理成功判定。加入 timestamp offset、downweight correction 和 DAgger 数据后，稳定 fallback 分支为 `7/30`，旧 protected DAgger artifact 为 `2/30`；新的 repair15 continuation 已达到 `15/30`。这说明 ACT 已经形成了一个完整的 ROCm 闭环诊断案例，但与旧教程 `17/30` 仍差 2 条，尚未完全对齐。
 
 ![ACT DAgger 进展曲线](./assets/act_dagger_progress_curve.png)
 
@@ -121,11 +142,14 @@ ACT 训练通常显存占用不算高，但仍然要记录：
 | clean closed-loop | 0/10 | 模型在闭环状态下无法稳定接触并搬运杯子 |
 | timestamp offset | 3/15 | 动作对齐改善了一部分轨迹，但仍不稳定 |
 | downweight DAgger | 13/30 | correction 数据开始补上失败附近状态 |
-| best DAgger | 17/30 | 当前示例中最好的 ACT ROCm 复刻结果 |
+| stable61 fallback | 7/30 | 旧基线 |
+| protected DAgger artifact | 2/30 | 旧 protected 目录的 exact 结果 |
+| repair15 protected candidate | 15/30 | 当前最佳；三组固定种子各 10 条，分组结果为 `3/10 + 4/10 + 8/10` |
+| 旧教程 best DAgger 摘要 | 17/30（待复核） | 当前原始逐 seed 文件未恢复，不能作为现行分数 |
 
 ![ACT DAgger 成功关键帧](./assets/act_success_sequence.jpg)
 
-图 2：ACT best DAgger 的物理成功 rollout。可以对照抓取、搬运和释放三个阶段检查自己的视频。
+图 2：ACT 历史 DAgger 记录中的物理成功 rollout。它用于讲解抓取、搬运和释放阶段；当前最佳 repair15 保护候选的可审计结果是 `15/30`，旧 protected artifact 仍是 `2/30`。
 
 ![ACT DAgger 失败关键帧](./assets/act_failure_sequence.jpg)
 

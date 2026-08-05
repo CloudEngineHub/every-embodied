@@ -2,9 +2,26 @@
 
 本专题在 AMD Ryzen AI MAX+ / Radeon GPU 设备上复刻 LeRobot、ACT、SmolVLA 和 pi_0。它不是单纯的环境安装笔记，也不再假设模型已经训练完成：从设备资源检查开始，先完成 MuJoCo 键盘采集、LeRobot 数据审计、三类模型的 smoke 与正式训练，再进入闭环部署、ACT DAgger、SmolVLA 加权采样、pi_0 尾段诊断和实验报告整理。
 
-如果暂时没有本地 AMD 设备，也可以先参考 [AMD 开发者云 + AUP Learning Cloud 使用指南](./README_00_AMD_AUP免费云平台使用指南.md)，用 Radeon Cloud、远程 JupyterHub 或 Code Server 完成浏览器端开发和本专题的环境准备。两种平台的硬件、缓存和模型下载方式不同，指南中已分开说明；具体额度和开通方式以平台当前页面或管理员通知为准。
+如果暂时没有本地 AMD 设备，也可以先参考 [AUP Learning Cloud（优先）+ AMD 开发者云备用使用指南](./README_00_AMD_AUP免费云平台使用指南.md)，优先用 AUP Learning Cloud 的远程 JupyterHub 或 Code Server 完成本专题的开发、训练和评估；开发者云作为备用入口，用于快速验证 ROCm 模板。两种平台的硬件、缓存和使用方式不同，指南中已分开说明；具体额度和开通方式以平台当前页面或管理员通知为准。
 
 如果要把本专题组织成 Datawhale 组队学习活动，可以先参考：[00_组队学习招募参考稿.md](./00_组队学习招募参考稿.md)。其中的开营时间、领学员、报名入口和二维码需要在正式发布前替换。
+
+## 先看到成功，再开始训练
+
+第一次接触具身策略时，不建议从 loss 曲线或失败诊断开始。先运行一条已经通过严格物理判定的回放，确认任务正确完成时应该出现哪些动作阶段，再采集和训练自己的策略。这样可以把“环境没装好”“模型没训够”和“成功判定写错了”三类问题分开。
+
+推荐第一次按下面的顺序学习：
+
+1. 运行 Task 01，确认 ROCm、PyTorch、GPU 和持久化目录；
+2. 打开 Task 11，先执行“零训练成功预览”单元格，在 Notebook 内观看四视角严格成功视频；
+3. 运行 Task 07，完成键盘遥操作、四视角录制和数据物理成功审计；
+4. 从 Task 08 的 ACT 开始做 smoke 和正式训练，再回到 Task 11 做 closed-loop；
+5. ACT 闭环跑通后，再尝试 Task 09 的 SmolVLA 和 Task 10 的 pi_0；
+6. 最后进入 Task 02–06、12–13，用成功/失败视频、动作轨迹和严格指标做诊断。
+
+Task 11 已内置一条约 2 MB 的严格成功回放，不需要模型权重，也不会消耗训练额度。可下载 checkpoint、适用任务、评测协议和发布状态统一记录在 [预训练权重与零训练体验](./README_08_预训练权重与零训练体验.md)。
+
+> `5000 steps` 只是一种短训基线，不是通用收敛保证。训练是否够用必须由 held-out closed-loop 成功率和视频判断，不能只看步数或 loss。
 
 完成本专题后，可以做到：
 
@@ -34,7 +51,7 @@
 
 | 任务 | Markdown 概述 | Notebook 实操 |
 | --- | --- | --- |
-| 00 | [AMD 开发者云 + AUP Learning Cloud 使用指南](./README_00_AMD_AUP免费云平台使用指南.md) | - |
+| 00 | [AUP Learning Cloud（优先）+ AMD 开发者云备用使用指南](./README_00_AMD_AUP免费云平台使用指南.md) | - |
 | 01 | [AMD ROCm 设备与环境确认](./README_01_AMD_ROCm设备与环境确认.md) | [01_device_env_check.ipynb](./notebooks/01_device_env_check.ipynb) |
 | 02 | [物理成功评估与视频复核](./README_02_物理成功评估与视频复核.md) | [02_physical_success_review.ipynb](./notebooks/02_physical_success_review.ipynb) |
 | 03 | [ACT 在 ROCm 上的迁移与 DAgger 诊断](./README_03_ACT_ROCm迁移与DAgger诊断.md) | [03_act_dagger_diagnostics.ipynb](./notebooks/03_act_dagger_diagnostics.ipynb) |
@@ -47,6 +64,7 @@
 | 10 | [pi_0 权限门控与正式训练](./README_07_ROCm端到端采集训练部署.md#smoke-与正式训练) | [10_pi0_training_rocm.ipynb](./notebooks/10_pi0_training_rocm.ipynb) |
 | 11 | [MuJoCo closed-loop 部署](./README_07_ROCm端到端采集训练部署.md#mujoco-closed-loop) | [11_mujoco_closed_loop_deploy.ipynb](./notebooks/11_mujoco_closed_loop_deploy.ipynb) |
 | 12 | [pi0 strict-input 与随机环境复核](./README_07_ROCm端到端采集训练部署.md#pi0-strict-input-复核) | [12_pi0_strict_input_end_to_end.ipynb](./notebooks/12_pi0_strict_input_end_to_end.ipynb) |
+| 13 | [Pi0.5 随机位置、coherent recovery、EEF-delta 与 chunk 对齐](./README_05_pi0_ROCm权限Smoke与训练门控.md#pi05-eef-delta) | [13_pi05_random_position_eef_delta.ipynb](./notebooks/13_pi05_random_position_eef_delta.ipynb) |
 
 Markdown 章节主要负责讲清楚背景、判断口径和实验结论；Notebook 负责逐格运行检查、读取指标、生成图表和整理命令模板。可以先读 Markdown，再打开对应 Notebook 跟着跑。
 
@@ -58,32 +76,29 @@ Markdown 章节主要负责讲清楚背景、判断口径和实验结论；Noteb
 | 理解原始场景和历史 Notebook | 上游 `04mujoco复现ACT、Pi0、SmolVLA` |
 | 已有结果，重点学习物理评估和失败修复 | Task 02–06 |
 
-因此，本专题既可以使用已有数据学习诊断，也可以从 Task 07 开始完成完整训练闭环。Notebook 里的长采集和长训练默认关闭，确认路径、显示会话和磁盘空间后再显式打开。
+因此，本专题既可以先看成功回放建立直觉，也可以使用已有数据学习诊断，或从 Task 07 开始完成完整训练闭环。Notebook 里的长采集和长训练默认关闭，确认路径、显示会话和磁盘空间后再显式打开。
 
 ## 阶段性复刻状态
 
-本专题的示例实验中，ACT、SmolVLA 和 pi_0 都已经形成了训练、评估和视频复核链路，但三者的成熟度不同。SmolVLA 是相对稳定的结果案例，ACT 是典型的闭环诊断案例。pi_0 raw policy 在当前严格闭环协议中仍未成功；加入只读取图像、语言、robot proprio 和历史执行动作的 visual/history learned head 后，固定环境由 `0/12` 提升到 `6/12`，但修正环境随机 seed 后只有 `1/4`。因此它是“固定场景能力已经提升、空间泛化仍需补数据”的排障案例，不是 raw pi0 已复刻成功。
+本专题的示例实验中，ACT、SmolVLA 和 pi_0 都已经形成了训练、评估和视频复核链路，但三者的成熟度不同。SmolVLA 是相对稳定的结果案例，ACT 是典型的闭环诊断案例。pi_0 raw policy 在当前严格闭环协议中仍未成功；加入只读取图像、语言、robot proprio 和历史执行动作的 visual/history learned head 后，固定环境由 `0/12` 提升到 `6/12`，但修正环境随机 seed 后只有 `1/4`。Pi0.5 已完成官方基座 strict load、随机位置数据重采、EEF-delta 转换、LeRobot action-chunk 对齐修复、prefix DAgger 数据验证、ROCm cache 崩溃定位和 400-step/800-step expert-vision continuation；当前 canonical102 数据通过物理行序门禁；400-step continuation 为 `legacy 1/10、physical 0/10`，随后完成的 800-step continuation 仍为 `legacy 0/10、physical 0/10`。它们都是“能力边界与修复过程”的排障案例，不是 raw pi0/Pi0.5 已复刻成功。
 
 ![当前复刻状态总览](./assets/model_status_summary.png)
 
-图 1：本专题示例实验的阶段性状态。这里使用更严格的 `physical_success`，并把 raw policy、learned head 和 scaffold 分开。SmolVLA 当前最稳，ACT 已经能作为 DAgger 诊断案例；pi_0 的固定场景 learned-head 提升是真实的，但随机环境 `1/4` 说明位置泛化还没有跑通。旧 30-seed scaffold 面板后来发现环境一直固定为 seed 0，只能解释为策略采样稳定性，不能再当作空间泛化证据。
+图 1：本专题示例实验的阶段性状态。这里使用更严格的 `physical_success`，并把 raw policy、learned head 和 scaffold 分开。SmolVLA 当前最稳，ACT 已经能作为 DAgger 诊断案例；pi_0 的固定场景 learned-head 提升是真实的，但随机环境 `1/4` 说明位置泛化还没有跑通。旧 30 条 scaffold 评估后来发现环境一直固定为 seed 0，只能解释为策略采样稳定性，不能再当作空间泛化证据。
 
 ## 推荐学习节奏
 
-| 任务 | 建议时长 | 主要产出 |
+| 顺序 | 建议时长 | 主要产出 |
 | --- | --- | --- |
-| Task 1 | 0.5 天 | AMD 设备资源表、ROCm 检查日志、缓存目录规划 |
-| Task 2 | 0.5 天 | `physical_success` 评估脚本、成功/失败视频样例 |
-| Task 3 | 1 天 | ACT open-loop / closed-loop 诊断表、DAgger 数据设计 |
-| Task 4 | 1 天 | SmolVLA 红/蓝杯成功率对照表、加权采样实验 |
-| Task 5 | 0.5 到 1 天 | pi_0 smoke test、训练门控、raw-vs-hybrid 尾段诊断、成功率提升路线图 |
-| Task 6 | 0.5 天 | 排障复盘、失败案例、实验报告整理 |
-| Task 7 | 0.5 到 1 天 | 20–50 条经过物理成功审计的红/蓝杯示教数据 |
-| Task 8 | 0.5 到 1 天 | ACT smoke、正式 checkpoint 和闭环基线 |
-| Task 9 | 1 天 | SmolVLA smoke、正式 checkpoint 和分指令评估 |
-| Task 10 | 1 到 2 天 | pi_0 权限门控、正式 checkpoint 和 raw policy 结果 |
-| Task 11 | 0.5 天 | held-out seeds 成功率、JSONL 和成功/失败视频 |
-| Task 12 | 0.5 天 | pi0 raw/learned-head 对照、seed 审计和随机环境 gate |
+| Task 01：环境确认 | 0.5 天 | AMD 设备资源表、ROCm 检查日志、缓存目录规划 |
+| Task 11：零训练预览 | 5 分钟 | 在 Notebook 内看到四视角严格成功回放，理解完整动作阶段 |
+| Task 07：采集与审计 | 0.5 到 1 天 | 20–50 条经过物理成功审计的红/蓝杯示教数据 |
+| Task 08：ACT 训练 | 0.5 到 1 天 | ACT smoke、正式 checkpoint 和第一条闭环基线 |
+| Task 11：ACT 闭环 | 0.5 天 | held-out seeds 成功率、JSONL 和成功/失败视频 |
+| Task 02–03：ACT 诊断 | 1 到 1.5 天 | `physical_success`、open/closed-loop 诊断表和 DAgger 数据设计 |
+| Task 09 → 11 → 04：SmolVLA | 1 到 1.5 天 | SmolVLA checkpoint、红/蓝杯成功率对照和加权采样实验 |
+| Task 10 → 11 → 12–13：pi_0 / Pi0.5 | 2 到 3 天 | 权限门控、raw/head 对照、seed 审计、EEF-delta 与 chunk 对齐 |
+| Task 05–06：综合复盘 | 0.5 到 1 天 | 训练门控、失败案例、排障记录和实验报告 |
 
 ## Notebook 还是 Python 脚本
 
