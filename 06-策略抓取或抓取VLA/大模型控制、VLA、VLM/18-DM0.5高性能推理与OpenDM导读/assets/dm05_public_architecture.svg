@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L10,3 L0,6 Z" fill="#34495e"/>
+    </marker>
+    <style>
+      .title { font: 700 28px Arial, "Microsoft YaHei", sans-serif; fill: #17202a; }
+      .section { font: 700 21px Arial, "Microsoft YaHei", sans-serif; fill: #17202a; }
+      .label { font: 600 17px Arial, "Microsoft YaHei", sans-serif; fill: #17202a; }
+      .small { font: 15px Arial, "Microsoft YaHei", sans-serif; fill: #34495e; }
+      .tiny { font: 13px Arial, "Microsoft YaHei", sans-serif; fill: #566573; }
+      .box { stroke: #34495e; stroke-width: 2; rx: 10; }
+      .arrow { stroke: #34495e; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #7f8c8d; stroke-width: 2; stroke-dasharray: 8 7; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1400" height="820" fill="#fbfcfc"/>
+  <text x="700" y="45" text-anchor="middle" class="title">DM0.5 公开 OpenDM 源码对应的 VLA 推理链路</text>
+  <text x="700" y="73" text-anchor="middle" class="small">根据 opendm/model/dm05/dm05_arch.py 整理；不是官网公布的 9.29× 优化实现原图</text>
+
+  <rect x="40" y="130" width="230" height="245" class="box" fill="#e8f6f3"/>
+  <text x="155" y="165" text-anchor="middle" class="section">输入观测</text>
+  <rect x="70" y="190" width="170" height="43" class="box" fill="#d1f2eb"/>
+  <text x="155" y="217" text-anchor="middle" class="label">多视角图像</text>
+  <rect x="70" y="247" width="170" height="43" class="box" fill="#d1f2eb"/>
+  <text x="155" y="274" text-anchor="middle" class="label">任务文本</text>
+  <rect x="70" y="304" width="170" height="43" class="box" fill="#d1f2eb"/>
+  <text x="155" y="331" text-anchor="middle" class="label">机器人状态</text>
+  <text x="155" y="365" text-anchor="middle" class="tiny">图像、prompt、state 进入统一样本</text>
+
+  <rect x="330" y="115" width="330" height="275" class="box" fill="#eaf2f8"/>
+  <text x="495" y="150" text-anchor="middle" class="section">Gemma3 VLM Prefix</text>
+  <text x="495" y="180" text-anchor="middle" class="small">视觉编码器 + 语言模型</text>
+  <rect x="375" y="212" width="240" height="50" class="box" fill="#d6eaf8"/>
+  <text x="495" y="243" text-anchor="middle" class="label">多模态 token 序列</text>
+  <rect x="375" y="283" width="240" height="50" class="box" fill="#d6eaf8"/>
+  <text x="495" y="314" text-anchor="middle" class="label">prefix hidden states</text>
+  <text x="495" y="358" text-anchor="middle" class="small">一次编码并写入 KV cache</text>
+  <text x="495" y="380" text-anchor="middle" class="tiny">后续 diffusion steps 复用条件上下文</text>
+
+  <rect x="735" y="115" width="300" height="275" class="box" fill="#fef9e7"/>
+  <text x="885" y="150" text-anchor="middle" class="section">动作条件</text>
+  <rect x="780" y="205" width="210" height="50" class="box" fill="#fcf3cf"/>
+  <text x="885" y="236" text-anchor="middle" class="label">随机噪声 x₁</text>
+  <rect x="780" y="278" width="210" height="50" class="box" fill="#fcf3cf"/>
+  <text x="885" y="309" text-anchor="middle" class="label">时间步 t + action_in_proj</text>
+  <text x="885" y="360" text-anchor="middle" class="small">默认 action chunk = 50</text>
+  <text x="885" y="382" text-anchor="middle" class="tiny">action_dim 默认 32，依本体配置可变</text>
+
+  <rect x="1110" y="115" width="245" height="275" class="box" fill="#f5eef8"/>
+  <text x="1232" y="150" text-anchor="middle" class="section">Action Expert Suffix</text>
+  <text x="1232" y="180" text-anchor="middle" class="small">Gemma3TextModel 的动作专家</text>
+  <rect x="1140" y="212" width="185" height="50" class="box" fill="#e8daef"/>
+  <text x="1232" y="243" text-anchor="middle" class="label">prefix KV cache</text>
+  <rect x="1140" y="283" width="185" height="50" class="box" fill="#e8daef"/>
+  <text x="1232" y="314" text-anchor="middle" class="label">时间调制 + 注意力</text>
+  <text x="1232" y="360" text-anchor="middle" class="small">action_out_proj</text>
+  <text x="1232" y="382" text-anchor="middle" class="tiny">预测速度场 vθ(xₜ,t | c)</text>
+
+  <path d="M270 250 L330 250" class="arrow"/>
+  <path d="M660 250 L735 250" class="arrow"/>
+  <path d="M1035 250 L1110 250" class="arrow"/>
+  <path d="M660 330 C800 470 1010 470 1140 330" class="dash"/>
+  <text x="885" y="468" text-anchor="middle" class="tiny">条件上下文通过 KV cache 供 suffix 使用</text>
+
+  <rect x="225" y="535" width="950" height="190" class="box" fill="#f4f6f7"/>
+  <text x="700" y="570" text-anchor="middle" class="section">Flow Matching 推理循环</text>
+  <rect x="275" y="605" width="190" height="55" class="box" fill="#d5f5e3"/>
+  <text x="370" y="638" text-anchor="middle" class="label">xₜ：当前动作轨迹</text>
+  <rect x="535" y="605" width="190" height="55" class="box" fill="#d5f5e3"/>
+  <text x="630" y="638" text-anchor="middle" class="label">suffix 预测 vθ</text>
+  <rect x="795" y="605" width="190" height="55" class="box" fill="#d5f5e3"/>
+  <text x="890" y="638" text-anchor="middle" class="label">Euler 更新 xₜ₋₁</text>
+  <rect x="1045" y="605" width="80" height="55" class="box" fill="#d5f5e3"/>
+  <text x="1085" y="638" text-anchor="middle" class="label">重复</text>
+  <path d="M465 632 L535 632" class="arrow"/>
+  <path d="M725 632 L795 632" class="arrow"/>
+  <path d="M985 632 L1045 632" class="arrow"/>
+  <path d="M1085 605 C1085 570 370 570 370 605" class="dash"/>
+  <text x="700" y="690" text-anchor="middle" class="small">公开实现默认 diffusion_steps = 10；最终输出一段 action chunk，而非只输出一个动作</text>
+  <text x="700" y="750" text-anchor="middle" class="tiny">性能优化的关键方向：prefix 只算一次，suffix/算子/内存地址/图执行尽量固定</text>
+</svg>

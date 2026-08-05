@@ -210,6 +210,12 @@ const homeModules = [
         doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/17-Dexbotic-RLinf工程化VLA后训练导读/README.md",
       },
       {
+        title: "DM0.5 高性能推理",
+        copy: "拆解 OpenDM 的 VLM + Action Expert、Flow Matching 与 9.29× 推理优化边界。",
+        image: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/18-DM0.5高性能推理与OpenDM导读/assets/dm05_header_zh.png",
+        doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/18-DM0.5高性能推理与OpenDM导读/README.md",
+      },
+      {
         title: "Robots That Know What to Ask 奖励对齐",
         copy: "理解机器人如何识别欠指定奖励特征，并用解释引导人类补充示教。",
         image: "05-具身场景的深度和强化学习/04-Robots-That-Know-What-to-Ask奖励对齐导读/assets/method_overview.png",
