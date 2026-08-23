@@ -204,7 +204,7 @@ export async function translateMarkdown(markdown, { translate, glossary = "", ma
     if (trailingNewline && !restored.endsWith("\n")) restored += "\n";
     output.push(restored);
   }
-  return output.join("");
+  return output.join("").replace(/\r\n?/g, "\n");
 }
 
 function splitDestination(destination) {

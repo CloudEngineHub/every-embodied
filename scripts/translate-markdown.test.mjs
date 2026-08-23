@@ -91,6 +91,16 @@ test("translates prose while preserving protected Markdown exactly", async () =>
   assert.match(translated, /```bash\necho 中文\n```/);
 });
 
+test("normalizes generated Markdown to LF line endings", async () => {
+  const translated = await translateMarkdown("需要翻译。\r\n\r\n```text\r\n保持原样\r\n```\r\n", {
+    glossary: "",
+    maxBlockChars: 1000,
+    translate: async (text) => text.replace("需要翻译", "Translate this")
+  });
+  assert.doesNotMatch(translated, /\r/);
+  assert.match(translated, /```text\n保持原样\n```/);
+});
+
 test("re-bases local assets and prefers an existing translated Markdown target", () => {
   const sourcePath = "17-具身世界模型/topic/README.md";
   const targetPath = "en/17-world-models/topic/README.md";
