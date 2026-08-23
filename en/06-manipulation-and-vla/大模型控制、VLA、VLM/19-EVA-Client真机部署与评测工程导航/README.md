@@ -31,7 +31,7 @@ It breaks down these issues into the transport layer, robot description, policy 
 ## 2. Official Overview Diagram: How a single evaluation integrates into the closed loop
 
 <p align="center">
-  <img src="../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/19-EVA-Client真机部署与评测工程导航/assets/eva-client-workflow.png" width="100%" alt="EVA-Client 从机器人本体、数据采集、策略训练到部署评测的完整工作流">
+  <img src="../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/19-EVA-Client真机部署与评测工程导航/assets/eva-client-workflow.png" width="100%" alt="EVA-Client workflow from robot embodiments and data collection to policy training, deployment, and evaluation">
 </p>
 
 **Figure 1: EVA-Client official workflow.** Image source: [ EVA-Client official repository ](https://github.com/Noietch/EVA-CLIENT/blob/main/assets/workflow.png).
@@ -80,14 +80,14 @@ The far right side not only displays the success rate but also highlights the vi
 
 ```mermaid
 flowchart LR
-    U[任务指令 / 控制台] --> APP[EVA 应用层]
-    R[机器人与相机] --> T[Transport 传输层]
-    T --> O[统一观测]
+    U[Task instruction / Console] --> APP[EVA application layer]
+    R[Robot and cameras] --> T[Transport layer]
+    T --> O[Unified observations]
     O --> PC[Policy Client]
-    PC <--> PS[外部策略服务器]
+    PC <--> PS[External policy server]
     PC --> C[Action Chunk]
     C --> S[Inference Strategy]
-    S --> X[动作空间转换 / IK]
+    S --> X[Action-space conversion / IK]
     X --> T
     O --> LOG[Recorder / Evaluator]
     C --> LOG
@@ -171,9 +171,9 @@ In addition to the standard fields required for training, the evaluation should 
 This link is suitable for forming a closed loop as follows:
 
 ```text
-真机示教 -> LeRobot 数据 -> 外部 VLA 训练 -> EVA 部署评测
+Real-robot demonstration -> LeRobot data -> External VLA training -> EVA deployment and evaluation
         ^                                  |
-        |------- 失败片段 / 人工介入 -------|
+        |------- Failure segments / Human intervention -------|
 ```
 
 ## 6. Current Support Scope
@@ -236,25 +236,25 @@ It can only prove that the client and sample data link are functioning properly,
 A real deployment usually includes at least two independent processes:
 
 ```text
-进程 A：硬件执行节点
-  读取相机/关节 -> 发布统一观测
-  接收动作命令 -> 经过限位后驱动机器人
+Process A: hardware execution node
+  Read cameras/joints -> publish unified observations
+  Receive action commands -> apply limits -> drive the robot
 
-进程 B：EVA-Client
-  读取 config -> 连接 transport -> 请求策略服务
-  调度 action chunk -> 记录与评测
+Process B: EVA-Client
+  Read config -> connect transport -> request the policy service
+  Schedule action chunks -> record and evaluate
 ```
 
 The official repository provides hardware startup examples for different robots, for example:
 
 ```bash
-# 下面只展示入口形式，运行前仍需安装对应厂商 SDK/ROS 环境
+# These are entry-point examples; install the corresponding vendor SDK/ROS environment first.
 bash examples/hardware/agilex_piper/run_agilex_ros.sh
 bash examples/hardware/arx/run_hardware.sh
 bash examples/hardware/franka/run_hardware.sh
 bash examples/hardware/ur5e/run_hardware.sh
 
-# 另一个终端启动 EVA 配置
+# Start the EVA configuration in another terminal.
 eva --config configs/01_deploy/dual_agilex_piper/openpi_qpos.py
 ```
 
