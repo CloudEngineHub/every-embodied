@@ -122,13 +122,17 @@ jobs:
           node --input-type=module <<'NODE'
           import { createHttpTranslator, translateMarkdown } from './scripts/translate-markdown.mjs';
           const translate = createHttpTranslator(process.env.TRANSLATION_SERVER_URL);
-          const output = await translateMarkdown('机械臂使用 `VLA` 完成抓取。\n', {
+          const output = await translateMarkdown('请查看 [项目](https://example.com)，并运行 `VLA` 完成抓取。\n', {
             translate,
-            glossary: '机械臂 = robotic arm\n抓取 = grasping',
+            glossary: '',
             maxBlockChars: 1000
           });
           console.log(output);
-          if (/[\u3400-\u9fff]/u.test(output) || !output.includes('`VLA`')) process.exit(1);
+          if (
+            /[\u3400-\u9fff]/u.test(output)
+            || !output.includes('`VLA`')
+            || !/\[[^\]]+\]\(https:\/\/example\.com\)/.test(output)
+          ) process.exit(1);
           NODE
 
   translate:

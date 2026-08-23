@@ -6,6 +6,7 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 
 import {
+  buildTranslationPrompt,
   isTranslatableSource,
   parseNameStatus,
   protectInlineSyntax,
@@ -49,11 +50,30 @@ test("keeps front matter and fenced code out of translation chunks", () => {
 });
 
 test("protects and restores inline code, links, formulas, and URLs", () => {
-  const source = "运行 `python train.py`，查看 [项目](https://example.com)，计算 $x+y$。";
+  const source = "查看 [项目](https://example.com)，运行 `python train.py`，计算 $x+y$。";
   const protectedValue = protectInlineSyntax(source);
   assert.doesNotMatch(protectedValue.text, /python train\.py|https:\/\/example\.com|x\+y/);
+  assert.match(protectedValue.text, /\[\[EE_KEEP_\d{4}\]\]项目\[\[EE_KEEP_\d{4}\]\]/);
   assert.equal(restoreInlineSyntax(protectedValue.text, protectedValue.values), source);
+  assert.match(
+    restoreInlineSyntax(protectedValue.text.replace("项目", "project"), protectedValue.values),
+    /\[project\]\(https:\/\/example\.com\)/
+  );
   assert.throws(() => restoreInlineSyntax(protectedValue.text.replace("0000", "9999"), protectedValue.values));
+});
+
+test("builds an Hy-MT2 prompt without an empty terminology preamble", () => {
+  const source = "运行 [[EE_KEEP_0000]] 完成抓取。";
+  const withoutGlossary = buildTranslationPrompt(source, "\n# comment only\n");
+  assert.doesNotMatch(withoutGlossary, /参考下面的翻译/);
+  assert.match(withoutGlossary, /保留所有形如 \[\[EE_KEEP_0000\]\] 的分隔符/);
+  assert.ok(withoutGlossary.indexOf("翻译要求") < withoutGlossary.indexOf("将以下文本翻译成英语"));
+  assert.ok(withoutGlossary.endsWith(source));
+
+  const withGlossary = buildTranslationPrompt(`${source}机械臂`, "机械臂 = robotic arm\n抓取 = grasping\n");
+  assert.match(withGlossary, /机械臂 翻译成 robotic arm/);
+  assert.match(withGlossary, /抓取 翻译成 grasping/);
+  assert.equal(withGlossary.match(/参考下面的翻译/g)?.length, 1);
 });
 
 test("translates prose while preserving protected Markdown exactly", async () => {
@@ -62,7 +82,7 @@ test("translates prose while preserving protected Markdown exactly", async () =>
     glossary: "具身智能 = embodied AI",
     maxBlockChars: 1000,
     translate: async (text, prompt) => {
-      assert.match(prompt, /只输出翻译后的结果/);
+      assert.match(prompt, /注意只需要输出翻译后的结果/);
       return text.replace("这是", "This is a").replace("教程，请访问", "tutorial. Visit the").replace("项目", "project");
     }
   });

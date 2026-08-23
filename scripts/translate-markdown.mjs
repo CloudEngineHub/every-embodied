@@ -108,29 +108,41 @@ export function splitMarkdown(markdown, maxBlockChars = 4500) {
 
 export function protectInlineSyntax(text) {
   const values = [];
-  const patterns = [
+  const reserve = (value) => {
+    const token = `[[EE_KEEP_${String(values.length).padStart(4, "0")}]]`;
+    values.push(value);
+    return token;
+  };
+  const opaquePatterns = [
     /(`+)[\s\S]*?\1/g,
-    /\]\((?:\\.|[^)\n])+\)/g,
     /\$\$[\s\S]*?\$\$|\$[^$\n]+\$/g,
     /<\/?[A-Za-z][^>\n]*>/g,
-    /https?:\/\/[^\s<>)]+/g,
     /\{\{[^}\n]+\}\}|\$\{[^}\n]+\}/g
   ];
   let protectedText = text;
-  for (const pattern of patterns) {
-    protectedText = protectedText.replace(pattern, (match) => {
-      const token = `[[EE_KEEP_${String(values.length).padStart(4, "0")}]]`;
-      values.push(match);
-      return token;
-    });
+  for (const pattern of opaquePatterns) {
+    protectedText = protectedText.replace(pattern, reserve);
   }
+  protectedText = protectedText.replace(
+    /(!?)\[([^\]\n]*)\]\(((?:\\.|[^)\n])+)\)/g,
+    (_, imageMarker, label, destination) => (
+      `${reserve(`${imageMarker}[`)}${label}${reserve(`](${destination})`)}`
+    )
+  );
+  protectedText = protectedText.replace(/https?:\/\/[^\s<>)]+/g, reserve);
   return { text: protectedText, values };
 }
 
 export function restoreInlineSyntax(text, values) {
   const found = text.match(/\[\[EE_KEEP_\d{4}\]\]/g) ?? [];
   const expected = values.map((_, index) => `[[EE_KEEP_${String(index).padStart(4, "0")}]]`);
-  if (found.length !== expected.length || found.some((token, index) => token !== expected[index])) {
+  const counts = new Map();
+  for (const token of found) counts.set(token, (counts.get(token) ?? 0) + 1);
+  if (
+    found.length !== expected.length
+    || expected.some((token) => counts.get(token) !== 1)
+    || found.some((token) => !expected.includes(token))
+  ) {
     throw new Error("The translation changed protected Markdown tokens");
   }
   return values.reduce(
@@ -149,19 +161,30 @@ export function buildTranslationPrompt(sourceText, glossary) {
   const terms = glossary
     .split(/\r?\n/)
     .filter((line) => line.trim() && !line.trim().startsWith("#"))
-    .map((line) => `- ${line}`)
-    .join("\n");
-  return [
-    "参考下面的固定翻译：",
-    terms,
+    .map((line) => {
+      const separator = line.indexOf("=");
+      if (separator < 0) return { source: "", instruction: line.trim() };
+      const source = line.slice(0, separator).trim();
+      const target = line.slice(separator + 1).trim();
+      return { source, instruction: `${source} 翻译成 ${target}` };
+    })
+    .filter(({ source }) => !source || sourceText.includes(source))
+    .map(({ instruction }) => instruction);
+  const prompt = [];
+  if (terms.length > 0) {
+    prompt.push("参考下面的翻译：", ...terms, "");
+  }
+  prompt.push(
+    "翻译要求：",
+    "1. 严格保持 Markdown 结构、缩进、列表、表格和换行。",
+    "2. 译文必须保留所有形如 [[EE_KEEP_0000]] 的分隔符，保持数量、顺序和位置不变，绝对不可遗漏、转义或翻译该符号。",
+    "3. 模型名、仓库名、命令名、参数名和英文缩写保持原样。",
     "",
-    "将以下 Markdown 文本翻译为英语。只输出翻译后的结果，不要解释。",
-    "严格保持 Markdown 结构、缩进、列表、表格和换行。",
-    "所有形如 [[EE_KEEP_0000]] 的占位符必须原样保留，数量和顺序都不能改变。",
-    "模型名、仓库名、命令名、参数名和英文缩写保持原样。",
+    "将以下文本翻译成英语，注意只需要输出翻译后的结果，不要额外解释：",
     "",
     sourceText
-  ].join("\n");
+  );
+  return prompt.join("\n");
 }
 
 export async function translateMarkdown(markdown, { translate, glossary = "", maxBlockChars = 4500 }) {
