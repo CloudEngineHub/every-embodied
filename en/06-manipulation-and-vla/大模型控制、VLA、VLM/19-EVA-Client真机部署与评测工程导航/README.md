@@ -303,10 +303,10 @@ It complements the deployment infrastructure, rather than replacing the above mo
 
 ## 12. Using Boundary and Security Tips
 
-- EVA-Client has standardized the interfaces, but it does not automatically ensure the safety of policy actions; real robots still require hardware emergency stop, software limit control, and on-site monitoring.  
-- The ZMQ control channel can trigger actions on the real robot. By default, it should be restricted to a trusted local network or the local machine via an authenticated tunnel, and should not be exposed to the public network.  
-- The evaluation console and logs enhance auditability, but success criteria still need to be defined at the task level; they cannot be inferred automatically based solely on models or interfaces.  
-- “Supports a certain policy” usually indicates the existence of a client protocol, but it does not mean that the repository includes the training weights, licenses, or complete training environment for that policy.  
+- EVA-Client has standardized the interfaces, but it does not automatically ensure the safety of policy actions; real robots still require hardware emergency stop, software limit control, and on-site monitoring.
+- The ZMQ control channel can trigger actions on the real robot. By default, it should be restricted to a trusted local network or the local machine via an authenticated tunnel, and should not be exposed to the public network.
+- The evaluation console and logs enhance auditability, but success criteria still need to be defined at the task level; they cannot be inferred automatically based solely on models or interfaces.
+- “Supports a certain policy” usually indicates the existence of a client protocol, but it does not mean that the repository includes the training weights, licenses, or complete training environment for that policy.
 - “Supports a certain robot” should be confirmed by both the robot definition, hardware example, and config.
 
 ## References
