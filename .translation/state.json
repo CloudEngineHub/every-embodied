@@ -1,4 +1,17 @@
 {
   "version": 1,
-  "files": {}
+  "files": {
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/19-EVA-Client真机部署与评测工程导航/README.md": {
+      "target": "en/06-manipulation-and-vla/大模型控制、VLA、VLM/19-EVA-Client真机部署与评测工程导航/README.md",
+      "sourceHash": "133a22b3ad9a7faf8f876a320279a2949cb4084904a471401cbab03b089c453d",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "17-具身世界模型/1、扩散数理基础及问题解析入门/扩散数理基础及问题解析入门.md": {
+      "target": "en/17-world-models/1、扩散数理基础及问题解析入门/扩散数理基础及问题解析入门.md",
+      "sourceHash": "24cd242d6e42c3c2b575943036333acc65445b36b65b78b94d037ddc1fd762a4",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    }
+  }
 }
