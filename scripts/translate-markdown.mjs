@@ -204,7 +204,11 @@ export async function translateMarkdown(markdown, { translate, glossary = "", ma
     if (trailingNewline && !restored.endsWith("\n")) restored += "\n";
     output.push(restored);
   }
-  return output.join("").replace(/\r\n?/g, "\n");
+  const normalized = output.join("")
+    .replace(/\r\n?/g, "\n")
+    .replace(/[ \t]+$/gm, "")
+    .replace(/\n+$/, "");
+  return /\r?\n$/.test(markdown) ? `${normalized}\n` : normalized;
 }
 
 function splitDestination(destination) {
