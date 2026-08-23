@@ -148,8 +148,8 @@ jobs:
     needs: unit-tests
     runs-on: ubuntu-latest
     permissions:
+      actions: write
       contents: write
-      pull-requests: write
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -157,19 +157,6 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
-      - name: Skip while a translation PR is awaiting review
-        id: gate
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          open_pr="$(gh pr list --head automation/update-english --state open --json number --jq 'length')"
-          if [[ "$open_pr" != "0" ]]; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "An English translation PR is already open."
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-          fi
       - name: Plan translation work
         id: plan
         shell: bash
@@ -207,12 +194,12 @@ jobs:
             echo "mode=backfill" >> "$GITHUB_OUTPUT"
           fi
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
-        if: steps.gate.outputs.skip == 'false' && steps.plan.outputs.skip == 'false'
+        if: steps.plan.outputs.skip == 'false'
         with:
           path: ${{ env.MODEL_CACHE_DIR }}
           key: hy-mt2-q4-${{ env.MODEL_SHA256 }}
       - name: Install pinned llama.cpp
-        if: steps.gate.outputs.skip == 'false' && steps.plan.outputs.skip == 'false'
+        if: steps.plan.outputs.skip == 'false'
         shell: bash
         run: |
           set -euo pipefail
@@ -227,7 +214,7 @@ jobs:
           chmod +x "$server"
           echo "LLAMA_SERVER=$server" >> "$GITHUB_ENV"
       - name: Download pinned offline model
-        if: steps.gate.outputs.skip == 'false' && steps.plan.outputs.skip == 'false'
+        if: steps.plan.outputs.skip == 'false'
         shell: bash
         run: |
           set -euo pipefail
@@ -239,7 +226,7 @@ jobs:
           echo "${MODEL_SHA256}  $model" | sha256sum --check
           echo "MODEL_PATH=$model" >> "$GITHUB_ENV"
       - name: Start local translation server
-        if: steps.gate.outputs.skip == 'false' && steps.plan.outputs.skip == 'false'
+        if: steps.plan.outputs.skip == 'false'
         shell: bash
         run: |
           set -euo pipefail
@@ -256,7 +243,7 @@ jobs:
           cat "$RUNNER_TEMP/llama-server.log"
           exit 1
       - name: Translate changed or stale Markdown
-        if: steps.gate.outputs.skip == 'false' && steps.plan.outputs.skip == 'false'
+        if: steps.plan.outputs.skip == 'false'
         shell: bash
         env:
           MAX_FILES: ${{ github.event.inputs.max_files || '3' }}
@@ -272,21 +259,28 @@ jobs:
           else
             node scripts/translate-markdown.mjs --backfill --max-files "$MAX_FILES"
           fi
-      - name: Create review pull request
-        if: steps.gate.outputs.skip == 'false' && steps.plan.outputs.skip == 'false'
-        uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676
-        with:
-          token: ${{ github.token }}
-          branch: automation/update-english
-          delete-branch: true
-          commit-message: "docs: 离线更新英文翻译"
-          title: "docs: 离线更新英文翻译"
-          body: |
-            由公共 GitHub Runner 上的 `Hy-MT2-1.8B-GGUF Q4_K_M` 离线生成。
+      - name: Commit verified translations to main
+        id: publish
+        if: steps.plan.outputs.skip == 'false'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add .translation/state.json en
+          if git diff --cached --quiet; then
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            echo "No translation changes were generated."
+            exit 0
+          fi
 
-            - 未调用任何付费翻译 API
-            - 代码、公式、URL 和资源路径经过保护与校验
-            - 请重点复核技术术语和复杂长句
-          add-paths: |
-            .translation/state.json
-            en/**
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs: 离线更新英文翻译"
+          git pull --rebase origin main
+          git push origin HEAD:main
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy updated documentation
+        if: steps.publish.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main
