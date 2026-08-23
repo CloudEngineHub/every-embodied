@@ -28,6 +28,14 @@ on:
         description: Maximum Markdown files in this run
         required: true
         default: "3"
+      base_sha:
+        description: Optional base commit for changed mode
+        required: false
+        default: ""
+      head_sha:
+        description: Optional head commit for changed mode
+        required: false
+        default: ""
   pull_request:
     paths:
       - ".github/workflows/offline-translate-en.yml"
@@ -162,13 +170,49 @@ jobs:
           else
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
+      - name: Plan translation work
+        id: plan
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_BEFORE: ${{ github.event.before }}
+          EVENT_SHA: ${{ github.sha }}
+          REQUESTED_MODE: ${{ github.event.inputs.mode || 'backfill' }}
+          REQUESTED_BASE: ${{ github.event.inputs.base_sha || '' }}
+          REQUESTED_HEAD: ${{ github.event.inputs.head_sha || '' }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "push" ]]; then
+            if git diff --quiet "$EVENT_BEFORE" "$EVENT_SHA" -- \
+              '*.md' ':(exclude)en/**' ':(exclude).translation/**'; then
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              echo "No changed Chinese Markdown files; translation is not needed."
+            else
+              echo "skip=false" >> "$GITHUB_OUTPUT"
+              echo "mode=changed" >> "$GITHUB_OUTPUT"
+              echo "base=$EVENT_BEFORE" >> "$GITHUB_OUTPUT"
+              echo "head=$EVENT_SHA" >> "$GITHUB_OUTPUT"
+            fi
+          elif [[ "$EVENT_NAME" == "workflow_dispatch" && "$REQUESTED_MODE" == "changed" ]]; then
+            base="${REQUESTED_BASE:-${EVENT_SHA}^}"
+            head="${REQUESTED_HEAD:-$EVENT_SHA}"
+            git cat-file -e "${base}^{commit}"
+            git cat-file -e "${head}^{commit}"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "mode=changed" >> "$GITHUB_OUTPUT"
+            echo "base=$base" >> "$GITHUB_OUTPUT"
+            echo "head=$head" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "mode=backfill" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
-        if: steps.gate.outputs.skip == 'false'
+        if: steps.gate.outputs.skip == 'false' && steps.plan.outputs.skip == 'false'
         with:
           path: ${{ env.MODEL_CACHE_DIR }}
           key: hy-mt2-q4-${{ env.MODEL_SHA256 }}
       - name: Install pinned llama.cpp
-        if: steps.gate.outputs.skip == 'false'
+        if: steps.gate.outputs.skip == 'false' && steps.plan.outputs.skip == 'false'
         shell: bash
         run: |
           set -euo pipefail
@@ -183,7 +227,7 @@ jobs:
           chmod +x "$server"
           echo "LLAMA_SERVER=$server" >> "$GITHUB_ENV"
       - name: Download pinned offline model
-        if: steps.gate.outputs.skip == 'false'
+        if: steps.gate.outputs.skip == 'false' && steps.plan.outputs.skip == 'false'
         shell: bash
         run: |
           set -euo pipefail
@@ -195,7 +239,7 @@ jobs:
           echo "${MODEL_SHA256}  $model" | sha256sum --check
           echo "MODEL_PATH=$model" >> "$GITHUB_ENV"
       - name: Start local translation server
-        if: steps.gate.outputs.skip == 'false'
+        if: steps.gate.outputs.skip == 'false' && steps.plan.outputs.skip == 'false'
         shell: bash
         run: |
           set -euo pipefail
@@ -212,30 +256,24 @@ jobs:
           cat "$RUNNER_TEMP/llama-server.log"
           exit 1
       - name: Translate changed or stale Markdown
-        if: steps.gate.outputs.skip == 'false'
+        if: steps.gate.outputs.skip == 'false' && steps.plan.outputs.skip == 'false'
         shell: bash
         env:
           MAX_FILES: ${{ github.event.inputs.max_files || '3' }}
+          MODE: ${{ steps.plan.outputs.mode }}
+          BASE_SHA: ${{ steps.plan.outputs.base }}
+          HEAD_SHA: ${{ steps.plan.outputs.head }}
         run: |
           set -euo pipefail
-          if [[ "${{ github.event_name }}" == "push" ]]; then
-            if git diff --quiet "${{ github.event.before }}" "${{ github.sha }}" -- \
-              '*.md' ':(exclude)en/**' ':(exclude).translation/**'; then
-              node scripts/translate-markdown.mjs --backfill --max-files "$MAX_FILES"
-            else
-              node scripts/translate-markdown.mjs \
-                --base "${{ github.event.before }}" --head "${{ github.sha }}" \
-                --max-files "$MAX_FILES"
-            fi
-          elif [[ "${{ github.event.inputs.mode || 'backfill' }}" == "changed" ]]; then
+          if [[ "$MODE" == "changed" ]]; then
             node scripts/translate-markdown.mjs \
-              --base "${{ github.sha }}^" --head "${{ github.sha }}" \
+              --base "$BASE_SHA" --head "$HEAD_SHA" \
               --max-files "$MAX_FILES"
           else
             node scripts/translate-markdown.mjs --backfill --max-files "$MAX_FILES"
           fi
       - name: Create review pull request
-        if: steps.gate.outputs.skip == 'false'
+        if: steps.gate.outputs.skip == 'false' && steps.plan.outputs.skip == 'false'
         uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676
         with:
           token: ${{ github.token }}
