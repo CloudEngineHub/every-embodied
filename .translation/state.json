@@ -12,6 +12,12 @@
       "sourceHash": "24cd242d6e42c3c2b575943036333acc65445b36b65b78b94d037ddc1fd762a4",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "01-具身智能概述/01具身智能概述.md": {
+      "target": "en/01-embodied-ai-overview/01具身智能概述.md",
+      "sourceHash": "ba1de2583fdd8d8e670e2e3738c94f6abae943180bbf1e7e6f680588f5fc6ea9",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
   }
 }
