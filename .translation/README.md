@@ -5,6 +5,11 @@ repository. Translation runs entirely inside a standard GitHub-hosted runner;
 it does not call a paid translation API and does not require repository
 secrets.
 
+This workflow uses GitHub Actions compute, not the retired GitHub Models
+inference API. For this public repository, standard GitHub-hosted runners do
+not consume a paid translation quota. Generated translations still require
+human review before merging.
+
 ## Runtime
 
 - Model: [`tencent/Hy-MT2-1.8B-GGUF`](https://huggingface.co/tencent/Hy-MT2-1.8B-GGUF)

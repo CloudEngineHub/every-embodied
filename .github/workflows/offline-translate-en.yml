@@ -5,8 +5,13 @@ on:
     branches: [main]
     paths:
       - "**/*.md"
+      - ".github/workflows/offline-translate-en.yml"
+      - ".translation/config.json"
+      - ".translation/glossary.txt"
+      - "scripts/translate-markdown.mjs"
+      - "scripts/translate-markdown.test.mjs"
+      - "package.json"
       - "!en/**"
-      - "!.translation/**"
   schedule:
     - cron: "17 18 * * *"
   workflow_dispatch:
@@ -210,9 +215,14 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "${{ github.event_name }}" == "push" ]]; then
-            node scripts/translate-markdown.mjs \
-              --base "${{ github.event.before }}" --head "${{ github.sha }}" \
-              --max-files "$MAX_FILES"
+            if git diff --quiet "${{ github.event.before }}" "${{ github.sha }}" -- \
+              '*.md' ':(exclude)en/**' ':(exclude).translation/**'; then
+              node scripts/translate-markdown.mjs --backfill --max-files "$MAX_FILES"
+            else
+              node scripts/translate-markdown.mjs \
+                --base "${{ github.event.before }}" --head "${{ github.sha }}" \
+                --max-files "$MAX_FILES"
+            fi
           elif [[ "${{ github.event.inputs.mode || 'backfill' }}" == "changed" ]]; then
             node scripts/translate-markdown.mjs \
               --base "${{ github.sha }}^" --head "${{ github.sha }}" \
