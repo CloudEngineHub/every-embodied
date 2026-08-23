@@ -18,6 +18,24 @@
       "sourceHash": "ba1de2583fdd8d8e670e2e3738c94f6abae943180bbf1e7e6f680588f5fc6ea9",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "01-具身智能概述/module1_1_机器人发展历史与背景/images/image_sources.md": {
+      "target": "en/01-embodied-ai-overview/module1_1_机器人发展历史与背景/images/image_sources.md",
+      "sourceHash": "af77e2c691b921d09b706a609304b33cf9d7e235a12f4f9afef14c14285e6e83",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "01-具身智能概述/module1_1_机器人发展历史与背景/README.md": {
+      "target": "en/01-embodied-ai-overview/module1_1_机器人发展历史与背景/README.md",
+      "sourceHash": "2aeb9117c1ad10ced860ec50411a83fab4c0749cba22afdebb8d51d820037c58",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "01-具身智能概述/module1_2_机器人系统组成与分类/README.md": {
+      "target": "en/01-embodied-ai-overview/module1_2_机器人系统组成与分类/README.md",
+      "sourceHash": "4528183a46e58d7ac44aabe17e2c8bed9bc06d0d2dd7de1fcae187e30a1cc344",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
   }
 }
