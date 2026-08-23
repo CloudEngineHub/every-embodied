@@ -31,3 +31,11 @@ against pinned SHA-256 digests. Neither file is committed to this repository.
 
 `state.json` records the source content hash and target path. Unchanged files
 are skipped, so routine runs only process new or modified documentation.
+
+## Troubleshooting
+
+An HTTP 422 response containing `Actions has been disabled for this user` is
+an account-level GitHub restriction, not a repository quota error. In that
+case, an Actions-enabled maintainer must trigger the workflow, or the affected
+account must contact GitHub Support. Changing model or API settings will not
+resolve that restriction.
