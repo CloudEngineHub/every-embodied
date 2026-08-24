@@ -1,39 +1,1677 @@
 {
   "version": 1,
   "files": {
-    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/19-EVA-Client真机部署与评测工程导航/README.md": {
-      "target": "en/06-manipulation-and-vla/大模型控制、VLA、VLM/19-EVA-Client真机部署与评测工程导航/README.md",
-      "sourceHash": "133a22b3ad9a7faf8f876a320279a2949cb4084904a471401cbab03b089c453d",
-      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
-      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
-    },
-    "17-具身世界模型/1、扩散数理基础及问题解析入门/扩散数理基础及问题解析入门.md": {
-      "target": "en/17-world-models/1、扩散数理基础及问题解析入门/扩散数理基础及问题解析入门.md",
-      "sourceHash": "24cd242d6e42c3c2b575943036333acc65445b36b65b78b94d037ddc1fd762a4",
-      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
-      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
-    },
     "01-具身智能概述/01具身智能概述.md": {
-      "target": "en/01-embodied-ai-overview/01具身智能概述.md",
+      "target": "en/01-embodied-ai-overview/01-overview-of-embodied-ai.md",
       "sourceHash": "ba1de2583fdd8d8e670e2e3738c94f6abae943180bbf1e7e6f680588f5fc6ea9",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
+    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/补充01joycon控制/网页端joycon控制.md": {
+      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/supplement-01joycon-control/web-based-joycon-control.md",
+      "sourceHash": "06f10ea728d38e1a5726453723c34998c7f69981376f260807e1e977d6e734b9",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/09策略诊断与物理成功评估.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/04-mujoco-reproduction-act-pi0-smolvla/09-policy-diagnosis-and-physical-success-evaluation.md",
+      "sourceHash": "86fd3d39abaddff350e3798340618719370b3bcf75d94240f1c72dbaea23f221",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/19-EVA-Client真机部署与评测工程导航/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/19-eva-client-real-robot-deployment-and-evaluation-engineering-navigation/README.md",
+      "sourceHash": "133a22b3ad9a7faf8f876a320279a2949cb4084904a471401cbab03b089c453d",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/01仿真配置文档.md": {
+      "target": "en/10-simulation-tools-and-frontiers/01-simulation-configuration-document.md",
+      "sourceHash": "15aa8b35e66b100aed51ff3c62af7cea30197e95395784a71865c3c68722c664",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/cosmos/01环境配置.md": {
+      "target": "en/10-simulation-tools-and-frontiers/cosmos/01-environment-configuration.md",
+      "sourceHash": "75baa71c262fcb0c8bbb26882abd80afd04cfb130eed68d3f410e66ef42e810c",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/MetaSim-roboverse/01环境配置.md": {
+      "target": "en/10-simulation-tools-and-frontiers/MetaSim-roboverse/01-environment-configuration.md",
+      "sourceHash": "028ff10a8609d42277852bab182331c3bbc155fae3d45801f71562b67e8eb0b1",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/linux命令行复制为markdown带字体颜色内容.md": {
+      "target": "en/11-auxiliary-tools/copying-content-from-linux-command-line-into-markdown-with-font-color.md",
+      "sourceHash": "8d74354d21b700024464cfdb1782fddeffdaf4722ed5e2ff3a8c8839e52a989a",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/AgiBot_World_Model/AgiBot_World_Model比赛复现与改进教程.md": {
+      "target": "en/15-challenges/AgiBot_World_Model/agibot-world-model-competition-reproduction-and-improvement-tutorial.md",
+      "sourceHash": "b7aa628669868c3bdbbe370888818e360f36b38cd8ec4d3447a5f8783144368a",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/TaskB-B2Piper/code/README.md": {
+      "target": "en/15-challenges/ATEC2026/TaskB-B2Piper/code/README.md",
+      "sourceHash": "d1b8aaf08271a4461ad00a92b44ce6444aa894af7e991625669050b531632c98",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/TRONCamp-Mani/docs/04_提交与开源检查清单.md": {
+      "target": "en/15-challenges/TRONCamp-Mani/docs/04-submission-and-open-source-checklist.md",
+      "sourceHash": "d4dd896329e4d17bdfde41d34bd7f2275ae9bface31a7723812378e5d07355a5",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/02-OpenClaw家庭物资助手/tuntunclaw/manipulator_grasp/arm/assets/kuka_iiwa_14/README.md": {
+      "target": "en/16-study-programs/02-openclaw-family-supply-assistant/tuntunclaw/manipulator_grasp/arm/assets/kuka_iiwa_14/README.md",
+      "sourceHash": "03f86920ddab895cd89bce45aeaeae8cf88e60157486592a08f3a7fa6fecff69",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/00_组队学习招募参考稿.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/00-team-learning-recruitment-reference-draft.md",
+      "sourceHash": "18d0e8311d1688feef11ce58109ff95be244439b6f886bd72840e881e4dfc19d",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "17-具身世界模型/2、VAE详解与代码实现/VAE详解与代码实现.md": {
+      "target": "en/17-world-models/02-02-detailed-explanation-of-vae-and-code-implementation/detailed-explanation-of-vae-and-code-implementation.md",
+      "sourceHash": "015c11b2fc68e466cc949dc9590be3d88807baf2def7fecabbff248af395d599",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
     "01-具身智能概述/module1_1_机器人发展历史与背景/images/image_sources.md": {
-      "target": "en/01-embodied-ai-overview/module1_1_机器人发展历史与背景/images/image_sources.md",
+      "target": "en/01-embodied-ai-overview/module1-1-history-and-background-of-robot-development/images/image_sources.md",
       "sourceHash": "af77e2c691b921d09b706a609304b33cf9d7e235a12f4f9afef14c14285e6e83",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
+    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/补充01joycon控制/robosuite-joycon-windows.md": {
+      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/supplement-01joycon-control/robosuite-joycon-windows.md",
+      "sourceHash": "d4abd42288a3ecc898b6c4f8c0df192d599c577b7e095ed54caf5bbfa39b0303",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/asset/xarm6_description/CHANGELOG.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/04-mujoco-reproduction-act-pi0-smolvla/asset/xarm6_description/CHANGELOG.md",
+      "sourceHash": "4c34ce53605cef5efc80d3d9672e49cb7544bc3b1e3bf32ce991406e0688e109",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "07-机器人操作、运动控制/Locomotion/01春晚舞蹈机器人复刻.md": {
+      "target": "en/07-robot-operation-and-motion-control/Locomotion/01-spring-festival-gala-dance-robot-recreated.md",
+      "sourceHash": "33e6e69017d980a35ca1ba1b84e584993ecf7fd746934e4a974e7658d86fef22",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/01Isaac-sim5.0安装/isaac-sim安装.md": {
+      "target": "en/10-simulation-tools-and-frontiers/01-isaac-sim5-0-installation/isaac-sim-installation.md",
+      "sourceHash": "1472b3591416fc3e7c5840755b1602a514d5581235dc2c4f1ed59f8a21bb3289",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Genesis仿真环境配置/01环境配置和测试.md": {
+      "target": "en/10-simulation-tools-and-frontiers/genesis-simulation-environment-configuration/01-environment-configuration-and-testing.md",
+      "sourceHash": "a3b4d74665c641e86aa60c9d5169ea3007adb3d104e0adfc8498baa63eb482d4",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/README.md": {
+      "target": "en/10-simulation-tools-and-frontiers/README.md",
+      "sourceHash": "894ceadf05c4cd1d39f05e6d9cf3fa4584880404b9a8feacf79252dfa6dd0d79",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/modelscope快速下载.md": {
+      "target": "en/11-auxiliary-tools/modelscope-quick-download.md",
+      "sourceHash": "d47d9e150d692bc2cd27a5dcd5d61247c4ceb43551569c051a16ea5d152b1b9d",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/code/README.md": {
+      "target": "en/15-challenges/ATEC2026/code/README.md",
+      "sourceHash": "6bbe07f9f38587a90181955b190625187e84121136216d6c2ed67c1514f60611",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/TaskB-B2Piper/docs/01_比赛定义与观测边界.md": {
+      "target": "en/15-challenges/ATEC2026/TaskB-B2Piper/docs/01-competition-definition-and-observation-boundaries.md",
+      "sourceHash": "ae029588d199dd2f6febf8860b174e4413759de9af0fefa08490120b23dd9e01",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/TRONCamp-Mani/hf/README.md": {
+      "target": "en/15-challenges/TRONCamp-Mani/hf/README.md",
+      "sourceHash": "76d93ad9e4d18972cdc00d02f85ff417989625442cea3bfa82f5e9400cdd9d0d",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/02-OpenClaw家庭物资助手/tuntunclaw/manipulator_grasp/arm/assets/robotiq_2f85/README.md": {
+      "target": "en/16-study-programs/02-openclaw-family-supply-assistant/tuntunclaw/manipulator_grasp/arm/assets/robotiq_2f85/README.md",
+      "sourceHash": "7eb68400829e6ee929452fd333dfb214aed963b0a217af7d03df8363600e795b",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/pi0_ep2_raw_vs_finisher_metrics.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/assets/pi0_ep2_raw_vs_finisher_metrics.md",
+      "sourceHash": "2d3f8849fa2b85479e10b10a9169efe1fe79c8690583d02ddebc15131cc6381e",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "17-具身世界模型/3、DDPM详解与代码实现/DDPM详解与代码实现.md": {
+      "target": "en/17-world-models/03-03-detailed-explanation-of-ddpm-and-code-implementation/detailed-explanation-and-code-implementation-of-ddpm.md",
+      "sourceHash": "fbec3665bca37728ab819008f4c78b3bffe7d5ced9fa7bd28be336ef4b85a8d3",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "02-机器人基础和控制、手眼协调/补充02PID_Control.md": {
+      "target": "en/02-robot-basics-control-and-hand-eye-coordination/supplement-02pid-control.md",
+      "sourceHash": "5726b65fe76c9beb801164a4d58e95b2fc2e62ecd70bf9970196e1139a45c7b6",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "05-具身场景的深度和强化学习/03AGILE人形机器人Loco-Manipulation复现/assets/README.md": {
+      "target": "en/05-deep-and-reinforcement-learning/03-agile-humanoid-robot-loco-manipulation-reproduction/assets/README.md",
+      "sourceHash": "52dd82efa43721f5a5bc90d63c6b8cc59773757bf193ca50b3186402f87cb2e3",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/09-3DVLA三维空间实例增强VLA导读/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/09-3dvla-3d-spatial-and-instance-understanding-guide/README.md",
+      "sourceHash": "df2bf2ede7c9797c3bc3fd9e0f9361d5586c6302759ca47a8f9fa32d5e10ac22",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "08-具身导航及VLN/02仿真环境基础/habitat导航环境/habitat_sim环境搭建及数据集介绍.md": {
+      "target": "en/08-navigation-and-vln/02-basics-of-simulation-environment/habitat-navigation-environment/habitat-sim-environment-setup-and-dataset-introduction.md",
+      "sourceHash": "8d46072cccb47a6b17f8ee0ef2c055c4bd3398774562411871e5894a39a84962",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/07GenieSim配置.md": {
+      "target": "en/10-simulation-tools-and-frontiers/07-geniesim-configuration.md",
+      "sourceHash": "b7810a44b60e4cfe81fc5dc99307e98f7e47e99231e0020a1d0508f58bede728",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Maniskill详细文档/02相关概念.md": {
+      "target": "en/10-simulation-tools-and-frontiers/maniskill-detailed-documentation/02-related-concepts.md",
+      "sourceHash": "3840aab3295f582e0e1bc666049b23eb2852eba7b5d3013c0ef5635f4287496c",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/flash-attn快速安装.md": {
+      "target": "en/11-auxiliary-tools/flash-attn-quick-installation.md",
+      "sourceHash": "537ca2f0f2e0b151f0a822e0504904202edbe25316db4fa678cd486f6a02c334",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/wsl/wsl-header编译.md": {
+      "target": "en/11-auxiliary-tools/wsl/wsl-header-compilation.md",
+      "sourceHash": "ed47444365d0f10e663bd51a1661bbc6e9f3444fbb387d7c7f78ba2ad71e0ebb",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/L0-桌面整理TaskE/code/act_seed1_best_submission/POLICY_WEIGHT_NOT_INCLUDED.md": {
+      "target": "en/15-challenges/ATEC2026/l0-desktop-organization-taske/code/act_seed1_best_submission/POLICY_WEIGHT_NOT_INCLUDED.md",
+      "sourceHash": "38f5d93cc3fcc958fec34f0ad09b166b2f97ad1872543c27e05e66d1894da502",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/TaskB-B2Piper/results/evidence_boundary.md": {
+      "target": "en/15-challenges/ATEC2026/TaskB-B2Piper/results/evidence_boundary.md",
+      "sourceHash": "dc824740ad729aee9689c4b8bca4e18e6105eea3869c9ec21e5fc0a702d4d363",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/01-达摩院组队学习/Task 04_总结分享.md": {
+      "target": "en/16-study-programs/01-damo-academy-team-learning/task-04-summary-and-sharing.md",
+      "sourceHash": "d7340c60a508ed46c9e008f650e21657f4fe141c9477e0ba716c32c3b88dbbbf",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/03-地瓜机器人新版教程桌宠/README_03_快速入门与基础外设补充材料.md": {
+      "target": "en/16-study-programs/03-d-robotics-desktop-companion-tutorial/03-quick-start-and-basic-peripherals-supplement-materials.md",
+      "sourceHash": "d5d2b28b30ba603aabde101da88f30ff7f00cd0d5c2b8c243c072a1eb2edd128",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/README_02_物理成功评估与视频复核.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/02-physical-success-evaluation-and-video-review.md",
+      "sourceHash": "efec174dbad303d56a255156ef9c2227d0394f2cacc075df8a0de4c257f17178",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "17-具身世界模型/WALL-WM事件级世界动作模型导读/README.md": {
+      "target": "en/17-world-models/wall-wm-event-level-world-action-model-guide/README.md",
+      "sourceHash": "4153bf84b9f8a1bec679e3d9b03582c3f7def5a883fa8774b494a5b28ae5cd29",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "02-机器人基础和控制、手眼协调/补充代码教程_Cartpole三种控制算法实战/cartpole建模与控制.md": {
+      "target": "en/02-robot-basics-control-and-hand-eye-coordination/supplement-cartpole-control-tutorial/cartpole-modeling-and-control.md",
+      "sourceHash": "17672389601e9d3ce80bf18aad473d7e3792038e1289caff8e77944edae96165",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "05-具身场景的深度和强化学习/03AGILE人形机器人Loco-Manipulation复现/README.md": {
+      "target": "en/05-deep-and-reinforcement-learning/03-agile-humanoid-robot-loco-manipulation-reproduction/README.md",
+      "sourceHash": "911feea6529cd72c7b34a77f260308b2fa3bd206adef90d0b01ea93d657531df",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/10-PhysBrain物理常识增强VLA导读/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/10-physbrain-physical-common-sense-enhancement-vla-guide/README.md",
+      "sourceHash": "d2d3066357255d907131c7729683c8bd894c76b1311226eeb9c35429fa10ec54",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "08-具身导航及VLN/02仿真环境基础/habitat导航环境/habitat_sim基础实践.md": {
+      "target": "en/08-navigation-and-vln/02-basics-of-simulation-environment/habitat-navigation-environment/habitat-sim-basic-practices.md",
+      "sourceHash": "14a9031ce2a3e4c4a44738752683696d038ac7af000261ea68ddf13b3e068f5a",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/08GenieSim3配置.md": {
+      "target": "en/10-simulation-tools-and-frontiers/08-geniesim3-configuration.md",
+      "sourceHash": "e64dcc6d5e730fa13cf2ab8924090d254cb437a38ff7af1c14b27cd9229a72ff",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Maniskill详细文档/03数据集.md": {
+      "target": "en/10-simulation-tools-and-frontiers/maniskill-detailed-documentation/03-dataset.md",
+      "sourceHash": "210e40a3688da2aa79cd7520217322f30a13121597b8b4f35e5c6ee72daff3ec",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/FlashLib高速机器学习库.md": {
+      "target": "en/11-auxiliary-tools/flashlib-high-speed-machine-learning-library.md",
+      "sourceHash": "86dc41f4ef547b180024d845511d7906d4a7eaf470776bf2b162be27c641345c",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/wsl/wsl蓝牙.md": {
+      "target": "en/11-auxiliary-tools/wsl/wsl-bluetooth.md",
+      "sourceHash": "eb3762f8c51a8ca798223efbd77e729d666a9fad8b1549f188b0d19c8a09e0a7",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/L0-桌面整理TaskE/code/act_seed1_best_submission/UPLOAD_README.md": {
+      "target": "en/15-challenges/ATEC2026/l0-desktop-organization-taske/code/act_seed1_best_submission/UPLOAD_README.md",
+      "sourceHash": "6784a40bae8a53a9a04be8874a6474ae5738e19d22de291066de4e0ff02bcdab",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/LeHome/README.md": {
+      "target": "en/15-challenges/LeHome/README.md",
+      "sourceHash": "55285f59d77b6aebceedb08315dd66685bd35d003b0a36a609d1889d9d04db15",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/02-OpenClaw家庭物资助手/README_01_项目目标与范围.md": {
+      "target": "en/16-study-programs/02-openclaw-family-supply-assistant/01-project-objectives-and-scope.md",
+      "sourceHash": "9d8b4b4bad3293a3dd8f29e2a3c0888e5123e90e6b3e2c3960c633b9accb5621",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/03-地瓜机器人新版教程桌宠/README_04_算法Demo_双目与手势.md": {
+      "target": "en/16-study-programs/03-d-robotics-desktop-companion-tutorial/04-algorithm-demo-stereo-vision-and-gesture.md",
+      "sourceHash": "c8a3c98575015e5eecfec3f398d6bde66fa90560e19e99ae961afe5dc0654650",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/README_03_ACT_ROCm迁移与DAgger诊断.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/03-act-rocm-migration-and-dagger-diagnosis.md",
+      "sourceHash": "0fafd43a9a129549aa46a259083e215815b3c1b28f65e539cf526ba1c7a372be",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "17-具身世界模型/WoG条件空间世界模型导读/README.md": {
+      "target": "en/17-world-models/wog-conditional-space-world-model-guide/README.md",
+      "sourceHash": "080a301add82763f497c08433b3f6984547a6cbb0049143b2705fd02c35a25ea",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "02-机器人基础和控制、手眼协调/补充代码教程_Cartpole三种控制算法实战/code/环境安装.md": {
+      "target": "en/02-robot-basics-control-and-hand-eye-coordination/supplement-cartpole-control-tutorial/code/environment-installation.md",
+      "sourceHash": "0b953c2441d3c30de006fb4c50637d5f091c3928a1c46b757a4676045a8754c5",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "05-具身场景的深度和强化学习/04-Robots-That-Know-What-to-Ask奖励对齐导读/README.md": {
+      "target": "en/05-deep-and-reinforcement-learning/04-robots-that-know-what-to-ask-reward-alignment-introduction/README.md",
+      "sourceHash": "8e5027f089b6d9d452551073dda801ba5a63126e078fec3c8ca5aeca3d5ac8ac",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/11-PRTS强化学习原生VLA导读/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/11-prts-reinforcement-learning-native-vla-guidance/README.md",
+      "sourceHash": "69adc7cd8eb493c4a6b6349bbf1e40882ffa60ea9556e302fd4a1d64112b9fe8",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "08-具身导航及VLN/03前沿VLN复现/01VLNCE/01连续环境下视觉语言导航（VLN-CE）方法概述.md": {
+      "target": "en/08-navigation-and-vln/03-frontier-vln-reproduction/01VLNCE/01-overview-of-visual-language-navigation-vln-ce-method-in-continuous-environment.md",
+      "sourceHash": "8bc7035a6c3e9f18c449fe3a5b2c03c861d51b4047c8005d5f30291a8929b0d6",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/09SIM1柔体仿真与数据生成/01SIM1环境配置与运行.md": {
+      "target": "en/10-simulation-tools-and-frontiers/09-sim1-soft-body-simulation-and-data-generation/01-sim1-environment-configuration-and-operation.md",
+      "sourceHash": "e190c1eedc8c3725a0dba0d525e586123abeff3a0595bb0b0481459b202bce1b",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Maniskill详细文档/04数据采集.md": {
+      "target": "en/10-simulation-tools-and-frontiers/maniskill-detailed-documentation/04-data-collection.md",
+      "sourceHash": "3caf4387420543ee3c92d53aa298a43c560e1e30f165b544484bd90f1f04a9ed",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/git相关使用/git的api推送仓库.md": {
+      "target": "en/11-auxiliary-tools/git-related-usage/git-api-push-to-repository.md",
+      "sourceHash": "1cd457080192b3f2829df2cbb28befb99e117c8fb9d0173a5c801f11095dae11",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/wsl/wsl图形界面配置.md": {
+      "target": "en/11-auxiliary-tools/wsl/wsl-graphical-interface-configuration.md",
+      "sourceHash": "2ca519a5be5502f9e1c4cc4999cbb811dc6912512226a70078acb7d03f69f7cf",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/L0-桌面整理TaskE/docs/ATEC2026_TaskE_规则物理配置与提交说明_20260604.md": {
+      "target": "en/15-challenges/ATEC2026/l0-desktop-organization-taske/docs/atec2026-taske-rules-physical-configuration-and-submission-instructions-20260604.md",
+      "sourceHash": "af5b1f0b6552d1cac573e93d426bb0669240cc0ef45b2889d6718380979c8c3d",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/LeHome/resources/commands.md": {
+      "target": "en/15-challenges/LeHome/resources/commands.md",
+      "sourceHash": "195f00d7db89946909e0bdfbfeaf026ae37f00fcd2c833945f0daca2f8264365",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/02-OpenClaw家庭物资助手/README_02_OpenClaw与飞书接入.md": {
+      "target": "en/16-study-programs/02-openclaw-family-supply-assistant/02-openclaw-and-feishu-integration.md",
+      "sourceHash": "26d8052b2fa47493d2883da6f26c5de0dd9cfde04c7fb15d6381a79d2d443b81",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/03-地瓜机器人新版教程桌宠/README_05_算法Demo_语音与LLM.md": {
+      "target": "en/16-study-programs/03-d-robotics-desktop-companion-tutorial/05-algorithm-demo-voice-and-llm.md",
+      "sourceHash": "64d9c18ded287ce48f94225d85f2b9f83392ecbad281aea219a4b85376785d66",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/README_04_SmolVLA_ROCm迁移与采样加权.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/04-smolvla-rocm-migration-and-sampling-weighting.md",
+      "sourceHash": "e10e1a6fbcdd33777f05fe8e6225a1699e787ca911fa3603e23d457a34bd3fd0",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "18-无人机专题/无人机规划教程.md": {
+      "target": "en/18-drones/drone-planning-tutorial.md",
+      "sourceHash": "29294d436c4c58fc95e3059e796a404048357d879f152fa6958596baf6a1d86e",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/01RDKX5超新手入门教程.md": {
+      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/01-rdk-x5-beginners-guide.md",
+      "sourceHash": "f55fae356927e472ca1a08162365518c4198674e3b89d0ec3ba14f3a5c60e07c",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "05-具身场景的深度和强化学习/补充01参考资料.md": {
+      "target": "en/05-deep-and-reinforcement-learning/supplement-01-reference-materials.md",
+      "sourceHash": "e8ec3209ed70d67abdc7c298d2a35b3c8d3b4ecd752610917b987695321fad08",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/12-Galaxea-G0.5自回归VLA导读/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/12-galaxea-g0-5-autoregressive-vla-guidance/README.md",
+      "sourceHash": "fbf7071e88dae9f4860844d37f5a88917bda919db02e51f2c7df8f78fae8f09c",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "08-具身导航及VLN/03前沿VLN复现/01VLNCE/02ETPNav代码复现.md": {
+      "target": "en/08-navigation-and-vln/03-frontier-vln-reproduction/01VLNCE/02-etpnav-code-reproduction.md",
+      "sourceHash": "814c38230f00ddf28d064aa95f83d6de1c0b8620d60e2ddcf87f13064cdd041b",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/10Internverse教程/InternDataEngine_小空间功能体验教程.md": {
+      "target": "en/10-simulation-tools-and-frontiers/10-internverse-tutorial/interndataengine-small-space-feature-experience-tutorial.md",
+      "sourceHash": "dfa632d4a0c0f5ee7489d1bf3e46452758cf2946c208dcad7c9427f7729da271",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Maniskill详细文档/05强化学习.md": {
+      "target": "en/10-simulation-tools-and-frontiers/maniskill-detailed-documentation/05-reinforcement-learning.md",
+      "sourceHash": "06ca7f99f4792b4fa39afa26f7ca883283f81fdb731d77a9ed43d11bb715b0e7",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/git相关使用/git合并提交.md": {
+      "target": "en/11-auxiliary-tools/git-related-usage/git-merge-and-commit.md",
+      "sourceHash": "bd3978c8bfe38b9a1351f696e42eefaf638ebdda8e5f56e2394e1c565d1d7ca1",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/Xget库.md": {
+      "target": "en/11-auxiliary-tools/xget-library.md",
+      "sourceHash": "4ec3838e4897a8f1ebe69f2ac4f9a6386bc6b2b01dbfc18b0eb522cd56739628",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/L0-桌面整理TaskE/docs/WORKSPACE_MEMORY_TaskE_完整调试记录.md": {
+      "target": "en/15-challenges/ATEC2026/l0-desktop-organization-taske/docs/workspace-memory-taske-complete-debugging-record.md",
+      "sourceHash": "442f5969958f5a5de3d0cfbeb0ef2152f99d80791d7c81ba46c00ea28aaa5884",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/README.md": {
+      "target": "en/15-challenges/README.md",
+      "sourceHash": "e987ebd655f6cfc53965833b4bfac9cda229ee8f3e45a720b492fcd296768463",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/02-OpenClaw家庭物资助手/README_03_库存与多维表格同步.md": {
+      "target": "en/16-study-programs/02-openclaw-family-supply-assistant/03-inventory-and-multidimensional-table-synchronization.md",
+      "sourceHash": "2524d03f04a55c80481ed0ecbeac3b6e73c1f87bc0d036535f56ee06c625b4e6",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/03-地瓜机器人新版教程桌宠/README_06_OpenClaw部署与接入.md": {
+      "target": "en/16-study-programs/03-d-robotics-desktop-companion-tutorial/06-openclaw-deployment-and-access.md",
+      "sourceHash": "edea4151ca85722425ec8e40f948f054129718a72a5145388608df41e9acc80f",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/README_05_pi0_ROCm权限Smoke与训练门控.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/05-pi0-rocm-permission-smoke-and-training-gatekeeping.md",
+      "sourceHash": "9e4021172445c115159f07fe2e9fcc99f32b3c660a861e2c0a21f0a5195b71f1",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "18-无人机专题/无人机控制教程.md": {
+      "target": "en/18-drones/drone-control-tutorial.md",
+      "sourceHash": "9b41d4fbd96667d724b39f518898dbd7283bd3cb59e9570c4181ac6e9d175d62",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/02RDK X5闪连（RDK Studio使用教程）.md": {
+      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/02-rdk-x5-flash-connect-rdk-studio-guide.md",
+      "sourceHash": "1e1de1f71f2fb7bd49bd2f825c081337cfaff025ef18738632ff69db1a7f43a8",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "05-具身场景的深度和强化学习/补充02maniskill_sim2real.md": {
+      "target": "en/05-deep-and-reinforcement-learning/supplement-02maniskill-sim2real.md",
+      "sourceHash": "f7ca5dbe57cf8c6d3b1fc6cd9c22dcc8169c7a8a495bbca58601fac1a2bca795",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/13-Dexora高自由度双臂灵巧VLA导读/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/13-dexora-high-dof-dual-arm-dexterous-vla-guidance/README.md",
+      "sourceHash": "d3dbbafb4f61fb08b3e115f4d3ba55637756a59cf9def5829cc3bd6956cc7313",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "08-具身导航及VLN/03前沿VLN复现/03-主动感知NBS导读/README.md": {
+      "target": "en/08-navigation-and-vln/03-frontier-vln-reproduction/03-actively-perceive-nbs-guide/README.md",
+      "sourceHash": "5c47c73e4ceac345f1f1166e5f67800746e97972e0db3a92053e2d01a1ec8d55",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/11UniLab-MotrixSim异构RL训练/README.md": {
+      "target": "en/10-simulation-tools-and-frontiers/11-unilab-motrixsim-heterogeneous-rl-training/README.md",
+      "sourceHash": "16f61f38cf653ad441aa8cc6602bd23d198e0bb721cea11fc1d262efc48b1664",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Maniskill详细文档/06从演示中学习.md": {
+      "target": "en/10-simulation-tools-and-frontiers/maniskill-detailed-documentation/06-learning-from-demonstrations.md",
+      "sourceHash": "09a7553e6996c0563e03549a2aa9688e560a127e7684f65752d2d7eaab62dccf",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/git相关使用/git使用http.md": {
+      "target": "en/11-auxiliary-tools/git-related-usage/git-uses-http.md",
+      "sourceHash": "02026c3d0519940e702bb48d83e63d50b7367d286967facfb8b7441fb466fde2",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "13-其他前沿项目复现/具身导航综合入门实践/具身导航综合入门实践.md": {
+      "target": "en/13-frontier-project-reproduction/embodied-navigation-practical-introduction/embodied-navigation-practical-introduction.md",
+      "sourceHash": "f8d5447770520a616cba1397424df002428ac91a1ea825ae44514de9b587b474",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/L0-桌面整理TaskE/hf_model_package/README.md": {
+      "target": "en/15-challenges/ATEC2026/l0-desktop-organization-taske/hf_model_package/README.md",
+      "sourceHash": "cfe844b5a6b59f84136981e289415060b3bf3e688ea223b113a5b67bb9888540",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/TRONCamp-Mani/code/act_reference/detr/README.md": {
+      "target": "en/15-challenges/TRONCamp-Mani/code/act_reference/detr/README.md",
+      "sourceHash": "138b41d39a453f11ce56a6aa6dd47ec0afa3195e89f6d0da3daad9b5b0665f91",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/02-OpenClaw家庭物资助手/README_04_前端展示与发布清单.md": {
+      "target": "en/16-study-programs/02-openclaw-family-supply-assistant/04-frontend-display-and-release-checklist.md",
+      "sourceHash": "ed1152776030aa1c0f9b44624258e6c84426d949b36005a574c0c34ca7972c75",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/03-地瓜机器人新版教程桌宠/README_07_排障与发布建议.md": {
+      "target": "en/16-study-programs/03-d-robotics-desktop-companion-tutorial/07-panpection-and-release-recommendations.md",
+      "sourceHash": "2dedcf3896300627c5e1063d66c49b61d4d7118b5dda948706c19e091f1669cb",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/README_06_ROCm调试复盘与排障案例.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/06-rocm-debugging-review-and-troubleshooting-cases.md",
+      "sourceHash": "ba3996b9343d292a34c381de76954bc6575d90ad2d67b4f074afeabfc1802690",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "21-机械臂和机器人设计/01Build123d代码建模入门/README.md": {
+      "target": "en/21-robot-design/01-build123d-code-modeling-introduction/README.md",
+      "sourceHash": "3eb8fe0bc418c46d1254c9d2e94b91f3b96ca59d717fed145834eb3ea77ded63",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/03RDK-X5连接lerobot机械臂进行遥操作.md": {
+      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/03-rdk-x5-connects-to-the-lerobot-robotic-arm-for-remote-manipulation.md",
+      "sourceHash": "ac3d8ba7ff67c98de342a18f420c5a7ccc1074fade3baa5e44eda2d574989095",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "05-具身场景的深度和强化学习/README.md": {
+      "target": "en/05-deep-and-reinforcement-learning/README.md",
+      "sourceHash": "2df23ac4aaaa5561537be868fd25ae4363a36a2883b2cce6a04fa6dfd2cd3525",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/14-LWD真机机群强化学习导读/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/14-lwd-real-robot-cluster-reinforcement-learning-introduction/README.md",
+      "sourceHash": "fb5d354b793f7ced5b5a17c14b24b602578f8d005c9cc89fe8631af5a2533133",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "09-具身智能数据及评估基准benchmark/01-libero.md": {
+      "target": "en/09-data-and-benchmarks/01-libero.md",
+      "sourceHash": "f7f782f52df15e939df5f05b5f00d552a45f0bd4fadc4d8a2d09f18bc07dd430",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/12HumanoidMimicGen全身规划数据生成导读/README.md": {
+      "target": "en/10-simulation-tools-and-frontiers/12-humanoidmimicgen-full-body-planning-data-generation-introduction/README.md",
+      "sourceHash": "ac9a8757c2925fc3d9d02fbcff627837b035a964c7072f5f840bb5eb54cbd84f",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Maniskill详细文档/07Panda机械臂控制.md": {
+      "target": "en/10-simulation-tools-and-frontiers/maniskill-detailed-documentation/07-panda-robotic-arm-control.md",
+      "sourceHash": "de0a4a65e9842daeb4b8af329a006ffef26e92db775aefc73bb7c071b6b86848",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/go语言安装和s3下载内容安装.md": {
+      "target": "en/11-auxiliary-tools/install-go-language-and-install-content-downloaded-from-s3.md",
+      "sourceHash": "0771c881c90fa909e468703b414fe7cb039b7621462796855b8f5e584a55ef2a",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "13-其他前沿项目复现/无人机大模型+Groundingdino实践/无人机多模态大模型.md": {
+      "target": "en/13-frontier-project-reproduction/drone-large-model-groundingdino-practice/unmanned-aerial-vehicle-multi-modal-large-model.md",
+      "sourceHash": "8295034eee62193b7b37b121bab99b72462ea97310d9aa922c4b73d225c7cbd5",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/L0-桌面整理TaskE/README.md": {
+      "target": "en/15-challenges/ATEC2026/l0-desktop-organization-taske/README.md",
+      "sourceHash": "06be8d9fc6ab0c626116b4f817b0c40109c88764e57f235da9abef7eca72d6ee",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/TRONCamp-Mani/code/act_reference/README.md": {
+      "target": "en/15-challenges/TRONCamp-Mani/code/act_reference/README.md",
+      "sourceHash": "6a98de51194570ba6119b06b5fcf4f6e09d9bcf3bd01799500d934d0c4204c4f",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/02-OpenClaw家庭物资助手/README.md": {
+      "target": "en/16-study-programs/02-openclaw-family-supply-assistant/README.md",
+      "sourceHash": "b8ebad5f6c591693ef78ecb216221a0308574422705c1f4c63ec9e5c5bc8df63",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/03-地瓜机器人新版教程桌宠/README_08_OpenClaw部署与接入备份.md": {
+      "target": "en/16-study-programs/03-d-robotics-desktop-companion-tutorial/08-openclaw-deployment-and-access-backup.md",
+      "sourceHash": "149247e5d4dc0308aee4245758122b38b7169422a3ec6fca83b5ad13e54fc476",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/README_07_ROCm端到端采集训练部署.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/07-rocm-end-to-end-collection-training-and-deployment.md",
+      "sourceHash": "97b60cec12323aa46a29a51ba137d660249e9ccb8875ebe35741cca1d98f9ab8",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "21-机械臂和机器人设计/02Text-to-CAD工程化建模入门/README.md": {
+      "target": "en/21-robot-design/02-text-to-cad-engineering-modeling-introduction/README.md",
+      "sourceHash": "579f64a82473ab7892790d156a21f7ce6e2146b84dae4a7db82a52f0787fdbe6",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/04LeRobot双臂异构系统遥操作.md": {
+      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/04-lerobot-dual-arm-heterogeneous-system-remote-manipulation.md",
+      "sourceHash": "7667bec3dadccef8db9a05429c32c1663037e1bc428f4bca28ba9d5fc8556f62",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/01VLA相关总结综述.md": {
+      "target": "en/06-manipulation-and-vla/01-vla-overview-and-survey.md",
+      "sourceHash": "1327c4d500feced4d6818eb3ef53c5e02da8bdd4e0e0b5377dee63ffa865f825",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/15-VisualThink-VLA视觉证据推理导读/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/15-visualthink-vla-visual-evidence-reasoning-guide/README.md",
+      "sourceHash": "96d112ff0caecea84b0c0d7b27026bd2c46f02ab2493b373c0ac9e8b578262a6",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "09-具身智能数据及评估基准benchmark/02-simplerenv.md": {
+      "target": "en/09-data-and-benchmarks/02-simplerenv.md",
+      "sourceHash": "a86332a42c00b54cd164e83b00a10b54d905c19559f03ffbfa4577c8aec5778b",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/13-PhysicsNeMo物理AI求解器导读/README.md": {
+      "target": "en/10-simulation-tools-and-frontiers/13-physicsnemo-physical-ai-solver-introduction/README.md",
+      "sourceHash": "daac711f15e4486abadd26f685531166f52f2a65b00721bc940f2e09ea4a2946",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Maniskill详细文档/08夹爪对称控制.md": {
+      "target": "en/10-simulation-tools-and-frontiers/maniskill-detailed-documentation/08-gripper-symmetric-control.md",
+      "sourceHash": "a7c8358ab5a5cb36c22edb6db71879c9c11cfaa1e6a6f205d961422d578b470a",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/hf快速下载同时避免下载不需要的其他分支文件.md": {
+      "target": "en/11-auxiliary-tools/hf-fast-download-avoids-downloading-unnecessary-other-branch-files-simultaneously.md",
+      "sourceHash": "b65c9f8c8758d65d943ad9a4b022b033260441feba64c1b78d5e63b6ed7332d4",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "13-其他前沿项目复现/无人机大模型+Groundingdino实践/code/external-libraries/tornado4/test.md": {
+      "target": "en/13-frontier-project-reproduction/drone-large-model-groundingdino-practice/code/external-libraries/tornado4/test.md",
+      "sourceHash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/README.md": {
+      "target": "en/15-challenges/ATEC2026/README.md",
+      "sourceHash": "4a667c5de145e6a51c8013020cae5a04eef60156233d98a9cb268a331ab434f9",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/TRONCamp-Mani/code/README.md": {
+      "target": "en/15-challenges/TRONCamp-Mani/code/README.md",
+      "sourceHash": "64586e13f135c50353ec1b954f95e7b089ded797461e8904dadb9674d7babeb5",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/02-OpenClaw家庭物资助手/tuntunclaw/项目开发流程与系统架构说明.md": {
+      "target": "en/16-study-programs/02-openclaw-family-supply-assistant/tuntunclaw/project-development-process-and-system-architecture-description.md",
+      "sourceHash": "218bece1e6bffd735b829027fd8e14917143cd778c174633334f824bd059c11a",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/03-地瓜机器人新版教程桌宠/README_08_SSH命令执行与整段粘贴说明.md": {
+      "target": "en/16-study-programs/03-d-robotics-desktop-companion-tutorial/08-ssh-command-execution-and-full-paste-instructions.md",
+      "sourceHash": "70aaa6ffc317e1c98933a3f945937f5e326485f816c257578499f2807cf053e7",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/README_08_预训练权重与零训练体验.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/08-pre-trained-weights-and-zero-training-experience.md",
+      "sourceHash": "041758203159fd8f5e1350058a5eecd69633d467e8200ce6b4eada11debeb425",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "21-机械臂和机器人设计/03ForgeCAD视觉逆向工程入门/README.md": {
+      "target": "en/21-robot-design/03-forgecad-visual-reverse-engineering-introduction/README.md",
+      "sourceHash": "d79271e57dca9be596125024d435551d14706e98a3d5d4ddfb0afa4febf24e41",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/05执行器原理与选型.md": {
+      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/05-actuator-principles-and-selection.md",
+      "sourceHash": "0de34cdb28b21984b2b1fe443b26682732284351abc41230f62cf2ef38e4123c",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/01SmolVLA-LIBERO/01SmolVLA-libero.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/01SmolVLA-LIBERO/01SmolVLA-libero.md",
+      "sourceHash": "d83367671ab38f6f9fbf88931a5e04725af4036aa897ddb31f2dd1894f2a9f8f",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/16-Agentic-VLA在线适应导读/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/16-agentic-vla-online-adaptation-guide/README.md",
+      "sourceHash": "cd73c5cf80b2f879a310c73dc610286ed061524a7e89f511831fc67d15dd78fa",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "09-具身智能数据及评估基准benchmark/03-VR数据采集.md": {
+      "target": "en/09-data-and-benchmarks/03-vr-data-collection.md",
+      "sourceHash": "0c426ab2093bb52b7a58002d30df44dd2ef7364fc7ac899a105a69a122e28a5d",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/阿里云部署 Isaac Lab + GR00T 完整教程.md": {
+      "target": "en/10-simulation-tools-and-frontiers/complete-tutorial-for-deploying-isaac-lab-gr00t-on-alibaba-cloud.md",
+      "sourceHash": "e789ad8efaf982d4bc2932c99713fa721cd71511e281170a4297bebd750b40e9",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Maniskill详细文档/代码/ppo_my/README_GEN72.md": {
+      "target": "en/10-simulation-tools-and-frontiers/maniskill-detailed-documentation/code/ppo_my/README_GEN72.md",
+      "sourceHash": "30dfacbb7d24b96354e2361aa7ac56a694df2a840b58635e8aadc83b267a8fac",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/joycon连接x5.md": {
+      "target": "en/11-auxiliary-tools/joycon-connects-to-x5.md",
+      "sourceHash": "555804f5edfc6c98c33d419312683ac4eff7e6b7d32af123dda9496bc3a18ded",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "13-其他前沿项目复现/BitVLA.md": {
+      "target": "en/13-frontier-project-reproduction/BitVLA.md",
+      "sourceHash": "4b389a96a9c69dae27310b808dae368e5e5ed203fee393df016782fa586b484a",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/references/README.md": {
+      "target": "en/15-challenges/ATEC2026/references/README.md",
+      "sourceHash": "ad928c76b4c36803be9abc4b1b4e3b6b717b60215ff70f3469cb56a2edc94e2b",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/TRONCamp-Mani/docs/01_完整工程复盘.md": {
+      "target": "en/15-challenges/TRONCamp-Mani/docs/01-complete-project-review.md",
+      "sourceHash": "4c9c7fac92401710942235b6d9054ab87c33c455c4540e56bb006d66bbe0ef38",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/02-OpenClaw家庭物资助手/tuntunclaw/frontend/README.md": {
+      "target": "en/16-study-programs/02-openclaw-family-supply-assistant/tuntunclaw/frontend/README.md",
+      "sourceHash": "639e2bebc3016dd717904da0fab8890db219b4c629eac89c140382f7310df011",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/03-地瓜机器人新版教程桌宠/README_09_飞书控制入口.md": {
+      "target": "en/16-study-programs/03-d-robotics-desktop-companion-tutorial/09-feishu-control-entry.md",
+      "sourceHash": "fc2b3bc81030be3420322aa5cc75ffdb18ff0d964e72f230b59e72a0ad62cadc",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/README.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/README.md",
+      "sourceHash": "6dc7884c262cd9bba61b6d06a35fb55614360c6fb86b4635dff0dd85513a7df3",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "21-机械臂和机器人设计/04-Shape-Your-Body价值梯度机器人设计导读/README.md": {
+      "target": "en/21-robot-design/04-shape-your-body-value-gradient-robot-design-introduction/README.md",
+      "sourceHash": "6a859f8f01a4d840b57716f039f426f373fe6a89bedabcce9b8b0c9463b92c03",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/06传感器选型与数据采集.md": {
+      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/06-sensor-selection-and-data-acquisition.md",
+      "sourceHash": "001343767576f7a69636bf450d0ec8bd113e52d02f3bc109ac78c6e08d558bf2",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/02OpenVLA复现/02openvla复现.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/02-openvla-reproduction/02-openvla-reproduction.md",
+      "sourceHash": "ace30640bc3075d04af6557193ed0666a73566872f09bc04f3330ef8edc8d927",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/17-Dexbotic-RLinf工程化VLA后训练导读/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/17-dexbotic-rlinf-engineering-vla-post-training-guide/README.md",
+      "sourceHash": "794a121b95326adbd7a5ee548827991f7fddd159567821283ac74060094b76c9",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "09-具身智能数据及评估基准benchmark/04-EBench.md": {
+      "target": "en/09-data-and-benchmarks/04-EBench.md",
+      "sourceHash": "397a1753a72f428184b5a8c273c1cf72d0e489d9ae0bebbfc2c64c63396a241c",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/challenge竞赛/1X 世界模型挑战.md": {
+      "target": "en/10-simulation-tools-and-frontiers/challenge-competition/1x-world-model-challenge.md",
+      "sourceHash": "edc0b586429677fb4692df2afaff74ae5dec5d7a17bc2da2f1a71e20b69c94ca",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Maniskill详细文档/代码/ppo_my/README.md": {
+      "target": "en/10-simulation-tools-and-frontiers/maniskill-detailed-documentation/code/ppo_my/README.md",
+      "sourceHash": "389c2bc2cff8fcd9714446d04f1edcfa5cb6b2c8fa32380d4924deafb6dc0179",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/lerobot相关/lerobot-pyav依赖包安装问题.md": {
+      "target": "en/11-auxiliary-tools/lerobot-related/problem-with-installing-lerobot-pyav-dependency-package.md",
+      "sourceHash": "681e428739f089c49a48e0eb51e260564e4f76e6c66a02208a697f6f07210d5a",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "13-其他前沿项目复现/omnigibson.md": {
+      "target": "en/13-frontier-project-reproduction/omnigibson.md",
+      "sourceHash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/TaskB-B2Piper/中文_Workspace_Memory.md": {
+      "target": "en/15-challenges/ATEC2026/TaskB-B2Piper/chinese-workspace-memory.md",
+      "sourceHash": "0d6ecefd85f465f3039a7bd524d0351b7000f00fa5293739d2c76469f11aa654",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/TRONCamp-Mani/docs/02_问题清单与解决方案.md": {
+      "target": "en/15-challenges/TRONCamp-Mani/docs/02-problem-list-and-solutions.md",
+      "sourceHash": "ebc39b7e0c1cf3c1078f62c5efbdfaa54bf144bad744fce890961e79f1b74fbe",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/02-OpenClaw家庭物资助手/tuntunclaw/graspnet-baseline/graspnetAPI/README.md": {
+      "target": "en/16-study-programs/02-openclaw-family-supply-assistant/tuntunclaw/graspnet-baseline/graspnetAPI/README.md",
+      "sourceHash": "6ecfd75b894127032baa50bdf43eaf8a6de5f2ed69e8694b54003d19924e00d1",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/03-地瓜机器人新版教程桌宠/README_10_Windows主机OpenClaw语音桥接与家庭物资助手.md": {
+      "target": "en/16-study-programs/03-d-robotics-desktop-companion-tutorial/10-windows-openclaw-voice-bridge-and-household-inventory-assistant.md",
+      "sourceHash": "58f2a85b0594b2b752540e292a743e37d527596cfdeb8e0b034791da503b9c51",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/README_专题入口.md": {
+      "target": "en/16-study-programs/topic-index.md",
+      "sourceHash": "2b1a9cd2564a10e969ac6f40e952e406f1e9666d9ba6ec4fc34ca507f0708e5a",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "21-机械臂和机器人设计/README.md": {
+      "target": "en/21-robot-design/README.md",
+      "sourceHash": "6dc6dbc37dee001e6533c94a382cc59add32a0b07ba639e5c4ce16a935957b3a",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/07机械臂选型.md": {
+      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/07-robotic-arm-selection.md",
+      "sourceHash": "3ebb72358642de2a5756eff00f01bdb158f2e4c5680301c91f1b307cbb4a6dec",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/03RT系列论文解读与代码分析/01RT系列论文解读与代码分析.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/03-rt-series-paper-interpretation-and-code-analysis/01-rt-series-paper-and-code-analysis.md",
+      "sourceHash": "0360d3cd6c42c0bf66a12363ac33b2be08b46e9d0d66a514afad3b73ca1d944b",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/18-DM0.5高性能推理与OpenDM导读/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/18-dm0-5-high-performance-inference-and-opendm-guidance/README.md",
+      "sourceHash": "7d36e0de670f4930650e9d5d60ea6f635f25ddc57a7a705ff2f5aecc1fa993c2",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "09-具身智能数据及评估基准benchmark/99-相关开源项目推荐.md": {
+      "target": "en/09-data-and-benchmarks/99-recommended-related-open-source-projects.md",
+      "sourceHash": "4de3eeef74ecd1c0ee6281189b75a2f2cc931a76fd336feefaae987da2b952e3",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/challenge竞赛/AGIBOT-WORLD2026.md": {
+      "target": "en/10-simulation-tools-and-frontiers/challenge-competition/AGIBOT-WORLD2026.md",
+      "sourceHash": "8ecd846fa74f9c0695d7094ab529a5d90cbaf53c2fac7e30fe61c82f99e89124",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Maniskill详细文档/实例文档/01ppo.md": {
+      "target": "en/10-simulation-tools-and-frontiers/maniskill-detailed-documentation/instance-document/01ppo.md",
+      "sourceHash": "d50345bdcacde126b8c3ed5e304deec55823136a9fcf882e59826346f5a58aec",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/linux快速安装micromamba.md": {
+      "target": "en/11-auxiliary-tools/quickly-install-micromamba-in-linux.md",
+      "sourceHash": "d4f9d1d237c53214788324a591d8ca7163f98216775a343742380e7340df4c88",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "14-相关参考/参考项目.md": {
+      "target": "en/14-references/reference-project.md",
+      "sourceHash": "1a57a1ffb229471abd9c26f0d9b16c4f89191009b23a21766168d90038bfc252",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/TaskB-B2Piper/assets/README.md": {
+      "target": "en/15-challenges/ATEC2026/TaskB-B2Piper/assets/README.md",
+      "sourceHash": "08883d059d30a93d176beacd01a69092cb505e5136c81cf02186a6dd9b8ef48e",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/TRONCamp-Mani/docs/03_评测协议与模型选择.md": {
+      "target": "en/15-challenges/TRONCamp-Mani/docs/03-evaluation-protocol-and-model-selection.md",
+      "sourceHash": "b701b4b926cc8b40abdd52b5f3e0b5fa4d395b979a23fbd74a37ec3ee5bb925b",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/02-OpenClaw家庭物资助手/tuntunclaw/graspnet-baseline/README.md": {
+      "target": "en/16-study-programs/02-openclaw-family-supply-assistant/tuntunclaw/graspnet-baseline/README.md",
+      "sourceHash": "ca3979cbe505673b0199e2398a1dac7238cadd831fd18018deaa2ff72f17ce41",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/03-地瓜机器人新版教程桌宠/README.md": {
+      "target": "en/16-study-programs/03-d-robotics-desktop-companion-tutorial/README.md",
+      "sourceHash": "34cf9283d98d2342ecd347d62200712ade30daa70430de04a4b1e363f72e95ef",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "17-具身世界模型/1、扩散数理基础及问题解析入门/扩散数理基础及问题解析入门.md": {
+      "target": "en/17-world-models/01-diffusion-mathematics-and-problem-analysis/diffusion-mathematics-and-problem-analysis.md",
+      "sourceHash": "24cd242d6e42c3c2b575943036333acc65445b36b65b78b94d037ddc1fd762a4",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
     "01-具身智能概述/module1_1_机器人发展历史与背景/README.md": {
-      "target": "en/01-embodied-ai-overview/module1_1_机器人发展历史与背景/README.md",
+      "target": "en/01-embodied-ai-overview/module1-1-history-and-background-of-robot-development/README.md",
       "sourceHash": "2aeb9117c1ad10ced860ec50411a83fab4c0749cba22afdebb8d51d820037c58",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
+    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/补充01joycon控制/robosuite-joycon.md": {
+      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/supplement-01joycon-control/robosuite-joycon.md",
+      "sourceHash": "6e6beb8f620cbfce8f171c859e0ac46be79975e5238187d0a4cb1187991cdb61",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/asset/xarm6_description/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/04-mujoco-reproduction-act-pi0-smolvla/asset/xarm6_description/README.md",
+      "sourceHash": "bd3265373ec4c8a23a2ace74049d30eb22e643ba26954268b0eb2fa502e755e6",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "07-机器人操作、运动控制/Locomotion/补充01seeddanceAPI获取.md": {
+      "target": "en/07-robot-operation-and-motion-control/Locomotion/supplement-01seeddanceapi-to-obtain.md",
+      "sourceHash": "665b2a589859a75fe9991462b721fa0f589bfca0e0f64b964c5a50246d090228",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/01Isaac部署与GR00T实践/00Isaac部署导览.md": {
+      "target": "en/10-simulation-tools-and-frontiers/01-isaac-deployment-and-gr00t-practices/00-isaac-deployment-navigation.md",
+      "sourceHash": "6d9adc6f144774d6553e30560b1fe828de7d8671540a11345f0bf3ef53a4fbfb",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Genesis仿真环境配置/02可视化和渲染.md": {
+      "target": "en/10-simulation-tools-and-frontiers/genesis-simulation-environment-configuration/02-visualization-and-rendering.md",
+      "sourceHash": "65e165e41c21b19d695001f43cf4bdeacbcba976d2e5cd33ce493c8f400da4af",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/RoboGen/01环境配置.md": {
+      "target": "en/10-simulation-tools-and-frontiers/RoboGen/01-environment-configuration.md",
+      "sourceHash": "c70175a33c8a7ed64e69feddf4ed3713bf6f3e870cf300844ad6980a1387a2e1",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/openpi相关/快速下载模型.md": {
+      "target": "en/11-auxiliary-tools/openpi-related/quickly-download-the-model.md",
+      "sourceHash": "6af6a38b48d08121f7a38d56a7bf4e272ee0faa3986d37fc9f57b04879757294",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/docs/01_任务定义与观测边界.md": {
+      "target": "en/15-challenges/ATEC2026/docs/01-task-definition-and-observation-boundaries.md",
+      "sourceHash": "c423d12a555ca4d617b6f30f1e085ea0ae14452ab496ca435a8c78b685570977",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/TaskB-B2Piper/docs/02_问题清单与解决方案.md": {
+      "target": "en/15-challenges/ATEC2026/TaskB-B2Piper/docs/02-problem-list-and-solutions.md",
+      "sourceHash": "cde4e4bfd85e68733deb0ae16e182030723aec8663926444b0003b0f3af29d2d",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/TRONCamp-Mani/README.md": {
+      "target": "en/15-challenges/TRONCamp-Mani/README.md",
+      "sourceHash": "788c76fbcb30047c53756acbfd6f3dcfe33f235e3bbfd618033333f67edd7cba",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/02-OpenClaw家庭物资助手/tuntunclaw/manipulator_grasp/arm/assets/universal_robots_ur5e/README.md": {
+      "target": "en/16-study-programs/02-openclaw-family-supply-assistant/tuntunclaw/manipulator_grasp/arm/assets/universal_robots_ur5e/README.md",
+      "sourceHash": "dd5a3c510fe94586afa8751de04a5ca38a993dfc629b64d2077528a7a9270c33",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/README.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/assets/README.md",
+      "sourceHash": "173b751881f78371301fb6e9c7bea4ce3d60b73db9d8af41d20ee7f8f207406d",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "17-具身世界模型/BWM动作条件世界模型导读/README.md": {
+      "target": "en/17-world-models/bwm-action-condition-world-model-guide/README.md",
+      "sourceHash": "5fcc5d04235dae49e13ca01d7fa0565d9c12e5871bc2828a8823b3cb8cc65acc",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
     "01-具身智能概述/module1_2_机器人系统组成与分类/README.md": {
-      "target": "en/01-embodied-ai-overview/module1_2_机器人系统组成与分类/README.md",
+      "target": "en/01-embodied-ai-overview/module1-2-robot-system-composition-and-classification/README.md",
       "sourceHash": "4528183a46e58d7ac44aabe17e2c8bed9bc06d0d2dd7de1fcae187e30a1cc344",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/补充待完善019DTact.md": {
+      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/supplement-to-be-improved-019dtact.md",
+      "sourceHash": "b357850ea76084589015b8a711c01b5e8c75e23290b6e21fba15a0769e171b42",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/asset/xarm7_description/CHANGELOG.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/04-mujoco-reproduction-act-pi0-smolvla/asset/xarm7_description/CHANGELOG.md",
+      "sourceHash": "1ffbf4c8599f2cf371a488ee878d4025f6500b999640de12546b631f37f8896e",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "07-机器人操作、运动控制/Locomotion/春晚舞蹈机器人复刻2.md": {
+      "target": "en/07-robot-operation-and-motion-control/Locomotion/spring-festival-gala-dance-robot-version-2.md",
+      "sourceHash": "73417b1356fc78fb6b30f554bcb35f0097589b7f9ae93d3fcc1dd9d9935936d1",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/01Isaac部署与GR00T实践/01Isaac-Sim本地与云端配置.md": {
+      "target": "en/10-simulation-tools-and-frontiers/01-isaac-deployment-and-gr00t-practices/01-isaac-sim-local-and-cloud-configuration.md",
+      "sourceHash": "f5df1b70b4dca590cb39b51a3c978fffe7a34e5978cdbed0049ee1fde260392d",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Genesis仿真环境配置/03Genesis World 1.0完整体验与机器人仿真流水线.md": {
+      "target": "en/10-simulation-tools-and-frontiers/genesis-simulation-environment-configuration/03-genesis-world-1-0-complete-experience-and-robot-simulation-pipeline.md",
+      "sourceHash": "c7a4374c9c3bf3d3b8f3aca101ffeead4c15b886980eca656e439dd19316c38b",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/解决远程服务器内容系统变化.md": {
+      "target": "en/11-auxiliary-tools/resolve-changes-in-the-remote-server-content-system.md",
+      "sourceHash": "eaed640fb493efd0d86c13509816a7002e0812a344eedd609f9bef7854f19408",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/README.md": {
+      "target": "en/11-auxiliary-tools/README.md",
+      "sourceHash": "e9bb9deb52d128a00a552ad984dddd63b3b1ab08b3c8270b8e5416c5b1eaf7ca",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/docs/02_问题清单与解决方案.md": {
+      "target": "en/15-challenges/ATEC2026/docs/02-problem-list-and-solutions.md",
+      "sourceHash": "6c78aaab847df9e493f48200556331d5999acaff3b681ba06fe4a663427864c2",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/TaskB-B2Piper/docs/03_实现路线与阶段状态机.md": {
+      "target": "en/15-challenges/ATEC2026/TaskB-B2Piper/docs/03-implementation-route-and-stage-state-machine.md",
+      "sourceHash": "b71e2f922dc272df68365df0429beefaee42a2597e367f6e95d4a311919b72eb",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/TRONCamp-Mani/results/failure_taxonomy.md": {
+      "target": "en/15-challenges/TRONCamp-Mani/results/failure_taxonomy.md",
+      "sourceHash": "6ccd23831d3da2e3933c57a475d0a0c09d03140d12659e612d3844248b0511dd",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/02-OpenClaw家庭物资助手/tuntunclaw/manipulator_grasp/assets/robotiq_2f85/README.md": {
+      "target": "en/16-study-programs/02-openclaw-family-supply-assistant/tuntunclaw/manipulator_grasp/assets/robotiq_2f85/README.md",
+      "sourceHash": "7eb68400829e6ee929452fd333dfb214aed963b0a217af7d03df8363600e795b",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/huggingface/act/README.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/huggingface/act/README.md",
+      "sourceHash": "f93a602e59581123549ba2c41070fffe95bca5991d18ef8ee0691861133fbf31",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "17-具身世界模型/Gamma-World多智能体世界模型导读/README.md": {
+      "target": "en/17-world-models/gamma-world-multi-agent-world-model-introduction/README.md",
+      "sourceHash": "e16ea0203bb2000bee7cadaab035f81b359f767e34ea6bd49fe017ec14a41a79",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "02-机器人基础和控制、手眼协调/01机器人空间描述与坐标变换.md": {
+      "target": "en/02-robot-basics-control-and-hand-eye-coordination/01-robot-space-description-and-coordinate-transformation.md",
+      "sourceHash": "dfb2d0dcab8d8c91347a2f3dd3f207b667432ba91afabc21a1e8a998aa2858c2",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "04-具身场景的计算机视觉、3D重建/01-sam和深度估计.md": {
+      "target": "en/04-computer-vision-and-3d-reconstruction/01-sam-and-depth-estimation.md",
+      "sourceHash": "465f98a66471da97ab64b1c637d7d5fbaa2397e04e3c96d486e6fbee7c8a4e1a",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/asset/xarm7_description/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/04-mujoco-reproduction-act-pi0-smolvla/asset/xarm7_description/README.md",
+      "sourceHash": "42f9df53f08a54251e832a6454107fe9eec52581d250212856e345f06b53ca76",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "07-机器人操作、运动控制/Locomotion/video2robot/文件更新说明.md": {
+      "target": "en/07-robot-operation-and-motion-control/Locomotion/video2robot/file-update-description.md",
+      "sourceHash": "d22e4fcfddb290dc3937795f57fe7f32399f3a5f74223d2d8972fc049f04c8c6",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/01Isaac部署与GR00T实践/02阿里云部署Isaac-Lab-GR00T完整教程.md": {
+      "target": "en/10-simulation-tools-and-frontiers/01-isaac-deployment-and-gr00t-practices/02-complete-tutorial-on-deploying-isaac-lab-gr00t-in-alibaba-cloud.md",
+      "sourceHash": "4a7401b464ee8d6e7328f39285dd9eaae46b5ac0c705229a9d8d5bb8a78fc1d7",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Isaac-GR00T/getting_started/4_deeper_understanding.md": {
+      "target": "en/10-simulation-tools-and-frontiers/Isaac-GR00T/getting_started/4_deeper_understanding.md",
+      "sourceHash": "b3f47b3642877543c393563294f0669c97bbc58a2e510dd03c912d8d48d370f8",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/网络测试工具.md": {
+      "target": "en/11-auxiliary-tools/network-testing-tools.md",
+      "sourceHash": "4ebf1a5abaf378ee4d21aebeaa653b6a78513d8b008185f891d5e31660eede3d",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/ubuntu安装中文输入法.md": {
+      "target": "en/11-auxiliary-tools/install-chinese-input-method-for-ubuntu.md",
+      "sourceHash": "1f4e905def57bfb08ddbd85a4e103bb1e7ed47f7ab0b2833e1ccbbfde3384a52",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/docs/03_公开方案与Logic-TARS.md": {
+      "target": "en/15-challenges/ATEC2026/docs/03-public-scheme-and-logic-tars.md",
+      "sourceHash": "4ab8a5387f050f8c24dfe55fdf4ba590db56309f926dbec74965cd085cfa468a",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/TaskB-B2Piper/docs/04_环境相机与调试视角.md": {
+      "target": "en/15-challenges/ATEC2026/TaskB-B2Piper/docs/04-environmental-camera-and-debugging-view.md",
+      "sourceHash": "e2cc00c2a3e99d645526b949e787fee3563c33aaee3871a35b1d06f478abc139",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/01-达摩院组队学习/00_组队学习招募参考稿.md": {
+      "target": "en/16-study-programs/01-damo-academy-team-learning/00-team-learning-recruitment-reference-draft.md",
+      "sourceHash": "ad34963ad39405a1907b33e08bef2b9eb18f6466a1c3936ff6dad9877c01c776",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/02-OpenClaw家庭物资助手/tuntunclaw/manipulator_grasp/assets/universal_robots_ur5e/README.md": {
+      "target": "en/16-study-programs/02-openclaw-family-supply-assistant/tuntunclaw/manipulator_grasp/assets/universal_robots_ur5e/README.md",
+      "sourceHash": "dd5a3c510fe94586afa8751de04a5ca38a993dfc629b64d2077528a7a9270c33",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/huggingface/pi0/README.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/huggingface/pi0/README.md",
+      "sourceHash": "878db4f9989afa0e02bd606d0c12f0e04c2bbda8d957ef0364fee46a16ab387e",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "17-具身世界模型/GE-Sim-V2闭环视频世界模拟器导读/README.md": {
+      "target": "en/17-world-models/ge-sim-v2-closed-loop-video-world-simulator-introduction/README.md",
+      "sourceHash": "0b89f3ed5f94a2c678cceabf6cded71da817dc8262833f17256af42acfea8312",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "02-机器人基础和控制、手眼协调/02机器人运动学与 DH 参数.md": {
+      "target": "en/02-robot-basics-control-and-hand-eye-coordination/02-robot-kinematics-and-dh-parameters.md",
+      "sourceHash": "1d5f5f164dc4ae083d941057ae8fdfc2113f0aaacf8a58401ca3c07ae2e9dd26",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "04-具身场景的计算机视觉、3D重建/02-抓取注意力热图.md": {
+      "target": "en/04-computer-vision-and-3d-reconstruction/02-grasping-attention-heatmap.md",
+      "sourceHash": "e27552528f2bfb339d4f678c74718f6e5523342ead07937c506e505dff365f0e",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/04-mujoco-reproduction-act-pi0-smolvla/README.md",
+      "sourceHash": "ccd80838b0d6941ea725dd241f781895806606790081d44b5e2588b54759cc7b",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "07-机器人操作、运动控制/Locomotion/video2robot/PATCHES.md": {
+      "target": "en/07-robot-operation-and-motion-control/Locomotion/video2robot/PATCHES.md",
+      "sourceHash": "8a50ab337667c2d382788d84aabfe6fd6447f047fd6daa490accc1246e671c51",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/02Maniskill环境仿真配置.md": {
+      "target": "en/10-simulation-tools-and-frontiers/02-maniskill-environment-simulation-configuration.md",
+      "sourceHash": "dcef955534ed0a66d9ef8fe71f92aa8dc0a41a19ea4b0da0c7b770e5ce666a5e",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Isaac-GR00T/getting_started/5_policy_deployment.md": {
+      "target": "en/10-simulation-tools-and-frontiers/Isaac-GR00T/getting_started/5_policy_deployment.md",
+      "sourceHash": "7947a237d5d7cbeef8756727ccde55ee4b16131e568201d2562775c76e51a444",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/虚拟网卡上网问题相关.md": {
+      "target": "en/11-auxiliary-tools/related-to-internet-issues-with-virtual-network-card.md",
+      "sourceHash": "3c2c9c74eab9f36fe84d2b9ec9d07c97a9c1c5313f20aad70ec480b6f2f800d6",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/vscode使用相关/vscode自动换行.md": {
+      "target": "en/11-auxiliary-tools/vscode-usage-related/vscode-auto-line-wrapping.md",
+      "sourceHash": "4b5c83121c0c16d5f3a5da7f96cba4578ec884b00395c832d9302e52699589e6",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/docs/04_复现、HF与GitHub发布.md": {
+      "target": "en/15-challenges/ATEC2026/docs/04-reproduction-hf-and-github-release.md",
+      "sourceHash": "0987c61a6d0f6d155f1fe624c48655edf148b1624fba6f214256183895ca744d",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/TaskB-B2Piper/docs/05_外部优秀方案对照.md": {
+      "target": "en/15-challenges/ATEC2026/TaskB-B2Piper/docs/05-comparison-of-excellent-external-solutions.md",
+      "sourceHash": "95de3a38f91d6f945110ed0341508c16e97641ae979a871d41270ede712d4f8d",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/01-达摩院组队学习/附录01_简明演示实操 - 从想法到实现.md": {
+      "target": "en/16-study-programs/01-damo-academy-team-learning/appendix-01-simple-demonstration-practice-from-idea-to-implementation.md",
+      "sourceHash": "4ec59b699fef30d84552d67213ed39ba4ebf751d37b6b5a4b486101435f47fcc",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/02-OpenClaw家庭物资助手/tuntunclaw/README.md": {
+      "target": "en/16-study-programs/02-openclaw-family-supply-assistant/tuntunclaw/README.md",
+      "sourceHash": "fc4e21c44b238482f9009e4b0db0c6a14a142fd0e7c990e8c3f180839490eefd",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/huggingface/smolvla/README.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/huggingface/smolvla/README.md",
+      "sourceHash": "f02edbc1adb60a7fbfd4a82886910d01b424a7248d9817aebe0ed52c4aaa1fb8",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "17-具身世界模型/Leworldmodel分析解读与实验复现/Leworldmodel分析解读与实验复现.md": {
+      "target": "en/17-world-models/leworldmodel-analysis-interpretation-and-reproduction-experiment/leworldmodel-analysis-interpretation-and-reproduction-of-experiments.md",
+      "sourceHash": "e49ded55928fe37f8fa178e8557548320b8dd73c57381641d1e313e22e62d18d",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "02-机器人基础和控制、手眼协调/03机器人动力学.md": {
+      "target": "en/02-robot-basics-control-and-hand-eye-coordination/03-robot-dynamics.md",
+      "sourceHash": "3abfd4b643470f091b1d9b8e4a13434a49bd29b582b9cf9080cf2e4fe66eb6a0",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "04-具身场景的计算机视觉、3D重建/03-LingBot-Map视频流式三维重建.md": {
+      "target": "en/04-computer-vision-and-3d-reconstruction/03-lingbot-map-video-streaming-3d-reconstruction.md",
+      "sourceHash": "2a49738714b68a56ba0ec9fd54c5fb57699b1e0a4e8d4c279f8289b6fed94687",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/05DiT4DiT-LIBERO/01DiT4DiT-LIBERO训练与评估.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/05DiT4DiT-LIBERO/01-dit4dit-libero-training-and-evaluation.md",
+      "sourceHash": "1d79ccab5a86a29c2628a5f0d041e77361da26424e29b055e47e27b780822e11",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "08-具身导航及VLN/01快速入门导航算法详解及实战/具身导航算法基本介绍.md": {
+      "target": "en/08-navigation-and-vln/01-navigation-algorithms-practical-guide/basic-introduction-to-embodied-navigation-algorithms.md",
+      "sourceHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/03issac-sim配置.md": {
+      "target": "en/10-simulation-tools-and-frontiers/03-issac-sim-configuration.md",
+      "sourceHash": "d77abfff2f64ff19e75727625e36c378cfa7f584f13729ffe91b312c5d9235ac",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Isaac-GR00T/getting_started/examples/README.md": {
+      "target": "en/10-simulation-tools-and-frontiers/Isaac-GR00T/getting_started/examples/README.md",
+      "sourceHash": "68ad90c7b949746f251ece45e73f143681e3a0c55569f2c0f4afeaeac0819222",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/conda_mamba_pip_uv等包管理工具/清除pip安装缓存.md": {
+      "target": "en/11-auxiliary-tools/package-management-tools-such-as-conda-mamba-pip-uv/clear-pip-installation-cache.md",
+      "sourceHash": "eb370884901430f5f371cddd3aab71d18d647716826fac81f02a6c94f9cfbcee",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/vulkan重要环境配置.md": {
+      "target": "en/11-auxiliary-tools/vulkan-important-environment-configuration.md",
+      "sourceHash": "5d593ab7c1fd79816ed2c473fd157ab137e2c36d295816b30fd7b663c04aacaf",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/docs/05_归档对账与本地清理.md": {
+      "target": "en/15-challenges/ATEC2026/docs/05-arrangement-of-reconciliation-and-local-cleanup.md",
+      "sourceHash": "78ca0015a7dd98a1019f41c1c43234177e8c296a64bacfee66b57876ac3a5e07",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/TaskB-B2Piper/docs/06_公开发布与可复现检查.md": {
+      "target": "en/15-challenges/ATEC2026/TaskB-B2Piper/docs/06-public-release-and-reproducibility-check.md",
+      "sourceHash": "735e3210f1392d3f2414f80272bf1fd492b1f4a0a0619034de041552f5672f6b",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/01-达摩院组队学习/README.md": {
+      "target": "en/16-study-programs/01-damo-academy-team-learning/README.md",
+      "sourceHash": "a61e1efde32a18ab995e6d345a9ad7e23afbb8eba189cc960f111d6905628fd5",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/03-地瓜机器人新版教程桌宠/assets/README_assets.md": {
+      "target": "en/16-study-programs/03-d-robotics-desktop-companion-tutorial/assets/README_assets.md",
+      "sourceHash": "1606957ada474be9a1c9c51048c4b57ace4bf68897ecf53485276e6e3c496add",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/notebooks/README.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/notebooks/README.md",
+      "sourceHash": "70fbff4716a6dcf7add6a8e01e93879f75adad71d0629daa4ebd6e2cc6c3b4ee",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "17-具身世界模型/RAW-Dream任务无关世界模型强化VLA/README.md": {
+      "target": "en/17-world-models/raw-dream-task-agnostic-world-model-reinforcement-for-vla/README.md",
+      "sourceHash": "07b802050979ca8ca1250057fd8039351b857f3b1ea1f8c747ef36217b28996d",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "02-机器人基础和控制、手眼协调/04速度运动学与雅可比矩阵.md": {
+      "target": "en/02-robot-basics-control-and-hand-eye-coordination/04-velocity-kinematics-and-jacobian-matrix.md",
+      "sourceHash": "5ab864a467083ef748b58aa2e08f36d406f6eee780c40be574ee8d62d8d212b8",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "04-具身场景的计算机视觉、3D重建/04-Locate-Anything视觉语言定位.md": {
+      "target": "en/04-computer-vision-and-3d-reconstruction/04-locate-anything-visual-language-localization.md",
+      "sourceHash": "ac3b0cc56f611852d952f73c560557f7c01228aff743ab37df7fc5fe5eab7460",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/06EventVLA视觉证据记忆导读/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/06-eventvla-visual-evidence-memory-guide/README.md",
+      "sourceHash": "eda92f9dad1b4598d73ae0fe3698585bbe20a78df84851cb3fc348adda89fc01",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "08-具身导航及VLN/02仿真环境基础/habitat导航环境/habitat_lab环境搭建及配置.md": {
+      "target": "en/08-navigation-and-vln/02-basics-of-simulation-environment/habitat-navigation-environment/habitat-lab-environment-setup-and-configuration.md",
+      "sourceHash": "e28cad4d09b479a735dccda03d110411b575ceb8391398b3ba80198d47132f4e",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/04家务机器人环境配置.md": {
+      "target": "en/10-simulation-tools-and-frontiers/04-household-robot-environment-configuration.md",
+      "sourceHash": "e15f1ca5a239be20ee3156b9e1b228eeff188e7d9762ddd6b9ee5b652f4f147e",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Isaac-GR00T/getting_started/LeRobot_compatible_data_schema.md": {
+      "target": "en/10-simulation-tools-and-frontiers/Isaac-GR00T/getting_started/LeRobot_compatible_data_schema.md",
+      "sourceHash": "bd91bcc709ef3341d7bbdf190846a4c82ceabec1fb6a307f36f67f69ef843ff9",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/conda_mamba_pip_uv等包管理工具/conda_env指定安装路径.md": {
+      "target": "en/11-auxiliary-tools/package-management-tools-such-as-conda-mamba-pip-uv/conda-env-specifies-the-installation-path.md",
+      "sourceHash": "a467119f73b8c741f0a4182a8ad55d2b194ec45133df935f846dc99eef6d2733",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/wsa/windows安装apk软件.md": {
+      "target": "en/11-auxiliary-tools/wsa/install-apk-software-on-windows.md",
+      "sourceHash": "45af4a91baa4b8b278d5a6caaa32025ad6448f197482e451dcab0df91ecae937",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/docs/WORKSPACE_MEMORY_ATEC2026_赛后复盘.md": {
+      "target": "en/15-challenges/ATEC2026/docs/workspace-memory-atec2026-post-match-review.md",
+      "sourceHash": "d2233076da23cf7442e6433143158fdd3e5047b04a9946954295dce44976fe39",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/TaskB-B2Piper/hf/README.md": {
+      "target": "en/15-challenges/ATEC2026/TaskB-B2Piper/hf/README.md",
+      "sourceHash": "b2aaa6eb2c3b1574eccbff836dc3198e743ac1313a893936663547f5e91a4367",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/01-达摩院组队学习/Task 01_理论与趋势.md": {
+      "target": "en/16-study-programs/01-damo-academy-team-learning/task-01-theory-and-trends.md",
+      "sourceHash": "580321269e37da0a1c19c10c64433a09af11d6bc16e67c1a8011ab6a9c86048e",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/03-地瓜机器人新版教程桌宠/README_01_环境准备与刷机.md": {
+      "target": "en/16-study-programs/03-d-robotics-desktop-companion-tutorial/01-environment-preparation-and-flashing.md",
+      "sourceHash": "507d7572c328d35e2e438b614ef903d5aae376f5e2b4d437defa0b5260f6a5a0",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/notebooks/workflows/README.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/notebooks/workflows/README.md",
+      "sourceHash": "f173e125562306ba8fdcc661d5fea789269c1011da24b3ea95460990b517d7ab",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "17-具身世界模型/RISE自我改进机器人策略复现/README.md": {
+      "target": "en/17-world-models/rise-self-improvement-robot-policy-reproduction/README.md",
+      "sourceHash": "4f0531f84e92578a48393acc84496fb6628a6dd82f5a7e7e6f65d830c41ff11d",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "02-机器人基础和控制、手眼协调/05综合实战与仿真.md": {
+      "target": "en/02-robot-basics-control-and-hand-eye-coordination/05-comprehensive-practice-and-simulation.md",
+      "sourceHash": "ee13391e132f264ad3c0b0a24a9085d941c566612d430e2bbbbd15871d7792f4",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "05-具身场景的深度和强化学习/01多机器人搬运家具强化学习.md": {
+      "target": "en/05-deep-and-reinforcement-learning/01-reinforcement-learning-for-multi-robot-furniture-handling.md",
+      "sourceHash": "5559b5575058fb5afe0a0dd96f19ce6eb99cb2b7b413b76bf542dd831bc100e2",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/07WALL-OSS开源VLA模型导读/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/07-wall-oss-open-source-vla-model-introduction/README.md",
+      "sourceHash": "1acf1de35778a0238664303731a358ba3ec2375f918fdd08b593581bc1db3a7e",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "08-具身导航及VLN/02仿真环境基础/habitat导航环境/habitat_lab基础.md": {
+      "target": "en/08-navigation-and-vln/02-basics-of-simulation-environment/habitat-navigation-environment/habitat-lab-base.md",
+      "sourceHash": "2e2972bf625af6d73435ad3fbd5dab66d88b76ca5a5c9f0a19052c88d7a64e0e",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/05未来研究方向.md": {
+      "target": "en/10-simulation-tools-and-frontiers/05-future-research-directions.md",
+      "sourceHash": "ab0a8c6d94773f2ed2fd9c58882331ab6b492ceeb24995d3be4964aa63e86d55",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Isaac-GR00T/README.md": {
+      "target": "en/10-simulation-tools-and-frontiers/Isaac-GR00T/README.md",
+      "sourceHash": "0d75cffc2716beb5d1dfb7d538b560c4722317c9ffd6fc0236487681b2a6c31e",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/docker相关/docker安装.md": {
+      "target": "en/11-auxiliary-tools/docker-related/docker-installation.md",
+      "sourceHash": "cf9333a50a4e3c36ca3dfd2948e5d84b907604c4aa6b31dc1de4d263a8fdf9cc",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/wsl/安装cuda驱动和nvcc.md": {
+      "target": "en/11-auxiliary-tools/wsl/install-the-cuda-driver-and-nvcc.md",
+      "sourceHash": "6acd7da97d2c3f32403603a38835f6089a41fddf02fd2bff4509869bce988331",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/L0-机器人徒步/code/l0_b2piper_option_moe/README.md": {
+      "target": "en/15-challenges/ATEC2026/l0-robot-walking/code/l0_b2piper_option_moe/README.md",
+      "sourceHash": "58d505d5c9e20f328cee156ce594cc3029d64a84e67f2404dbad4b194beff4ef",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/TaskB-B2Piper/README.md": {
+      "target": "en/15-challenges/ATEC2026/TaskB-B2Piper/README.md",
+      "sourceHash": "c0f38768a408920a878fd4c5049779d92b72ed52712c3a01ba45c866bbe4eb4e",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/01-达摩院组队学习/Task 02_技术透视.md": {
+      "target": "en/16-study-programs/01-damo-academy-team-learning/task-02-technical-analysis.md",
+      "sourceHash": "7c0062c9b40775eeb902f3e8ed6c05ec9b85b15a0a5b562aabdc54e7525c334b",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/03-地瓜机器人新版教程桌宠/README_02_有线网口连接与登录.md": {
+      "target": "en/16-study-programs/03-d-robotics-desktop-companion-tutorial/02-cable-network-port-connection-and-login.md",
+      "sourceHash": "a0a2a03886a4a4ba5eaf68817b243ff7b99859b72ac904896cbcb69b28f5e306",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/README_00_AMD_AUP免费云平台使用指南.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/00-amd-aup-free-cloud-platform-usage-guide.md",
+      "sourceHash": "378d466fa5cc47057f86d4342f599a4ac3aa0446865f6d928223b7f7b7235b17",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "17-具身世界模型/RoboDream可组合世界模型数据合成导读/README.md": {
+      "target": "en/17-world-models/robodream-compositional-world-model-data-synthesis-guide/README.md",
+      "sourceHash": "e20fda404daece52fdf56cefd72af8d9e6b94de7ff5c2dcc9e94325785091e3b",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "02-机器人基础和控制、手眼协调/补充01手眼协调.md": {
+      "target": "en/02-robot-basics-control-and-hand-eye-coordination/supplement-01-hand-eye-coordination.md",
+      "sourceHash": "3443041129862d3a824fe0917778d8c469db91ebbe914ecc04c400ef0fbc40e3",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "05-具身场景的深度和强化学习/02HIMLoco-IsaacLab复现/README.md": {
+      "target": "en/05-deep-and-reinforcement-learning/02-himloco-isaaclab-reproduction/README.md",
+      "sourceHash": "c01e6ac0cddaf910118caebed9bd938e669451e1872cdfa3dbe994c73b5f596a",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/08WALL-X开源工程框架导航/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/08-wall-x-open-source-engineering-framework-navigation/README.md",
+      "sourceHash": "9d4f4ba5f40f79d5fb372b4d4c76dada017925e5be91d9896ecddbaf7f78642e",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "08-具身导航及VLN/02仿真环境基础/habitat导航环境/habitat_lab基础实践.md": {
+      "target": "en/08-navigation-and-vln/02-basics-of-simulation-environment/habitat-navigation-environment/habitat-lab-basic-practices.md",
+      "sourceHash": "9fde238da0740f666714b681cff6628c91747ca917fe287724d669fe022744c8",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/06robotwin仿真配置.md": {
+      "target": "en/10-simulation-tools-and-frontiers/06-robotwin-simulation-configuration.md",
+      "sourceHash": "6d9a9259d424bfaa8245acdfe0a6a2e56fab9dd4362614610df5cbcfa2c036c5",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/Maniskill详细文档/01任务构建.md": {
+      "target": "en/10-simulation-tools-and-frontiers/maniskill-detailed-documentation/01-task-construction.md",
+      "sourceHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/docker相关/docker登录.md": {
+      "target": "en/11-auxiliary-tools/docker-related/docker-login.md",
+      "sourceHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "11-其他辅助工具/wsl/设置apt镜像.md": {
+      "target": "en/11-auxiliary-tools/wsl/set-up-the-apt-mirror.md",
+      "sourceHash": "ad5c8ca0411bf80c32fddd5cfe1d585e90b50a7b664c47252b4db9ddf7e07e5c",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/L0-机器人徒步/README.md": {
+      "target": "en/15-challenges/ATEC2026/l0-robot-walking/README.md",
+      "sourceHash": "74de1ba245fc1c129a203a36f5e594e56476d87bd8f08cb121a2986432f74efc",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "15-Challenge竞赛/ATEC2026/TaskB-B2Piper/references/SLAM_ATEC2026/README.md": {
+      "target": "en/15-challenges/ATEC2026/TaskB-B2Piper/references/SLAM_ATEC2026/README.md",
+      "sourceHash": "f5f408ec9d1cb6c4a3a4c945dfdca1ff93ab10593d93260eae67e98f22580794",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/01-达摩院组队学习/Task 03_详细演示实操 - 从想法到实现.md": {
+      "target": "en/16-study-programs/01-damo-academy-team-learning/task-03-detailed-demonstration-from-idea-to-implementation.md",
+      "sourceHash": "b34d04005d262b48472cb0ccfb59dc9b396bcc161dce81018b5bdef087db5e1c",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/03-地瓜机器人新版教程桌宠/README_03_快速入门与基础外设.md": {
+      "target": "en/16-study-programs/03-d-robotics-desktop-companion-tutorial/03-quick-start-and-basic-peripherals.md",
+      "sourceHash": "1a22b928db75c17ad2596a957fe0c98fc20fe264153745dc8a82d5227020656a",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/README_01_AMD_ROCm设备与环境确认.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/01-amd-rocm-device-and-environment-confirmation.md",
+      "sourceHash": "37e1dd427a5540369fb651172471f0881cba0796a778e30d3c94c3c53fa1176f",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "17-具身世界模型/tau0-WM统一视频动作世界模型导读/README.md": {
+      "target": "en/17-world-models/tau0-wm-unified-video-action-world-model-introduction/README.md",
+      "sourceHash": "474415c00b6953a806615d55c16dbb72d07142327924212e3d645f127d2f7370",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
