@@ -2,8 +2,10 @@
   "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
   "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699",
   "targetRoot": "en",
+  "pathMap": ".translation/path-map.json",
+  "pathOverrides": ".translation/path-overrides.json",
   "maxFilesPerRun": 3,
-  "maxBlockChars": 4500,
+  "maxBlockChars": 3000,
   "excludedPrefixes": [
     "12-待定开源教程/",
     "19-Datawhale每月组队学习/",

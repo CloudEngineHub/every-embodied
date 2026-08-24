@@ -12,10 +12,13 @@ import {
   protectInlineSyntax,
   restoreInlineSyntax,
   rewriteLocalLinks,
+  selectShard,
   splitMarkdown,
   targetPathForSource,
   translateMarkdown
 } from "./translate-markdown.mjs";
+import { normalizeTranslatedComponent, slugifyEnglish } from "./build-translation-path-map.mjs";
+import { mergeTranslationShards } from "./merge-translation-shards.mjs";
 
 const config = {
   targetRoot: "en",
@@ -30,6 +33,52 @@ test("maps configured Chinese chapters without touching the legacy English tree"
   assert.equal(isTranslatableSource(source, config), true);
   assert.equal(targetPathForSource(source, config), "en/17-world-models/RoboDream/README.md");
   assert.equal(isTranslatableSource("en/ch17/README.md", config), false);
+});
+
+test("uses the audited English path map for nested directories and filenames", () => {
+  const mappedConfig = {
+    ...config,
+    pathMapData: {
+      files: {
+        "17-具身世界模型/1、扩散数理基础/扩散模型入门.md":
+          "en/17-world-models/01-diffusion-mathematics/intro-to-diffusion-models.md"
+      }
+    }
+  };
+  assert.equal(
+    targetPathForSource("17-具身世界模型/1、扩散数理基础/扩散模型入门.md", mappedConfig),
+    "en/17-world-models/01-diffusion-mathematics/intro-to-diffusion-models.md"
+  );
+});
+
+test("normalizes translated path components into numbered English slugs", () => {
+  assert.equal(slugifyEnglish("Robot Basics & Control"), "robot-basics-and-control");
+  assert.equal(
+    normalizeTranslatedComponent("README_02_仿真环境基础.md", "02 Simulation Environment Basics"),
+    "02-simulation-environment-basics.md"
+  );
+  assert.equal(
+    normalizeTranslatedComponent("01Isaac-sim5.0安装", "01Isaac Sim 5.0 Installation"),
+    "01-isaac-sim-5-0-installation"
+  );
+  assert.equal(
+    normalizeTranslatedComponent("1、扩散数理基础", "1 Introduction to Diffusion Mathematics"),
+    "01-introduction-to-diffusion-mathematics"
+  );
+  assert.equal(
+    normalizeTranslatedComponent("1、扩散数理基础", "01-introduction-to-diffusion-mathematics"),
+    "01-introduction-to-diffusion-mathematics"
+  );
+  assert.equal(normalizeTranslatedComponent("1X 世界模型.md", "1X World Model"), "1x-world-model.md");
+  assert.equal(normalizeTranslatedComponent("README.md", "Readme"), "README.md");
+});
+
+test("partitions a full backfill into complete non-overlapping shards", () => {
+  const items = Array.from({ length: 279 }, (_, index) => index);
+  const shards = Array.from({ length: 20 }, (_, index) => selectShard(items, index, 20));
+  assert.equal(shards.flat().length, items.length);
+  assert.deepEqual([...shards.flat()].sort((a, b) => a - b), items);
+  assert.throws(() => selectShard(items, 20, 20));
 });
 
 test("keeps front matter and fenced code out of translation chunks", () => {
@@ -150,6 +199,38 @@ test("discovers Chinese paths from git without quoted-path escaping", async () =
 
     assert.ok(messages.includes("Selected 1 Markdown file(s) in backfill mode."));
     assert.ok(messages.some((message) => message.includes("17-具身世界模型/测试.md")));
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("merges complete translation shards while replacing the legacy English tree", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "every-embodied-shards-"));
+  try {
+    fs.mkdirSync(path.join(root, ".translation"));
+    fs.mkdirSync(path.join(root, "en", "ch01"), { recursive: true });
+    fs.writeFileSync(path.join(root, ".translation", "state.json"), '{"version":1,"files":{}}');
+    fs.writeFileSync(path.join(root, "en", "ch01", "legacy.md"), "legacy");
+    for (const [index, source] of ["中文一.md", "中文二.md"].entries()) {
+      const shard = path.join(root, "artifacts", `translation-shard-${index}`);
+      const target = `en/0${index + 1}-chapter/document.md`;
+      fs.mkdirSync(path.join(shard, path.dirname(target)), { recursive: true });
+      fs.writeFileSync(path.join(shard, target), `translated ${index}`);
+      fs.writeFileSync(path.join(shard, "state-delta.json"), JSON.stringify({
+        version: 1,
+        files: { [source]: { target, sourceHash: String(index) } },
+        removeTargets: []
+      }));
+    }
+
+    const result = mergeTranslationShards({
+      root,
+      artifactsRoot: path.join(root, "artifacts"),
+      replaceEnglish: true
+    });
+    assert.deepEqual(result, { mergedFiles: 2, shardCount: 2 });
+    assert.equal(fs.existsSync(path.join(root, "en", "ch01", "legacy.md")), false);
+    assert.equal(Object.keys(JSON.parse(fs.readFileSync(path.join(root, ".translation", "state.json"))).files).length, 2);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }

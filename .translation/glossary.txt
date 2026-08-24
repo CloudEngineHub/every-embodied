@@ -19,5 +19,12 @@
 开环 = open loop
 真机 = real robot
 仿真 = simulation
+复现 = reproduction
+夹爪 = gripper
+手眼协调 = hand-eye coordination
+扩散 = diffusion
+自回归 = autoregressive
+高自由度 = high-DoF
+地瓜机器人 = D-Robotics robot
 数据集 = dataset
 评测基准 = benchmark

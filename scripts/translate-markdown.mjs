@@ -20,6 +20,8 @@ export function isTranslatableSource(sourcePath, config) {
 
 export function targetPathForSource(sourcePath, config) {
   const normalized = normalizeRepoPath(sourcePath);
+  const mappedPath = config.pathMapData?.files?.[normalized];
+  if (mappedPath) return normalizeRepoPath(mappedPath);
   const [topLevel, ...rest] = normalized.split("/");
   const mappedChapter = config.chapterMap[topLevel];
   if (!mappedChapter || rest.length === 0) return null;
@@ -197,10 +199,21 @@ export async function translateMarkdown(markdown, { translate, glossary = "", ma
     }
     const trailingNewline = /\r?\n$/.test(chunk.text);
     const protectedBlock = protectInlineSyntax(chunk.text);
-    const translated = stripModelWrapper(
-      await translate(protectedBlock.text, buildTranslationPrompt(protectedBlock.text, glossary))
-    );
-    let restored = restoreInlineSyntax(translated, protectedBlock.values);
+    let restored;
+    let lastError;
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        const translated = stripModelWrapper(
+          await translate(protectedBlock.text, buildTranslationPrompt(protectedBlock.text, glossary))
+        );
+        restored = restoreInlineSyntax(translated, protectedBlock.values);
+        break;
+      } catch (error) {
+        lastError = error;
+        if (!/protected Markdown tokens/.test(error.message) || attempt === 3) throw error;
+      }
+    }
+    if (restored === undefined) throw lastError;
     if (trailingNewline && !restored.endsWith("\n")) restored += "\n";
     output.push(restored);
   }
@@ -294,7 +307,15 @@ function readJson(filePath) {
 }
 
 function parseArgs(argv) {
-  const args = { root: process.cwd(), mode: "changed", maxFiles: null, dryRun: false };
+  const args = {
+    root: process.cwd(),
+    mode: "changed",
+    maxFiles: null,
+    dryRun: false,
+    shardIndex: 0,
+    shardCount: 1,
+    stateDelta: null
+  };
   for (let index = 0; index < argv.length; index += 1) {
     const value = argv[index];
     if (value === "--root") args.root = path.resolve(argv[++index]);
@@ -302,13 +323,16 @@ function parseArgs(argv) {
     else if (value === "--head") args.head = argv[++index];
     else if (value === "--backfill") args.mode = "backfill";
     else if (value === "--max-files") args.maxFiles = Number(argv[++index]);
+    else if (value === "--shard-index") args.shardIndex = Number(argv[++index]);
+    else if (value === "--shard-count") args.shardCount = Number(argv[++index]);
+    else if (value === "--state-delta") args.stateDelta = path.resolve(argv[++index]);
     else if (value === "--dry-run") args.dryRun = true;
     else throw new Error(`Unknown argument: ${value}`);
   }
   return args;
 }
 
-function listSources(root, config) {
+export function listSources(root, config) {
   return git(["ls-files", "*.md"], root)
     .split(/\r?\n/)
     .map(normalizeRepoPath)
@@ -320,7 +344,9 @@ function selectWork(args, config, state) {
     return listSources(args.root, config)
       .filter((sourcePath) => {
         const content = fs.readFileSync(path.join(args.root, sourcePath), "utf8");
-        return state.files[sourcePath]?.sourceHash !== hashText(content);
+        const entry = state.files[sourcePath];
+        return entry?.sourceHash !== hashText(content)
+          || entry?.target !== targetPathForSource(sourcePath, config);
       })
       .sort((left, right) => left.localeCompare(right, "zh-CN"))
       .map((sourcePath) => ({ status: "M", path: sourcePath }));
@@ -330,28 +356,46 @@ function selectWork(args, config, state) {
   return parseNameStatus(output).filter((change) => isTranslatableSource(change.path, config) || state.files[change.path]);
 }
 
+export function selectShard(items, shardIndex, shardCount, maxFiles = Number.POSITIVE_INFINITY) {
+  if (!Number.isInteger(shardIndex) || !Number.isInteger(shardCount)
+    || shardCount < 1 || shardIndex < 0 || shardIndex >= shardCount) {
+    throw new Error(`Invalid shard ${shardIndex}/${shardCount}`);
+  }
+  return items.filter((_, index) => index % shardCount === shardIndex).slice(0, maxFiles);
+}
+
 export async function runCli(argv) {
   const args = parseArgs(argv);
   const configPath = path.join(args.root, ".translation", "config.json");
   const statePath = path.join(args.root, ".translation", "state.json");
   const glossaryPath = path.join(args.root, ".translation", "glossary.txt");
   const config = readJson(configPath);
+  if (config.pathMap) {
+    const pathMapPath = path.join(args.root, config.pathMap);
+    if (fs.existsSync(pathMapPath)) config.pathMapData = readJson(pathMapPath);
+  }
   const state = readJson(statePath);
   const glossary = fs.readFileSync(glossaryPath, "utf8");
   const maxFiles = args.maxFiles || config.maxFilesPerRun;
-  const work = selectWork(args, config, state).slice(0, maxFiles);
+  const candidates = selectWork(args, config, state);
+  const work = selectShard(candidates, args.shardIndex, args.shardCount, maxFiles);
 
   console.log(`Selected ${work.length} Markdown file(s) in ${args.mode} mode.`);
   for (const item of work) console.log(`- ${item.status} ${item.path}`);
   if (args.dryRun || work.length === 0) return;
 
   const translate = createHttpTranslator(process.env.TRANSLATION_SERVER_URL || "http://127.0.0.1:8080");
-  const translatedTargets = new Set(Object.values(state.files).map((entry) => entry.target));
+  const translatedTargets = new Set(Object.values(config.pathMapData?.files ?? state.files).map((entry) => (
+    typeof entry === "string" ? entry : entry.target
+  )));
+  const stateDelta = { version: 1, files: {}, removeTargets: [] };
   for (const item of work) {
     const existing = state.files[item.path];
     if (item.status === "D") {
       if (existing?.target) fs.rmSync(path.join(args.root, existing.target), { force: true });
       delete state.files[item.path];
+      stateDelta.files[item.path] = null;
+      if (existing?.target) stateDelta.removeTargets.push(existing.target);
       continue;
     }
 
@@ -383,14 +427,24 @@ export async function runCli(argv) {
     const absoluteTarget = path.join(args.root, targetPath);
     fs.mkdirSync(path.dirname(absoluteTarget), { recursive: true });
     fs.writeFileSync(absoluteTarget, `${header}${translated}`, "utf8");
-    state.files[item.path] = {
+    if (existing?.target && existing.target !== targetPath) {
+      fs.rmSync(path.join(args.root, existing.target), { force: true });
+      stateDelta.removeTargets.push(existing.target);
+    }
+    const entry = {
       target: targetPath,
       sourceHash: hashText(source),
       model: config.model,
       modelRevision: config.modelRevision
     };
+    state.files[item.path] = entry;
+    stateDelta.files[item.path] = entry;
   }
   fs.writeFileSync(statePath, `${JSON.stringify(state, null, 2)}\n`, "utf8");
+  if (args.stateDelta) {
+    fs.mkdirSync(path.dirname(args.stateDelta), { recursive: true });
+    fs.writeFileSync(args.stateDelta, `${JSON.stringify(stateDelta, null, 2)}\n`, "utf8");
+  }
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;

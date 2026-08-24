@@ -1,0 +1,180 @@
+name: Full offline English translation
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: offline-english-translation
+  cancel-in-progress: false
+
+env:
+  LLAMA_VERSION: b10593
+  LLAMA_ARCHIVE_SHA256: fb3479dcb6b8ced8d785585af991b9ffa6ce605b51fc06229c1770544922a0db
+  MODEL_URL: https://huggingface.co/tencent/Hy-MT2-1.8B-GGUF/resolve/main/Hy-MT2-1.8B-Q4_K_M.gguf
+  MODEL_SHA256: dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699
+  MODEL_CACHE_DIR: ${{ github.workspace }}/.cache/hy-mt2
+  TRANSLATION_SERVER_URL: http://127.0.0.1:8080
+  SHARD_COUNT: 20
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run test:translation
+
+  translate-shards:
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: ${{ env.MODEL_CACHE_DIR }}
+          key: hy-mt2-q4-${{ env.MODEL_SHA256 }}
+      - name: Install pinned llama.cpp
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/llama.tar.gz"
+          curl --fail --location --retry 5 \
+            "https://github.com/ggml-org/llama.cpp/releases/download/${LLAMA_VERSION}/llama-${LLAMA_VERSION}-bin-ubuntu-x64.tar.gz" \
+            --output "$archive"
+          echo "${LLAMA_ARCHIVE_SHA256}  $archive" | sha256sum --check
+          mkdir -p "$RUNNER_TEMP/llama"
+          tar -xzf "$archive" -C "$RUNNER_TEMP/llama"
+          server="$(find "$RUNNER_TEMP/llama" -type f -name llama-server -print -quit)"
+          chmod +x "$server"
+          echo "LLAMA_SERVER=$server" >> "$GITHUB_ENV"
+      - name: Download pinned offline model
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$MODEL_CACHE_DIR"
+          model="$MODEL_CACHE_DIR/Hy-MT2-1.8B-Q4_K_M.gguf"
+          if [[ ! -f "$model" ]]; then
+            curl --fail --location --retry 5 "$MODEL_URL" --output "$model"
+          fi
+          echo "${MODEL_SHA256}  $model" | sha256sum --check
+          echo "MODEL_PATH=$model" >> "$GITHUB_ENV"
+      - name: Start local translation server
+        shell: bash
+        run: |
+          set -euo pipefail
+          nohup "$LLAMA_SERVER" \
+            --model "$MODEL_PATH" --host 127.0.0.1 --port 8080 \
+            --ctx-size 8192 --threads 4 --jinja \
+            > "$RUNNER_TEMP/llama-server.log" 2>&1 &
+          for _ in {1..180}; do
+            if curl --silent --fail http://127.0.0.1:8080/health >/dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          cat "$RUNNER_TEMP/llama-server.log"
+          exit 1
+      - name: Translate shard
+        shell: bash
+        env:
+          SHARD_INDEX: ${{ matrix.shard }}
+        run: |
+          set -euo pipefail
+          artifact="$RUNNER_TEMP/translation-artifact"
+          mkdir -p "$artifact"
+          node scripts/translate-markdown.mjs \
+            --backfill --max-files 1000 \
+            --shard-index "$SHARD_INDEX" --shard-count "$SHARD_COUNT" \
+            --state-delta "$artifact/state-delta.json"
+          ARTIFACT_ROOT="$artifact" node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const artifact = process.env.ARTIFACT_ROOT;
+          const delta = JSON.parse(fs.readFileSync(path.join(artifact, 'state-delta.json'), 'utf8'));
+          for (const entry of Object.values(delta.files)) {
+            if (!entry) continue;
+            const target = path.join(artifact, entry.target);
+            fs.mkdirSync(path.dirname(target), { recursive: true });
+            fs.copyFileSync(entry.target, target);
+          }
+          NODE
+      - name: Upload translated shard
+        uses: actions/upload-artifact@v4
+        with:
+          name: translation-shard-${{ matrix.shard }}
+          path: ${{ runner.temp }}/translation-artifact
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    needs: translate-shards
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+          cache: npm
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: translation-shard-*
+          path: ${{ runner.temp }}/translation-shards
+      - name: Merge complete English tree
+        run: node scripts/merge-translation-shards.mjs "$RUNNER_TEMP/translation-shards" --replace-en
+      - name: Verify coverage and Markdown tooling
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+          npm run test:translation
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const pathMap = JSON.parse(fs.readFileSync('.translation/path-map.json', 'utf8')).files;
+          const state = JSON.parse(fs.readFileSync('.translation/state.json', 'utf8')).files;
+          const missing = Object.entries(pathMap).filter(([source, target]) => !state[source] || !fs.existsSync(target));
+          const chineseTargets = Object.values(pathMap).filter((target) => /[\u3400-\u9fff]/u.test(target));
+          if (missing.length || chineseTargets.length || Object.keys(state).length !== Object.keys(pathMap).length) {
+            console.error({ missing, chineseTargets, stateFiles: Object.keys(state).length, mappedFiles: Object.keys(pathMap).length });
+            process.exit(1);
+          }
+          console.log(`Verified ${Object.keys(pathMap).length} complete English Markdown files.`);
+          NODE
+          npm run build:pages
+          git diff --check
+      - name: Publish complete English tree
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add .translation/state.json en
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs: 完成英文教程全量离线翻译"
+          git pull --rebase origin main
+          git push origin HEAD:main
+      - name: Deploy updated documentation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main

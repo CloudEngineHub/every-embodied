@@ -7,8 +7,9 @@ secrets.
 
 This workflow uses GitHub Actions compute, not the retired GitHub Models
 inference API. For this public repository, standard GitHub-hosted runners do
-not consume a paid translation quota. Generated translations still require
-human review before merging.
+not consume a paid translation quota. The incremental workflow validates
+generated Markdown before committing it to `main`; the full backfill publishes
+only after every translation shard succeeds.
 
 ## Runtime
 
@@ -22,20 +23,27 @@ against pinned SHA-256 digests. Neither file is committed to this repository.
 
 ## Safety Rules
 
-- Existing hand-written files under `en/chXX` are not overwritten.
+- English paths use numbered, descriptive names such as
+  `01-embodied-ai-overview`; legacy `en/chXX` directories are removed by a
+  successful full backfill.
 - Only Markdown files in configured source chapters are translated.
 - Code fences, inline code, formulas, URLs, and HTML tags are protected.
 - A translation is rejected if protected tokens are changed or removed.
-- Generated changes are submitted as a pull request and are never auto-merged.
-- Backfill is limited to a small batch per run.
+- Incremental translation runs only for changed Chinese Markdown and commits
+  verified output directly because this repository does not permit Actions to
+  create pull requests.
+- The manual full backfill uses 20 isolated translation shards. It replaces
+  `en/` only when all shards, coverage checks, tests, and the site build pass.
 
-`state.json` records the source content hash and target path. Unchanged files
-are skipped, so routine runs only process new or modified documentation.
+`path-map.json` is the audited one-to-one mapping from Chinese source files to
+English-only target paths. `path-overrides.json` fixes domain-specific names
+that should not rely on literal machine translation. `state.json` records the
+source content hash and generated target path. Unchanged files are skipped, so
+routine runs only process new or modified documentation.
 
 ## Troubleshooting
 
-An HTTP 422 response containing `Actions has been disabled for this user` is
-an account-level GitHub restriction, not a repository quota error. In that
-case, an Actions-enabled maintainer must trigger the workflow, or the affected
-account must contact GitHub Support. Changing model or API settings will not
-resolve that restriction.
+The repository allows Actions execution but does not allow the workflow token
+to create pull requests. The workflows therefore publish verified translation
+commits directly and explicitly dispatch the Pages deployment. No translation
+API key or billing configuration is required.

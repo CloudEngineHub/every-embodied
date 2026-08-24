@@ -8,6 +8,10 @@ on:
       - ".github/workflows/offline-translate-en.yml"
       - ".translation/config.json"
       - ".translation/glossary.txt"
+      - ".translation/path-map.json"
+      - ".translation/path-overrides.json"
+      - "scripts/build-translation-path-map.mjs"
+      - "scripts/merge-translation-shards.mjs"
       - "scripts/translate-markdown.mjs"
       - "scripts/translate-markdown.test.mjs"
       - "package.json"
@@ -252,6 +256,7 @@ jobs:
           HEAD_SHA: ${{ steps.plan.outputs.head }}
         run: |
           set -euo pipefail
+          npm run translation:paths
           if [[ "$MODE" == "changed" ]]; then
             node scripts/translate-markdown.mjs \
               --base "$BASE_SHA" --head "$HEAD_SHA" \
@@ -265,7 +270,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git add .translation/state.json en
+          git add .translation/path-map.json .translation/state.json en
           if git diff --cached --quiet; then
             echo "pushed=false" >> "$GITHUB_OUTPUT"
             echo "No translation changes were generated."
