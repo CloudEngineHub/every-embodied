@@ -29,7 +29,7 @@ export function targetPathForSource(sourcePath, config) {
 }
 
 export function hashText(text) {
-  return crypto.createHash("sha256").update(text, "utf8").digest("hex");
+  return crypto.createHash("sha256").update(text.replace(/\r\n?/g, "\n"), "utf8").digest("hex");
 }
 
 function markdownLines(markdown) {
@@ -215,37 +215,78 @@ export function buildTranslationPrompt(sourceText, glossary, { preserveTokens = 
   return prompt.join("\n");
 }
 
-export async function translateMarkdown(markdown, { translate, glossary = "", maxBlockChars = 4500 }) {
-  const chunks = splitMarkdown(markdown, maxBlockChars);
-  const output = [];
-  for (const chunk of chunks) {
-    if (chunk.kind === "protected" || !CJK_RE.test(chunk.text)) {
-      output.push(chunk.text);
-      continue;
+async function mapConcurrent(items, concurrency, worker) {
+  const output = new Array(items.length);
+  let cursor = 0;
+  await Promise.all(Array.from({ length: Math.min(concurrency, items.length) }, async () => {
+    while (cursor < items.length) {
+      const index = cursor;
+      cursor += 1;
+      output[index] = await worker(items[index]);
     }
-    const trailingNewline = /\r?\n$/.test(chunk.text);
-    const protectedBlock = protectInlineSyntax(chunk.text);
-    let restored;
-    let lastError;
-    for (let attempt = 1; attempt <= 3; attempt += 1) {
-      try {
-        const translated = stripModelWrapper(
-          await translate(protectedBlock.text, buildTranslationPrompt(protectedBlock.text, glossary))
-        );
-        restored = restoreInlineSyntax(translated, protectedBlock.values);
-        break;
-      } catch (error) {
-        lastError = error;
-        if (!/protected Markdown tokens/.test(error.message)) throw error;
-      }
+  }));
+  return output;
+}
+
+function splitForContextRetry(text) {
+  const midpoint = Math.floor(text.length / 2);
+  const boundaries = [];
+  for (const pattern of [/\n/g, /[。！？；.!?;]\s*/g, /\s+/g]) {
+    for (const match of text.matchAll(pattern)) {
+      const index = match.index + match[0].length;
+      if (index > 0 && index < text.length) boundaries.push(index);
     }
-    if (restored === undefined) {
-      if (!/protected Markdown tokens/.test(lastError?.message ?? "")) throw lastError;
-      restored = await translateProtectedSegments(protectedBlock, translate, glossary);
-    }
-    if (trailingNewline && !restored.endsWith("\n")) restored += "\n";
-    output.push(restored);
+    if (boundaries.length > 0) break;
   }
+  const splitAt = boundaries.length > 0
+    ? boundaries.reduce((best, index) => (
+      Math.abs(index - midpoint) < Math.abs(best - midpoint) ? index : best
+    ))
+    : midpoint;
+  return [text.slice(0, splitAt), text.slice(splitAt)];
+}
+
+export async function translateMarkdown(markdown, {
+  translate,
+  glossary = "",
+  maxBlockChars = 4500,
+  concurrency = 1
+}) {
+  const chunks = splitMarkdown(markdown, maxBlockChars);
+  const translateText = async (text) => {
+    if (!CJK_RE.test(text)) return text;
+    const trailingNewline = /\r?\n$/.test(text);
+    const protectedBlock = protectInlineSyntax(text);
+    try {
+      let restored;
+      let lastError;
+      for (let attempt = 1; attempt <= 3; attempt += 1) {
+        try {
+          const translated = stripModelWrapper(
+            await translate(protectedBlock.text, buildTranslationPrompt(protectedBlock.text, glossary))
+          );
+          restored = restoreInlineSyntax(translated, protectedBlock.values);
+          break;
+        } catch (error) {
+          lastError = error;
+          if (!/protected Markdown tokens/.test(error.message)) throw error;
+        }
+      }
+      if (restored === undefined) {
+        if (!/protected Markdown tokens/.test(lastError?.message ?? "")) throw lastError;
+        restored = await translateProtectedSegments(protectedBlock, translate, glossary);
+      }
+      if (trailingNewline && !restored.endsWith("\n")) restored += "\n";
+      return restored;
+    } catch (error) {
+      if (!/context size has been exceeded/i.test(error.message) || text.length < 8) throw error;
+      const [left, right] = splitForContextRetry(text);
+      return `${await translateText(left)}${await translateText(right)}`;
+    }
+  };
+  const output = await mapConcurrent(chunks, concurrency, async (chunk) => (
+    chunk.kind === "protected" ? chunk.text : translateText(chunk.text)
+  ));
   const normalized = output.join("")
     .replace(/\r\n?/g, "\n")
     .replace(/[ \t]+$/gm, "")
@@ -302,20 +343,31 @@ export function parseNameStatus(output) {
 
 export function createHttpTranslator(serverUrl) {
   return async (_sourceText, prompt) => {
-    const response = await fetch(`${serverUrl.replace(/\/$/, "")}/v1/chat/completions`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        model: "Hy-MT2-1.8B",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.2,
-        top_p: 0.6,
-        top_k: 20,
-        repeat_penalty: 1.05,
-        max_tokens: 4096,
-        stream: false
-      })
-    });
+    let response;
+    let lastError;
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        response = await fetch(`${serverUrl.replace(/\/$/, "")}/v1/chat/completions`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            model: "Hy-MT2-1.8B",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.2,
+            top_p: 0.6,
+            top_k: 20,
+            repeat_penalty: 1.05,
+            max_tokens: 2048,
+            stream: false
+          })
+        });
+        break;
+      } catch (error) {
+        lastError = error;
+        if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, attempt * 500));
+      }
+    }
+    if (!response) throw lastError;
     if (!response.ok) throw new Error(`Translation server returned ${response.status}: ${await response.text()}`);
     const payload = await response.json();
     const content = payload.choices?.[0]?.message?.content;
@@ -448,6 +500,13 @@ export async function runCli(argv) {
     typeof entry === "string" ? entry : entry.target
   )));
   const stateDelta = { version: 1, files: {}, removeTargets: [] };
+  const persistState = () => {
+    fs.writeFileSync(statePath, `${JSON.stringify(state, null, 2)}\n`, "utf8");
+    if (args.stateDelta) {
+      fs.mkdirSync(path.dirname(args.stateDelta), { recursive: true });
+      fs.writeFileSync(args.stateDelta, `${JSON.stringify(stateDelta, null, 2)}\n`, "utf8");
+    }
+  };
   for (const item of work) {
     const existing = state.files[item.path];
     if (item.status === "D") {
@@ -455,6 +514,7 @@ export async function runCli(argv) {
       delete state.files[item.path];
       stateDelta.files[item.path] = null;
       if (existing?.target) stateDelta.removeTargets.push(existing.target);
+      persistState();
       continue;
     }
 
@@ -472,7 +532,8 @@ export async function runCli(argv) {
     const translated = await translateMarkdown(prepared, {
       translate,
       glossary,
-      maxBlockChars: config.maxBlockChars
+      maxBlockChars: config.maxBlockChars,
+      concurrency: config.translationConcurrency ?? 1
     });
     const header = [
       "<!-- Generated by the offline translation workflow.",
@@ -498,11 +559,7 @@ export async function runCli(argv) {
     };
     state.files[item.path] = entry;
     stateDelta.files[item.path] = entry;
-  }
-  fs.writeFileSync(statePath, `${JSON.stringify(state, null, 2)}\n`, "utf8");
-  if (args.stateDelta) {
-    fs.mkdirSync(path.dirname(args.stateDelta), { recursive: true });
-    fs.writeFileSync(args.stateDelta, `${JSON.stringify(stateDelta, null, 2)}\n`, "utf8");
+    persistState();
   }
 }
 

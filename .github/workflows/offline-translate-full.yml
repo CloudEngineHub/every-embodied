@@ -81,7 +81,7 @@ jobs:
           set -euo pipefail
           nohup "$LLAMA_SERVER" \
             --model "$MODEL_PATH" --host 127.0.0.1 --port 8080 \
-            --ctx-size 8192 --threads 4 --jinja \
+            --ctx-size 8192 --parallel 2 --threads 4 --jinja \
             > "$RUNNER_TEMP/llama-server.log" 2>&1 &
           for _ in {1..180}; do
             if curl --silent --fail http://127.0.0.1:8080/health >/dev/null; then

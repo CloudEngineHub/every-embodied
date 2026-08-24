@@ -5,7 +5,8 @@
   "pathMap": ".translation/path-map.json",
   "pathOverrides": ".translation/path-overrides.json",
   "maxFilesPerRun": 3,
-  "maxBlockChars": 3000,
+  "maxBlockChars": 2000,
+  "translationConcurrency": 2,
   "excludedPrefixes": [],
   "chapterMap": {
     "01-具身智能概述": "01-embodied-ai-overview",

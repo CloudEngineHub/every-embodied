@@ -7,6 +7,7 @@ import { execFileSync } from "node:child_process";
 
 import {
   buildTranslationPrompt,
+  hashText,
   isTranslatableSource,
   parseNameStatus,
   protectInlineSyntax,
@@ -34,6 +35,10 @@ test("maps configured Chinese chapters without touching the legacy English tree"
   assert.equal(isTranslatableSource(source, config), true);
   assert.equal(targetPathForSource(source, config), "en/17-world-models/RoboDream/README.md");
   assert.equal(isTranslatableSource("en/ch17/README.md", config), false);
+});
+
+test("hashes source Markdown independently of checkout line endings", () => {
+  assert.equal(hashText("first\r\nsecond\r\n"), hashText("first\nsecond\n"));
 });
 
 test("uses the audited English path map for nested directories and filenames", () => {
@@ -200,6 +205,26 @@ test("falls back to translating text between protected Markdown tokens", async (
   assert.equal(fullBlockAttempts, 3);
   assert.match(translated, /Run `VLA`/);
   assert.match(translated, /\[project\]\(https:\/\/example\.com\)/);
+});
+
+test("splits and retries a block when the model context is exceeded", async () => {
+  const calls = [];
+  const translated = await translateMarkdown("第一句需要翻译。第二句也需要翻译。第三句继续翻译。\n", {
+    glossary: "",
+    maxBlockChars: 1000,
+    translate: async (text) => {
+      calls.push(text);
+      if (text.length > 18) throw new Error("Translation server returned 500: Context size has been exceeded.");
+      return text
+        .replaceAll("需要翻译", "translated")
+        .replaceAll("也需要翻译", "also translated")
+        .replaceAll("继续翻译", "continues");
+    }
+  });
+
+  assert.ok(calls.length > 1);
+  assert.match(translated, /translated/);
+  assert.ok(translated.endsWith("\n"));
 });
 
 test("normalizes generated Markdown line endings and trailing whitespace", async () => {
