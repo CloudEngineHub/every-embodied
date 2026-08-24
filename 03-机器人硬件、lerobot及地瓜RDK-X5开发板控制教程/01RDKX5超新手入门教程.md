@@ -37,7 +37,7 @@
 收到的板子会带一个盒子，非常美观：
 
 <p align="center">
-  <img alt="实物图" src="https://github.com/user-attachments/assets/407ec1fe-da6d-4c58-a1ac-e74c4a5549f2" width="50%"/>
+  <img alt="实物图" src="../assets/rdk_x5/rdk-x5-board.png" width="50%"/>
 </p>
 
 ## RDK X5 规格参数
@@ -54,7 +54,7 @@
 RDK X5 提供了网口、USB、摄像头、LCD、HDMI、CANFD、40PIN等功能接口，方便用户进行图像多媒体、深度学习算法等应用的开发和测试。开发板接口布局如下：
 
 <p align="center">
-  <img alt="RDK_X5_interface" src="https://github.com/user-attachments/assets/8e4b6257-7af5-48e7-b5ae-2eac09065598" width="50%"/>
+  <img alt="RDK X5 接口布局" src="../assets/rdk_x5/rdk-x5-interfaces.jpg" width="50%"/>
 </p>
 
 | 序号 | 功能                     | 序号 | 功能                     | 序号 | 功能                    |
@@ -68,7 +68,7 @@ RDK X5 提供了网口、USB、摄像头、LCD、HDMI、CANFD、40PIN等功能�
 机械尺寸：
 
 <p align="center">
-  <img alt="RDK_X5_interface" src="https://github.com/user-attachments/assets/45da5a6f-1fb9-4283-b4c4-58501c019798" width="50%"/>
+  <img alt="RDK X5 机械尺寸" src="../assets/rdk_x5/rdk-x5-dimensions.png" width="50%"/>
 </p>
 
 ## 系统烧录

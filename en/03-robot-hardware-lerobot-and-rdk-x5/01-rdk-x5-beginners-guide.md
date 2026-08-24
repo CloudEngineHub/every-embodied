@@ -43,7 +43,7 @@ The first step is to **buy the board**! You can go to the [ RDK official website
 The boards received will come with a box, which is very beautiful:
 
 <p align="center">
-  <img alt="实物图" src="https://github.com/user-attachments/assets/407ec1fe-da6d-4c58-a1ac-e74c4a5549f2" width="50%"/>
+  <img alt="RDK X5 board" src="../../assets/rdk_x5/rdk-x5-board.png" width="50%"/>
 </p>
 
 ## RDK X5 Specifications
@@ -60,7 +60,7 @@ The boards received will come with a box, which is very beautiful:
 RDK X5 provides functional interfaces such as network ports, USB, cameras, LCD, HDMI, CANFD, and 40PIN, which facilitate users in developing and testing applications such as image multimedia and deep learning algorithms. The interface layout of the development board is as follows:
 
 <p align="center">
-  <img alt="RDK_X5_interface" src="https://github.com/user-attachments/assets/8e4b6257-7af5-48e7-b5ae-2eac09065598" width="50%"/>
+  <img alt="RDK X5 interface layout" src="../../assets/rdk_x5/rdk-x5-interfaces.jpg" width="50%"/>
 </p>
 
 | Serial No. | Function                     | Serial No. | Function                     | Serial No. | Function                    |
@@ -74,7 +74,7 @@ RDK X5 provides functional interfaces such as network ports, USB, cameras, LCD, 
 Mechanical dimensions:
 
 <p align="center">
-  <img alt="RDK_X5_interface" src="https://github.com/user-attachments/assets/45da5a6f-1fb9-4283-b4c4-58501c019798" width="50%"/>
+  <img alt="RDK X5 mechanical dimensions" src="../../assets/rdk_x5/rdk-x5-dimensions.png" width="50%"/>
 </p>
 
 ## System Burning In
