@@ -140,6 +140,25 @@ test("translates prose while preserving protected Markdown exactly", async () =>
   assert.match(translated, /```bash\necho 中文\n```/);
 });
 
+test("falls back to translating text between protected Markdown tokens", async () => {
+  const source = "请运行 `VLA`，然后查看 [项目](https://example.com)。\n";
+  let fullBlockAttempts = 0;
+  const translated = await translateMarkdown(source, {
+    glossary: "",
+    maxBlockChars: 1000,
+    translate: async (text) => {
+      if (text.includes("[[EE_KEEP_")) {
+        fullBlockAttempts += 1;
+        return text.replace(/\[\[EE_KEEP_\d{4}\]\]/, "");
+      }
+      return text.replace("请运行", "Run").replace("然后查看", "then view the").replace("项目", "project");
+    }
+  });
+  assert.equal(fullBlockAttempts, 3);
+  assert.match(translated, /Run `VLA`/);
+  assert.match(translated, /\[project\]\(https:\/\/example\.com\)/);
+});
+
 test("normalizes generated Markdown line endings and trailing whitespace", async () => {
   const translated = await translateMarkdown("需要翻译。  \r\n\r\n```text\r\n保持原样  \r\n```\r\n\r\n", {
     glossary: "",

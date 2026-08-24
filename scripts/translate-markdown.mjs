@@ -153,6 +153,26 @@ export function restoreInlineSyntax(text, values) {
   );
 }
 
+async function translateProtectedSegments(protectedBlock, translate, glossary) {
+  const pieces = protectedBlock.text.split(/(\[\[EE_KEEP_\d{4}\]\])/g);
+  const translated = [];
+  for (const piece of pieces) {
+    const token = piece.match(/^\[\[EE_KEEP_(\d{4})\]\]$/);
+    if (token) {
+      translated.push(protectedBlock.values[Number(token[1])]);
+    } else if (CJK_RE.test(piece)) {
+      const leadingWhitespace = piece.match(/^\s*/)?.[0] ?? "";
+      const trailingWhitespace = piece.match(/\s*$/)?.[0] ?? "";
+      const body = piece.slice(leadingWhitespace.length, piece.length - trailingWhitespace.length);
+      const result = stripModelWrapper(await translate(body, buildTranslationPrompt(body, glossary)));
+      translated.push(`${leadingWhitespace}${result}${trailingWhitespace}`);
+    } else {
+      translated.push(piece);
+    }
+  }
+  return translated.join("");
+}
+
 function stripModelWrapper(text) {
   const trimmed = text.trim();
   const match = trimmed.match(/^```(?:markdown|md)?\s*\n([\s\S]*?)\n```$/i);
@@ -210,10 +230,13 @@ export async function translateMarkdown(markdown, { translate, glossary = "", ma
         break;
       } catch (error) {
         lastError = error;
-        if (!/protected Markdown tokens/.test(error.message) || attempt === 3) throw error;
+        if (!/protected Markdown tokens/.test(error.message)) throw error;
       }
     }
-    if (restored === undefined) throw lastError;
+    if (restored === undefined) {
+      if (!/protected Markdown tokens/.test(lastError?.message ?? "")) throw lastError;
+      restored = await translateProtectedSegments(protectedBlock, translate, glossary);
+    }
     if (trailingNewline && !restored.endsWith("\n")) restored += "\n";
     output.push(restored);
   }
