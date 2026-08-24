@@ -6,11 +6,7 @@
   "pathOverrides": ".translation/path-overrides.json",
   "maxFilesPerRun": 3,
   "maxBlockChars": 3000,
-  "excludedPrefixes": [
-    "12-待定开源教程/",
-    "19-Datawhale每月组队学习/",
-    "20-公众号短文宣发/"
-  ],
+  "excludedPrefixes": [],
   "chapterMap": {
     "01-具身智能概述": "01-embodied-ai-overview",
     "02-机器人基础和控制、手眼协调": "02-robot-basics-control-and-hand-eye-coordination",
@@ -23,12 +19,15 @@
     "09-具身智能数据及评估基准benchmark": "09-data-and-benchmarks",
     "10-具身智能其他仿真工具及仿真前沿": "10-simulation-tools-and-frontiers",
     "11-其他辅助工具": "11-auxiliary-tools",
+    "12-具身智能面试问题汇总": "12-interview-questions",
     "13-其他前沿项目复现": "13-frontier-project-reproduction",
     "14-相关参考": "14-references",
     "15-Challenge竞赛": "15-challenges",
     "16-专题组队学习": "16-study-programs",
     "17-具身世界模型": "17-world-models",
     "18-无人机专题": "18-drones",
+    "19-Datawhale每月组队学习": "19-monthly-team-learning",
+    "20-公众号短文宣发": "20-wechat-articles",
     "21-机械臂和机器人设计": "21-robot-design"
   }
 }

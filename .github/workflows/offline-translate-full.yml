@@ -141,8 +141,8 @@ jobs:
         with:
           pattern: translation-shard-*
           path: ${{ runner.temp }}/translation-shards
-      - name: Merge complete English tree
-        run: node scripts/merge-translation-shards.mjs "$RUNNER_TEMP/translation-shards" --replace-en
+      - name: Merge translated shards into the English tree
+        run: node scripts/merge-translation-shards.mjs "$RUNNER_TEMP/translation-shards"
       - name: Verify coverage and Markdown tooling
         shell: bash
         run: |
