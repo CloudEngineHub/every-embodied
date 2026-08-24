@@ -423,7 +423,7 @@
     },
     "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/01RDKX5超新手入门教程.md": {
       "target": "en/03-robot-hardware-lerobot-and-rdk-x5/01-rdk-x5-beginners-guide.md",
-      "sourceHash": "f55fae356927e472ca1a08162365518c4198674e3b89d0ec3ba14f3a5c60e07c",
+      "sourceHash": "94afefe5997c6edaece7eb27cea9d786519872b162e6eead8c4a94a4fde2a71e",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
