@@ -383,6 +383,34 @@ export function selectShard(items, shardIndex, shardCount, maxFiles = Number.POS
   return items.filter((_, index) => index % shardCount === shardIndex).slice(0, maxFiles);
 }
 
+export function selectSizeBalancedShard(items, root, shardIndex, shardCount, maxFiles = Number.POSITIVE_INFINITY) {
+  if (!Number.isInteger(shardIndex) || !Number.isInteger(shardCount)
+    || shardCount < 1 || shardIndex < 0 || shardIndex >= shardCount) {
+    throw new Error(`Invalid shard ${shardIndex}/${shardCount}`);
+  }
+  const bins = Array.from({ length: shardCount }, () => ({ size: 0, items: [] }));
+  const weighted = items.map((item, index) => {
+    const sourcePath = path.join(root, item.path);
+    const size = item.status === "D" || !fs.existsSync(sourcePath)
+      ? 0
+      : fs.statSync(sourcePath).size;
+    return { item, index, size };
+  }).sort((left, right) => right.size - left.size || left.index - right.index);
+
+  for (const entry of weighted) {
+    const bin = bins.reduce((smallest, candidate) => (
+      candidate.size < smallest.size ? candidate : smallest
+    ));
+    bin.items.push(entry);
+    bin.size += entry.size;
+  }
+
+  return bins[shardIndex].items
+    .sort((left, right) => left.index - right.index)
+    .map((entry) => entry.item)
+    .slice(0, maxFiles);
+}
+
 export async function runCli(argv) {
   const args = parseArgs(argv);
   const configPath = path.join(args.root, ".translation", "config.json");
@@ -397,7 +425,9 @@ export async function runCli(argv) {
   const glossary = fs.readFileSync(glossaryPath, "utf8");
   const maxFiles = args.maxFiles || config.maxFilesPerRun;
   const candidates = selectWork(args, config, state);
-  const work = selectShard(candidates, args.shardIndex, args.shardCount, maxFiles);
+  const work = args.mode === "backfill" && args.shardCount > 1
+    ? selectSizeBalancedShard(candidates, args.root, args.shardIndex, args.shardCount, maxFiles)
+    : selectShard(candidates, args.shardIndex, args.shardCount, maxFiles);
 
   console.log(`Selected ${work.length} Markdown file(s) in ${args.mode} mode.`);
   for (const item of work) console.log(`- ${item.status} ${item.path}`);

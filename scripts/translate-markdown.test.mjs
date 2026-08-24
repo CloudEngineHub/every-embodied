@@ -13,6 +13,7 @@ import {
   restoreInlineSyntax,
   rewriteLocalLinks,
   selectShard,
+  selectSizeBalancedShard,
   splitMarkdown,
   targetPathForSource,
   translateMarkdown
@@ -79,6 +80,22 @@ test("partitions a full backfill into complete non-overlapping shards", () => {
   assert.equal(shards.flat().length, items.length);
   assert.deepEqual([...shards.flat()].sort((a, b) => a - b), items);
   assert.throws(() => selectShard(items, 20, 20));
+});
+
+test("balances full backfill shards by source file size", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "translation-shards-"));
+  const items = [100, 90, 20, 10].map((size, index) => {
+    const relativePath = `doc-${index}.md`;
+    fs.writeFileSync(path.join(root, relativePath), "x".repeat(size));
+    return { status: "M", path: relativePath };
+  });
+  const shards = [0, 1].map((index) => selectSizeBalancedShard(items, root, index, 2));
+  assert.deepEqual(shards.flat().map((item) => item.path).sort(), items.map((item) => item.path).sort());
+  const totals = shards.map((shard) => shard.reduce((sum, item) => (
+    sum + fs.statSync(path.join(root, item.path)).size
+  ), 0));
+  assert.deepEqual(totals, [110, 110]);
+  fs.rmSync(root, { recursive: true, force: true });
 });
 
 test("keeps front matter and fenced code out of translation chunks", () => {
