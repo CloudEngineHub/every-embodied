@@ -135,7 +135,7 @@ To bridge the gap between the simulation environment and the real world, VLN-CE 
 * **Number of instructions:** Approximately **126,069**.
 * **Average path length:** Approximately **15 meters**.
 
-> **Dataset acquisition address:** [https://github.com/jacobkrantz/VLN-CE[[EE_KEEP_0001]]
+> **Dataset acquisition address:** [https://github.com/jacobkrantz/VLN-CE](https://github.com/jacobkrantz/VLN-CE)
 
 ---
 

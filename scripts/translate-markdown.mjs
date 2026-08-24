@@ -127,7 +127,7 @@ export function protectInlineSyntax(text) {
       `${reserve(`${imageMarker}[`)}${label}${reserve(`](${destination})`)}`
     )
   );
-  protectedText = protectedText.replace(/https?:\/\/[^\s<>)]+/g, reserve);
+  protectedText = protectedText.replace(/https?:\/\/[^\s<>)\[\]]+/g, reserve);
   return { text: protectedText, values };
 }
 
@@ -160,7 +160,10 @@ async function translateProtectedSegments(protectedBlock, translate, glossary) {
       const leadingWhitespace = piece.match(/^\s*/)?.[0] ?? "";
       const trailingWhitespace = piece.match(/\s*$/)?.[0] ?? "";
       const body = piece.slice(leadingWhitespace.length, piece.length - trailingWhitespace.length);
-      const result = stripModelWrapper(await translate(body, buildTranslationPrompt(body, glossary)));
+      const result = stripModelWrapper(await translate(
+        body,
+        buildTranslationPrompt(body, glossary, { preserveTokens: false })
+      ));
       translated.push(`${leadingWhitespace}${result}${trailingWhitespace}`);
     } else {
       translated.push(piece);
@@ -175,7 +178,7 @@ function stripModelWrapper(text) {
   return match ? match[1] : text.replace(/^(?:\r?\n)+|(?:\r?\n)+$/g, "");
 }
 
-export function buildTranslationPrompt(sourceText, glossary) {
+export function buildTranslationPrompt(sourceText, glossary, { preserveTokens = true } = {}) {
   const terms = glossary
     .split(/\r?\n/)
     .filter((line) => line.trim() && !line.trim().startsWith("#"))
@@ -192,11 +195,18 @@ export function buildTranslationPrompt(sourceText, glossary) {
   if (terms.length > 0) {
     prompt.push("参考下面的翻译：", ...terms, "");
   }
+  const requirements = [
+    "1. 严格保持 Markdown 结构、缩进、列表、表格和换行。"
+  ];
+  if (preserveTokens) {
+    requirements.push(
+      "2. 译文必须保留所有形如 [[EE_KEEP_0000]] 的分隔符，保持数量、顺序和位置不变，绝对不可遗漏、转义或翻译该符号。"
+    );
+  }
+  requirements.push(`${requirements.length + 1}. 模型名、仓库名、命令名、参数名和英文缩写保持原样。`);
   prompt.push(
     "翻译要求：",
-    "1. 严格保持 Markdown 结构、缩进、列表、表格和换行。",
-    "2. 译文必须保留所有形如 [[EE_KEEP_0000]] 的分隔符，保持数量、顺序和位置不变，绝对不可遗漏、转义或翻译该符号。",
-    "3. 模型名、仓库名、命令名、参数名和英文缩写保持原样。",
+    ...requirements,
     "",
     "将以下文本翻译成英语，注意只需要输出翻译后的结果，不要额外解释：",
     "",

@@ -161,6 +161,15 @@ jobs:
           }
           console.log(`Verified ${Object.keys(pathMap).length} complete English Markdown files.`);
           NODE
+          if grep -R --line-number --include='*.md' 'EE_KEEP_' en; then
+            echo 'Protected Markdown token leaked into translated output.' >&2
+            exit 1
+          fi
+          if grep -R --line-number --include='*.md' -E \
+            'Strictly maintain the Markdown structure|translation must retain all separators' en; then
+            echo 'Translation prompt text leaked into translated output.' >&2
+            exit 1
+          fi
           npm run build:pages
           git diff --check
       - name: Publish complete English tree

@@ -253,5 +253,5 @@ Currently, it is recommended to track as follows:
 - WALL-WM paper:[WALL-WM: Carving World Action Modeling at the Event Joints](https://arxiv.org/abs/2606.01955)
 - WALL-WM arXiv HTML graphic version:[2606.01955v1 HTML](https://arxiv.org/html/2606.01955v1)
 - WALL-X code:[X-Square-Robot/wall-x](https://github.com/X-Square-Robot/wall-x)
-- X Square Robot Research Page:[https://x2robot.com/en/research[[EE_KEEP_0007]]
+- X Square Robot research page: [https://x2robot.com/en/research](https://x2robot.com/en/research)
 - Hugging Face organization page:[x-square-robot](https://huggingface.co/x-square-robot)

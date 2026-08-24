@@ -51,7 +51,7 @@ Today’s goal is not to test every entry on the platform, but to complete a clo
 
 In terms of manipulation, this step is quite simple: first log in to the Damo Developer Matrix, then click “Experience Now” to enter the Leyun embodied AI development platform. However, from a learning perspective, the real significance lies not in “successful login,” but in starting to connect the abstract topic content with a real platform system. Often, learners treat the “platform” as a vague concept; only after actually seeing the entry point, homepage, and module layout does the subsequent content become concrete.
 
-LeCloud Platform:[https://developer.damo-academy.com/playground?spm=a1z26upx.zdxx.0.0&from=zdxx[[EE_KEEP_0001]]
+LeCloud Platform: [https://developer.damo-academy.com/playground?spm=a1z26upx.zdxx.0.0&from=zdxx](https://developer.damo-academy.com/playground?spm=a1z26upx.zdxx.0.0&from=zdxx)
 
 Reference interface:
 

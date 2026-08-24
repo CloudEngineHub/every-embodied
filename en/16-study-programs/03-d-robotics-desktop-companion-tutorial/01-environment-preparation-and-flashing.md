@@ -76,9 +76,7 @@ To make the process easier to reproduce, this tutorial uses `Rufus + SD 卡烧�
 
 ![ Burning In Interface 2](../../../16-专题组队学习/03-地瓜机器人新版教程桌宠/assets/image-20260312184137405.png)
 
-1. Strictly maintain the Markdown structure, indentation, lists, tables, and line breaks.
-2. The translation must retain all separators in the form of `RDK Studio`, keeping their quantity, order, and position unchanged. These symbols must not be omitted, escaped, or translated.
-3. Model names, repository names, command names, parameter names, and abbreviations remain unchanged.
+When using the `RDK Studio` option, the key is not which button to click, but the sequence required to enter flashing mode. Follow this procedure:
 
 First, power off the development board. After inserting the SD card, use `USB 2.0 Type-C` to connect the device to the computer. Then press and hold the `Sleep` button, then power on the development board. Wait for about five seconds to enter the burning mode of the device. Only in this mode can the burning tool on the PC reliably identify the device.
 

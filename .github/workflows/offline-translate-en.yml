@@ -264,6 +264,19 @@ jobs:
           else
             node scripts/translate-markdown.mjs --backfill --max-files "$MAX_FILES"
           fi
+      - name: Reject leaked Markdown protection tokens
+        if: steps.plan.outputs.skip == 'false'
+        shell: bash
+        run: |
+          if grep -R --line-number --include='*.md' 'EE_KEEP_' en; then
+            echo 'Protected Markdown token leaked into translated output.' >&2
+            exit 1
+          fi
+          if grep -R --line-number --include='*.md' -E \
+            'Strictly maintain the Markdown structure|translation must retain all separators' en; then
+            echo 'Translation prompt text leaked into translated output.' >&2
+            exit 1
+          fi
       - name: Commit verified translations to main
         id: publish
         if: steps.plan.outputs.skip == 'false'

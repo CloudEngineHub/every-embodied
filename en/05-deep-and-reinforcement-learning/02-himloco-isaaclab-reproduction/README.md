@@ -571,8 +571,8 @@ These ideas are applicable not only to HIMLoco, but also to many leg-and-foot ro
 
 ## References
 
-- HIMLoco official project page:[https://junfeng-long.github.io/HIMLoco/[[EE_KEEP_0001]]
+- HIMLoco official project page: [https://junfeng-long.github.io/HIMLoco/](https://junfeng-long.github.io/HIMLoco/)
 - HIMLoco paper:[Hybrid Internal Model: Learning Agile Legged Locomotion with Simulated Robot Response](https://arxiv.org/abs/2312.11460)
-- HIMLoco open-source repository:[https://github.com/OpenRobotLab/HIMLoco[[EE_KEEP_0005]]
-- Isaac Lab official repository:[https://github.com/isaac-sim/IsaacLab[[EE_KEEP_0007]]
-- legged_gym original item:[https://github.com/leggedrobotics/legged_gym[[EE_KEEP_0009]]
+- HIMLoco open-source repository: [https://github.com/OpenRobotLab/HIMLoco](https://github.com/OpenRobotLab/HIMLoco)
+- Isaac Lab official repository: [https://github.com/isaac-sim/IsaacLab](https://github.com/isaac-sim/IsaacLab)
+- Original legged_gym project: [https://github.com/leggedrobotics/legged_gym](https://github.com/leggedrobotics/legged_gym)

@@ -26,9 +26,9 @@ This article focuses solely on L0. The reason is simple: L0 is the most suitable
 
 Official competition page:
 
-- ATEC official website:[https://www.atecup.com/competitions/100017[[EE_KEEP_0001]]
-- Example of the track details page:[https://www.atecup.com/matchHomeDetails/100017/1000210[[EE_KEEP_0003]]
-- Official baseline repository:[https://github.com/atecup/ATEC2026_Simulation_Challenge[[EE_KEEP_0005]]
+- ATEC official website: [https://www.atecup.com/competitions/100017](https://www.atecup.com/competitions/100017)
+- Example track details page: [https://www.atecup.com/matchHomeDetails/100017/1000210](https://www.atecup.com/matchHomeDetails/100017/1000210)
+- Official baseline repository: [https://github.com/atecup/ATEC2026_Simulation_Challenge](https://github.com/atecup/ATEC2026_Simulation_Challenge)
 
 According to public information, the registration for ATEC2026 opened on April 1, 2026, and closed at 22:00 (UTC+8) on June 15, 2026 (there may be changes later, so please keep an eye on it); the online competition period is from 10:00 on May 1, 2026, to 22:00 (UTC+8) on June 30, 2026. If you have already passed the registration deadline when reading this article, you can still use it as a reproduction experiment for the Isaac Lab robot competition.
 
@@ -507,7 +507,7 @@ This code comes from the `protected04 option-MoE rough escape progress gate` ver
 
 For easy reproduction, we have also uploaded the corresponding lightweight model package to Hugging Face:
 
-- Hugging Face model repository:[https://huggingface.co/Datawhale/atec2026-b2piper-l0[[EE_KEEP_0001]]
+- Hugging Face model repository: [https://huggingface.co/Datawhale/atec2026-b2piper-l0](https://huggingface.co/Datawhale/atec2026-b2piper-l0)
 
 The model repository contains `policy.pt`, `solution.py`, `solution_rl.py`, and `requirements.txt`. The SHA256 of `policy.pt` is:
 
@@ -627,13 +627,13 @@ This route lacks the romanticism of "mystical rankings," but it is more like a m
 
 ## References
 
-- ATEC official website:[https://www.atecup.com/competitions/ATEC2026[[EE_KEEP_0001]]
-- ATEC2026 Simulation Challenge GitHub：[https://github.com/atecup/ATEC2026_Simulation_Challenge[[EE_KEEP_0003]]
-- ATEC2026 event introduction: Qbit “Who can pass the real-world test? ATEC2026 launches embodied AI ‘Turing Test’”[https://www.qbitai.com/2026/04/403753.html[[EE_KEEP_0005]]
-- Reproduction tutorial for算力自由 ATEC baseline:[https://blog.gpufree.cn/blogs/ATEC2026.html[[EE_KEEP_0007]]
-- RobotLab project:[https://github.com/fan-ziqi/robot_lab[[EE_KEEP_0009]]
-- RoboGauge project:[https://github.com/wty-yy/RoboGauge[[EE_KEEP_0011]]
-- MoE-Loco project:[https://github.com/hrh6666/MoE-Loco[[EE_KEEP_0013]]
-- Unitree RL Lab：[https://github.com/unitreerobotics/unitree_rl_lab[[EE_KEEP_0015]]
-- Datawhale ATEC2026 B2Piper L0 Hugging Face model package:[https://huggingface.co/Datawhale/atec2026-b2piper-l0[[EE_KEEP_0017]]
+- ATEC official website: [https://www.atecup.com/competitions/ATEC2026](https://www.atecup.com/competitions/ATEC2026)
+- ATEC2026 Simulation Challenge GitHub: [https://github.com/atecup/ATEC2026_Simulation_Challenge](https://github.com/atecup/ATEC2026_Simulation_Challenge)
+- ATEC2026 event introduction, Qbit, “Who can pass the real-world test? ATEC2026 launches embodied AI ‘Turing Test’”: [https://www.qbitai.com/2026/04/403753.html](https://www.qbitai.com/2026/04/403753.html)
+- ATEC baseline reproduction tutorial from GPUFree: [https://blog.gpufree.cn/blogs/ATEC2026.html](https://blog.gpufree.cn/blogs/ATEC2026.html)
+- RobotLab project: [https://github.com/fan-ziqi/robot_lab](https://github.com/fan-ziqi/robot_lab)
+- RoboGauge project: [https://github.com/wty-yy/RoboGauge](https://github.com/wty-yy/RoboGauge)
+- MoE-Loco project: [https://github.com/hrh6666/MoE-Loco](https://github.com/hrh6666/MoE-Loco)
+- Unitree RL Lab: [https://github.com/unitreerobotics/unitree_rl_lab](https://github.com/unitreerobotics/unitree_rl_lab)
+- Datawhale ATEC2026 B2Piper L0 Hugging Face model package: [https://huggingface.co/Datawhale/atec2026-b2piper-l0](https://huggingface.co/Datawhale/atec2026-b2piper-l0)
 - This repository's LeHome tutorial:[../../LeHome/README.md](../../LeHome/README.md)

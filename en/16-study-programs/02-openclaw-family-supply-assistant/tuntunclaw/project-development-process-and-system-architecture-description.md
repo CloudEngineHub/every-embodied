@@ -264,12 +264,8 @@ The single grasping and placement main process can be summarized as:
 
 The collection logic is located at:
 
-- [main.py](../../../../16-专题组队学习/02-OpenClaw家庭物资助手/tuntunclaw/main.py) 1. Strictly maintain the Markdown structure, indentation, lists, tables, and line breaks.
-2. The translation must retain all separators in the form of [[EE_KEEP_0000]], keeping the number, order, and position unchanged. It is absolutely not allowed to omit, escape, or translate this symbol.
-3. Model names, repository names, command names, parameter names, and English abbreviations remain unchanged. `_capture_rgbd`
-- [ur5_grasp_env.py](../../../../16-专题组队学习/02-OpenClaw家庭物资助手/tuntunclaw/manipulator_grasp/env/ur5_grasp_env.py) 1. Strictly maintain the Markdown structure, indentation, lists, tables, and line breaks.
-2. The translation must retain all separators in the form of [[EE_KEEP_0000]], keeping the number, order, and position unchanged; it is absolutely not allowed to omit, escape, or translate this symbol.
-3. Model names, repository names, command names, parameter names, and English abbreviations remain unchanged. `render`
+- `_capture_rgbd` in [main.py](../../../../16-专题组队学习/02-OpenClaw家庭物资助手/tuntunclaw/main.py)
+- `render` in [ur5_grasp_env.py](../../../../16-专题组队学习/02-OpenClaw家庭物资助手/tuntunclaw/manipulator_grasp/env/ur5_grasp_env.py)
 
 What the backend receives here is:
 

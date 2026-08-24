@@ -563,11 +563,11 @@ If you only want to understand the ideas first, it is recommended to read `confi
 ## XIII. Reference Materials and Source of Materials
 
 - RISE paper:[RISE: Self-Improving Robot Policy with Compositional World Model](https://arxiv.org/abs/2602.11075)
-- RISE official project page:[https://opendrivelab.com/RISE/[[EE_KEEP_0003]]
+- RISE official project page: [https://opendrivelab.com/RISE/](https://opendrivelab.com/RISE/)
 - RISE official repository:[OpenDriveLab/RISE](https://github.com/OpenDriveLab/RISE)
 - RISE public model assets:[OpenDriveLab-org/RISE_Assets](https://huggingface.co/OpenDriveLab-org/RISE_Assets)
 - LTX-Video backbone：[Lightricks/LTX-Video](https://huggingface.co/Lightricks/LTX-Video)
 - OpenPI project:[openpi/openpi](https://github.com/openpi/openpi)
-- RLinf documentation:[https://rlinf.readthedocs.io[[EE_KEEP_0013]]
+- RLinf documentation: [https://rlinf.readthedocs.io](https://rlinf.readthedocs.io)
 
 In this chapter, the official images and videos of `assets/official_images/` and `assets/videos/` come from the RISE official project page or official repository. The locally converted `teaser.mp4`, `conveyor.mp4`, `backpack.mp4`, and `box.mp4` are from the RISE repository `rise_assets/*.gif`, and are only used for tutorial demonstration and learning reference.

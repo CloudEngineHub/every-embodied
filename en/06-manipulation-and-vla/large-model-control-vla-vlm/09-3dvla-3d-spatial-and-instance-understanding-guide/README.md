@@ -386,5 +386,5 @@ If I had to summarize this in one sentence:
 ## 16. Reference Links
 
 - Paper:[3DVLA: Enhancing Vision-Language-Action Models via 3D Spatial and Instance Understanding](https://arxiv.org/abs/2605.29416)
-- arXiv HTML image-text version:[https://arxiv.org/html/2605.29416v1[[EE_KEEP_0003]]
+- arXiv HTML image-text version: [https://arxiv.org/html/2605.29416v1](https://arxiv.org/html/2605.29416v1)
 - Note the distinct projects with the same name:[UMass-Embodied-AGI/3D-VLA](https://github.com/UMass-Embodied-AGI/3D-VLA)

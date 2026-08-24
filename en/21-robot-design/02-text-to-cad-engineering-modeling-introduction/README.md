@@ -323,9 +323,7 @@ This machine also tested the `skills/cad/scripts/render` rendering preview image
 
 The official repository provides multiple sets of skills: CAD, CAD Explorer, URDF, SDF, SRDF/MoveIt2, and SendCutSend. Their role is not the "model file itself," but to provide stable manipulation guidelines for the code agent. For example, the CAD Skill is responsible for generating STEP/STL/3MF/DXF/GLB and geometric references; the URDF Skill handles robot link, joint, limit, and mesh references; and the SRDF Skill focuses on semantic configuration for MoveIt2 and motion planning-related checks.
 
-1. Strictly maintain the Markdown structure, indentation, lists, tables, and line breaks.
-2. The translation must retain all separators in the form of [[EE_KEEP_0000]], preserving their quantity, order, and position. These symbols must not be omitted, escaped, or translated.
-3. Model names, repository names, command names, parameter names, and acronyms should remain unchanged.
+Readers who only want to follow the tutorial can skip installing these skills. To use the Text-to-CAD workflow in Codex or Claude Code, install the skills in a location accessible to the corresponding agent. The official Codex installation command is:
 
 If people only read tutorials, they can skip installing these skills for now; if they want to use the Text-to-CAD workflow in Codex or Claude Code, they need to install the skills in a location that the agent can access. The official installation method for Codex is:
 

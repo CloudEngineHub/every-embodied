@@ -1028,7 +1028,7 @@ If you have completed the smoke test in the previous chapter, this tutorial reco
 
 ### 3.15.7 Summary of Reference Links
 
-- LeHome official website:[https://lehome-challenge.com/[[EE_KEEP_0001]]
+- LeHome official website: [https://lehome-challenge.com/](https://lehome-challenge.com/)
 - Official repository:[lehome-official/lehome-challenge](https://github.com/lehome-official/lehome-challenge)
 - Official asset data:[lehome/asset_challenge](https://huggingface.co/datasets/lehome/asset_challenge)
 - Official merged training data:[lehome/dataset_challenge_merged](https://huggingface.co/datasets/lehome/dataset_challenge_merged)

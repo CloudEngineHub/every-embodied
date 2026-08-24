@@ -19,7 +19,7 @@ sudo apt install git-lfsgit lfs install# When prompted for a password, use an ac
 
 ### [2.2 Download scenarios and assets from Huggingface](https://agibot-world.com/sim-evaluation/docs/#/?id=_22-download-scenes-amp-assets-from-huggingface)
 
-Please visit [https://huggingface.co/datasets/agibot-world/GenieSimAssets[[EE_KEEP_0001]] Follow the instructions and perform the manipulation.
+Please visit [https://huggingface.co/datasets/agibot-world/GenieSimAssets](https://huggingface.co/datasets/agibot-world/GenieSimAssets) and follow the instructions.
 
 ### [2.3 Install ](https://agibot-world.com/sim-evaluation/docs/#/?id=_23-installation)
 

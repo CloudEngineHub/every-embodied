@@ -25,7 +25,7 @@ The `flash-attn` version that needs to be downloaded is `2.7.4.post1`.
 
 ### 1. Download link
 Please visit the **Flash Attention GitHub Releases** page:
-[https://github.com/Dao-AILab/flash-attention/releases/tag/v2.7.4.post1[[EE_KEEP_0001]]
+[https://github.com/Dao-AILab/flash-attention/releases/tag/v2.7.4.post1](https://github.com/Dao-AILab/flash-attention/releases/tag/v2.7.4.post1)
 
 ### 2. Target File Name
 In the Assets list under this page, please look for files that follow the following naming rules (for CUDA 12.8 and Torch 2.7):

@@ -164,9 +164,7 @@ pulseaudio -k || true
 systemctl --user stop pulseaudio.service pulseaudio.socket 2>/dev/null || true
 ```
 
-1. Strictly maintain the Markdown structure, indentation, lists, tables, and line breaks.
-2. The translation must retain all separators in the form of [[EE_KEEP_0000]], keeping their quantity, order, and position unchanged. These symbols must not be omitted, escaped, or translated.
-3. Model names, repository names, command names, parameter names, and acronyms should remain unchanged.
+If you are currently in a root shell, return to a regular user terminal before running the two commands above. Run the following command as root only for temporary troubleshooting:
 
 ```bash
 pkill -f pulseaudio || true

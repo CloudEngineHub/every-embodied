@@ -394,7 +394,7 @@ It is not about placing robots in an interactive neural universe, but rather tra
 
 ## 15. Reference Links
 
-- RoboDream project page:[https://junjieye.com/RoboDream/[[EE_KEEP_0001]]
+- RoboDream project page: [https://junjieye.com/RoboDream/](https://junjieye.com/RoboDream/)
 - RoboDream paper:[arXiv:2606.02577](https://arxiv.org/abs/2606.02577)
 - RoboDream official repository:[Jay-Ye/RoboDream](https://github.com/Jay-Ye/RoboDream)
 - DROID dataset:[DROID: A Large-Scale In-The-Wild Robot Manipulation Dataset](https://droid-dataset.github.io/)

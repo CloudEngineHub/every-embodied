@@ -57,7 +57,7 @@ After completing the course, want to "play with a real robot"? You’re in Nanji
 
 On March 22, at Nanjing Jianye · International Youth Conference Center, the DAMO Developer Matrix will host a robotic arm real robot experience at the interactive exchange market. Spaces are limited, so first come, first served~
 
-Registration link:[https://developer.damo-academy.com/activity/detail/32026031317733911743293071[[EE_KEEP_0001]]
+Registration link: [https://developer.damo-academy.com/activity/detail/32026031317733911743293071](https://developer.damo-academy.com/activity/detail/32026031317733911743293071)
 
 ![image.png](../../../16-专题组队学习/01-达摩院组队学习/assets/task04-event-poster.png)
 

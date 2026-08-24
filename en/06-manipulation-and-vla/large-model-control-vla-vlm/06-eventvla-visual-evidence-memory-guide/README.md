@@ -133,9 +133,7 @@ Additionally, keyframe supervision is not a single hard label. In actual physica
 
 ## 6. Training Course: From teacher memory to predict memory
 
-1. Strictly maintain the Markdown structure, indentation, lists, tables, and line breaks.
-2. The translation must retain all separators in the form of [[EE_KEEP_0000]], keeping their number, order, and position unchanged. These symbols must not be omitted, escaped, or translated.
-3. Model names, repository names, command names, parameter names, and abbreviations remain unchanged.
+If training relies entirely on predicted keyframes from the start, the early model is likely to write incorrect memories. If training always uses ground-truth keyframes, inference introduces a train-test gap because ground truth is unavailable. EventVLA therefore adopts a teacher-to-student curriculum:
 
 ```mermaid
 flowchart LR

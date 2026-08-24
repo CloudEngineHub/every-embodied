@@ -142,6 +142,18 @@ test("protects and restores inline code, links, formulas, and URLs", () => {
   assert.throws(() => restoreInlineSyntax(protectedValue.text.replace("0000", "9999"), protectedValue.values));
 });
 
+test("does not nest a link suffix token inside a visible URL label", () => {
+  const source = "[https://example.com/path](https://example.com/path)";
+  const protectedBlock = protectInlineSyntax(source);
+  assert.equal(restoreInlineSyntax(protectedBlock.text, protectedBlock.values), source);
+  assert.equal(protectedBlock.values.some((value) => value.includes("EE_KEEP_")), false);
+});
+
+test("omits protected-token instructions from segment fallback prompts", () => {
+  const prompt = buildTranslationPrompt("需要翻译", "", { preserveTokens: false });
+  assert.doesNotMatch(prompt, /EE_KEEP_/);
+});
+
 test("builds an Hy-MT2 prompt without an empty terminology preamble", () => {
   const source = "运行 [[EE_KEEP_0000]] 完成抓取。";
   const withoutGlossary = buildTranslationPrompt(source, "\n# comment only\n");

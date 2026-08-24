@@ -218,6 +218,6 @@ When these variables are not fixed, simply writing a "from zero to running smoot
 - WALL-OSS-0.5 model:[x-square-robot/wall-oss-0.5](https://huggingface.co/x-square-robot/wall-oss-0.5)
 - WALL-OSS-FLOW model:[x-square-robot/wall-oss-flow](https://huggingface.co/x-square-robot/wall-oss-flow)
 - WALL-OSS-FAST model:[x-square-robot/wall-oss-fast](https://huggingface.co/x-square-robot/wall-oss-fast)
-- LeRobot WALL-OSS documentation:[https://huggingface.co/docs/lerobot/en/walloss[[EE_KEEP_0011]]
-- LeRobot：[https://github.com/huggingface/lerobot[[EE_KEEP_0013]]
-- LIBERO：[https://github.com/Lifelong-Robot-Learning/LIBERO[[EE_KEEP_0015]]
+- LeRobot WALL-OSS documentation: [https://huggingface.co/docs/lerobot/en/walloss](https://huggingface.co/docs/lerobot/en/walloss)
+- LeRobot: [https://github.com/huggingface/lerobot](https://github.com/huggingface/lerobot)
+- LIBERO: [https://github.com/Lifelong-Robot-Learning/LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO)
