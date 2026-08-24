@@ -92,10 +92,6 @@ export function splitMarkdown(markdown, maxBlockChars = 4500) {
       continue;
     }
 
-    if (/^(?: {4}|\t)/.test(line) || /^\s*<(?:img|video|source|iframe|div|table|tr|td|picture)\b/i.test(line)) {
-      protect(line);
-      continue;
-    }
     if (trimmed === "") {
       flush();
       chunks.push({ kind: "protected", text: line });
@@ -176,7 +172,7 @@ async function translateProtectedSegments(protectedBlock, translate, glossary) {
 function stripModelWrapper(text) {
   const trimmed = text.trim();
   const match = trimmed.match(/^```(?:markdown|md)?\s*\n([\s\S]*?)\n```$/i);
-  return match ? match[1] : trimmed;
+  return match ? match[1] : text.replace(/^(?:\r?\n)+|(?:\r?\n)+$/g, "");
 }
 
 export function buildTranslationPrompt(sourceText, glossary) {

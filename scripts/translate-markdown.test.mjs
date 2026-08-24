@@ -98,6 +98,20 @@ test("keeps front matter and fenced code out of translation chunks", () => {
   assert.match(chunks.filter((chunk) => chunk.kind === "protected").map((chunk) => chunk.text).join(""), /echo 中文不能翻译/);
 });
 
+test("translates indented prose and HTML text without exposing their syntax", async () => {
+  const source = "    这是列表下的说明。\n<td>这是表格正文。</td>\n";
+  const translated = await translateMarkdown(source, {
+    glossary: "",
+    maxBlockChars: 1000,
+    translate: async (text) => text
+      .replace("这是列表下的说明", "This is an explanation under a list")
+      .replace("这是表格正文", "This is table content")
+      .replaceAll("。", ".")
+  });
+  assert.match(translated, /^    This is an explanation under a list/m);
+  assert.match(translated, /<td>This is table content\.<\/td>/);
+});
+
 test("protects and restores inline code, links, formulas, and URLs", () => {
   const source = "查看 [项目](https://example.com)，运行 `python train.py`，计算 $x+y$。";
   const protectedValue = protectInlineSyntax(source);
