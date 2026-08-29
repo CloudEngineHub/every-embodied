@@ -147,6 +147,11 @@ input {
   background: rgba(255, 255, 255, 0.14);
 }
 
+.top-links .top-showcase-link {
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+}
+
 .top-meta {
   margin-left: auto;
   font-size: 13px;
@@ -771,6 +776,188 @@ body.book-mode .home-page {
   display: none;
 }
 
+body.showcase-mode .layout {
+  display: block;
+}
+
+body.showcase-mode .sidebar,
+body.showcase-mode .outline,
+body.showcase-mode .reader-head,
+body.showcase-mode .catalog-overview,
+body.showcase-mode .article,
+body.showcase-mode .pager,
+body.showcase-mode .home-page {
+  display: none;
+}
+
+body.showcase-mode .reader {
+  padding: 0;
+}
+
+.showcase-page {
+  color: #111318;
+  background: #f4f6f7;
+}
+
+.showcase-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.8fr);
+  gap: 48px;
+  align-items: end;
+  min-height: 510px;
+  padding: 78px max(30px, calc((100vw - 1320px) / 2)) 64px;
+  color: #ffffff;
+  background:
+    linear-gradient(90deg, rgba(8, 11, 16, 0.94) 0%, rgba(8, 11, 16, 0.74) 54%, rgba(8, 11, 16, 0.34) 100%),
+    url("https://ethan-chen-plus.github.io/amd-physical-ai-showcase/assets/posters/robocasa-recovery/pack-success.jpg") center / cover;
+}
+
+.showcase-intro-copy {
+  max-width: 850px;
+}
+
+.showcase-eyebrow {
+  margin: 0 0 12px;
+  color: #58d0c5;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.showcase-intro h1 {
+  max-width: 900px;
+  margin: 0;
+  font-size: clamp(44px, 5.4vw, 78px);
+  line-height: 1.02;
+  letter-spacing: 0;
+}
+
+.showcase-intro-copy > p:not(.showcase-eyebrow) {
+  max-width: 780px;
+  margin: 22px 0 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 19px;
+  line-height: 1.65;
+}
+
+.showcase-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.showcase-actions .home-button {
+  min-width: 0;
+  font-size: 16px;
+}
+
+.showcase-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  background: rgba(13, 17, 23, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(12px);
+}
+
+.showcase-facts div {
+  min-height: 112px;
+  padding: 22px;
+  border-right: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.showcase-facts div:nth-child(2n) {
+  border-right: 0;
+}
+
+.showcase-facts dt,
+.showcase-facts dd {
+  margin: 0;
+}
+
+.showcase-facts dt {
+  color: #58d0c5;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.showcase-facts dd {
+  margin-top: 8px;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.showcase-embed {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 64px 24px 84px;
+  scroll-margin-top: var(--topbar-height);
+}
+
+.showcase-embed-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 22px;
+}
+
+.showcase-embed-head h2 {
+  margin: 0;
+  font-size: 40px;
+  line-height: 1.1;
+}
+
+.showcase-embed-head a {
+  color: #0071e3;
+  font-weight: 800;
+}
+
+.showcase-browser {
+  overflow: hidden;
+  background: #111318;
+  border: 1px solid #cfd7d4;
+  border-radius: 8px;
+  box-shadow: 0 28px 70px rgba(17, 19, 24, 0.15);
+}
+
+.showcase-browser-bar {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  color: #7e8984;
+  background: #ffffff;
+  border-bottom: 1px solid #dce5e1;
+}
+
+.showcase-browser-bar span {
+  width: 10px;
+  height: 10px;
+  background: #d7ddda;
+  border-radius: 50%;
+}
+
+.showcase-browser-bar strong {
+  margin-left: 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.showcase-browser iframe {
+  display: block;
+  width: 100%;
+  height: min(1100px, calc(100vh - 108px));
+  min-height: 720px;
+  background: #ffffff;
+  border: 0;
+}
+
 .home-hero {
   position: relative;
   display: grid;
@@ -1243,6 +1430,10 @@ body.book-mode .home-page {
     display: none;
   }
 
+  body.showcase-mode .menu-button {
+    display: none;
+  }
+
   .brand {
     min-width: 0;
   }
@@ -1356,6 +1547,49 @@ body.book-mode .home-page {
 
   .home-closing {
     min-height: 360px;
+  }
+
+  .showcase-intro {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    min-height: 0;
+    padding: 58px 18px 44px;
+  }
+
+  .showcase-intro h1 {
+    font-size: 44px;
+  }
+
+  .showcase-intro-copy > p:not(.showcase-eyebrow) {
+    font-size: 17px;
+  }
+
+  .showcase-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .showcase-facts div,
+  .showcase-facts div:nth-child(2n) {
+    min-height: 0;
+    border-right: 0;
+  }
+
+  .showcase-embed {
+    padding: 44px 10px 64px;
+  }
+
+  .showcase-embed-head {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .showcase-embed-head h2 {
+    font-size: 32px;
+  }
+
+  .showcase-browser iframe {
+    height: calc(100vh - 82px);
+    min-height: 620px;
   }
 
   .sidebar {

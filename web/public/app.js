@@ -29,6 +29,7 @@ const els = {
   catalogLink: document.getElementById("catalogLink"),
   brandLogo: document.getElementById("brandLogo"),
   homePage: document.getElementById("homePage"),
+  showcasePage: document.getElementById("showcasePage"),
   homeHeroImage: document.getElementById("homeHeroImage"),
   homeTitle: document.getElementById("homeTitle"),
   homeDemoGrid: document.getElementById("homeDemoGrid"),
@@ -40,6 +41,13 @@ const homeTitleLines = ["从 0 到 1，", "走进具身智能。"];
 const GITHUB_REPO_URL = "https://github.com/datawhalechina/every-embodied";
 
 const homeDemos = [
+  {
+    title: "AMD Physical AI Evidence Lab",
+    subtitle: "家庭操作、灵巧手、仿真迁移与安全控制的完整 AMD 实践",
+    mediaUrl:
+      "https://ethan-chen-plus.github.io/amd-physical-ai-showcase/assets/posters/dexjoco/recovery/bimanual-assembly.jpg",
+    href: "#/amd-physical-ai",
+  },
   {
     title: "项目快速入门",
     subtitle: "基于 Mujoco 一键了解项目基础",
@@ -421,6 +429,12 @@ function getRoute() {
     return { type: "home", anchor: hash.slice(1) };
   }
 
+  const showcaseMatch = hash.match(/^#\/amd-physical-ai(?:\?(.*))?$/);
+  if (showcaseMatch) {
+    const query = parseQuery(showcaseMatch[1]);
+    return { type: "showcase", anchor: query.anchor || "" };
+  }
+
   const bookMatch = hash.match(/^#\/book(?:\?(.*))?$/);
   if (bookMatch) {
     return {
@@ -448,7 +462,9 @@ function getRoute() {
 function setMode(mode) {
   document.body.classList.toggle("home-mode", mode === "home");
   document.body.classList.toggle("book-mode", mode === "book");
+  document.body.classList.toggle("showcase-mode", mode === "showcase");
   els.homePage.hidden = mode !== "home";
+  els.showcasePage.hidden = mode !== "showcase";
 }
 
 function setCatalogOverview(open) {
@@ -634,10 +650,12 @@ function renderHome() {
   els.homeDemoGrid.innerHTML = homeDemos
     .map((demo) => {
       const doc = state.flatDocs.find((item) => item.relPath === demo.doc);
+      const href = demo.href || (doc ? docHash(doc.id) : "#/book");
+      const media = demo.mediaUrl || fileHref(demo.media);
       return `
-        <a class="home-demo-card" href="${doc ? docHash(doc.id) : "#/book"}">
+        <a class="home-demo-card" href="${href}">
           <span class="home-demo-media">
-            <img src="${fileHref(demo.media)}" alt="${escapeHtml(demo.title)}" loading="lazy" />
+            <img src="${media}" alt="${escapeHtml(demo.title)}" loading="lazy" />
           </span>
           <span class="home-demo-copy">
             <strong>${escapeHtml(demo.title)}</strong>
@@ -740,6 +758,23 @@ function showHome(anchor = "") {
   });
 }
 
+function showShowcase(anchor = "") {
+  state.currentDoc = null;
+  stopHomeTitleTyping();
+  setMode("showcase");
+  closeSidebar();
+  setCatalogOverview(false);
+  renderNav();
+  document.title = "AMD Physical AI Evidence Lab · Every-Embodied";
+  requestAnimationFrame(() => {
+    if (anchor) {
+      document.getElementById(anchor)?.scrollIntoView({ block: "start", behavior: "smooth" });
+      return;
+    }
+    window.scrollTo({ top: 0, behavior: "auto" });
+  });
+}
+
 async function loadDoc(id, anchor = "", options = {}) {
   if (!id) return;
   stopHomeTitleTyping();
@@ -772,6 +807,10 @@ async function route() {
   const routeInfo = getRoute();
   if (routeInfo.type === "home") {
     showHome(routeInfo.anchor);
+    return;
+  }
+  if (routeInfo.type === "showcase") {
+    showShowcase(routeInfo.anchor);
     return;
   }
   await loadDoc(routeInfo.id, routeInfo.anchor, { openCatalog: routeInfo.openCatalog });
