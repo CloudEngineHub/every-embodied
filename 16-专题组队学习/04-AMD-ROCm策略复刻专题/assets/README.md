@@ -8,7 +8,7 @@
 python code/generate_tutorial_assets.py --source-root "$OUTPUT_ROOT"
 ```
 
-其中 `$OUTPUT_ROOT` 应包含批量评估 JSONL/TSV 和代表性 rollout 视频。若不传 `--source-root`，脚本会使用内置的示例指标生成图表，并为缺失视频生成占位图。
+其中 `$OUTPUT_ROOT` 应包含批量评估 JSONL/TSV 和代表性 rollout 视频。若不传 `--source-root`，脚本会使用内置的教学指标生成图表，并为缺失视频生成带来源说明的指标摘要图。
 
 | 文件 | 用途 |
 | --- | --- |
