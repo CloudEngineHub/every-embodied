@@ -205,7 +205,17 @@
 | **第二阶段** | 计算机视觉、运动规划、强化学习      | 完成“识别-规划-抓取”闭环任务                                 |
 | **第三阶段** | 模仿学习、大模型(VLA/VLN)、Sim2Real | 复现大模型导航VLN、OpenVLA、SmolVLA 等前沿项目，实现仿真或真实部署 |
 
+  ## AMD ROCm 仿真长程案例
+
+  | DexJoCo 双臂河内塔 | RoboCasa365 长程装餐任务 |
+  | --- | --- |
+  | [![DexJoCo 双臂河内塔动态预览](https://raw.githubusercontent.com/datawhalechina/every-embodied/amd-rocm/16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/competition_showcase/dexjoco_bimanual_hanoi_preview.gif)](https://raw.githubusercontent.com/datawhalechina/every-embodied/amd-rocm/16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/competition_showcase/dexjoco_bimanual_hanoi_amd.mp4) | [![RoboCasa365 长程装餐动态预览](https://raw.githubusercontent.com/datawhalechina/every-embodied/amd-rocm/16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/competition_showcase/robocasa_pack_identical_lunches_preview.gif)](https://raw.githubusercontent.com/datawhalechina/every-embodied/amd-rocm/16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/competition_showcase/robocasa_pack_identical_lunches_gr00t_amd.mp4) |
+  | Pi0.5 双臂协同，三视角，47.6 秒 | GR00T N1.5 家庭长时序操作，四视角，195 秒 |
+
+  两段完整回合均在 AMD Ryzen AI MAX+ 395 上完成闭环推理和视频录制。查看 [AMD Physical AI 仿真基准与长程视频复现教程](https://github.com/datawhalechina/every-embodied/blob/amd-rocm/16-专题组队学习/04-AMD-ROCm策略复刻专题/README_09_AMD_Physical_AI仿真基准与长程视频复现.md)，继续学习 Every Embodied、RoboCasa365、DexJoCo、DISCOVERSE、RoboWits 和 Unitree G1 的任务协议、评估结果与多视角导出流程。
+
   ## 🔥 News & Highlights
+  - **[2026-08-29]** 新增 [AMD Physical AI 仿真基准与长程视频复现教程](https://github.com/datawhalechina/every-embodied/blob/amd-rocm/16-专题组队学习/04-AMD-ROCm策略复刻专题/README_09_AMD_Physical_AI仿真基准与长程视频复现.md)：汇总 Every Embodied、RoboCasa365、DexJoCo、DISCOVERSE、RoboWits 和 Unitree G1 的 AMD ROCm 运行链路、正式评估协议与多视角视频，并提供 DexJoCo 双臂河内塔和 RoboCasa365 长程装餐任务的完整成功回合。
   - **[2026-08-23]** 新增 [EVA-Client 真机部署与评测工程导航](./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/19-EVA-Client真机部署与评测工程导航/README.md)：归入现有 VLA 章节，系统讲解 EVA-Client 如何衔接 LeRobot 数据、外部 VLA 策略服务器与真实机器人，覆盖 Transport、Robot Definition、Policy Client、五种 action chunk 调度策略、七类控制台工作流、可审计评测日志、无真机 open-loop 体验和两进程真机部署模式；同时明确当前官方版本尚未提供 SO-101 适配，并给出社区扩展所需的机器人描述、硬件节点、动作契约、配置与安全验证清单。
   - **[2026-08-01]** 新增 [ATEC2026 赛后复盘与开源方案教程](./15-Challenge竞赛/ATEC2026/README.md)：将 Task A/B/D/E 的任务边界、观测契约、环境视角调试、Task B 公开方案对照、评估与复现边界，以及中文 Workspace Memory 统一归入第 15 章，并配套 [Task B 公开复现归档](https://huggingface.co/datasets/Datawhale/atec2026-task-b-reproducibility) 与 Task E 开源资源。
   - **[2026-07-18]** 新增 [Dexbotic-RLinf 工程化 VLA 后训练导读](./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/17-Dexbotic-RLinf工程化VLA后训练导读/README.md)：归入现有 VLA 章节，系统讲解 Dexbotic 如何把 RLinf 作为分布式强化学习后端，用 PPO 对 Dexbotic π0 / DM0 在 LIBERO 上做在线 fine-tuning，覆盖 Dexbotic 三层工具箱架构、RLinf frontend 与 Dexbotic backend 两种启动方式、`dexbotic_pi0` / `dexbotic_dm0` 动态模型注册、actor / rollout / env worker 分工、checkpoint 下载、TensorBoard 指标、standalone evaluation，以及该链路更适合作为工程化后训练导读而非轻量一键复现的边界。
