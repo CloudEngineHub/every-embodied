@@ -1,10 +1,34 @@
 # AMD ROCm 策略复刻专题
 
-本专题在 AMD Ryzen AI MAX+ / Radeon GPU 设备上复刻 LeRobot、ACT、SmolVLA 和 pi_0。它不是单纯的环境安装笔记，也不再假设模型已经训练完成：从设备资源检查开始，先完成 MuJoCo 键盘采集、LeRobot 数据审计、三类模型的 smoke 与正式训练，再进入闭环部署、ACT DAgger、SmolVLA 加权采样、pi_0 尾段诊断和实验报告整理。
+本专题在 AMD Ryzen AI MAX+ / Radeon GPU 设备上复刻 LeRobot、ACT、SmolVLA 和 pi_0，并扩展到 RoboCasa365、DexJoCo、DISCOVERSE、RoboWits 和 Unitree G1 等仿真系统。从设备资源检查开始，先完成 MuJoCo 键盘采集、LeRobot 数据审计、三类模型的 smoke 与正式训练，再进入多任务闭环评估、多视角视频、合成数据、渲染和安全控制。
 
 如果暂时没有本地 AMD 设备，也可以先参考 [AUP Learning Cloud（优先）+ AMD 开发者云备用使用指南](./README_00_AMD_AUP免费云平台使用指南.md)，优先用 AUP Learning Cloud 的远程 JupyterHub 或 Code Server 完成本专题的开发、训练和评估；开发者云作为备用入口，用于快速验证 ROCm 模板。两种平台的硬件、缓存和使用方式不同，指南中已分开说明；具体额度和开通方式以平台当前页面或管理员通知为准。
 
 如果要把本专题组织成 Datawhale 组队学习活动，可以先参考：[00_组队学习招募参考稿.md](./00_组队学习招募参考稿.md)。其中的开营时间、领学员、报名入口和二维码需要在正式发布前替换。
+
+## 长程仿真案例
+
+| DexJoCo 双臂河内塔 | RoboCasa365 长程装餐任务 |
+| --- | --- |
+| [![DexJoCo 双臂河内塔视频封面](./assets/competition_showcase/dexjoco_bimanual_hanoi_poster.jpg)](https://ethan-chen-plus.github.io/amd-physical-ai-showcase/assets/videos/dexjoco/recovery/bimanual-hanoi.mp4) | [![RoboCasa365 长程装餐视频封面](./assets/competition_showcase/robocasa_pack_identical_lunches_poster.jpg)](https://ethan-chen-plus.github.io/amd-physical-ai-showcase/assets/videos/robocasa-recovery/pack-success.mp4) |
+| Pi0.5 双臂协同，三视角，47.6 秒 | GR00T N1.5 家庭长时序操作，四视角，195 秒 |
+
+点击封面可观看完整视频。任务协议、AMD ROCm 运行方式、正式成功率和全部仿真矩阵见 [AMD Physical AI 仿真基准与长程视频复现](./README_09_AMD_Physical_AI仿真基准与长程视频复现.md)。
+
+## 六章课程笔记入口
+
+助教整理的[飞书课程笔记](https://my.feishu.cn/wiki/KJ0dwEuI7isfyak5NDncY7rfnHb)提供了一条更适合首次学习的线性路线；本目录中的 Markdown 章节和 Notebook 则负责实验命令、路径审计、严格成功判定和失败复盘。两者是互补关系，不需要把飞书页面的内容覆盖到现有 Task 文档上。
+
+| 飞书章节 | 主题 | 本目录的可执行入口 |
+| --- | --- | --- |
+| CH1 | VLA 全景与 AMD 环境搭建 | `README_00`、`README_01`、Notebook 01 |
+| CH2 | MuJoCo 仿真与数据集构建 | `README_07`、Notebook 07、上游 `mujoco_pnp` |
+| CH3 | SmolVLA 推理 | `README_04`、Notebook 04、Notebook 09/14 |
+| CH4 | ACT 训练与推理 | `README_03`、Notebook 03、Notebook 08/16 |
+| CH5 | pi_0 训练与推理 | `README_05`、Notebook 05、Notebook 10/15 |
+| CH6 | 自定义任务全流程 | `README_07`、Notebook 07/11，以及 `external/README.md` |
+
+飞书笔记负责建立整体认识，本目录的 Markdown、Notebook 和脚本负责可复现实验。读者可以先按六章笔记学习概念，再进入对应 Task 完成环境检查、训练、评估和视频复核。
 
 ## 先看到成功，再开始训练
 
@@ -21,6 +45,8 @@
 
 Task 11 已内置一条约 2 MB 的严格成功回放，不需要模型权重，也不会消耗训练额度。可下载 checkpoint、适用任务、评测协议和发布状态统一记录在 [预训练权重与零训练体验](./README_08_预训练权重与零训练体验.md)。
 
+仓库只保存课程需要的轻量媒体；批量视频、训练输出和 checkpoint 放在专题外部的数据目录或公开模型仓库。设置完整 `OUTPUT_ROOT` 后，可按 Task 02 的命令重新生成关键帧和回放视频。
+
 > `5000 steps` 只是一种短训基线，不是通用收敛保证。训练是否够用必须由 held-out closed-loop 成功率和视频判断，不能只看步数或 loss。
 
 完成本专题后，可以做到：
@@ -32,6 +58,7 @@ Task 11 已内置一条约 2 MB 的严格成功回放，不需要模型权重，
 - 用红杯、蓝杯固定指令评估 SmolVLA 是否存在任务分布偏置；
 - 在 pi_0 训练前完成 Hugging Face gated model 权限检查和 1-step smoke，并理解 raw policy 成功率该如何继续提升；
 - 把训练日志、成功率表格和代表视频整理成别人能读懂、能复现实验判断的报告。
+- 在 RoboCasa365、DexJoCo、DISCOVERSE 等多任务仿真中运行 AMD 闭环评估并导出同步多视角视频。
 
 ## 适合谁学习
 
@@ -44,8 +71,10 @@ Task 11 已内置一条约 2 MB 的严格成功回放，不需要模型权重，
 
 如果还没有跑过原始 MuJoCo 教程，可以选择两条路线：先学习上游基础教程，或者直接从本专题 Task 07 的端到端 Notebook 开始。上游教程仍是理解原始场景和代码结构的重要参考：
 
-- [LeRobot MuJoCo 训练 ACT、SmolVLA、pi_0 教程](../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/README.md)
-- [策略诊断与物理成功评估](../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/09策略诊断与物理成功评估.md)
+- [LeRobot MuJoCo 训练 ACT、SmolVLA、pi_0 教程](https://github.com/datawhalechina/every-embodied/blob/main/06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/README.md)
+- [策略诊断与物理成功评估](https://github.com/datawhalechina/every-embodied/blob/main/06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/09策略诊断与物理成功评估.md)
+
+训练、采集和闭环 Notebook 所依赖的上游工程放置方式见 [`external/README.md`](./external/README.md)。教程仓库不复制完整上游工作目录；按章节设置 `PROJECT_ROOT`、`DATA_ROOT`、`MODEL_ROOT` 和 `RUN_ROOT` 即可连接源码、数据、模型与结果目录。
 
 ## 章节目录
 
@@ -65,6 +94,14 @@ Task 11 已内置一条约 2 MB 的严格成功回放，不需要模型权重，
 | 11 | [MuJoCo closed-loop 部署](./README_07_ROCm端到端采集训练部署.md#mujoco-closed-loop) | [11_mujoco_closed_loop_deploy.ipynb](./notebooks/11_mujoco_closed_loop_deploy.ipynb) |
 | 12 | [pi0 strict-input 与随机环境复核](./README_07_ROCm端到端采集训练部署.md#pi0-strict-input-复核) | [12_pi0_strict_input_end_to_end.ipynb](./notebooks/12_pi0_strict_input_end_to_end.ipynb) |
 | 13 | [Pi0.5 随机位置、coherent recovery、EEF-delta 与 chunk 对齐](./README_05_pi0_ROCm权限Smoke与训练门控.md#pi05-eef-delta) | [13_pi05_random_position_eef_delta.ipynb](./notebooks/13_pi05_random_position_eef_delta.ipynb) |
+| 14 | [AMD Physical AI 仿真基准与长程视频复现](./README_09_AMD_Physical_AI仿真基准与长程视频复现.md) | 长程 MP4、多视角动态预览与结果协议 |
+| 15 | [仿真基准下载、鉴权与统一目录](./README_10_仿真基准下载与统一目录.md) | 各 benchmark［评测基准］共用的源码、数据、模型和运行目录 |
+| 16 | [RoboCasa365 下载、训练与评估](./README_11_RoboCasa365_ROCm下载训练评估.md) | 厨房资产、GR00T/Pi0.5、16×50 正式评估与四视角视频 |
+| 17 | [DexJoCo Pi0.5 与原生 ROCm JAX 复现](./README_12_DexJoCo_Pi05_ROCm_JAX迁移训练评估.md) | 11 个灵巧任务、数据转换、训练、策略服务与闭环视频 |
+| 18 | [DISCOVERSE 数据生成、训练与多视角视频](./README_13_DISCOVERSE_ROCm数据生成训练与多视角视频.md) | AIRBOT/MMK2、专家轨迹、ACT/Diffusion Policy 与 3DGS |
+| 19 | [RoboWits 下载、训练与创意任务评估](./README_14_RoboWits_ROCm下载训练与创意任务评估.md) | 受限数据、ACT/Pi0/Pi0.5、seed/mutation 评估 |
+| 20 | [Unitree G1 预测 CBF 安全控制复现](./README_15_Unitree_G1预测CBF_ROCm复现.md) | G1 资产、AMD 张量路径、ONNX 策略和全身体态回放 |
+| 21 | [统一评估、视频与结果归档](./README_16_统一评估视频与结果归档.md) | 逐回合 JSON、多视角同步、视频编码和结果发布 |
 
 Markdown 章节主要负责讲清楚背景、判断口径和实验结论；Notebook 负责逐格运行检查、读取指标、生成图表和整理命令模板。可以先读 Markdown，再打开对应 Notebook 跟着跑。
 
@@ -99,6 +136,7 @@ Markdown 章节主要负责讲清楚背景、判断口径和实验结论；Noteb
 | Task 09 → 11 → 04：SmolVLA | 1 到 1.5 天 | SmolVLA checkpoint、红/蓝杯成功率对照和加权采样实验 |
 | Task 10 → 11 → 12–13：pi_0 / Pi0.5 | 2 到 3 天 | 权限门控、raw/head 对照、seed 审计、EEF-delta 与 chunk 对齐 |
 | Task 05–06：综合复盘 | 0.5 到 1 天 | 训练门控、失败案例、排障记录和实验报告 |
+| Task 14：多任务仿真扩展 | 1 到 2 天 | RoboCasa365、DexJoCo、DISCOVERSE 的闭环结果与多视角视频 |
 
 ## Notebook 还是 Python 脚本
 
@@ -110,6 +148,14 @@ Markdown 章节主要负责讲清楚背景、判断口径和实验结论；Noteb
 | Python 脚本 | 批量评估、严格成功率、批量视频录制、训练入口 | 结果更可复现，也适合远端 AMD 设备长时间运行 |
 
 建议不要把所有诊断都塞进 Notebook。批量评估和训练入口应该脚本化，这样组队学习时不同同学的结果更容易比较。
+
+本专题的脚本化入口见 [code/README.md](./code/README.md)。其中
+run_closed_loop.py 与 Notebook 11 使用同一套 legacy_success /
+physical_success 判定，适合一次运行多个 held-out seed、保存 H.264 视频和
+results.jsonl；task11_smolvla_eval.py 是 SmolVLA 的快捷入口；
+replay_dataset.py 用于把 LeRobot episode 回放成视频。两个 demo/ 脚本只
+用于确认 MuJoCo 渲染链路，不代表模型已经完成训练。数据集、checkpoint 和
+mujoco_pnp 上游工程仍需按环境变量从专题外部挂载。
 
 ## 学习产物怎么整理
 
