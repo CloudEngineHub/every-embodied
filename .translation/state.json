@@ -141,7 +141,7 @@
     },
     "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/补充待完善019DTact.md": {
       "target": "en/03-robot-hardware-lerobot-and-rdk-x5/supplement-to-be-improved-019dtact.md",
-      "sourceHash": "b357850ea76084589015b8a711c01b5e8c75e23290b6e21fba15a0769e171b42",
+      "sourceHash": "d0456a74556f1007e6accd522055d0d98ca8475d0227d672b2f95bfdaba0c87f",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -381,7 +381,7 @@
     },
     "07-机器人操作、运动控制/Locomotion/春晚舞蹈机器人复刻2.md": {
       "target": "en/07-robot-operation-and-motion-control/Locomotion/spring-festival-gala-dance-robot-version-2.md",
-      "sourceHash": "73417b1356fc78fb6b30f554bcb35f0097589b7f9ae93d3fcc1dd9d9935936d1",
+      "sourceHash": "1e720b9f842dcb7f64696dc701019d0cdd0f3edfa182b1f961b583409a22eb7c",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -399,7 +399,7 @@
     },
     "08-具身导航及VLN/01快速入门导航算法详解及实战/具身导航算法基本介绍.md": {
       "target": "en/08-navigation-and-vln/01-navigation-algorithms-practical-guide/basic-introduction-to-embodied-navigation-algorithms.md",
-      "sourceHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sourceHash": "c8164774d8be61a18692b656975c23025e891f8e6ccc308ad964158371dc751d",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
