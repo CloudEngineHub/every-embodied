@@ -4,7 +4,7 @@ Source SHA-256: 88853406c374e1298a057923c1feaf266bf4f7e47b6d2b80b23372f16d144afa
 Model: tencent/Hy-MT2-1.8B-GGUF:Q4_K_M
 Review machine-translated technical claims before relying on them.
 -->
-# Open Duck Mini and Microduck: Walking from URDF Model to Dual-leg Reinforcement Learning
+# Open Duck Mini and Microduck: From URDF Models to Bipedal Reinforcement Learning
 
 This section breaks down two generations of open-source bipedal robots named “Little Ducks”: [Open Duck Mini v2](https://github.com/apirrone/Open_Duck_Mini/tree/v2) and [Microduck](https://github.com/pollen-robotics/microduck). We do not consider them as two scripts in the same repository, but rather examine the entire chain: where the robot description files are downloaded, how the reinforcement learning environment is assembled, how PPO learns speed tracking, and why the checkpoint must go through the official export script to become an ONNX policy usable on a real robot.
 
@@ -12,7 +12,7 @@ After completing this section, everyone should be able to:
 
 - Define the responsibility boundaries for the four projects: Open Duck Mini v2, Open Duck Playground, Microduck, and Microduck RL;
 - Only download the URDF of Open Duck Mini v2 and its STL mesh, and verify that all assets are complete;
-- Run the smoke test for `64 个环境 x 5 次迭代` on Microduck RL before initiating formal training;
+- Run the `64 environments x 5 iterations` smoke test on Microduck RL before initiating formal training;
 - Play back the policy, record simulation videos, export ONNX with normalized observations, and perform pre-deployment testing in CPU MuJoCo;
 - Determine what additional engineering steps are needed for a policy that “moves in simulation” to achieve stable 50 Hz movement on a real robot.
 
@@ -32,7 +32,7 @@ The “Open Duck” project has gone through multiple iterations in mechanical d
 ## II. Establish an intuitive understanding of the official effect first
 
 <p align="center">
-  <img src="../../../05-具身场景的深度和强化学习/05-OpenDuckMini与Microduck双足强化学习/assets/official_images/microduck_rl_overview.png" width="92%" alt="Microduck RL 官方项目总览">
+  <img src="../../../05-具身场景的深度和强化学习/05-OpenDuckMini与Microduck双足强化学习/assets/official_images/microduck_rl_overview.png" width="92%" alt="Official Microduck RL project overview">
 </p>
 
 **Figure 1: Overview of the Microduck RL official project.** The new generation of projects does not train a single walking policy, but incorporates tasks such as speed tracking, standing up, sitting, grasping, kicking the ball, forward roll, and skating into a shared task registry. They share a 61-dimensional actor observation and 14-dimensional action contract, allowing the real robot to switch between walking, standing, and skill policies during operation.
@@ -55,20 +55,20 @@ The “Open Duck” project has gone through multiple iterations in mechanical d
 
 ```mermaid
 flowchart LR
-  A["MJCF 机器人 + 地形 + 接触"] --> B["mjlab / MuJoCo Warp<br/>数千个并行环境"]
-  C["速度、头部姿态、身体姿态命令"] --> B
-  B --> D["actor: 61 维部署可得观测"]
-  B --> E["critic: actor 观测 + 仿真特权信息"]
-  D --> F["PPO policy: 14 维关节目标"]
+  A["MJCF robot + terrain + contacts"] --> B["mjlab / MuJoCo Warp<br/>thousands of parallel environments"]
+  C["Velocity, head-pose, and body-pose commands"] --> B
+  B --> D["actor: 61-D deployable observations"]
+  B --> E["critic: actor observations + privileged simulation state"]
+  D --> F["PPO policy: 14-D joint targets"]
   E --> G["value function"]
   F --> B
-  G --> H["PPO 更新"]
+  G --> H["PPO update"]
   B --> H
   H --> F
-  F --> I["scripts/export.py<br/>烘入 observation normalizer"]
+  F --> I["scripts/export.py<br/>bake in the observation normalizer"]
   I --> J["ONNX"]
-  J --> K["CPU MuJoCo 部署前演练"]
-  J --> L["Microduck robotd<br/>50 Hz 安全控制循环"]
+  J --> K["CPU MuJoCo pre-deployment rehearsal"]
+  J --> L["Microduck robotd<br/>50 Hz safety control loop"]
 ```
 
 **Figure 2: Data flow of Microduck RL.** This architecture consists of five essential modules that cannot be skipped.
@@ -93,10 +93,10 @@ src/mjlab_microduck/robot/microduck/
 The actor input for the new policy is 61 dimensions, and the output is a 14-dimensional joint action. The command slots are fixed as follows:
 
 ```text
-twist 速度命令 3 维
-+ head pose 命令 4 维
-+ body pose 命令 6 维
-= 13 维命令子向量
+twist velocity command: 3 dimensions
++ head-pose command: 4 dimensions
++ body-pose command: 6 dimensions
+= 13-dimensional command subvector
 ```
 
 The remaining observations come from the IMU, joint position/velocity, and historical actions. The actor does not use the base linear velocity that is difficult to obtain reliably with a real robot; the critic can additionally read this simulation true value during training. This is a typical asymmetric actor-critic architecture: the value network uses more complete information to accelerate learning, while the policy network remains viable for deployment.
@@ -155,7 +155,7 @@ git clone https://github.com/pollen-robotics/microduck_rl.git
 cd microduck_rl
 uv sync
 
-# 正式训练前登录 W&B，用于记录曲线和 checkpoint
+# Log in to W&B before a full run to record metrics and checkpoints.
 uv run wandb login
 ```
 
