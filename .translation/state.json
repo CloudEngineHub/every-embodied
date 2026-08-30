@@ -1776,6 +1776,24 @@
       "sourceHash": "6dc6dbc37dee001e6533c94a382cc59add32a0b07ba639e5c4ce16a935957b3a",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/appendices/AUP_JUPYTER_CODE_SERVER.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/appendices/AUP_JUPYTER_CODE_SERVER.md",
+      "sourceHash": "54364d14b72f9c80f24235779bf76cdfb357380015e856720581589d3de2e4f6",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/appendices/PI0_PI05_EXPERIMENT_NOTES.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/appendices/PI0_PI05_EXPERIMENT_NOTES.md",
+      "sourceHash": "e57a50cae75e4ec3aa06066d222a7d7451f6870e3d872a390fd0d36cfda7cfbc",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/appendices/ROCM_DEBUG_CASES.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/appendices/ROCM_DEBUG_CASES.md",
+      "sourceHash": "0a957761fc4196c3050cc4ab8c5fabf7d60fee4d1e1702584c17eb16e1454f4c",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
   }
 }
