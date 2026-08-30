@@ -1,211 +1,99 @@
-# 🤖 AI Hardware and Robotics Tutorial 🛠️
-
-[中文](./README.md) | English
-
 <div align="center">
-  <img src="./assets/main1.png" alt="AI Hardware and Robotics Technology" width="800"/>
+  <img src="assets/main.png" width="100%" alt="Every Embodied open textbook cover" />
 
-<p>
-    <strong>A one-stop open-source tutorial library for learning robotics technology</strong>
-  </p>
+  # Every Embodied: An Open Textbook for Embodied AI
 
-<p>
-    <a href="#-project-introduction">Introduction</a> •
-    <a href="#-table-of-contents">Table of Contents</a> •
-    <a href="#-learning-path-suggestion">Learning Path</a> •
-    <a href="#-environment-requirements">Environment Requirements</a> •
-    <a href="#-update-log">Update Log</a>
-  </p>
+  Learn robotics foundations, perception, control, simulation, data, policy training, evaluation, and system integration in one structured curriculum.
+
+  [Read Online](https://datawhalechina.github.io/every-embodied/zh-cn/) · [Book Map](./BOOK_MAP.en.md) · [Minimal Example](./examples/README.md) · [简体中文](./README.md)
 </div>
 
-<div align="center">
-  <img src="./assets/logo.drobo.svg" title="" alt="logo" width="296"> 
-</div>
-<div align="center">
-  <img src="./assets/zhiyuan.png" title="" alt="logo" width="296"> 
-</div>
-<div align="center">
-  <img src="./assets/hugging-face.png" title="" alt="logo" width="296"> 
-</div>
+## About This Textbook
 
-## 📖 Project Introduction
+Every Embodied is designed for developers, students, and researchers who want a systematic path into embodied AI. The curriculum follows a concept–implementation–verification loop: establish robotics and perception foundations, study policy learning and navigation, build simulation and evaluation workflows, and finally connect the pieces through complete projects.
 
-This repository collects and organizes tutorial materials related to AI hardware and robotics technology, covering various aspects such as robot simulation environment configuration, control algorithm implementation, hardware development, and hand-eye coordination. It is suitable for beginners and researchers in robotics technology to learn and reference.
+The repository contains four types of material:
 
-💡 **Why choose this tutorial?**
+- **Core textbook chapters** on robotics, perception, learning, manipulation, navigation, data, and evaluation.
+- **Laboratory manuals** for hardware integration, simulation, data collection, training, evaluation, and deployment.
+- **Project case studies** from competitions, study programs, world models, drones, and robot design.
+- **Community archives** for previous study schedules, events, and publication material.
 
-- 📚 Comprehensive content: A systematic learning path from basic to advanced
-- 🔧 Practical orientation: Contains a large number of practical code examples and application cases
-- 🌐 Continuous updates: Tracks the latest technological developments and application trends
-- 👨‍👩‍👧‍👦 Community support: Provides a platform for communication and problem-solving
+See the [Book Map](./BOOK_MAP.en.md) for prerequisites, recommended order, and role-specific learning paths.
 
-## ✨ Latest Highlights
+## Quick Start
 
-### 🍳 Smart Home Assistant
+The minimal MuJoCo example creates a robot manipulation scene and executes a grasp trajectory. It is a practical check for Python, graphics, and physics-engine setup.
 
-Our new home robot module can perform multiple kitchen tasks, including:
+```bash
+git clone --depth 1 https://github.com/datawhalechina/every-embodied.git
+cd every-embodied
 
-- Object recognition and grasping (vegetables, fruits, kitchen utensils, etc.)
-- Environmental cleaning and organization (detailed tutorial to be implemented)
+conda create -n embodied python=3.10 -y
+conda activate embodied
+pip install mujoco ruckig
 
-### 🧠 Reinforcement Learning Framework
+python examples/01_hello_every_embodied_mujoco.py
+```
 
-The new reinforcement learning module supports:
+The robot should approach, grasp, lift, and place the object. See the [minimal example guide](./examples/README.md) for command details and headless execution.
 
-- Implementation of multiple algorithms (PPO, SAC, TD3, etc.)
-- Hybrid learning from imitation to reinforcement
-- Performance evaluation and visualization tools
+## Four-Volume Curriculum
 
-<div align="center">
-  <table>
-    <tr>
-      <td><img src="assets/2025-03-31-23-41-12-image.png" alt="Robotic Arm Light and Shadow Rendering" width="260"/></td>
-      <td><img src="assets/2025-03-31-23-41-30-image.png" alt="Getting Coffee" width="260"/></td>
-      <td><img src="assets/2025-03-31-23-41-43-image.png" alt="Indoor Gaussian Splatting" width="260"/></td>
-    </tr>
-    <tr>
-      <td>Robotic Arm Light and Shadow Rendering</td>
-      <td>Getting Coffee</td>
-      <td>Indoor Gaussian Splatting</td>
-    </tr>
-    <tr>
-      <td><img src="assets/2025-06-17-12-11-28-image.png" alt="Robotic Arm Light and Shadow Rendering" width="260"/></td>
-      <td><img src="assets/2025-06-17-12-12-43-f0e46ab84c2c32c78c209598d5ece28.png" alt="Getting Coffee" width="260"/></td>
-      <td><img src="assets/2025-06-17-12-13-06-927cc0812a248f6da977b0194dae21b.png" alt="Indoor Gaussian Splatting" width="260"/></td>
-    </tr>
-    <tr>
-      <td>Indoor Scene Segmentation</td>
-      <td>Robotic Arm Banana Grasping</td>
-      <td>Grasping Attention Visualization</td>
-    </tr>
-        <tr>
-      <td><img src="assets/2025-06-25-11-32-56-image.png" alt="Robotic Arm Light and Shadow Rendering" width="260"/></td>
-      <td><img src="assets/2025-06-25-12-18-21-1750825085788.png" alt="Getting Coffee" width="260"/></td>
-      <td><img src="assets/2025-07-01-21-26-54-image.png" alt="Indoor Gaussian Splatting" width="260"/></td>
-    </tr>
-    <tr>
-      <td>Robotwin 1.0 Reproduction</td>
-      <td>Lerobot Simulation Support</td>
-      <td>OmniGibson</td>
-    </tr>
-    </tr>
-        <tr>
-      <td><img src="assets/2025-07-01-21-28-31-c0aa64a33a6b993eaa96a9743d35b498.png" alt="Robotic Arm Light and Shadow Rendering" width="260"/></td>
-      <td><img src="assets/2025-07-01-21-28-54-d82abfd6870db45f6365af0977692bb7.png" alt="Getting Coffee" width="260"/></td>
-      <td><img src="assets/2025-07-01-21-29-31-image.png" alt="Indoor Gaussian Splatting" width="260"/></td>
-    </tr>
-    <tr>
-      <td>Zhiyuan Robot Multi-task 1</td>
-      <td>Zhiyuan Robot Multi-task 2</td>
-      <td>Zhiyuan Robot Multi-task 3</td>
-    </tr>
-        </tr>
-        <tr>
-      <td><img src="assets/2025-07-02-20-50-54-image.png" alt="Robotic Arm Light and Shadow Rendering" width="260"/></td>
-      <td><img src="assets/2025-07-01-21-28-54-d82abfd6870db45f6365af0977692bb7.png" alt="Getting Coffee" width="260"/></td>
-      <td><img src="assets/2025-07-01-21-29-31-image.png" alt="Indoor Gaussian Splatting" width="260"/></td>
-    </tr>
-    <tr>
-      <td>DiGua RDK-X5 connects to lerobot-so101 for teleoperation</td>
-      <td>Zhiyuan Robot Keyboard Operation</td>
-      <td>Zhiyuan Robot Trajectory Recording</td>
-    </tr>
-  </table>
-  </div>
+| Volume | Goal | Topics |
+| --- | --- | --- |
+| I. Embodied AI Foundations | Build foundations in embodied systems, coordinate transforms, kinematics, control, vision, and 3D perception | [01](./en/01-embodied-ai-overview/README.md), [02](./en/02-robot-basics-control-and-hand-eye-coordination/README.md), [04](./en/04-computer-vision-and-3d-reconstruction/README.md) |
+| II. Learning and Decision Making | Study deep learning, reinforcement learning, manipulation, VLA policies, navigation, data, and evaluation | [05](./en/05-deep-and-reinforcement-learning/README.md), [06](./en/06-manipulation-and-vla/README.md), [07](./en/07-robot-operation-and-motion-control/README.md), [08](./en/08-navigation-and-vln/README.md), [09](./en/09-data-and-benchmarks/README.md) |
+| III. Systems and Simulation | Integrate hardware, configure simulators, collect data, train policies, evaluate systems, and use engineering tools | [03](./en/03-robot-hardware-lerobot-and-rdk-x5/README.md), [10](./en/10-simulation-tools-and-frontiers/README.md), [11](./en/11-auxiliary-tools/README.md), [21](./en/21-robot-design/README.md) |
+| IV. Frontiers and Projects | Apply the complete workflow to competitions, focused studies, world models, drones, and integrated projects | [13](./en/13-frontier-project-reproduction/README.md), [15](./en/15-challenges/README.md), [16](./en/16-study-programs/README.md), [17](./en/17-world-models/README.md), [18](./en/18-drones/README.md) |
 
-## 🚀 Learning Path Suggestion
+Interview review and references are collected in Topics [12](./en/12-interview-questions/README.md) and [14](./en/14-references/README.md). Study-program and publication archives are kept in Topics [19](./en/19-monthly-team-learning/README.md) and [20](./en/20-wechat-articles/README.md).
 
-### Embodied AI Robot
+## Recommended Paths
 
-1.  **Overview of Embodied Intelligence**
-    *   Definition and Background
-    *   Development History
-    *   Application Areas
+### Beginner
 
-2.  **Robot Basics**
-    *   Basic Concepts of Robotics
-    *   Kinematics and Dynamics
-    *   Sensors and Actuators
-    *   Robot Hardware Selection
-    *   Using DiGua Robot RDK and connecting to LeRobot SO101
-    *   Ajiaxi Development Board Tutorial
-    *   Circuit Design (todo)
-    *   AutoCAD and Solidworks (todo)
-    *   Communication Protocols (todo)
-    *   ROS Basics (todo)
+`01 Overview → 02 Robotics Foundations → Minimal Example → 04 Perception → 07 Manipulation → 10 Simulation`
 
-3.  **Computer Vision**
-    *   Basics of Image Processing
-    *   Object Detection and Recognition
-    *   Image Segmentation
-    *   Pose Estimation
+This path establishes observations, states, actions, control loops, and a first runnable manipulation task.
 
-4.  **Robot Control**
-    *   Motion Planning
-    *   Path Planning
-    *   Control Algorithms
+### Policy Learning
 
-5.  **Deep and Reinforcement Learning in Embodied Scenarios**
-    *   Reinforcement Learning
+`02 Robotics Foundations → 05 Deep and Reinforcement Learning → 06 VLA Policies → 09 Data and Evaluation → 16 Focused Labs`
 
-6.  **Hand-Eye Coordination**
-    *   Hand-Eye Calibration
-    *   Grasping and Manipulation
+This path covers dataset structure, imitation learning, action chunking, training, closed-loop evaluation, and result analysis.
 
-7.  **Simulation Environment Learning**
-    *   Issac Sim/Issac Gym
-    *   Pybullet
-    *   Gazebo (todo)
-    *   Genie-Sim
+### Navigation and Mobile Manipulation
 
-8.  **Cutting-edge Embodied Intelligence Projects (Reproduced)**
-    *   Google Embodied Projects: RT-RT1, RT2, RTX (todo)
-    *   OmniGibson
-    *   BitVLA
-    *   RoboBrain2.0 (todo)
-    *   Aloha-ACT (todo)
-    *   OpenVLA (todo)
-    *   Octo (todo)
-    *   AngGrasp (todo)
-    *   Other paper reproductions and code
+`02 Coordinates and Control → 04 Perception and Mapping → 08 Navigation and VLN → 09 Benchmarks → 10 Simulation`
 
-## 🔧 Environment Requirements
+This path connects localization, mapping, planning, language-conditioned navigation, and mobile manipulation.
 
-- Python 3.8+
-- CUDA support (for 3D simulation rendering, some experiments can be run on CPU)
-- ROS/ROS2 (optional, for actual robot control)
-- MuJoCo (physics engine)
-- Isaac Sim (NVIDIA advanced simulation platform)
+### Systems Engineering
 
-Thanks to the following partners for their participation and contributions:
+`03 Hardware and LeRobot → 10 Simulation → 11 Engineering Tools → 21 Robot Design → 15/16 Integrated Projects`
 
-howe, Miles, Maimang, HAO
+This path is intended for readers building hardware systems, collecting robot data, or porting complete open-source projects.
 
-Thanks to the following partners for their translation contributions:
+## Environment Guidance
 
--   Chapters 1~3 Lune
--   Chapters 4~5 Liu Yuanyang
--   Chapters 6~7 Su Jiayu
--   Chapters 8~9 Liang Jianbin leoliang023
+Do not install every project into a single Python environment. Read the environment table in each chapter and create an isolated environment for each simulator or model stack.
 
-## 🌟 Learning Community
+Common combinations include:
 
--   [Join the discussion group](#): Exchange experiences with other learners
--   [FAQ](#): View common questions and solutions
--   [Technical Sharing Sessions](#): Regular online technical sharing sessions
+- Python 3.10 and MuJoCo for robotics foundations and lightweight simulation.
+- Isaac Sim and Isaac Lab for high-fidelity simulation and parallel training.
+- LeRobot for data collection, policy training, and hardware interfaces.
+- ROCm or CUDA according to the GPU requirements documented by each experiment.
 
-## 👨‍💻 Contribution Guide
+Keep model weights, datasets, caches, and bulk video outputs outside the source repository. Pass their locations through environment variables.
 
-Welcome to submit Pull Requests to contribute more tutorials and sample code! 👏
+## Contributing
 
-1.  Fork this repository
-2.  Open a Pull Request
+Each laboratory chapter should state the working directory, environment, inputs, commands, expected outputs, and common failure modes. New material should follow the [tutorial style guide](./.github/TUTORIAL_STYLE_GUIDE.md) and include a reproducible minimal example whenever practical.
 
-Please ensure that the submitted content is relevant to the repository's theme and follows the existing file organization structure.
+Please report broken links, commands, and technical issues through [GitHub Issues](https://github.com/datawhalechina/every-embodied/issues). The complete contributor history is available on the [contributors page](https://github.com/datawhalechina/every-embodied/graphs/contributors).
 
-## 📬 Contact Information
+## License
 
-If you have any questions or suggestions, please contact us through the following ways:
-
--   💬 WeChat Official Account: datawhale
--   🌐 Website: [https://datawhale.club/home]
+The textbook and documentation are released under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). You may share and adapt the material with attribution.

@@ -462,7 +462,7 @@ visual keyframe head 的输入是 agent/wrist 图像经过 Pi0/SigLIP 主干得�
 最后还有一个语言协议反例。使用训练时的完整指令 `Pick up the blue mug and place it on the plate.`，seed3 的 head 激活 269 步，并在第 270 步通过最终严格判定；换成短同义句 `Place the blue mug on the plate.` 后，prototype distance gate 全程拒绝接管，结果失败。当前小数据 head 使用了合法语言输入，却还没有语言改写泛化。下一轮应在修正 seed 后重采 30–50 条多位置轨迹，同时加入 prompt paraphrase 增强，再分别做 fixed scene、random position 和 language paraphrase 三组 gate。
 
 <video controls muted preload="metadata" width="100%">
-  <source src="./assets/pi0_ep2_raw_vs_finisher_side_by_side.mp4" type="video/mp4">
+  <source src="../assets/pi0_ep2_raw_vs_finisher_side_by_side.mp4" type="video/mp4">
 </video>
 
 图 4：同一 episode 的 raw-vs-hybrid 视频。左侧 raw pi_0 没有通过严格物理成功，右侧接入 scripted finisher 后通过。这个视频用于定位尾段瓶颈，不是 raw pi_0 成功率证据。

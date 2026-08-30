@@ -30,7 +30,7 @@ Shape Your Body 的思路是把设计成本摊薄：
 
 > 先用多机器人强化学习学会“什么身体更容易被当前策略控制好”，再用价值函数对身体参数的梯度来优化新的机器人设计。
 
-它应该放在 `21-机械臂和机器人设计`，而不是 VLA 或世界模型章节。原因是这篇论文的对象不是感知、动作生成或视频预测，而是 **robot embodiment / morphology / continuous design parameters**。它和 Build123d、Text-to-CAD、ForgeCAD 的关系是：前三者更偏“如何生成或编辑几何”，Shape Your Body 更偏“如何用学习到的控制价值来反向指导身体参数”。
+这篇论文研究的对象不是感知、动作生成或视频预测，而是 **robot embodiment / morphology / continuous design parameters**。Build123d、Text-to-CAD 与 ForgeCAD 更关注如何生成或编辑几何，Shape Your Body 则研究如何用学习到的控制价值反向指导身体参数。
 
 ## 2. 论文、项目页和开源状态
 
@@ -42,7 +42,7 @@ Shape Your Body 的思路是把设计成本摊薄：
 | 视频 | [YouTube](https://www.youtube.com/watch?v=_SHSWUSQZvg) | 项目页 Video 指向的视频 |
 | 代码 | 项目页当前显示 `Code (soon)` | 还没有看到官方公开代码仓库入口 |
 
-截至 2026 年 7 月 18 日，本教程核查到的状态是：项目页和论文已公开，交互式网页 demo 可以体验不同机器人和设计搜索轨迹，但官方代码入口仍标注为 `Code (soon)`。因此本章不写成手把手复现训练教程，而是写成方法导读、图解和复现准备说明。后续如果代码公开，可以再补环境配置和最小复现实验。
+截至 2026 年 7 月 18 日，项目页、论文和交互式网页演示已经公开，可以体验不同机器人和设计搜索轨迹；官方代码入口仍标注为 `Code (soon)`。本章据此提供方法导读、图解和复现准备说明。官方代码公开后，可继续补充环境配置和最小复现实验。
 
 ## 3. 总览图：先训练价值函数，再用价值梯度塑形
 
@@ -313,7 +313,7 @@ Shape Your Body 不会替代机械工程师，也不会自动生成可制造机�
 - direct-design critic 为什么比普通 critic 更适合求设计梯度？
 - VGDS 为什么需要 soft trust region？
 - 价值梯度给出的设计变化怎样转化成工程师可理解的 body-part / parameter-type 诊断？
-- 当前没有代码开源时，后续复现应该先补哪些模块？
+- 在官方代码尚未公开时，完整复现需要先补齐哪些模块？
 
 ## 14. 资料来源
 

@@ -1,4 +1,10 @@
-```
+# 在 WSL 2 中安装 CUDA Toolkit 与 nvcc
+
+Windows 主机负责提供 NVIDIA 显卡驱动，WSL 2 内只安装 CUDA Toolkit。不要在 WSL 2 中重复安装 Linux 显卡驱动。
+
+## 安装 CUDA Toolkit
+
+```bash
 wget https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/cuda-wsl-ubuntu.pin
 sudo mv cuda-wsl-ubuntu.pin /etc/apt/preferences.d/cuda-repository-pin-600
 wget https://developer.download.nvidia.com/compute/cuda/12.5.1/local_installers/cuda-repo-wsl-ubuntu-12-5-local_12.5.1-1_amd64.deb

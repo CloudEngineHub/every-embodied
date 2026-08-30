@@ -1,5 +1,4 @@
 # graspnetAPI
-[![PyPI version](https://badge.fury.io/py/graspnetAPI.svg)](https://badge.fury.io/py/graspnetAPI)
 
 ## Dataset
 
@@ -82,14 +81,14 @@ Please cite these papers in your publications if it helps your research:
 
 ## Change Log
 
-#### 1.2.6
+### 1.2.6
 
 - Add transformation for Grasp and GraspGroup.
 
-#### 1.2.7
+### 1.2.7
 
 - Add inpainting for depth image.
 
-#### 1.2.8
+### 1.2.8
 
 - Minor fix bug on loadScenePointCloud.

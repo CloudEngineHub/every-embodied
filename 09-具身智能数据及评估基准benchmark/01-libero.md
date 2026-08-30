@@ -120,7 +120,7 @@ LIBERO 数据集通过结构化的任务设计，清晰地解耦了机器人操�
 - **对于算法研究者**：LIBERO 提供了评估模型在特定能力上短板的绝佳标尺（例如，模型能做好 Object 任务但做不好 Spatial 任务，说明其空间注意力机制存在缺陷）。
 - **对于工程开发者**：理解 LeRobot 与 OpenVLA 格式的差异是构建高效数据流水线（Data Pipeline）的前提。`libero_10` 显著增加的序列长度也提醒我们在模型部署时需关注推理延时和显存占用。
 
-# 附件：Libero数据集统计分析报告及分析代码
+## 附件：LIBERO 数据集统计分析报告及分析代码
 
 ```python
 #!/usr/bin/env python3
@@ -137,7 +137,7 @@ from collections import defaultdict
 def analyze_libero_dataset():
     """分析Libero数据集"""
   
-    # 数据集路径
+    # 数据集路径由环境变量提供
     datasets = [
         "libero_10_no_noops_lerobot_v21",
         "libero_goal_no_noops_lerobot_v21", 
@@ -145,7 +145,7 @@ def analyze_libero_dataset():
         "libero_spatial_no_noops_lerobot_v21"
     ]
   
-    base_path = Path("/data1/DATA")
+    base_path = Path(os.environ["LIBERO_DATA_ROOT"])
   
     results = {}
   
@@ -302,7 +302,7 @@ def analyze_dataset(dataset_path):
         return []
 
 def main():
-    base_dir = "/data/DATA/modified_libero_rlds"
+    base_dir = os.environ["LIBERO_RLDS_ROOT"]
     task_categories = [d for d in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, d)) and not d.startswith('.')]
 
     for category in task_categories:
@@ -452,7 +452,7 @@ if __name__ == "__main__":
 - **时序性**: 每个episode代表一个完整的任务执行序列
 
 
-# lerobot和openvla数据对齐性讨论
+## LeRobot 与 OpenVLA 数据对齐性讨论
 
 ```
 # OpenVLA vs. LeRobot 数据格式对比分析

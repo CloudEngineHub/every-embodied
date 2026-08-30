@@ -66,7 +66,7 @@ python tools/audit_language_policy_physical.py \
 
 ```html
 <video controls muted preload="metadata" width="100%">
-  <source src="assets/videos/seed0_blue_success.mp4" type="video/mp4">
+  <source src="assets/smolvla_weighted500_blue_success_seed0.mp4" type="video/mp4">
 </video>
 ```
 

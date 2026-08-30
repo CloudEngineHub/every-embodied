@@ -1,4 +1,8 @@
-```
+# 处理 Git 推送被拒绝与合并提交
+
+当远端分支包含本地没有的提交时，直接推送会被拒绝。下面先读取错误，再以变基或合并方式整合远端修改。
+
+```text
 git push
 To https://github.com/datawhalechina/ai-hardware-robotics
 ! [rejected] main -> main (fetch first)

@@ -1,4 +1,8 @@
-```
+# Windows 下使用 Joy-Con 控制 robosuite
+
+本节完成 Windows 环境中的依赖安装、控制脚本启动、按键映射和常见故障排查。
+
+```bash
 
 # create conda env
 conda create -n py310-robosuite python=3.10
@@ -41,7 +45,7 @@ python robosuite/demos/demo_device_control_joycon_single.py
 python robosuite/demos/demo_device_control_joycon_bimanual.py
 ````
 
-键盘控制方案
+## 键盘控制方案
 
 ### 机械臂末端执行器（夹爪）控制
 
@@ -119,7 +123,7 @@ sudo snap install bun-js
 
 
 
-# 问题排查
+## 问题排查
 
 1、如果缺少相关依赖
 
@@ -207,38 +211,28 @@ Python 的 `hid` 包（也叫 `hidapi`）无法在你的系统里找到它需要
 Bash
 
 ```
-python /home/kewei/17robo/robosuite-joycon/robosuite/demos/demo_device_control_joycon_bimanual.py
+Set-Location $env:ROBOSUITE_JOYCON_ROOT
+python robosuite/demos/demo_device_control_joycon_bimanual.py
 ```
 
 
 
-2. mujoco未安装
+2. MuJoCo 未安装
 
-好的，安装 `mujoco` 非常简单。你只需要在你的 `py310-robosuite` conda 环境中使用 `pip` 来安装。
+在当前 `py310-robosuite` 环境中安装 MuJoCo：
 
-我可以直接为你执行安装命令。这个命令会使用 `pip` 将 `mujoco` 包安装到你当前激活的 Python 环境中。
+```powershell
+python -m pip install mujoco
+python -c "import mujoco; print(mujoco.__version__)"
+```
 
-[1 tool called]
+第二条命令能够打印版本号，说明 Python 包已经可用。随后确认 `mujoco.dll` 的位置：
 
-好的，安装 `mujoco` 非常简单。你只需要在你的 `(py310-robosuite)` 环境中使用 `pip` 这个 Python 包管理器来安装。
+`<python-env>\Lib\site-packages\mujoco\mujoco.dll`
 
-我已经为你执行了安装命令 `pip install mujoco`。
+根据报错中给出的目标目录，将该动态链接库复制到 `robosuite` 需要的位置。
 
-从输出结果来看，`mujoco` 已经成功安装了。
-
-现在 `mujoco` 已经安装好了，我们回到之前解决方案的第二步和第三步：找到 `mujoco.dll` 并把它复制到正确的位置。
-
-我将执行一小段 Python 代码来帮你找到 `mujoco.dll` 的确切路径。
-
-[1 tool called]
-
-很好，我们已经成功找到了 `mujoco.dll` 文件！它的路径是：
-
-`C:\Users\kewei\micromamba\envs\py311\Lib\site-packages\mujoco\mujoco.dll`
-
-现在，我将把它复制到 `robosuite` 需要它的地方：
-
-`C:\Users\kewei\17robo\robosuite-joycon\robosuite\utils\`
+`<robosuite-joycon>\robosuite\utils\`
 
 我将为你执行复制操作。
 

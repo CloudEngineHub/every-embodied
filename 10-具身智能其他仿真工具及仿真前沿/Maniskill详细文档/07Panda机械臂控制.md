@@ -1,9 +1,8 @@
+# Panda 机械臂的夹爪控制
 
+Panda 的二指夹爪在 ManiSkill 中通过模仿关节位置控制器实现对称联动。阅读源码时，可从 `mani_skill/agents/controllers/` 下的控制器注册与关节位置控制实现入手。
 
-Read file: /home/kewei/17robo/ManiSkill/mani_skill/agents/controllers/__init__.py
-
-Read file: /home/kewei/17robo/ManiSkill/mani_skill/agents/controllers/pd_joint_pos.py
-Panda机器人夹爪的控制方式如下：
+Panda 机器人夹爪的控制方式如下：
 
 1. **夹爪关节名称**：
    

@@ -1,6 +1,6 @@
-# Habitat-lab仿真基础
+# Habitat-Lab 环境搭建与配置
 
-### Habitat-Lab 是基于 Habitat-Sim 的算法层，封装了标准化的任务、评估指标和 API，让研究者无需关注底层仿真细节，专注于具身智能算法的设计、训练与评估。
+Habitat-Lab 是基于 Habitat-Sim 的算法层，封装了标准化的任务、评估指标和 API，让研究者无需关注底层仿真细节，专注于具身智能算法的设计、训练与评估。
 
 ## 一、Habitat-lab特性介绍
 

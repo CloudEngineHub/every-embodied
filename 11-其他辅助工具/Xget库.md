@@ -1,6 +1,8 @@
+# 使用 Xget 下载 Hugging Face 模型与数据集
+
 要使用 Xget 下载 Hugging Face (HF) 的数据集和模型，主要有两种方法：
 
-### 方法一：直接转换 URL 进行下载（适用于命令行工具）
+## 方法一：转换 URL 后使用命令行下载
 
 这种方法非常适合需要直接下载某个特定的模型或数据集文件时。你只需要遵循一个简单的规则：在原始的 Hugging Face URL 前面加上 Xget 的域名和 `/hf` 前缀。
 
@@ -39,7 +41,7 @@
 aria2c -x 16 -s 16 https://xget.xi-xu.me/hf/microsoft/DialoGPT-large/resolve/main/pytorch_model.bin
 ```
 
-### 方法二：在 Python 代码中集成（推荐）
+## 方法二：在 Python 代码中集成
 
 如果你在 Python 项目中使用 `transformers` 或 `datasets` 这样的库，最方便的方法是配置环境变量，让这些库自动通过 Xget 下载资源。
 

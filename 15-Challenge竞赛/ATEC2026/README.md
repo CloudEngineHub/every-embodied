@@ -2,7 +2,7 @@
 
 本目录是 Every Embodied 第 15 章中的 ATEC2026 统一入口，集中收录任务定义、L0 任务实践、Task B 垃圾收集复盘、Task D 公开方案分析、Task E 桌面整理复现、轻量代码和公开资源说明。
 
-这不是冠军方案，也不保证任何线上分数。教程把一次真实具身智能竞赛拆成可阅读、可检查、可复现的工程材料，并明确区分官方证据、局部调试证据和外部选手自报结果。
+本专题把一次真实具身智能竞赛拆解为任务定义、策略训练、评估诊断和发布复现四类工程材料，并为每类结果标注证据来源与适用范围。
 
 ## 目录结构
 
@@ -24,7 +24,7 @@
 | Task A / L0 | B2Piper 越野徒步 | [`L0-机器人徒步/`](./L0-机器人徒步/) | 重点是官方 baseline、局部评估、轨迹跟踪和 checkpoint 选择 |
 | Task B | B2-Piper 垃圾收集 | [`TaskB-B2Piper/`](./TaskB-B2Piper/) | 公开完整调试与观测边界；没有核验过的完整最终 policy |
 | Task D | 推箱越障 | [`docs/03_公开方案与Logic-TARS.md`](./docs/03_公开方案与Logic-TARS.md) | 重点参考公开 Logic-TARS 的状态机、LiDAR 和动作适配 |
-| Task E / L0 | Piper 桌面整理 | [`L0-桌面整理TaskE/`](./L0-桌面整理TaskE/) | ACT seed1 best 线上最好回报为 `15.00`，不是满分方案 |
+| Task E / L0 | Piper 桌面整理 | [`L0-桌面整理TaskE/`](./L0-桌面整理TaskE/) | ACT seed1 best 线上回报为 `15.00`，配套训练与评估复盘 |
 
 ## 推荐阅读
 
@@ -46,7 +46,7 @@
 ## 复现约定
 
 - GitHub 只保存教程、轻量代码、实验边界、固定外部 commit 和脱敏 Workspace Memory。
-- 大数据、模型权重、官方源码快照、视频和日志按许可证与 SHA-256 记录在 Hugging Face。
+- 大数据、模型权重、官方源码快照、视频和日志按许可证记录在 Hugging Face。
 - 完整仿真仍需要匹配的 Isaac Sim/Isaac Lab、GPU、Python 依赖、官方 runner 和评测器；不能把 GitHub 教程当成一键启动环境。
 - 环境相机、真值状态、oracle prefix、脚本夹爪和阶段状态机可以用于诊断，但必须标注协议边界，不能冒充正式 policy 输入或完整成功证据。
 - 原始训练缓存、私有日志、token、服务器凭据和未授权 SDK 不进入公开仓库。

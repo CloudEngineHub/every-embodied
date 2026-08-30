@@ -1,6 +1,6 @@
 # LeHome Challenge 比赛镜像使用教程
 
-本文档面向已经拿到官方 LeHome 比赛镜像、希望尽快开始训练与评测的同学。
+本章面向已经取得官方 LeHome 比赛镜像、准备开始训练与评测的读者。
 
 重点回答四个问题：
 
@@ -21,13 +21,24 @@
 
 ---
 
-## 1. 当前镜像是否可用
+## 1. 环境与目录约定
+
+先定义仓库、教程和输出目录。后续命令均使用这些变量：
+
+```bash
+export LEHOME_ROOT=${LEHOME_ROOT:-$HOME/lehome-challenge}
+export TUTORIAL_ROOT=${TUTORIAL_ROOT:-/path/to/every-embodied}
+export OUTPUT_ROOT=${OUTPUT_ROOT:-/path/to/lehome-outputs}
+mkdir -p "$OUTPUT_ROOT"
+```
+
+### 1.1 镜像验证结果
 
 结论：可用。
 
 已在当前镜像中完成以下验证：
 
-- `LeHome` 仓库路径：`/root/lehome-challenge`
+- `LeHome` 仓库路径：`$LEHOME_ROOT`
 - `isaacsim` 可用：`5.1.0.0`
 - `lerobot` 可用：`0.4.3`
 - GPU：`NVIDIA L40`
@@ -35,8 +46,7 @@
 - 当前远端 `origin/main`：`32b53595da504880592a79ed5e362ad0ba0fac6b`
 - 已成功跑通一轮 ACT 评测
 - 已成功跑通一轮 DP 评测，并且 `--policy_num_inference_steps 1` 生效
-- 旧的失败评测视频已清理，后续统一输出到：
-  - `/root/gpufree-data/lehome-outputs/eval/`
+- 评测视频统一输出到 `$OUTPUT_ROOT/eval/`。
 
 说明：
 
@@ -151,7 +161,7 @@ cd lehome-challenge
 如果镜像已经预装好了，直接进入现成目录即可：
 
 ```bash
-cd /root/lehome-challenge
+cd "$LEHOME_ROOT"
 ```
 
 ## 3.2 下载资产
@@ -210,15 +220,14 @@ hf download lehome/dataset_challenge_merged \
 
 建议使用教程专用配置，统一把输出保存到数据盘：
 
-- 配置文件：
-  - `/root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/configs/train_act_every_embodied.yaml`
+- 配置文件：`$TUTORIAL_ROOT/15-Challenge竞赛/LeHome/resources/configs/train_act_every_embodied.yaml`
 
 ```bash
-mkdir -p /root/gpufree-data/lehome-outputs/train/act_top_short
+mkdir -p "$OUTPUT_ROOT/train/act_top_short"
 
 lerobot-train \
-  --config_path /root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/configs/train_act_every_embodied.yaml \
-  2>&1 | tee /root/gpufree-data/lehome-outputs/train/act_top_short/train.log
+  --config_path "$TUTORIAL_ROOT/15-Challenge竞赛/LeHome/resources/configs/train_act_every_embodied.yaml" \
+  2>&1 | tee "$OUTPUT_ROOT/train/act_top_short/train.log"
 ```
 
 这条命令做了两件事：
@@ -234,15 +243,14 @@ lerobot-train \
 
 同样建议使用教程专用配置：
 
-- 配置文件：
-  - `/root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/configs/train_dp_every_embodied.yaml`
+- 配置文件：`$TUTORIAL_ROOT/15-Challenge竞赛/LeHome/resources/configs/train_dp_every_embodied.yaml`
 
 ```bash
-mkdir -p /root/gpufree-data/lehome-outputs/train/dp_top_short
+mkdir -p "$OUTPUT_ROOT/train/dp_top_short"
 
 lerobot-train \
-  --config_path /root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/configs/train_dp_every_embodied.yaml \
-  2>&1 | tee /root/gpufree-data/lehome-outputs/train/dp_top_short/train.log
+  --config_path "$TUTORIAL_ROOT/15-Challenge竞赛/LeHome/resources/configs/train_dp_every_embodied.yaml" \
+  2>&1 | tee "$OUTPUT_ROOT/train/dp_top_short/train.log"
 ```
 
 DP 相比 ACT 通常更慢、更吃资源，所以教程配置里把：
@@ -260,13 +268,13 @@ DP 相比 ACT 通常更慢、更吃资源，所以教程配置里把：
 ```bash
 python -m scripts.eval \
   --policy_type lerobot \
-  --policy_path /root/gpufree-data/lehome-outputs/train/act_top_short/checkpoints/last/pretrained_model \
+  --policy_path "$OUTPUT_ROOT/train/act_top_short/checkpoints/last/pretrained_model" \
   --dataset_root Datasets/example/top_short_merged \
   --garment_type top_short \
   --num_episodes 2 \
   --enable_cameras \
   --save_video \
-  --video_dir /root/gpufree-data/lehome-outputs/eval/act_top_short \
+  --video_dir "$OUTPUT_ROOT/eval/act_top_short" \
   --device cpu
 ```
 
@@ -277,13 +285,13 @@ CPU 评测时建议显式限制 diffusion 推理步数：
 ```bash
 python -m scripts.eval \
   --policy_type lerobot \
-  --policy_path /root/gpufree-data/lehome-outputs/train/dp_top_short/checkpoints/last/pretrained_model \
+  --policy_path "$OUTPUT_ROOT/train/dp_top_short/checkpoints/last/pretrained_model" \
   --dataset_root Datasets/example/top_short_merged \
   --garment_type top_short \
   --num_episodes 2 \
   --enable_cameras \
   --save_video \
-  --video_dir /root/gpufree-data/lehome-outputs/eval/dp_top_short \
+  --video_dir "$OUTPUT_ROOT/eval/dp_top_short" \
   --device cpu \
   --policy_device cpu \
   --policy_num_inference_steps 1
@@ -323,7 +331,7 @@ python -m scripts.eval \
 推荐的目录组织：
 
 ```text
-/root/gpufree-data/lehome-outputs/
+$OUTPUT_ROOT/
 ├── train/
 │   ├── act_top_short/
 │   ├── act_top_long/
@@ -411,7 +419,7 @@ python -m scripts.eval \
   - 也就是直接预测关节动作。
   - 这种 joint-space control 比 `ee_pose` 更适合作为教学 baseline，因为它少了一层 IK 误差。
 - `output_dir`
-  - 已改到数据盘，例如 `/root/gpufree-data/lehome-outputs/train/act_top_short`。
+  - 设置到数据盘，例如 `$OUTPUT_ROOT/train/act_top_short`。
   - 这样做是为了避免把系统盘写满。
 - `batch_size`
   - 和显存直接相关。
@@ -545,7 +553,7 @@ Diffusion Policy 的推理和训练都更重，尤其在多相机输入下更明
 建议统一放到：
 
 ```text
-/root/gpufree-data/lehome-outputs/
+$OUTPUT_ROOT/
 ├── train/
 ├── eval/
 └── plots/
@@ -553,9 +561,7 @@ Diffusion Policy 的推理和训练都更重，尤其在多相机输入下更明
 
 ## 3.10 训练日志解析与绘图
 
-教程已附带一个脚本：
-
-- `/root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/scripts/plot_train_metrics.py`
+教程附带训练指标绘图脚本：`$TUTORIAL_ROOT/15-Challenge竞赛/LeHome/resources/scripts/plot_train_metrics.py`。
 
 它会从 `train.log` 中解析并生成：
 
@@ -566,9 +572,9 @@ Diffusion Policy 的推理和训练都更重，尤其在多相机输入下更明
 示例：
 
 ```bash
-python /root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/scripts/plot_train_metrics.py \
-  --log_file /root/gpufree-data/lehome-outputs/train/act_top_short/train.log \
-  --out_dir /root/gpufree-data/lehome-outputs/plots/act_top_short \
+python "$TUTORIAL_ROOT/15-Challenge竞赛/LeHome/resources/scripts/plot_train_metrics.py" \
+  --log_file "$OUTPUT_ROOT/train/act_top_short/train.log" \
+  --out_dir "$OUTPUT_ROOT/plots/act_top_short" \
   --title "ACT Top-Short Training Metrics"
 ```
 
@@ -657,7 +663,7 @@ python /root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/scr
 
 教学里两类都要保留，不能只保留模型文件。
 
-如果后续你要再往上加，我建议优先补：
+完整训练流程还可以增加三项自动化能力：
 
 - 每个 checkpoint 自动 eval
 - 每个类别的 success rate 曲线
@@ -665,18 +671,14 @@ python /root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/scr
 
 ## 3.13 已经真实跑过的 smoke 结果
 
-为了避免教程只停留在“命令应该能跑”，这里保留本机已经真实跑过的最小训练证据。
+下面保留经过验证的最小训练结果，用于核对数据加载、反向传播、模型保存和曲线生成链路。
 
 ### 3.13.1 ACT 教学版 smoke
 
-- 训练日志：
-  - `/root/gpufree-data/lehome-outputs/train/act_top_short_probe64.log`
-- checkpoint 输出：
-  - `/root/gpufree-data/lehome-outputs/train/act_top_short_probe64/checkpoints/000008/pretrained_model`
-- 曲线图：
-  - `/root/gpufree-data/lehome-outputs/plots/act_top_short_probe64/train_metrics.png`
-- 指标摘要：
-  - `/root/gpufree-data/lehome-outputs/plots/act_top_short_probe64/train_metrics_summary.json`
+- 训练日志：`$OUTPUT_ROOT/train/act_top_short_probe64.log`
+- checkpoint 输出：`$OUTPUT_ROOT/train/act_top_short_probe64/checkpoints/000008/pretrained_model`
+- 曲线图：`$OUTPUT_ROOT/plots/act_top_short_probe64/train_metrics.png`
+- 指标摘要：`$OUTPUT_ROOT/plots/act_top_short_probe64/train_metrics_summary.json`
 
 本次 smoke 的关键信息：
 
@@ -692,14 +694,10 @@ python /root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/scr
 
 ### 3.13.2 DP 教学版 smoke
 
-- 训练日志：
-  - `/root/gpufree-data/lehome-outputs/train/dp_top_short_probe48.log`
-- checkpoint 输出：
-  - `/root/gpufree-data/lehome-outputs/train/dp_top_short_probe48/checkpoints/000008/pretrained_model`
-- 曲线图：
-  - `/root/gpufree-data/lehome-outputs/plots/dp_top_short_probe48/train_metrics.png`
-- 指标摘要：
-  - `/root/gpufree-data/lehome-outputs/plots/dp_top_short_probe48/train_metrics_summary.json`
+- 训练日志：`$OUTPUT_ROOT/train/dp_top_short_probe48.log`
+- checkpoint 输出：`$OUTPUT_ROOT/train/dp_top_short_probe48/checkpoints/000008/pretrained_model`
+- 曲线图：`$OUTPUT_ROOT/plots/dp_top_short_probe48/train_metrics.png`
+- 指标摘要：`$OUTPUT_ROOT/plots/dp_top_short_probe48/train_metrics_summary.json`
 
 本次 smoke 的关键信息：
 
@@ -738,14 +736,8 @@ python /root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/scr
 
 除了训练 smoke 之外，本机还实际把 `top_short` 的首个 smoke 评测 episode 视频导出来了，位置如下：
 
-- ACT:
-  - `/root/gpufree-data/lehome-outputs/eval/act_top_short_smoke/failure/episode0_observation_images_top_rgb.mp4`
-  - `/root/gpufree-data/lehome-outputs/eval/act_top_short_smoke/failure/episode0_observation_images_left_rgb.mp4`
-  - `/root/gpufree-data/lehome-outputs/eval/act_top_short_smoke/failure/episode0_observation_images_right_rgb.mp4`
-- DP:
-  - `/root/gpufree-data/lehome-outputs/eval/dp_top_short_smoke/failure/episode0_observation_images_top_rgb.mp4`
-  - `/root/gpufree-data/lehome-outputs/eval/dp_top_short_smoke/failure/episode0_observation_images_left_rgb.mp4`
-  - `/root/gpufree-data/lehome-outputs/eval/dp_top_short_smoke/failure/episode0_observation_images_right_rgb.mp4`
+- ACT：`$OUTPUT_ROOT/eval/act_top_short_smoke/failure/` 下的 `top_rgb`、`left_rgb` 和 `right_rgb` 视频。
+- DP：`$OUTPUT_ROOT/eval/dp_top_short_smoke/failure/` 下的 `top_rgb`、`left_rgb` 和 `right_rgb` 视频。
 
 当前 smoke 评测里，DP 已确认至少完成了首个 episode 并写出日志：
 
@@ -763,7 +755,7 @@ python /root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/scr
 - 模型：ACT
 - 设备：单卡 `L40`
 
-这里先把边界讲清楚：这不等于“保证前三名”。比赛排名最终取决于数据、策略结构、评测细节和训练时间，不能在教程里伪造承诺。但它确实比教学 smoke 更接近一个可拿去继续打榜的起点。
+该配置用于建立可继续优化的竞赛基线。最终排名仍取决于数据覆盖、策略结构、评测细节和训练时长。
 
 ### 3.14.1 为什么这里先推 ACT，而不是先推 DP
 
@@ -777,9 +769,7 @@ python /root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/scr
 
 - `four_types_merged + ACT + batch_size 64 + 50000 steps`
 
-对应配置文件：
-
-- `/root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/configs/train_act_competition_l40.yaml`
+对应配置文件为 `$TUTORIAL_ROOT/15-Challenge竞赛/LeHome/resources/configs/train_act_competition_l40.yaml`。
 
 ### 3.14.2 为什么不是一直把 batch size 往上堆
 
@@ -801,21 +791,19 @@ python /root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/scr
 
 当前本机已经启动：
 
-- 训练日志：
-  - `/root/gpufree-data/lehome-outputs/train/act_four_types_l40.log`
-- GPU 采样：
-  - `/root/gpufree-data/lehome-outputs/monitor/act_four_types_l40_gpu.csv`
+- 训练日志：`$OUTPUT_ROOT/train/act_four_types_l40.log`
+- GPU 采样：`$OUTPUT_ROOT/monitor/act_four_types_l40_gpu.csv`
 
 训练命令等价于：
 
 ```bash
-cd /root/lehome-challenge
+cd "$LEHOME_ROOT"
 source .venv/bin/activate
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
 lerobot-train \
-  --config_path /root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/configs/train_act_competition_l40.yaml \
-  2>&1 | tee /root/gpufree-data/lehome-outputs/train/act_four_types_l40.log
+  --config_path "$TUTORIAL_ROOT/15-Challenge竞赛/LeHome/resources/configs/train_act_competition_l40.yaml" \
+  2>&1 | tee "$OUTPUT_ROOT/train/act_four_types_l40.log"
 ```
 
 ### 3.14.4 当前已经看到的训练信号
@@ -1103,13 +1091,13 @@ GPU 采样也已经表明这轮长训确实把 L40 吃得很满：
 当前需要删除的目录是：
 
 ```text
-/root/gpufree-data/lehome-eval-outputs/
+$OUTPUT_ROOT/official-eval/
 ```
 
 后续统一改用：
 
 ```text
-/root/gpufree-data/lehome-outputs/eval/
+$OUTPUT_ROOT/eval/
 ```
 
 ---
@@ -1129,7 +1117,7 @@ GPU 采样也已经表明这轮长训确实把 L40 吃得很满：
         └── scripts/
 ```
 
-如果后续你还会增加其他比赛，也可以沿用同样的结构。
+其他比赛专题也可以沿用同样的组织结构。
 
 ---
 

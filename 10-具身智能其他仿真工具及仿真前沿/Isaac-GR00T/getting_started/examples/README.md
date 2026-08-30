@@ -1,7 +1,30 @@
-# 示例
+# GR00T 数据配置与 SO-100 评估示例
 
-## Modality.json
+本目录包含数据模态配置和策略评估示例，用于把 LeRobot 数据集接入 GR00T，并调用微调后的策略执行 SO-100 机械臂任务。
 
-这里提供了不同lerobot数据集的`modality.json`的额外示例。将相关的`modality.json`复制到数据集`<DATASET_PATH>/meta/modality.json`
+## 配置数据模态
 
-`eval_gr00t_so100.py`提供了如何使用微调模型生成策略运行的示例。
+根据机器人类型选择对应的配置文件，并复制到数据集元数据目录：
+
+```bash
+export DATASET_PATH=/path/to/lerobot-dataset
+cp so100__modality.json "$DATASET_PATH/meta/modality.json"
+```
+
+打开复制后的文件，核对图像键、状态键、动作键和机器人类型是否与数据集一致。配置中的字段名必须能在数据集样本中找到。
+
+## 运行评估示例
+
+先查看脚本参数，再传入模型与数据配置：
+
+```bash
+python eval_gr00t_so100.py --help
+```
+
+脚本能够加载模型、建立推理客户端并读取一条观测，说明配置与策略接口已经连通。正式连接机械臂前，应先限制动作幅度并确认急停可用。
+
+## 排错
+
+- 报缺少观测键：比较 `modality.json` 与数据集的一条真实样本。
+- 动作维度不一致：核对训练时使用的机器人实施类型和动作空间。
+- 模型连接失败：确认策略服务的地址、端口和模型路径正确。

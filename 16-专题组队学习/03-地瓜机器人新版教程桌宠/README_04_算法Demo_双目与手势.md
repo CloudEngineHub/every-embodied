@@ -21,7 +21,8 @@ date
 如果时间不对，建议在 Windows 侧执行：
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File "C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\openclaw_magicbox\tools\sync_magicbox_time.ps1"
+$PROJECT_ROOT = "C:\path\to\openclaw_magicbox"
+powershell -ExecutionPolicy Bypass -File "$PROJECT_ROOT\tools\sync_magicbox_time.ps1"
 ```
 
 第三，双目相机已经接好，且没有左右线接反。对于 RDK X5 Magicbox，双目 Demo 不只是软件问题，相机连接状态本身就会直接决定后续结果。

@@ -8,12 +8,14 @@
 **声明：ETPNav 是由 Dong An 等人提出的一项优秀工作，目前也是连续环境视觉语言导航 (VLN-CE) 领域的一个强力 Baseline。本项目及本文档主要是我在学习和复现 ETPNav 官方开源项目时，整理的详细踩坑笔记与操作指南。希望能为后续想要复现该工作的研究者提供一份清晰、闭环的参考教程。**
 
 <p align="center">
-  <img width="1044" height="287" alt="ETPNav展示1" src="https://github.com/user-attachments/assets/fad76d29-53fb-4f8f-aa66-8eb704f748de" />
+  <img width="1044" height="287" alt="ETPNav展示1" src="assets/images/etpnav-overview-1.png" />
   <br>
-  <img width="1023" height="294" alt="ETPNav展示2" src="https://github.com/user-attachments/assets/c06c0b09-d99e-4cd9-90e5-05833dca93b4" />
+  <img width="1023" height="294" alt="ETPNav展示2" src="assets/images/etpnav-overview-2.png" />
   <br>
-  <img width="523" height="287" alt="ETPNav展示3" src="https://github.com/user-attachments/assets/1c4b2b30-a174-4830-aeb2-478c4718ee65" />
+  <img width="523" height="287" alt="ETPNav展示3" src="assets/images/etpnav-overview-3.png" />
 </p>
+
+来源：本教程复现过程的 GitHub 原始附件，已本地归档。
 
 关于 **ETPNav** (Evolving Topological Planning) 算法本身，它主要解决了现有方法在长距离规划和避障上的局限，重点突破了两个核心能力：
 
@@ -224,12 +226,12 @@ ETPNav/
 
 1. **修改引用路径**：如果连不上外网，可将 BERT 权重地址更换为本地。
    <p align="center">
-     <img width="1566" height="444" alt="修改引用路径" src="https://github.com/user-attachments/assets/47b99ba4-f96a-441b-82d4-0b117a2ba452" />
+     <img width="1566" height="444" alt="修改引用路径" src="assets/images/bert-local-path.png" />
    </p>
 
 2. **修改 GPU 数量**：根据实际硬件条件按需调整分布式训练的 GPU 数量。
    <p align="center">
-     <img width="1148" height="349" alt="修改 GPU 数量" src="https://github.com/user-attachments/assets/0336bc2b-9ae6-4294-9f73-105646ff49b9" />
+     <img width="1148" height="349" alt="修改 GPU 数量" src="assets/images/pretrain-gpu-count.png" />
    </p>
 
 3. **启动预训练**：该步骤主要执行 MLM (Masked Language Modeling) 和 SAP 两个预训练任务。
@@ -238,23 +240,23 @@ ETPNav/
    ```
    训练日志会保存到 `/ETPNav-main/pretrained/r2r_ce/mlm.sap_habitat_depth/logs/log.txt`，可根据实际测评指标选择一个最好的预训练权重：
    <p align="center">
-     <img width="395" height="260" alt="预训练日志" src="https://github.com/user-attachments/assets/321a4a31-4fb1-420a-b40c-a1540ab5d82a" />
+     <img width="395" height="260" alt="预训练日志" src="assets/images/pretrain-log.png" />
    </p>
 
 ### 4.2 微调 (Finetuning)
 
 1. **配置预训练权重路径**：将脚本中的加载路径指向 `pretrained/ETP/model_step_82500.pt`。
    <p align="center">
-     <img width="1019" height="499" alt="配置预训练权重路径1" src="https://github.com/user-attachments/assets/5b51f709-6b75-439e-993f-f4d714e8a879" />
+     <img width="1019" height="499" alt="配置预训练权重路径1" src="assets/images/finetune-checkpoint-path-1.png" />
      <br>
-     <img width="1123" height="497" alt="配置预训练权重路径2" src="https://github.com/user-attachments/assets/0c85ccfa-e76c-4518-8919-bd1246734127" />
+     <img width="1123" height="497" alt="配置预训练权重路径2" src="assets/images/finetune-checkpoint-path-2.png" />
    </p>
 
 2. **修改 GPU 数量**：根据实际硬件条件按需调整分布式训练的 GPU 数量。
    <p align="center">
-     <img width="1060" height="434" alt="修改GPU数量1" src="https://github.com/user-attachments/assets/1bf9004e-4991-411c-8b7c-92150f8ec5c4" />
+     <img width="1060" height="434" alt="修改GPU数量1" src="assets/images/finetune-gpu-count-1.png" />
      <br>
-     <img width="1337" height="333" alt="修改GPU数量2" src="https://github.com/user-attachments/assets/e45b0d7e-7b7b-431b-a760-37830c0dee95" />
+     <img width="1337" height="333" alt="修改GPU数量2" src="assets/images/finetune-gpu-count-2.png" />
    </p>
 
 3. **启动微调**：
@@ -280,7 +282,7 @@ CUDA_VISIBLE_DEVICES=0 bash run_r2r/main.bash eval  2333  # evaluation
 **以下是 eval 模式得到的评价指标：**
 
 <p align="center">
-  <img width="1175" height="266" alt="评价指标" src="https://github.com/user-attachments/assets/fd25cf3f-efed-4265-b46c-0eeaf5f2c810" />
+  <img width="1175" height="266" alt="评价指标" src="assets/images/evaluation-metrics.png" />
 </p>
 
 **增加可视化（可选）**
@@ -288,7 +290,7 @@ CUDA_VISIBLE_DEVICES=0 bash run_r2r/main.bash eval  2333  # evaluation
 在此处可以选择将测试视频保存本地，或者使用 TensorBoard 可视化。
 
 <p align="center">
-  <img width="1309" height="438" alt="可视化配置" src="https://github.com/user-attachments/assets/d083cf80-8e06-4c31-882f-6b5fe259eff7" />
+  <img width="1309" height="438" alt="可视化配置" src="assets/images/video-output-config.png" />
 </p>
 
 如果选择 `disk` 模式，并重新运行评估代码，导航视频会保存至：
@@ -299,8 +301,10 @@ CUDA_VISIBLE_DEVICES=0 bash run_r2r/main.bash eval  2333  # evaluation
 https://github.com/user-attachments/assets/e5797cce-265b-4e95-9ba4-f732c1a2813c
 
 <p align="center">
-  <img width="686" height="1440" alt="oLBMNvg9in8-478-spl1 00" src="https://github.com/user-attachments/assets/bf874fef-0de3-4405-b644-23cbf065a976" />
+  <img width="686" height="1440" alt="ETPNav 导航轨迹可视化" src="assets/images/navigation-rollout.png" />
 </p>
+
+来源：本教程复现过程的 GitHub 原始附件，已本地归档。
 
 #### 推理
 

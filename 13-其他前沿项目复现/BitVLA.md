@@ -1,57 +1,194 @@
-```Bash
-conda create -n bitvla python=3.10 -yconda activate bitvlapip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 --index-url https://download.pytorch.org/whl/cu124# or use the provided docker# docker run --name nvidia_24_07  --privileged --net=host --ipc=host --gpus=all -v /mnt:/mnt -v /tmp:/tmp -d nvcr.io/nvidia/pytorch:24.07-py3 sleep infinitycd BitVLApip install -e openvla-oft/pip install -e transformerscd openvla-oft/# install LIBEROgit clone https://github.com/Lifelong-Robot-Learning/LIBERO.gitpip install -e LIBERO/pip install -r experiments/robot/libero/libero_requirements.txt# install bitvlapip install -e bitvla/# 下载模型git clone https://huggingface.co/hongyuw/bitvla-bitsiglipL-224px-bf16python convert_ckpt.py /data/models/bitvla-bitsiglipL-224px-bf16#评估，需要先下载检查点python experiments/robot/libero/run_libero_eval_bitnet.py \    --pretrained_checkpoint  /data/models/bitvla-bitsiglipL-224px-bf16 \    --task_suite_name libero_spatial \    --info_in_path "happyday" \    --model_family "bitnet" 
+# BitVLA 在 LIBERO 上的训练与评估
+
+BitVLA 将视觉语言动作模型中的部分权重压缩为一比特表示，用于研究低精度模型在机器人操作任务中的效率与性能。本章以 LIBERO 为空间任务集，完成环境安装、基础模型转换、万步微调和闭环评估，并整理复现中最常见的依赖与模型文件问题。
+
+## 1. 实验产出
+
+完成本章后，实验目录中应包含：
+
+- BitVLA 与 OpenVLA-OFT 源码环境；
+- 转换后的基础模型目录；
+- LIBERO 数据集统计文件；
+- 一份万步微调检查点；
+- LIBERO 逐任务评估日志和视频。
+
+本章使用的主要上游入口如下：
+
+- BitVLA 项目：<https://github.com/ustcwhy/BitVLA>
+- OpenVLA-OFT：<https://github.com/moojink/openvla-oft>
+- LIBERO：<https://github.com/Lifelong-Robot-Learning/LIBERO>
+- 基础模型：<https://huggingface.co/hongyuw/bitvla-bitsiglipL-224px-bf16>
+
+## 2. 目录和环境
+
+先定义源码、模型、数据和输出目录。大型文件建议放到容量充足的数据盘。
+
+```bash
+export WORK_ROOT=/path/to/bitvla-workspace
+export SRC_ROOT="$WORK_ROOT/src"
+export MODEL_ROOT="$WORK_ROOT/models"
+export DATA_ROOT="$WORK_ROOT/datasets"
+export RUN_ROOT="$WORK_ROOT/runs"
+mkdir -p "$SRC_ROOT" "$MODEL_ROOT" "$DATA_ROOT" "$RUN_ROOT"
 ```
 
-下载检查点2个(不用下载了，发现是直接用不行的)
+创建独立环境并安装 PyTorch。下面的命令使用 CUDA 12.4；其他计算平台需要选择对应的软件包来源。
 
-![](https://icndr2yneehy.feishu.cn/space/api/box/stream/download/asynccode/?code=MzZhNWVlOGU2ZjJkNmMzNTcyZGI0ZTkwZGIxNDZiNTVfMUZUdU5WekxKeUxxeGlzVjIzOUMzemVpOGtDTW5JYVdfVG9rZW46UlVwaGJ3SFZ1b00xMEh4UDlsbWNzVktxblBPXzE3NTE4NzY1NjA6MTc1MTg4MDE2MF9WNA)
+```bash
+conda create -n bitvla python=3.10 -y
+conda activate bitvla
 
-这里我遇到了一个报错
-
-```SQL
-(dl) vipuser@ubuntu22:~/17robo/BitVLA/openvla-oft$ python experiments/robot/libero/run_libero_eval_bitnet.py \    --pretrained_checkpoint  /data/models/ft-bitvla-bitsiglipL-224px-libero_spatial-bf16 \    --task_suite_name libero_spatial \    --info_in_path "information you want to show in path" \    --model_family "bitnet" 2025-07-05 15:01:08.924303: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.2025-07-05 15:01:09.052647: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered2025-07-05 15:01:09.052764: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered2025-07-05 15:01:09.071064: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered2025-07-05 15:01:09.107756: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.RuntimeError: module compiled against API version 0x10 but this version of numpy is 0xfRuntimeError: module compiled against API version 0x10 but this version of numpy is 0xfRuntimeError: module compiled against API version 0x10 but this version of numpy is 0xfTraceback (most recent call last):  File "/home/vipuser/17robo/BitVLA/openvla-oft/experiments/robot/libero/run_libero_eval_bitnet.py", line 26, in <module>    from experiments.robot.libero.libero_utils import (  File "/home/vipuser/17robo/BitVLA/openvla-oft/experiments/robot/libero/libero_utils.py", line 8, in <module>    import tensorflow as tf  File "/data/micromamba/envs/dl/lib/python3.9/site-packages/tensorflow/__init__.py", line 48, in <module>    from tensorflow._api.v2 import __internal__  File "/data/micromamba/envs/dl/lib/python3.9/site-packages/tensorflow/_api/v2/__internal__/__init__.py", line 11, in <module>    from tensorflow._api.v2.__internal__ import distribute  File "/data/micromamba/envs/dl/lib/python3.9/site-packages/tensorflow/_api/v2/__internal__/distribute/__init__.py", line 8, in <module>    from tensorflow._api.v2.__internal__.distribute import combinations  File "/data/micromamba/envs/dl/lib/python3.9/site-packages/tensorflow/_api/v2/__internal__/distribute/combinations/__init__.py", line 8, in <module>    from tensorflow.python.distribute.combinations import env # line: 456  File "/data/micromamba/envs/dl/lib/python3.9/site-packages/tensorflow/python/distribute/combinations.py", line 33, in <module>    from tensorflow.python.distribute import collective_all_reduce_strategy  File "/data/micromamba/envs/dl/lib/python3.9/site-packages/tensorflow/python/distribute/collective_all_reduce_strategy.py", line 25, in <module>    from tensorflow.python.distribute import cross_device_ops as cross_device_ops_lib  File "/data/micromamba/envs/dl/lib/python3.9/site-packages/tensorflow/python/distribute/cross_device_ops.py", line 28, in <module>    from tensorflow.python.distribute import cross_device_utils  File "/data/micromamba/envs/dl/lib/python3.9/site-packages/tensorflow/python/distribute/cross_device_utils.py", line 22, in <module>    from tensorflow.python.distribute import values as value_lib  File "/data/micromamba/envs/dl/lib/python3.9/site-packages/tensorflow/python/distribute/values.py", line 23, in <module>    from tensorflow.python.distribute import distribute_lib  File "/data/micromamba/envs/dl/lib/python3.9/site-packages/tensorflow/python/distribute/distribute_lib.py", line 206, in <module>    from tensorflow.python.data.ops import dataset_ops  File "/data/micromamba/envs/dl/lib/python3.9/site-packages/tensorflow/python/data/__init__.py", line 21, in <module>    from tensorflow.python.data import experimental  File "/data/micromamba/envs/dl/lib/python3.9/site-packages/tensorflow/python/data/experimental/__init__.py", line 98, in <module>    from tensorflow.python.data.experimental import service  File "/data/micromamba/envs/dl/lib/python3.9/site-packages/tensorflow/python/data/experimental/service/__init__.py", line 419, in <module>    from tensorflow.python.data.experimental.ops.data_service_ops import distribute  File "/data/micromamba/envs/dl/lib/python3.9/site-packages/tensorflow/python/data/experimental/ops/data_service_ops.py", line 25, in <module>    from tensorflow.python.data.ops import dataset_ops  File "/data/micromamba/envs/dl/lib/python3.9/site-packages/tensorflow/python/data/ops/dataset_ops.py", line 33, in <module>    from tensorflow.python.data.ops import iterator_ops  File "/data/micromamba/envs/dl/lib/python3.9/site-packages/tensorflow/python/data/ops/iterator_ops.py", line 41, in <module>    from tensorflow.python.training.saver import BaseSaverBuilder  File "/data/micromamba/envs/dl/lib/python3.9/site-packages/tensorflow/python/training/saver.py", line 50, in <module>    from tensorflow.python.training import py_checkpoint_reader  File "/data/micromamba/envs/dl/lib/python3.9/site-packages/tensorflow/python/training/py_checkpoint_reader.py", line 19, in <module>    from tensorflow.python.util._pywrap_checkpoint_reader import CheckpointReaderSystemError: initialization of _pywrap_checkpoint_reader raised unreported exception
+python -m pip install \
+  torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 \
+  --index-url https://download.pytorch.org/whl/cu124
 ```
 
-解决方法：
+克隆源码并安装三个本地包：
 
-```Bash
-pip install "numpy>=1.23.5,<2.0"
+```bash
+cd "$SRC_ROOT"
+git clone https://github.com/ustcwhy/BitVLA.git
+cd BitVLA
+
+python -m pip install -e openvla-oft
+python -m pip install -e transformers
+python -m pip install -e bitvla
+
+cd openvla-oft
+git clone https://github.com/Lifelong-Robot-Learning/LIBERO.git
+python -m pip install -e LIBERO
+python -m pip install -r experiments/robot/libero/libero_requirements.txt
 ```
 
-```Plain
-bash ft_bitvla_libero_spatial.sh
+安装后先检查关键模块，避免等到训练启动时才发现环境缺失：
+
+```bash
+python - <<'PY'
+import torch
+import transformers
+import libero
+
+print("torch:", torch.__version__)
+print("transformers:", transformers.__version__)
+print("libero:", libero.__file__)
+print("gpu:", torch.cuda.is_available())
+PY
 ```
 
-batch_size为1，训练占用36G的显存
+## 3. 下载并转换基础模型
 
-![](https://icndr2yneehy.feishu.cn/space/api/box/stream/download/asynccode/?code=ZjhkODNiOGYxZTMzMzNkMTU2NDViMDA0ZmZlOTNjZmJfUWhldDNNVUdnWnIxSEhCVzV4S3FrWU9pT1AyVGdLTURfVG9rZW46Q0lTY2JmZ2JNb3lyVkN4UEo4MWN2SWZLbmNlXzE3NTE4NzY1NjA6MTc1MTg4MDE2MF9WNA)
+下载基础模型后，使用项目提供的转换脚本补齐 BitVLA 自定义配置与模型文件：
 
-![](https://icndr2yneehy.feishu.cn/space/api/box/stream/download/asynccode/?code=MTBlMjYzZWQzMjFmM2Y4YTU2MDU0YzBlMjFiZTc5MDBfTmdaR3ByclpYU1pMQk1ocDVDYTNDMHAxYUdoWEZVdTZfVG9rZW46QUdnMWJ5dEM1b28zTnl4OVdxRWNiVGpMbmJlXzE3NTE4NzY1NjA6MTc1MTg4MDE2MF9WNA)
+```bash
+cd "$SRC_ROOT/BitVLA"
+git clone \
+  https://huggingface.co/hongyuw/bitvla-bitsiglipL-224px-bf16 \
+  "$MODEL_ROOT/bitvla-bitsiglipL-224px-bf16"
 
-一个多小时，还是比较能接受的，这会上午10：49，看看什么时候
-
-```YAML
-(dl) vipuser@ubuntu22:~/17robo/BitVLA/openvla-oft/ft_script$ bash ft_bitvla_libero_spatial.sh 2025-07-06 10:45:46.731475: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.2025-07-06 10:45:47.488599: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered2025-07-06 10:45:47.489741: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered2025-07-06 10:45:47.625298: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered2025-07-06 10:45:47.886168: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.2025-07-06 10:45:49.932554: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRTUsing LIBERO constants:  NUM_ACTIONS_CHUNK = 8  ACTION_DIM = 7  PROPRIO_DIM = 8  ACTION_PROPRIO_NORMALIZATION_TYPE = bounds_q99If needed, manually set the correct constants in `prismatic/vla/constants.py`!2025-07-06 10:45:55.776247: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L3552025-07-06 10:45:55.777045: W tensorflow/core/common_runtime/gpu/gpu_device.cc:2256] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.Skipping registering GPU devices...Fine-tuning BitVLA Model `/data/models/bitvla-bitsiglipL-224px-bf16` on `libero_spatial_no_noops`Detected constants:        NUM_ACTIONS_CHUNK: 8        ACTION_DIM: 7        PROPRIO_DIM: 8        ACTION_PROPRIO_NORMALIZATION_TYPE: bounds_q99Created backup of original config at: /data/models/bitvla-bitsiglipL-224px-bf16/config.json.back.20250706_104612Updated config.json at: /data/models/bitvla-bitsiglipL-224px-bf16/config.jsonChanges made:  - Set AutoConfig to "Bitvla_Config"  - Set AutoModelForVision2Seq to "BitVLAForActionPrediction"WARNING: `bitvla_for_action_prediction.py` is not found anywhere in the current directory.WARNING: `configuration_bit_vla.py` is not found anywhere in the current directory.[rank0]:[W706 10:46:12.255494450 ProcessGroupNCCL.cpp:4115] [PG ID 0 PG GUID 0 Rank 0]  using GPU 0 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect.Specify device_ids in barrier() to force use of a particular device,or call init_process_group() with a device_id.siglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip attention, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokensiglip mlp, weight bits: 1, weight quant method: absmean, act bits: 8, act quant method: absmax_per_tokenTotal parameters: 2819549344Trainable parameters: 2819549344# trainable params in proprio_projector: 6579200# trainable params in action_head: 59059207# total trainable params: 28851877512025-07-06 10:46:30.211458: I tensorflow/core/grappler/optimizers/data/replicate_on_split.cc:32] Running replicate on split optimization07/06 [10:46:30] INFO     | >> [*] Loading existing dataset statistics data_utils.py:199                          from                                                                                    /data/DATA/modified_libero_rlds/libero_spati                                            al_no_noops/1.0.0/dataset_statistics_27efdc0                                            c1463ac28b9ea97a66ac9640f6a669b6027eedc7131a                                            c259215b8d625.json.                                           2025-07-06 10:46:30.709146: I tensorflow/core/grappler/optimizers/data/replicate_on_split.cc:32] Running replicate on split optimization####################################################################################### Loading the following 1 datasets (incl. sampling weight):                         ## libero_spatial_no_noops: =================================================1.000000 #######################################################################################07/06 [10:46:31] INFO     | >> [*] Threads per Dataset: [1]               dataset.py:528                 INFO     | >> [*] Reads per Dataset: [1]                 dataset.py:529                 INFO     | >> [*] Constructing datasets...               dataset.py:5322025-07-06 10:46:31.164611: I tensorflow/core/grappler/optimizers/data/replicate_on_split.cc:32] Running replicate on split optimization07/06 [10:46:32] INFO     | >> [*] Applying frame transforms on           dataset.py:572                          dataset...                                                    07/06 [10:46:33] INFO     | >> [*] Saved dataset statistics file at    data_utils.py:284                          path                                                                                    /data/ckpt/libero_spatial_no_noops/bitvla-bi                                            tsiglipL-224px-bf16+libero_spatial_no_noops+                                            b1+lr-0.0001--image_aug--single_gpu_training                                            /dataset_statistics.json                                        0%|                                                         | 0/10001 [00:00<?, ?it/s]WARNING: All log messages before absl::InitializeLog() is called are written to STDERRW0000 00:00:1751769993.440245   10729 op_level_cost_estimator.cc:699] Error in PredictCost() for the op: op: "CropAndResize" attr { key: "T" value { type: DT_FLOAT } } attr { key: "extrapolation_value" value { f: 0 } } attr { key: "method" value { s: "bilinear" } } inputs { dtype: DT_FLOAT shape { dim { size: 1 } dim { size: 224 } dim { size: 224 } dim { size: -10 } } } inputs { dtype: DT_FLOAT shape { dim { size: -2 } dim { size: 4 } } } inputs { dtype: DT_INT32 shape { dim { size: -2 } } } inputs { dtype: DT_INT32 shape { dim { size: 2 } } } device { type: "CPU" vendor: "GenuineIntel" model: "111" frequency: 2099 num_cores: 8 environment { key: "cpu_instruction_set" value: "AVX SSE, SSE2, SSE3, SSSE3, SSE4.1, SSE4.2" } environment { key: "eigen" value: "3.4.90" } l1_cache_size: 32768 l2_cache_size: 4194304 l3_cache_size: 16777216 memory_size: 268435456 } outputs { dtype: DT_FLOAT shape { dim { size: -2 } dim { size: -14 } dim { size: -15 } dim { size: -10 } } }W0000 00:00:1751769993.440894   10729 op_level_cost_estimator.cc:699] Error in PredictCost() for the op: op: "CropAndResize" attr { key: "T" value { type: DT_FLOAT } } attr { key: "extrapolation_value" value { f: 0 } } attr { key: "method" value { s: "bilinear" } } inputs { dtype: DT_FLOAT shape { dim { size: 1 } dim { size: 224 } dim { size: 224 } dim { size: -11 } } } inputs { dtype: DT_FLOAT shape { dim { size: -3 } dim { size: 4 } } } inputs { dtype: DT_INT32 shape { dim { size: -3 } } } inputs { dtype: DT_INT32 shape { dim { size: 2 } } } device { type: "CPU" vendor: "GenuineIntel" model: "111" frequency: 2099 num_cores: 8 environment { key: "cpu_instruction_set" value: "AVX SSE, SSE2, SSE3, SSSE3, SSE4.1, SSE4.2" } environment { key: "eigen" value: "3.4.90" } l1_cache_size: 32768 l2_cache_size: 4194304 l3_cache_size: 16777216 memory_size: 268435456 } outputs { dtype: DT_FLOAT shape { dim { size: -3 } dim { size: -16 } dim { size: -17 } dim { size: -11 } } }W0000 00:00:1751769993.441013   10729 op_level_cost_estimator.cc:699] Error in PredictCost() for the op: op: "CropAndResize" attr { key: "T" value { type: DT_FLOAT } } attr { key: "extrapolation_value" value { f: 0 } } attr { key: "method" value { s: "bilinear" } } inputs { dtype: DT_FLOAT shape { dim { size: 1 } dim { size: 224 } dim { size: 224 } dim { size: -12 } } } inputs { dtype: DT_FLOAT shape { dim { size: -6 } dim { size: 4 } } } inputs { dtype: DT_INT32 shape { dim { size: -6 } } } inputs { dtype: DT_INT32 shape { dim { size: 2 } } } device { type: "CPU" vendor: "GenuineIntel" model: "111" frequency: 2099 num_cores: 8 environment { key: "cpu_instruction_set" value: "AVX SSE, SSE2, SSE3, SSSE3, SSE4.1, SSE4.2" } environment { key: "eigen" value: "3.4.90" } l1_cache_size: 32768 l2_cache_size: 4194304 l3_cache_size: 16777216 memory_size: 268435456 } outputs { dtype: DT_FLOAT shape { dim { size: -6 } dim { size: -24 } dim { size: -25 } dim { size: -12 } } }W0000 00:00:1751769993.441128   10729 op_level_cost_estimator.cc:699] Error in PredictCost() for the op: op: "CropAndResize" attr { key: "T" value { type: DT_FLOAT } } attr { key: "extrapolation_value" value { f: 0 } } attr { key: "method" value { s: "bilinear" } } inputs { dtype: DT_FLOAT shape { dim { size: 1 } dim { size: 224 } dim { size: 224 } dim { size: -13 } } } inputs { dtype: DT_FLOAT shape { dim { size: -7 } dim { size: 4 } } } inputs { dtype: DT_INT32 shape { dim { size: -7 } } } inputs { dtype: DT_INT32 shape { dim { size: 2 } } } device { type: "CPU" vendor: "GenuineIntel" model: "111" frequency: 2099 num_cores: 8 environment { key: "cpu_instruction_set" value: "AVX SSE, SSE2, SSE3, SSSE3, SSE4.1, SSE4.2" } environment { key: "eigen" value: "3.4.90" } l1_cache_size: 32768 l2_cache_size: 4194304 l3_cache_size: 16777216 memory_size: 268435456 } outputs { dtype: DT_FLOAT shape { dim { size: -7 } dim { size: -26 } dim { size: -27 } dim { size: -13 } } }[rank0]:[W706 10:46:40.628822933 reducer.cpp:1400] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())100%|███████████████████████████████████████████| 10001/10001 [1:26:34<00:00,  1.94it/s]07/06 [12:13:07] INFO     | >> [*] Saved dataset statistics file at    data_utils.py:284                          path                                                                                    /data/ckpt/libero_spatial_no_noops/bitvla-bi                                            tsiglipL-224px-bf16+libero_spatial_no_noops+                                            b1+lr-0.0001--image_aug--single_gpu_training                                            --10000_chkpt/dataset_statistics.json                         Saving Model Checkpoint for Step 1000010002it [1:26:55,  6.94s/it]                                                            Max step 10001 reached! Stopping training...[rank0]:[W706 12:13:31.085652394 ProcessGroupNCCL.cpp:1250] Warning: WARNING: process group has NOT been destroyed before we destruct ProcessGroupNCCL. On normal program exit, the application should call destroy_process_group to ensure that any pending NCCL operations have finished in this process. In rare cases this process can exit before this point and block the progress of another member of the process group. This constraint has always been present,  but this warning has only been added since PyTorch 2.4 (function operator())
+python convert_ckpt.py \
+  "$MODEL_ROOT/bitvla-bitsiglipL-224px-bf16"
 ```
 
-1个多小时。
+转换完成后检查模型目录。除权重和配置外，还应存在项目自定义的模型实现文件；若日志提示 `bitvla_for_action_prediction.py` 或 `configuration_bit_vla.py` 不存在，说明只下载了权重，没有完成源码转换。
 
-我们让ai分析一下
-
-```Markdown
-通过分析这个命令行日志，我可以看到以下主要内容：## 📋 日志内容分析### 1. **模型初始化阶段**- **TensorFlow 初始化**：显示了 GPU 库加载和配置信息- **BitVLA 模型配置**：  - 模型路径：`/data/models/bitvla-bitsiglipL-224px-bf16`  - 数据集：`libero_spatial_no_noops`  - 动作维度：7维，本体感受维度：8维  - 动作块大小：8### 2. **模型结构信息**- **总参数量**：2,819,549,344 (约28亿参数)- **可训练参数**：2,885,187,751 (约29亿参数)- **具体组件**：  - `proprio_projector`：6,579,200 个参数  - `action_head`：59,059,207 个参数### 3. **数据集加载**- 使用 `libero_spatial_no_noops` 数据集- 应用了图像增强 (`image_aug`)- 批量大小：1，学习率：0.0001### 4. **训练过程**- **训练步数**：10,001 步 (0-10000)- **训练时间**：1小时26分34秒- **训练速度**：约1.94 it/s- **成功完成**：达到最大步数后停止训练## 🎯 模型保存位置根据日志信息，模型最终保存在：**主要检查点目录**：```/data/ckpt/libero_spatial_no_noops/bitvla-bitsiglipL-224px-bf16+libero_spatial_no_noops+b1+lr-0.0001--image_aug--single_gpu_training--10000_chkpt/```**具体保存的文件**：- 模型检查点：Step 10000 的完整模型权重- 数据集统计：`dataset_statistics.json`- 配置文件备份：`/data/models/bitvla-bitsiglipL-224px-bf16/config.json.back.20250706_104612`## ✅ 训练状态- ✅ **训练成功完成**：达到了预设的10,000步训练目标- ✅ **模型已保存**：在第10,000步时保存了检查点- ✅ **无错误退出**：虽然有一些警告信息，但训练正常完成这个微调过程看起来非常成功，现在你可以使用这个保存的模型进行 BitVLA 的推理和评估了！
+```bash
+find "$MODEL_ROOT/bitvla-bitsiglipL-224px-bf16" \
+  -maxdepth 1 -type f -printf '%f\n' | sort
 ```
 
-```Bash
-python experiments/robot/libero/run_libero_eval_bitnet.py \    --pretrained_checkpoint  /data/ckpt/libero_spatial_no_noops/bitvla-bitsiglipL-224px-bf16+libero_spatial_no_noops+b1+lr-0.0001--image_aug--single_gpu_training--10000_chkpt/ \    --task_suite_name libero_spatial \    --info_in_path "information you want to show in path" \    --model_family "bitnet"     
+## 4. 准备 LIBERO 数据
+
+本章使用 `libero_spatial_no_noops`。数据应包含图像、本体状态、动作、语言指令和数据统计。具体下载方式以 OpenVLA-OFT 的 [LIBERO 说明](https://github.com/moojink/openvla-oft/blob/main/LIBERO.md)为准。
+
+准备完成后，将数据路径指向统一目录：
+
+```bash
+export LIBERO_DATA_ROOT="$DATA_ROOT/modified_libero_rlds"
+test -d "$LIBERO_DATA_ROOT/libero_spatial_no_noops"
 ```
 
-在此之前，需要设置一下link
+如果训练日志能够加载 `dataset_statistics.json`，并打印动作维度、本体状态维度和动作块长度，说明数据字段已经进入训练管线。本次记录中的配置为：动作维度 7、本体状态维度 8、动作块长度 8。
 
-![](https://icndr2yneehy.feishu.cn/space/api/box/stream/download/asynccode/?code=ZTNlYThhNjA2NmZmM2Q4YTM2OGI2ZDI4Nzc5YjYxN2FfNTdqcFAybW1Ta25CRlkwamdQS3BCZW44Y1Y2Y1ZEMWNfVG9rZW46UDFnMmJVRlN2b1d6WEV4NnhDWWNOTk5WbmxnXzE3NTE4NzY1NjA6MTc1MTg4MDE2MF9WNA)
+## 5. 万步微调
 
-跑到一半，成功率低的离谱
+训练命令以 BitVLA 仓库当前脚本参数为准。输出目录单独放在 `$RUN_ROOT`，便于保存配置、数据统计和检查点：
 
-也可以看看官方openvla的效果：
+```bash
+cd "$SRC_ROOT/BitVLA/openvla-oft"
 
-https://github.com/moojink/openvla-oft/blob/main/LIBERO.md
+python vla-scripts/finetune.py \
+  --vla_path "$MODEL_ROOT/bitvla-bitsiglipL-224px-bf16" \
+  --data_root_dir "$LIBERO_DATA_ROOT" \
+  --dataset_name libero_spatial_no_noops \
+  --run_root_dir "$RUN_ROOT" \
+  --batch_size 1 \
+  --learning_rate 1e-4 \
+  --max_steps 10000 \
+  --image_aug True
+```
+
+不同版本的仓库可能调整参数名。运行前先执行 `python vla-scripts/finetune.py --help`，把上述语义映射到当前版本，不要直接删掉未知参数。
+
+本次万步记录使用单卡、批大小 1 和学习率 `1e-4`，训练约 1 小时 27 分钟，平均约 1.94 步每秒。日志在达到最大步数后正常保存模型和 `dataset_statistics.json`。这些数字用于估算同类硬件上的运行时间，不替代闭环评估。
+
+### 检查点 1：训练确实更新模型
+
+训练开始后确认三项内容：
+
+1. 进度条持续增加，损失值为有限数；
+2. 计算设备保持占用，且没有持续的数据等待；
+3. 输出目录生成配置和数据统计，保存周期到达时出现检查点文件。
+
+## 6. LIBERO 闭环评估
+
+评估必须加载刚才生成的训练目录，而不是重新指向基础模型：
+
+```bash
+export BITVLA_CHECKPOINT="$RUN_ROOT/<your-run-directory>"
+
+cd "$SRC_ROOT/BitVLA/openvla-oft"
+python experiments/robot/libero/run_libero_eval_bitnet.py \
+  --pretrained_checkpoint "$BITVLA_CHECKPOINT" \
+  --task_suite_name libero_spatial \
+  --info_in_path "$RUN_ROOT/libero_spatial_eval" \
+  --model_family bitnet
+```
+
+正式记录至少包含任务名称、回合数、成功数、随机种子和视频目录。训练损失只说明优化过程是否正常，任务成功率必须由 LIBERO 环境在闭环运行中统计。
+
+### 检查点 2：评估加载了正确检查点
+
+在评估日志开头核对模型路径和数据统计路径，并确认两者都来自 `$BITVLA_CHECKPOINT`。如果模型路径仍指向基础模型目录，当前结果就不是微调模型的评估结果。
+
+## 7. 常见问题
+
+### NumPy 二进制接口不匹配
+
+报错包含下面信息时，通常是 NumPy 版本与已编译扩展不一致：
+
+```text
+RuntimeError: module compiled against API version ...
+```
+
+先按照依赖文件固定 NumPy，再重装依赖 NumPy 二进制接口的包：
+
+```bash
+python -m pip install --force-reinstall 'numpy<2'
+python -m pip check
+```
+
+### 自定义模型文件缺失
+
+如果日志提示找不到 `bitvla_for_action_prediction.py` 或 `configuration_bit_vla.py`，重新执行模型转换脚本，并确认当前 `transformers` 来自 BitVLA 工作树。只修改 `config.json` 无法替代自定义模型实现。
+
+### 分布式进程退出警告
+
+训练完成后若出现进程组未销毁警告，应在训练入口结束前调用分布式清理函数。该警告通常发生在保存完成之后，但仍应通过退出码和检查点文件确认本次训练是否完整结束。
+
+### 成功率明显偏低
+
+依次检查模型目录、数据统计、动作归一化、相机键名和任务指令。先用一个固定任务和固定种子保存视频，确认动作方向与夹爪控制正确，再扩大到完整任务集。降低评估分母不会修复接口错位。
+
+## 8. 本章小结
+
+BitVLA 的复现重点不只是安装一比特模型，而是保证基础模型转换、LIBERO 数据统计、微调输出和闭环评估使用同一套接口。万步训练记录证明训练管线能够完成参数更新和检查点保存；最终模型质量则由逐任务闭环结果决定。

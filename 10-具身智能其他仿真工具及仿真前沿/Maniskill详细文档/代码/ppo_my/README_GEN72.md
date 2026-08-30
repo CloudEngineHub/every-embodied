@@ -19,7 +19,7 @@ GEN72-EG2是一款7自由度机械臂与EG2夹爪的组合，其主要特点包�
 2. `run_gen72_ppo.sh` - 用于训练和评估的脚本
 3. `ppo_my.py` - 稳定版PPO实现（位于上层目录）
 
-URDF文件位置：`/home/kewei/17robo/ManiSkill/urdf_01/GEN72-EG2.urdf`
+URDF 文件位置：`$MANISKILL_ROOT/urdf_01/GEN72-EG2.urdf`
 
 ## 三、使用步骤
 
@@ -28,7 +28,8 @@ URDF文件位置：`/home/kewei/17robo/ManiSkill/urdf_01/GEN72-EG2.urdf`
 首先需要注册GEN72-EG2机器人到ManiSkill环境：
 
 ```bash
-cd /home/kewei/17robo/ManiSkill/examples/baselines/ppo_my
+export MANISKILL_ROOT=/path/to/ManiSkill
+cd "$MANISKILL_ROOT/examples/baselines/ppo_my"
 python register_gen72_robot.py
 ```
 
@@ -128,4 +129,4 @@ GEN72-EG2的物理参数经过优化，重点包括：
 ## 八、参考资源
 
 - ManiSkill文档: https://maniskill.readthedocs.io/
-- 原始PPO论文: https://arxiv.org/abs/1707.06347 
+- 原始PPO论文: https://arxiv.org/abs/1707.06347

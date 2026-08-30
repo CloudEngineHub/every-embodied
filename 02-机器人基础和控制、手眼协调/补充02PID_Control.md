@@ -1,11 +1,10 @@
-# [PID控制算法以及代码实现]
+# PID 控制算法及代码实现
 
-# 作者
-## [机智流硬件]  [冷小莫]  
-### [1412195676@qq.com]  
+## 作者与日期
 
-## 日期
-[2024-12]
+机智流硬件、冷小莫
+
+2024 年 12 月
 
 ## 摘要
 - PID控制算法是工业自动化中最常用的控制算法之一。
@@ -199,11 +198,11 @@ float PID_calc(pid_type_def *pid,float ref,float set,float PID[3])
 - ## 最好的效果如下
 ![alt text](./assets/image-4.png)
 
-# 优化以及其他情况的PID计算
+## PID 参数优化与扩展形式
 
 
 
-### 有一个口诀分享给大家
+### 参数整定口诀
 ```
             参数整定找最佳， 从小到大顺序查。
 
@@ -242,4 +241,3 @@ float PID_calc(pid_type_def *pid,float ref,float set,float PID[3])
 - ### 3. 不完全微分PID控制
 
 ![alt text](./assets/image-7.png)
-

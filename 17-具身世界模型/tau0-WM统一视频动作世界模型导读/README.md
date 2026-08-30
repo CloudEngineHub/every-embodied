@@ -14,7 +14,7 @@
 
 > τ0-WM 的核心不是“机器人会生成视频”，而是让机器人在执行前先提出动作、想象动作后果、评估后果，再必要时修正动作。
 
-这篇适合放在 `17-具身世界模型`，而不是 VLA 章节。原因是它虽然包含策略接口，但核心创新是把 policy、video prediction、action-conditioned simulator 和 test-time computation 统一成一个世界模型式决策机制。
+τ0-WM 虽然包含策略接口，但核心创新是把策略、视频预测、动作条件模拟器和测试时计算统一为世界模型式决策机制，因此本章从世界模型角度展开。
 
 ## 2. 论文、项目和开源状态
 
@@ -37,7 +37,7 @@
 
 ## 3. 它为什么值得放进世界模型线
 
-本仓库前面已经有几类世界模型导读。τ0-WM 可以放在下面这个谱系里理解：
+可以从下面几类世界模型的谱系中理解 τ0-WM：
 
 | 方法 | 世界模型预测什么 | 怎样服务机器人 |
 | :--- | :--- | :--- |
@@ -161,7 +161,7 @@ ACVS 不是传统物理仿真器。它没有显式接触力、刚体状态、碰
 | 5B | 项目传播中强调的视频 diffusion backbone / world model 规模 |
 | 5.5B VAM | 论文架构里把 5B video DiT backbone 和 0.5B Action DiT 分支合在一起算 |
 
-教程里建议统一称为 **5B 级开源具身世界模型**，在架构细节处补充 VAM 的 5.5B 口径。
+本章统一使用 **5B 级开源具身世界模型** 的表述，并在架构细节中注明 VAM 的 5.5B 口径。
 
 ## 7. 异构数据训练：每种数据只监督它真的有的信号
 
@@ -446,4 +446,3 @@ reward model: future -> score
 ## 17. 引用与图片来源
 
 本文图片来自 [τ0-WM 官方项目页](https://finch.agibot.com/research/tau0-wm)，为了教程稳定访问已压缩保存到本地 `assets/`。论文内容参考 [arXiv:2606.01027](https://arxiv.org/abs/2606.01027)、[官方 PDF](https://finch-static.agibot.com/VAM/blog/tau_0_wm.pdf)、[GitHub 仓库](https://github.com/sii-research/tau-0-wm) 和 [Hugging Face 权重页](https://huggingface.co/sii-research/tau-0-wm)。
-

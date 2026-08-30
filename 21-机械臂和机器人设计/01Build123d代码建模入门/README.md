@@ -24,7 +24,7 @@ outputs/robot_coin.stl
 assets/robot_coin_preview.png
 ```
 
-本仓库已保留一份本机复刻结果：[robot_coin.step](outputs/robot_coin.step)、[robot_coin.stl](outputs/robot_coin.stl)。如果大家只想先看结果，可以直接下载这两个文件；如果想学习 CAD-as-code 的建模过程，建议从环境安装和脚本运行开始完整复刻一遍。
+本章随附一份复刻结果：[robot_coin.step](outputs/robot_coin.step)、[robot_coin.stl](outputs/robot_coin.stl)。读者可以直接查看模型文件，也可以从环境安装和脚本运行开始完整复刻建模过程。
 
 <p align="center">
   <img src="assets/robot_coin_preview.png" width="70%" alt="Build123d 机器人纪念币预览图">

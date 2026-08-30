@@ -1,10 +1,13 @@
-# 1、openpi部署服务端
+# Genie Sim 3 策略服务、客户端与录像流程
+
+## 1. 部署 OpenPI 策略服务
 
 GenieSim一键启动视频教程：https://www.datawhale.cn/learn/content/258/6172
 
 
 ```bash
-cd /root/openpi
+export OPENPI_ROOT=/path/to/openpi
+cd "$OPENPI_ROOT"
 
 XLA_PYTHON_CLIENT_MEM_FRACTION=0.7 uv run scripts/serve_policy.py --host='0.0.0.0' --port=8999 policy:checkpoint --policy.config=organize_items --policy.dir ./checkpoints/organize_items/29999
 也可以执行
@@ -30,7 +33,7 @@ python scripts/serve_policy.py --host='0.0.0.0' --port=8999 policy:checkpoint --
 
 ![image-20260203221805718](./assets/image-20260203221805718.png)
 
-# 2、GenieSim客户端
+## 2. 启动 Genie Sim 客户端
 
 ![image-20260115210912023](./assets/image-20260115210912023.png)
 
@@ -62,7 +65,7 @@ https://modelscope.cn/datasets/agibot_world/GenieSimAssets
 
 ```
 # 1. 设置基础变量
-export SIM_REPO_ROOT=/root/genie_sim
+export SIM_REPO_ROOT=/path/to/genie_sim
 
 
 # 5. 设置 API Key
@@ -79,7 +82,7 @@ export SIM_ASSETS=$SIM_REPO_ROOT/source/geniesim/assets
 然后
 
 ```
-cd /root/genie_sim
+cd "$SIM_REPO_ROOT"
 
 /isaac-sim/python.sh source/geniesim/app/app.py --config source/geniesim/config/organize_items.yaml
 或者
@@ -89,23 +92,23 @@ omni_python source/geniesim/app/app.py --config source/geniesim/config/organize_
 
 就可以看到渲染仿真器执行动作了
 
-# 3、录制仿真结果
+## 3. 录制仿真结果
 
 替换
-/root/genie_sim/scripts/auto_record_and_extract.py
+$SIM_REPO_ROOT/scripts/auto_record_and_extract.py
 
 为当前教程文件夹下 [auto_record_and_extract.py](auto_record_and_extract.py) 
 
 ```
 修改
-/root/genie_sim/scripts/start_auto_record.sh
+$SIM_REPO_ROOT/scripts/start_auto_record.sh
 
 ```
 
 ![image-20260204121620598](./assets/image-20260204121620598.png)
 
 ```
-cd /root/genie_sim
+cd "$SIM_REPO_ROOT"
 
 /isaac-sim/python.sh source/geniesim/app/app.py --config source/geniesim/config/organize_items_record.yaml
 或者
@@ -121,14 +124,14 @@ omni_python source/geniesim/app/app.py --config source/geniesim/config/organize_
 ![image-20260204121858171](./assets/image-20260204121858171.png)
 
 ```
-cd /root/genie_sim
+cd "$SIM_REPO_ROOT"
 bash scripts/start_auto_record.sh
 ```
 
 然后cmap文件会在仿真结束后自动解析并保存为mp4
 
 ```
-ls /root/genie_sim/output/recording_data/recording_data/place_object_into_box_color/recording_20260204_121814/recording_20260204_121814_0.mcap -lh
+ls "$SIM_REPO_ROOT/output/recording_data/recording_data/place_object_into_box_color/recording_20260204_121814/recording_20260204_121814_0.mcap" -lh
 ```
 
 
@@ -139,10 +142,9 @@ ls /root/genie_sim/output/recording_data/recording_data/place_object_into_box_co
 
 ```
 # 进入项目根目录
-cd /root/genie_sim
+cd "$SIM_REPO_ROOT"
 
 # 使用新增加的 --bag_path 参数指向你已有的录制文件夹
 python3 scripts/auto_record_and_extract.py \
-  --bag_path "/root/genie_sim/output/recording_data/recording_data/place_object_into_box_color/recording_20260204_141040"  #--delete_db3_after 可选，决定是否运行后删除mcap文件，因为文件较大
+  --bag_path "$SIM_REPO_ROOT/output/recording_data/recording_data/place_object_into_box_color/recording_20260204_141040"  #--delete_db3_after 可选，决定是否运行后删除mcap文件，因为文件较大
 ```
-

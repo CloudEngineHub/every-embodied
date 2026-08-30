@@ -1,10 +1,8 @@
-# EBench / GenManip 复现记录：从环境配置到最小视频渲染
+# EBench 与 GenManip：从环境配置到最小视频渲染
 
 ## 1 概述
 
-EBench 是面向具身操作任务的评估基准，本次复现先不追求完整 benchmark 跑分，而是验证一条最小链路：安装 Isaac Sim 4.1 运行环境，启动 GenManip 的 `Minimal_Banana` 任务，完成规划、轨迹生成、RGB 渲染，并导出可播放视频。
-
-本章记录的是一次 smoke test 级别复现。它能证明仿真、规划和渲染链路已经打通，但不代表完整 EBench 评测已经完成。
+EBench 是面向具身操作任务的评估基准。本章先建立一条可重复的最小实验链路：安装 Isaac Sim 4.1，启动 GenManip 的 `Minimal_Banana` 任务，完成规划、轨迹生成和 RGB 图像渲染，最后导出可播放的视频。在这条链路通过后，再扩展到批量数据生成和完整基准评测。
 
 ## 2 本次验证环境
 
@@ -20,28 +18,27 @@ EBench 是面向具身操作任务的评估基准，本次复现先不追求完�
 | 任务入口 | `GenManip/configs/tasks/minimal.yml` |
 | 输出任务 | `Minimal_Banana` |
 
-关键结论是：如果只是跑 EBench/GenManip 的最小 smoke test，一张 24GB 显存的卡就足够。完整数据生成、批量评测或大模型 policy 部署会额外占用显存和存储，需要按任务规模重新估算。
+最小链路验证可以在 24 GB 显存的单卡上运行。完整数据生成、批量评测或大模型策略部署会额外占用显存和存储，应根据并行环境数、相机数量和模型规模重新估算资源。
 
 ## 3 环境配置要点
 
-工作目录如下：
+先定义源码、环境和缓存目录。将下面的根目录替换为容量充足的数据盘：
 
 ```bash
-/root/gpufree-share/ebench_repro/GenManip
-```
-
-Python 环境放在数据盘：
-
-```bash
-/root/gpufree-data/ebench_repro/venv_ebench
+export EBENCH_ROOT=/path/to/ebench-repro
+export GENMANIP_ROOT="$EBENCH_ROOT/GenManip"
+export EBENCH_ENV="$EBENCH_ROOT/venv"
+export HF_HOME="$EBENCH_ROOT/cache/huggingface"
+export TMPDIR="$EBENCH_ROOT/cache/tmp"
+mkdir -p "$EBENCH_ROOT/cache/huggingface" "$EBENCH_ROOT/cache/tmp"
 ```
 
 基础依赖安装完成后，需要显式接受 Omniverse EULA，否则首次启动 Isaac Sim 会卡在交互提示：
 
 ```bash
 export OMNI_KIT_ACCEPT_EULA=YES
-export HF_HOME=/root/gpufree-data/hf_home
-export TMPDIR=/root/gpufree-data/tmp
+export HF_HOME="$EBENCH_ROOT/cache/huggingface"
+export TMPDIR="$EBENCH_ROOT/cache/tmp"
 ```
 
 Isaac Sim 4.1 的 PyPI 包要求 Python 3.10。若使用 Python 3.11，会出现类似下面的版本不匹配：
@@ -69,11 +66,11 @@ pip install -e . --no-build-isolation
 进入 GenManip 根目录并激活环境：
 
 ```bash
-cd /root/gpufree-share/ebench_repro/GenManip
-source /root/gpufree-data/ebench_repro/venv_ebench/bin/activate
+cd "$GENMANIP_ROOT"
+source "$EBENCH_ENV/bin/activate"
 export OMNI_KIT_ACCEPT_EULA=YES
-export HF_HOME=/root/gpufree-data/hf_home
-export TMPDIR=/root/gpufree-data/tmp
+export HF_HOME="$EBENCH_ROOT/cache/huggingface"
+export TMPDIR="$EBENCH_ROOT/cache/tmp"
 ```
 
 先跑最小规划任务：

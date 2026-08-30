@@ -1,10 +1,10 @@
-好的，这是提供的 Vulkan 安装指南的中文翻译，已保留原始 Markdown 格式。
+# Ubuntu Vulkan 运行时配置与验证
+
+本页安装 Vulkan 运行时和诊断工具，并说明驱动描述文件缺失时的检查方法。
 
 ---
 
-### Vulkan
-
-### Ubuntu
+## Ubuntu 安装
 
 **在 Ubuntu 上安装 Vulkan:**
 

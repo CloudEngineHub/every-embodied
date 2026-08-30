@@ -102,7 +102,10 @@ python experiments/robot/libero/run_libero_eval.py \
 **查看帮助文档：**
 
 ```bash
-micromamba activate dl && cd /home/vipuser/17robo/openvla && python experiments/robot/libero/run_libero_eval.py --help | grep -A 5 -B 5 "num_trials"
+export OPENVLA_ROOT="${OPENVLA_ROOT:-/path/to/openvla}"
+cd "$OPENVLA_ROOT"
+micromamba activate dl
+python experiments/robot/libero/run_libero_eval.py --help | grep -A 5 -B 5 "num_trials"
 ```
 
 **修改评估次数示例：**
@@ -112,7 +115,7 @@ micromamba activate dl && cd /home/vipuser/17robo/openvla && python experiments/
 ```bash
 python experiments/robot/libero/run_libero_eval.py \
     --model_family openvla \
-    --pretrained_checkpoint /data1/openvla-7b-finetuned-libero-spatial \
+    --pretrained_checkpoint "$OPENVLA_CHECKPOINT" \
     --task_suite_name libero_spatial \
     --center_crop True \
     --num_trials_per_task 10
@@ -141,7 +144,11 @@ WeightsUnpickler error: Unsupported global: GLOBAL numpy.core.multiarray._recons
 
 **修改位置：**
 
-文件 `/data/17robo/LIBERO/libero/libero/benchmark/__init__.py` (第 164 行左右)。
+文件 `$LIBERO_ROOT/libero/libero/benchmark/__init__.py`（第 164 行附近）。运行前先设置 `LIBERO_ROOT`：
+
+```bash
+export LIBERO_ROOT="${LIBERO_ROOT:-/path/to/LIBERO}"
+```
 
 ![修改代码截图](./assets/1771475212201-5.png)
 

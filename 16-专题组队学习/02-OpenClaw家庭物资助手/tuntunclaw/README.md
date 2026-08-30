@@ -1,10 +1,10 @@
-# TuntunClaw
+# 囤囤钳 TuntunClaw
 
 <div align="center">
-  <img src="https://huggingface.co/datasets/Datawhale/tuntunclaw-assets/resolve/main/assets/fig.png" alt="fig1" style="width: 40%;" />
+  <img src="assets/images/system-overview.png" alt="囤囤钳系统概览" style="width: 40%;" />
 </div>
 
-# 囤囤钳 TuntunClaw
+来源：[Datawhale 囤囤钳项目素材库](https://huggingface.co/datasets/Datawhale/tuntunclaw-assets)。
 
 囤囤钳（TuntunClaw）是一款面向真实家庭生活场景打造的全屋具身家庭小助手。项目基于 OpenClaw 人工智能操作系统构建，将自然语言交互、视觉理解、目标分割、抓取推理、MuJoCo 仿真执行与网页端实时可视化整合到同一条工作链路中，用于展示“从一句中文指令到机械臂完成家庭物资整理任务”的完整闭环。
 
@@ -200,4 +200,3 @@ http://127.0.0.1:8000/
 囤囤钳希望呈现的不是“机械臂完成一个动作”这么简单，而是一个更贴近家庭日常生活的具身智能愿景：让机器人真正成为家庭成员的协作伙伴，承担那些繁琐、琐碎、需要长期记忆和重复劳动的后勤工作。
 
 在这一意义上，囤囤钳是 OpenClaw 面向家庭场景的一次具体落地尝试，也是具身智能从实验室演示走向生活服务的一步探索。
-

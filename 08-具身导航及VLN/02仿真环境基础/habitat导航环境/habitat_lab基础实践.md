@@ -1,6 +1,6 @@
 # Habitat-lab基础实践
 
-### 在了解habitat_lab的基本环境、yaml配置以及habitat_lab基本测试后，本章中将完成从habitat-lab入门到上手这个目标，以Habitat-lab 0.2.5 版本（当前应用最广泛的稳定版）为基准，从完整的智能体Point-NAV导航到引入RL框架的智能体导航。（后续采用大语言模型做导航，不采用RL算法，RL框架仅用作环境构建，因为有一些项目也是用了RL框架但是并没有进行RL训练，所以对采用RLEnv创建任务执行环境的也做一个讲解。）
+在了解 habitat_lab 的基本环境、yaml 配置以及 habitat_lab 基本测试后，本章将以 Habitat-Lab 0.2.5 为基准，完成智能体 Point-NAV 导航和基于 RLEnv 的任务环境构建。
 
 ## 一、Habitat-lab的Agent全自动导航
 

@@ -34,9 +34,9 @@ sudo ln -fs /usr/src/linux-headers-5.15.0-156 source
 如果系统坏掉了：
 
 ```
-# mkdir -p /mnt/c/WSL_Backup && tar -czf /mnt/c/WSL_Backup/home_kewei_backup_$(date +%Y%m%d_%H%M%S).tar.gz -C /home kewei
+# mkdir -p /mnt/c/WSL_Backup && tar -czf /mnt/c/WSL_Backup/home_backup_$(date +%Y%m%d_%H%M%S).tar.gz -C "$HOME" .
 # 建议用这个备份
-rsync -ah --info=progress2 /home/kewei/ /mnt/c/WSL_Backup/kewei/
+rsync -ah --info=progress2 "$HOME/" /mnt/c/WSL_Backup/home/
 wsl --list --verbose
 wsl --shutdown
 wsl --unregister Ubuntu-22.04
@@ -44,7 +44,7 @@ wsl --unregister Ubuntu-22.04
 # 重新构建
 
 cd ~
-tar -xzf /mnt/c/WSL_Backup/home_kewei_backup_*.tar.gz -C /home/kewei/ --strip-components=1
+tar -xzf /mnt/c/WSL_Backup/home_backup_*.tar.gz -C "$HOME" --strip-components=1
 ```
 
 

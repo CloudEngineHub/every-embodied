@@ -1,4 +1,10 @@
-快速下载download\_hf\_files.py
+# 按文件范围下载 Hugging Face 仓库
+
+本页汇总只下载指定目录或文件的命令，适合模型仓库和数据集较大、但实验只需要其中一部分的场景。
+
+## 常用命令
+
+快速下载 `download_hf_files.py`：
 
 python3 download\_hf\_files.py IPEC-COMMUNITY/spatialvla-4b-224-pt main --repo-type model --download\_path /data1/spatialvla-4b-224-pt
 
@@ -6,9 +12,10 @@ python3 download\_hf\_files.py google/gemma-3-1b-it main --repo-type model --dow
 
 python3 download\_hf\_files.py lerobot/smolvla_base main --repo-type model --download\_path ./smolvla_base
 
-python3 download\_hf\_files.py nikriz/aopoli-lv-libero_combined_no_noops_lerobot_v21 main --repo-type dataset --download\_path /home/vipuser/217data/aopoli-lv-libero
+export DATA_ROOT=/path/to/data
+python3 download_hf_files.py nikriz/aopoli-lv-libero_combined_no_noops_lerobot_v21 main --repo-type dataset --download_path "$DATA_ROOT/aopoli-lv-libero"
 
-python3 hf_downloader.py nikriz/aopoli-lv-libero_combined_no_noops_lerobot_v21 main --repo-type dataset --download\_path /home/vipuser/217data/aopoli-lv-libero-new
+python3 hf_downloader.py nikriz/aopoli-lv-libero_combined_no_noops_lerobot_v21 main --repo-type dataset --download_path "$DATA_ROOT/aopoli-lv-libero-new"
 
 python3 hf_downloader.py openvla/modified_libero_rlds main --repo-type dataset --download_path ./modified_libero_rlds_data
 

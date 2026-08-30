@@ -123,7 +123,7 @@ SmolVLA 在 ROCm 上训练时，记录：
 
 ![SmolVLA 加权采样后蓝杯成功关键帧](./assets/smolvla_blue_success_sequence.jpg)
 
-图 3：加权采样后的蓝杯成功序列。它适合放在教程里说明为什么需要按指令颜色拆开评估。
+图 3：加权采样后的蓝杯成功序列，用于说明按指令颜色拆分评估的必要性。
 
 ## Checkpoint
 

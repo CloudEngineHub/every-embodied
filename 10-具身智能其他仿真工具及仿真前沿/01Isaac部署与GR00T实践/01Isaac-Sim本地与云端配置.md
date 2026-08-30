@@ -76,8 +76,10 @@ Windows 初学者优先推荐 Workstation 安装包，因为它最接近普通�
 第一步，下载 Windows standalone 包：
 
 ```powershell
-New-Item -ItemType Directory -Force C:\isaacsim-downloads
-cd C:\isaacsim-downloads
+$ISAAC_DOWNLOADS = Join-Path $HOME "isaacsim-downloads"
+$ISAAC_ROOT = Join-Path $HOME "isaacsim"
+New-Item -ItemType Directory -Force "$ISAAC_DOWNLOADS"
+Set-Location "$ISAAC_DOWNLOADS"
 Invoke-WebRequest `
   -Uri "https://downloads.isaacsim.nvidia.com/isaac-sim-standalone-5.1.0-windows-x86_64.zip" `
   -OutFile "isaac-sim-standalone-5.1.0-windows-x86_64.zip"
@@ -88,10 +90,10 @@ Invoke-WebRequest `
 第二步，解压并执行安装后处理：
 
 ```powershell
-mkdir C:\isaacsim
-cd C:\isaacsim-downloads
-tar -xvzf "isaac-sim-standalone-5.1.0-windows-x86_64.zip" -C C:\isaacsim
-cd C:\isaacsim
+New-Item -ItemType Directory -Force "$ISAAC_ROOT"
+Set-Location "$ISAAC_DOWNLOADS"
+tar -xvzf "isaac-sim-standalone-5.1.0-windows-x86_64.zip" -C "$ISAAC_ROOT"
+Set-Location "$ISAAC_ROOT"
 .\post_install.bat
 .\isaac-sim.selector.bat
 ```
@@ -252,10 +254,11 @@ Checkpoint 4：如果这里看到系统检查通过，说明 Docker、NVIDIA Con
 Windows 本地电脑连接云端 Isaac Sim 时，下载这个客户端：
 
 ```powershell
-New-Item -ItemType Directory -Force C:\isaacsim-downloads
+if (-not $ISAAC_DOWNLOADS) { $ISAAC_DOWNLOADS = Join-Path $HOME "isaacsim-downloads" }
+New-Item -ItemType Directory -Force "$ISAAC_DOWNLOADS"
 Invoke-WebRequest `
   -Uri "https://downloads.isaacsim.nvidia.com/isaacsim-webrtc-streaming-client-1.1.5-windows-x64.exe" `
-  -OutFile "C:\isaacsim-downloads\isaacsim-webrtc-streaming-client-1.1.5-windows-x64.exe"
+  -OutFile (Join-Path $ISAAC_DOWNLOADS "isaacsim-webrtc-streaming-client-1.1.5-windows-x64.exe")
 ```
 
 Linux 客户端下载这个 AppImage：

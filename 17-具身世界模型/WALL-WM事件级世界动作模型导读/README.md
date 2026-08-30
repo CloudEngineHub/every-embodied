@@ -17,7 +17,7 @@ WALL-WM 对应论文 **WALL-WM: Carving World Action Modeling at the Event Joint
 | 开源边界 | WALL-X/WALL-OSS 代码和模型可用；暂未看到单独 WALL-WM checkpoint、事件级数据生态和完整训练 recipe 明确放齐 |
 | 推荐处理 | 作为世界模型方法导读，不建议当前写成手把手复现教程 |
 
-这里必须讲得很实在：WALL-WM 的论文、PDF 和 WALL 系列工程入口是公开的；但如果从复现实操角度看，当前不能简单写成“WALL-WM 已完整开源，大家可以直接复现论文结果”。教程里最好把它定位成方法导读和后续跟踪入口。
+WALL-WM 的论文、PDF 和 WALL 系列工程入口已经公开，但现有材料尚不足以直接复现全部论文结果。本章据此定位为方法导读和公开资源入口。
 
 ## 2. 为什么它叫 World Action Model
 

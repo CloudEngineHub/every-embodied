@@ -1,291 +1,162 @@
-﻿# LeRobot MuJoCo 训练ACT、SmolVLA、Pi0教程
-本仓库提供了一个最小可运行示例：用于采集示教数据，并在自定义数据集上训练（或微调）视觉-语言-动作（VLA）模型。
+# 在 MuJoCo 中采集数据并训练 ACT、Pi0 与 SmolVLA
 
-## 目录
-- [安装](#安装)
-- [更新计划](#更新计划)
-- [1. 采集示教数据](#1-采集示教数据)
-- [2. 回放数据](#2-回放数据)
-- [3. 训练 Action-Chunking-Transformer（ACT）](#3-训练-action-chunking-transformeract)
-- [4. 部署 ACT 策略](#4-部署-act-策略)
-- [5-6. 语言条件环境中的采集与可视化](#5-6-语言条件环境中的采集与可视化)
-- [模型与数据集](#模型与数据集)
-- [7. 训练与部署 pi_0](#7-训练与部署-pi_0)
-- [8. 训练与部署 SmolVLA](#8-训练与部署-smolvla)
-- [致谢](#致谢)
+本章给出一条可执行的机器人模仿学习流程：在 MuJoCo 中采集示教，检查 LeRobot 数据集，训练 ACT、Pi0 或 SmolVLA，再把策略接回同一环境运行。完成本章后，读者应能辨认观测、状态和动作字段，并能确认训练与部署使用了相同的数据约定。
 
-## 安装
-我们在 **Python 3.10** 上测试通过。
+## 1. 学习路径
 
-不建议直接使用 `pip install lerobot`，可能会报错。
+| 阶段 | 入口 | 产物 |
+| --- | --- | --- |
+| OMY 示教采集 | [1.collect_data.ipynb](1.collect_data.ipynb) | `demo_data` 数据集 |
+| 其他机械臂采集 | [Nova5](1.collect_data_nova5.ipynb)、[xArm6](1.collect_data_xarm6.ipynb)、[xArm7](1.collect_data_xarm7.ipynb)、[Franka XR](1.collect_data_franka_xr.ipynb) | 对应机械臂的 LeRobot 数据集 |
+| 数据回放 | [OMY](2.visualize_data-omy.ipynb)、[Nova5](2.visualize_data-nova5.ipynb)、[xArm7](2.visualize_data-xarm7.ipynb) | 图像、状态和动作的同步检查 |
+| ACT 训练 | [3.train.ipynb](3.train.ipynb) | ACT 权重与训练曲线 |
+| ACT 部署 | [4.deploy.ipynb](4.deploy.ipynb) | 环境闭环回放 |
+| 语言条件数据 | [5.language_env.ipynb](5.language_env.ipynb)、[6.visualize_data.ipynb](6.visualize_data.ipynb) | 含任务文本的数据集 |
+| Pi0 | [7.pi0.ipynb](7.pi0.ipynb)、[pi0_omy.yaml](pi0_omy.yaml) | Pi0 微调权重 |
+| SmolVLA | [8.smolvla.ipynb](8.smolvla.ipynb)、[smolvla_omy.yaml](smolvla_omy.yaml) | SmolVLA 微调权重 |
+| XR 遥操作 | [9.teleop_xr.ipynb](9.teleop_xr.ipynb) | XR 控制与采集流程 |
 
-安装 MuJoCo 相关依赖和 lerobot：
+第一次学习建议按 OMY 采集、OMY 回放、ACT 训练、ACT 部署的顺序完成，再进入语言条件模型和其他机械臂。
+
+## 2. 环境安装
+
+仓库的 [requirements.txt](requirements.txt) 固定了 Python 依赖，其中 MuJoCo 版本为 3.1.6，LeRobot 固定到指定提交。建议创建独立环境：
+
 ```bash
-conda create -n py310 python=3.10
+conda create -n lerobot-mujoco python=3.10 -y
+conda activate lerobot-mujoco
 pip install -r requirements.txt
-conda install jupyterlab
-pip install ipywidgets ipykernel
-python -m ipykernel install --user --name py310 --display-name "py310"
+pip install jupyterlab ipywidgets ipykernel
+python -m ipykernel install --user --name lerobot-mujoco --display-name "LeRobot MuJoCo"
 jupyter lab .
-# 在当前目录启动
-
-
-# 如果torch的cuda有问题：
-pip uninstall -y torch torchvision torchaudio
-pip install --no-cache-dir --force-reinstall --index-url https://download.pytorch.org/whl/cu124 torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0
-python -c "import torch; print(torch.__version__, torch.version.cuda, torch.cuda.is_available())"
-
-
 ```
 
-请确认 MuJoCo 版本为 **3.1.6**。
+`requirements.txt` 中的 PyTorch 安装源面向 CUDA。使用其他计算后端时，应先按对应平台安装 PyTorch，再安装其余依赖，避免安装命令覆盖已有框架。
 
-解压资源文件：
+解压场景资源：
+
 ```bash
 cd asset/objaverse
 unzip plate_11.zip
 ```
 
-## 更新计划
-- [x] Viewer 更新
-- [x] 增加多种 mug、plate，对应不同语言指令
-- [x] 增加 pi_0 训练与推理
-- [x] 增加 SmolVLA
+启动 Notebook 前检查：
 
-## 1. 采集示教数据
-运行 [1.collect_data.ipynb](1.collect_data.ipynb)
-
-在给定环境中采集示教数据。任务是抓起杯子并放到盘子上。当杯子在盘子上、夹爪打开且末端执行器位于杯子上方时，环境判定成功。
-
-<img src="./media/teleop.gif" width="480" height="360">
-
-键位说明：
-- `WASD`：x-y 平面移动
-- `R/F`：z 轴移动
-- `Q/E`：倾斜
-- `方向键`：其余旋转
-- `空格`：切换夹爪状态
-- `Z`：重置环境，并丢弃当前回合缓存数据
-
-叠加图像说明：
-- 右上：Agent 视角
-- 右下：腕部（第一人称）视角
-- 左上：侧视图
-- 左下：俯视图
-
-数据集结构：
-```python
-fps = 20,
-features={
-    "observation.image": {
-        "dtype": "image",
-        "shape": (256, 256, 3),
-        "names": ["height", "width", "channels"],
-    },
-    "observation.wrist_image": {
-        "dtype": "image",
-        "shape": (256, 256, 3),
-        "names": ["height", "width", "channel"],
-    },
-    "observation.state": {
-        "dtype": "float32",
-        "shape": (6,),
-        "names": ["state"], # x, y, z, roll, pitch, yaw
-    },
-    "action": {
-        "dtype": "float32",
-        "shape": (7,),
-        "names": ["action"], # 6 个关节角 + 1 个夹爪
-    },
-    "obj_init": {
-        "dtype": "float32",
-        "shape": (6,),
-        "names": ["obj_init"], # 仅物体初始位置，训练中不使用
-    },
-},
+```bash
+python -c "import mujoco; print(mujoco.__version__)"
+python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
 ```
 
-数据默认保存在 `./demo_data` 目录。仓库中已提供示例数据：[demo_data_example](./demo_data_example/)。
+## 3. 采集示教数据
 
-## 2. 回放数据
-运行 [2.visualize_data.ipynb](2.visualize_data.ipynb)
+打开 [1.collect_data.ipynb](1.collect_data.ipynb)，按顺序运行环境、数据集和控制循环单元。任务要求机械臂抓起杯子并放到盘子上；杯子位置、夹爪释放状态和末端高度共同参与成功判定。
 
-<img src="./media/data.gif" width="480" height="360"></img>
+<img src="./media/teleop.gif" width="480" height="360" alt="OMY 键盘示教">
 
-在重建后的仿真场景中可视化你的动作。主窗口会回放动作；右上和右下叠加图像来自数据集。
+常用键位：
 
-## 3. 训练 Action-Chunking-Transformer（ACT）
-运行 [3.train.ipynb](3.train.ipynb)
+- `W/A/S/D`：在水平面移动；
+- `R/F`：沿竖直方向移动；
+- `Q/E` 与方向键：调整姿态；
+- `Space`：切换夹爪；
+- `Z`：重置环境并丢弃当前回合缓存。
 
-**大约需要 30~60 分钟**。
-
-在自定义数据集上训练 ACT。示例中 `chunk_size=10`。
-
-训练好的 checkpoint 会保存在 `./ckpt/act_y`。
-
-可通过与数据集真值动作对比，评估策略误差。
-
-<image src="./media/inference.png"  width="480" height="360">
-
-<details>
-    <summary>PicklingError: Can't pickle &lt;function &lt;lambda&gt;...&gt;</summary>
-如遇 pickling 错误，请将 `num_workers` 设为 `0`，例如：
+示例数据以 20 Hz 保存，包含两个相机、六维状态、七维动作和物体初始状态：
 
 ```python
-dataloader = torch.utils.data.DataLoader(
-    dataset,
-    num_workers=0, # 4
-    batch_size=64,
-    shuffle=True,
-    pin_memory=device.type != "cpu",
-    drop_last=True,
-)
+features = {
+    "observation.image": {"dtype": "image", "shape": (256, 256, 3)},
+    "observation.wrist_image": {"dtype": "image", "shape": (256, 256, 3)},
+    "observation.state": {"dtype": "float32", "shape": (6,)},
+    "action": {"dtype": "float32", "shape": (7,)},
+    "obj_init": {"dtype": "float32", "shape": (6,)},
+}
 ```
-</details>
 
-## 4. 部署 ACT 策略
-运行 [4.deploy.ipynb](4.deploy.ipynb)
+采集完成后确认：
 
-如果没有可用于训练的 GPU，可从 Google Drive 下载 checkpoint：
-- https://drive.google.com/drive/folders/1UqxqUgGPKU04DkpQqSWNgfYMhlvaiZsp?usp=sharing
+1. 每个回合都有连续递增的帧索引；
+2. 两路图像与状态、动作使用相同时间步；
+3. 动作单位、关节顺序和夹爪符号与环境一致；
+4. 只有完成任务的示教才进入成功数据集。
 
-<img src="./media/rollout.gif" width="480" height="360" controls></img>
+## 4. 回放并检查数据
 
-## 5-6. 语言条件环境中的采集与可视化
-- [5.language_env.ipynb](5.language_env.ipynb)：键盘遥操作采集数据（键位与第一个环境一致）
-- 1中只采集一条数据，5中采集20条数据，两个任务，红杯子和蓝杯子
-- [6.visualize_data.ipynb](6.visualize_data.ipynb)：可视化已采集数据
+根据机器人选择对应的 `2.visualize_data-*.ipynb`。回放时同时观察场景运动、相机画面和动作曲线。
 
-**数据示例**
+<img src="./media/data.gif" width="480" height="360" alt="示教数据回放">
 
-<img src="./media/data_v2.gif" width="480" height="360" controls></img>
+重点检查三类问题：
 
-## 模型与数据集
-| Model 🤗                                                      | Dataset 🤗                                                    |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [pi_0 finetuned](https://huggingface.co/Jeongeun/omy_pnp_pi0) | [dataset](https://huggingface.co/datasets/Jeongeun/omy_pnp_language) |
-| [smolvla finetuned](https://huggingface.co/Jeongeun/omy_pnp_smolvla) | 同上                                                         |
+- 图像是否发生错帧、黑帧或相机顺序交换；
+- 状态与动作维度是否与配置一致；
+- 回放轨迹是否能够复现采集时的运动方向。
 
-th>
-  </tr>
-  <tr>
-    <td><a href="https://huggingface.co/datawhale-eai/pi0_datawhale_eai">pi_0 finetuned</a></td>
-    <td><a href="https://huggingface.co/datasets/datawhale-eai/datawhale_eai_pnp_language">datawhale_eai_pnp_language</a></td>
-  </tr>
-  <tr>
-    <td><a href="https://huggingface.co/datawhale-eai/smolvla_datawhale_eai">smolvla finetuned</a></td>
-    <td>同上</td>
-  </tr>
-</table>
+这些检查应在训练前完成。字段错误进入训练后，损失仍可能下降，但策略无法正确控制环境。
 
-## 7. 训练与部署 pi_0
-- [train_model.py](train_model.py)：训练脚本
-- [pi0_datawhale_eai.yaml](pi0_datawhale_eai.yaml)：训练配置
-- [7.pi0.ipynb](7.pi0.ipynb)：部署示例
+## 5. 训练与部署 ACT
 
-训练命令：
+打开 [3.train.ipynb](3.train.ipynb) 训练 ACT。示例使用动作分块，将一段未来动作作为一个训练目标。训练前根据显存调整 `batch_size`；在交互环境中遇到数据加载进程错误时，可将 `num_workers` 设为 `0`。
+
+训练完成后，打开 [4.deploy.ipynb](4.deploy.ipynb)，从权重目录加载策略并运行闭环环境。
+
+<img src="./media/rollout.gif" width="480" height="360" alt="ACT 闭环回放">
+
+部署时需要与训练保持一致的内容包括：相机名称与顺序、图像尺寸、状态维度、动作维度、归一化统计、动作块长度和控制频率。
+
+## 6. 语言条件数据
+
+[5.language_env.ipynb](5.language_env.ipynb) 在采集帧中加入任务文本，用于区分不同颜色杯子的操作指令；[6.visualize_data.ipynb](6.visualize_data.ipynb) 用于检查语言字段、图像和动作是否对齐。
+
+<img src="./media/data_v2.gif" width="480" height="360" alt="语言条件数据回放">
+
+语言条件训练前，应统一指令模板。表示同一目标的文本可以有多种自然语言表述，但颜色、对象和空间关系不能相互矛盾。
+
+## 7. 训练 Pi0
+
+训练入口为 [train_model.py](train_model.py)，配置文件为 [pi0_omy.yaml](pi0_omy.yaml)：
+
 ```bash
-python train_model.py --config_path pi0_datawhale_eai.yaml
+python train_model.py --config_path pi0_omy.yaml
 ```
 
-部署效果：
+[7.pi0.ipynb](7.pi0.ipynb) 展示依赖、配置、训练调用和策略加载过程。运行前需要填写实验记录服务的账号配置，或关闭对应日志功能。
 
-<img src="./media/rollout2.gif" width="480" height="360" controls></img>
+<img src="./media/rollout2.gif" width="480" height="360" alt="Pi0 策略回放">
 
-训练日志：
+## 8. 训练 SmolVLA
 
-<image src="./media/wandb.png"  width="480" height="360">
+SmolVLA 使用同一训练入口和 [smolvla_omy.yaml](smolvla_omy.yaml)：
 
-配置示例：
-```yaml
-dataset:
-  repo_id: datawhale_eai_pnp_language
-  root: ./demo_data_language
-policy:
-  type : pi0
-  chunk_size: 5
-  n_action_steps: 5
-
-save_checkpoint: true
-output_dir: ./ckpt/pi0_datawhale_eai
-batch_size: 16
-job_name : pi0_datawhale_eai
-resume: false
-seed : 42
-num_workers: 8
-steps: 20_000
-eval_freq: -1
-log_freq: 50
-save_checkpoint: true
-save_freq: 10_000
-use_policy_training_preset: true
-
-wandb:
-  enable: true
-  project: pi0_datawhale_eai
-  entity: <your_wandb_entity>
-  disable_artifact: true
-```
-
-## 8. 训练与部署 SmolVLA
-- [train_model.py](train_model.py)：训练脚本
-- [smolvla_datawhale_eai.yaml](smolvla_datawhale_eai.yaml)：训练配置
-- [8.smolvla.ipynb](8.smolvla.ipynb)：部署示例
-
-训练命令：
 ```bash
-python train_model.py --config_path smolvla_datawhale_eai.yaml
+python train_model.py --config_path smolvla_omy.yaml
 ```
 
-部署效果：
+[8.smolvla.ipynb](8.smolvla.ipynb) 展示模型加载、训练和部署。切换模型时不要复用不匹配的归一化统计或动作配置。
 
-<img src="./media/rollout3.gif" width="480" height="360" controls></img>
+<img src="./media/rollout3.gif" width="480" height="360" alt="SmolVLA 策略回放">
 
-训练日志：
+## 9. 闭环评估
 
-<image src="./media/wandb2.png"  width="480" height="360">
+模型训练结束后，使用独立种子和固定成功判定运行多回合评估。建议至少记录：
 
-配置示例：
-```yaml
-dataset:
-  repo_id: datawhale_eai_pnp_language
-  root: ./demo_data_language
-policy:
-  type : smolvla
-  chunk_size: 5
-  n_action_steps: 5
-  device: cuda
+- 总回合数与成功回合数；
+- 接近、抓取、抬升、搬运和放置阶段是否完成；
+- 每回合种子、终止原因和视频路径；
+- 使用的权重、数据配置和归一化统计。
 
-save_checkpoint: true
-output_dir: ./ckpt/smolvla_datawhale_eai
-batch_size: 16
-job_name : smolvla_datawhale_eai
-resume: false
-seed : 42
-num_workers: 8
-steps: 20_000
-eval_freq: -1
-log_freq: 50
-save_checkpoint: true
-save_freq: 10_000
-use_policy_training_preset: true
+更完整的诊断方法见 [策略诊断与物理成功评估](09策略诊断与物理成功评估.md)。
 
-wandb:
-  enable: true
-  project: smolvla_datawhale_eai
-  entity: <your_wandb_entity>
-  disable_artifact: true
-```
+## 10. 本章检查点
 
+- 能采集至少一个成功示教并在回放中复现动作。
+- 能说明图像、状态、动作和语言字段的形状与含义。
+- 能从同一数据约定训练并加载 ACT、Pi0 或 SmolVLA。
+- 能用固定回合协议报告闭环成功率，而不是只观察训练损失。
 
+## 参考与资源来源
 
-后续，我们还会为大家补充展示多条数据训练ACT和diffusion训练抓取实验。敬请期待。
-
-
-
-## 致谢
-
-- Robotis-OMY 机械臂资源来自 [robotis_mujoco_menagerie](https://github.com/ROBOTIS-GIT/robotis_mujoco_menagerie/tree/main)
-- [MuJoco Parser Class](./mujoco_env/mujoco_parser.py) 改自 [yet-another-mujoco-tutorial-v3](https://github.com/sjchoi86/yet-another-mujoco-tutorial-v3)
-- 教程参考了 [lerobot examples](https://github.com/huggingface/lerobot/tree/main/examples)
-- plate 与 mug 资源来自 [Objaverse](https://objaverse.allenai.org/)
+- OMY 机械臂模型：[robotis_mujoco_menagerie](https://github.com/ROBOTIS-GIT/robotis_mujoco_menagerie)
+- MuJoCo 解析器参考：[yet-another-mujoco-tutorial-v3](https://github.com/sjchoi86/yet-another-mujoco-tutorial-v3)
+- 训练框架：[LeRobot](https://github.com/huggingface/lerobot)
+- 杯子与盘子资源：[Objaverse](https://objaverse.allenai.org/)

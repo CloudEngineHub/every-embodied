@@ -22,7 +22,7 @@
 | 代码 | 截至 2026-07-18，官方项目页未提供 GitHub/Code 链接 |
 | 相关开源入口 | [NVlabs/mimicgen](https://github.com/NVlabs/mimicgen) 是原始 MimicGen 的官方仓库，可用于理解“少量示教扩增”谱系 |
 
-这里需要特别说明：用户现在如果想完整复刻 HumanoidMimicGen 论文结果，最理想的路径还是等官方代码、benchmark 环境和数据生成脚本发布。当前教程的定位是方法导读和复现路线预埋，不把它写成已经可以一键跑通的工程教程。读者可以先学习 MimicGen / DexMimicGen / robosuite / MuJoCo / cuRobo 的相关接口，等官方仓库放出后再补齐运行步骤。
+本章定位为 HumanoidMimicGen 方法导读与复现准备，重点梳理 MimicGen、DexMimicGen、robosuite、MuJoCo 和 cuRobo 的接口关系。官方代码、基准环境与数据生成脚本发布后，可按本章给出的模块边界补充运行命令和评估步骤。
 
 ## 2. 官方效果预览
 
