@@ -2,7 +2,7 @@
 
 > 本文导读论文 **τ0-WM: A Unified Video-Action World Model for Robotic Manipulation**。它来自 Shanghai Innovation Institute 与 AGIBOT Finch，项目页发布时间为 2026-05-31。官方把它定位为一个面向机器人操作的开源 video-action world model：既能预测动作，也能预测动作导致的未来视频，还能在测试时用 imagined future 评估和修正动作。
 
-## 1. 先说结论
+## 1. 统一动作生成、视频预测与动作评估
 
 τ0-WM 不是单纯的 VLA，也不是只会生成视频的世界模型。它试图把三件事放到同一个框架里：
 
@@ -335,9 +335,9 @@ bash scripts/train.sh main.py \
 
 这部分对复现非常关键。很多 VLA / WAM 复现失败不是模型跑不起来，而是 action space 对不齐：坐标系、四元数顺序、夹爪开合方向、绝对/相对动作混了，结果策略看起来“能推理”，但动作完全不可执行。
 
-## 11. 当前不建议怎么复现
+## 11. 分层复现路线
 
-这篇暂时不建议大家把完整论文实验重跑一遍，原因有三个。
+当前公开资产尚不足以完整重跑论文实验，主要有三个原因。
 
 第一，模型和依赖很重。Wan2.2-TI2V-5B + VAM 权重不是普通笔记本任务，真实部署还涉及多视角相机、机器人状态接口和 server-client 延迟。
 

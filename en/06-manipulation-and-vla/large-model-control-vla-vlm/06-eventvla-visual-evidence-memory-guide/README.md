@@ -15,7 +15,7 @@ After completing this section, everyone needs to focus on one sentence:
 | Code | [InternRobotics/EventVLA](https://github.com/InternRobotics/EventVLA) |
 | Model Weights | [Hugging Face: ganlinyang/EventVLA](https://huggingface.co/ganlinyang/EventVLA) |
 | Dataset | [Hugging Face: RoboTwin-MeM](https://huggingface.co/datasets/ganlinyang/RoboTwin-MeM) |
-| Open Source Boundaries | Simulation training/ evaluation code, RoboTwin-MeM data, and checkpoint have been released; real-world inference/evaluation code and real-world fine-tuned model are still in Todo |
+| Open-source scope | Simulation training and evaluation code, RoboTwin-MeM data, and checkpoints are available; the official README still lists real-world inference and evaluation code and real-world fine-tuned weights as forthcoming |
 
 Therefore, EventVLA can currently be regarded as an "open-source project for running simulation evaluations," but it is not suitable to directly promise that everyone can completely reproduce the machine results.
 
@@ -173,7 +173,7 @@ These tasks cover scenarios such as transient recognition, event counting, in-co
 
 Source: [EventVLA arXiv HTML](https://arxiv.org/html/2606.20092v1).
 
-The section on real robots explains that this method is not purely a simulation concept, but the current open-source boundaries need to be clarified: The real-world inference/evaluation code and the real-world fine-tuned model in the official README are still pending. Therefore, it is not recommended to say “Everyone can directly reproduce the real-world experiment” in the tutorial. A more appropriate statement would be:
+The real-robot experiments show that the method is not only a simulation concept. However, the official README still lists real-world inference and evaluation code and real-world fine-tuned weights as forthcoming. The public assets therefore support simulation reproduction and real-robot method analysis, but not a complete official-asset reproduction of the real-robot experiments. This leads to two practical learning paths:
 
 - Simulation evaluation can be conducted using the official code and released checkpoints.
 - Real robot experiments can start by reading papers and video materials, waiting for the official deployment code and model to be available.

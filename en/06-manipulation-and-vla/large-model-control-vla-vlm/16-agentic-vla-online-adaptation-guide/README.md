@@ -2,30 +2,30 @@
 
 > Introduction to this paper: **Agentic-VLA: Efficient Online Adaptation for Vision-Language-Action Models**. The arXiv paper ID is `2605.22896v1`, submitted on May 21, 2026. The authors are Ruofan Jin and Zaixi Zhang.
 
-## 1. Let's start with the conclusion: It should be placed in the VLA section
+## 1. What Problem Online Adaptation Solves
 
 Agentic-VLA is neither a world model nor a new robot simulation tool. It addresses a core issue after the deployment of VLA: if an existing VLA performs poorly in new tasks or scenarios, can it no longer rely entirely on manual retraining, but instead adapt more quickly through online interaction, language feedback, dynamic rewards, and experience memory.
 
 Its key term is **online adaptation**. The traditional VLA training process is usually:
 
 ```text
-专家示教数据 -> SFT / BC 训练 -> 离线评测 -> 部署
+Expert demonstrations -> SFT / BC -> offline evaluation -> deployment
 ```
 
 Agentic-VLA wants to change the second half to:
 
 ```text
-OpenVLA-OFT 基础策略
-    -> 新任务上线
-    -> 从 Experience Memory 检索相似任务权重
-    -> 在线 rollout
-    -> Language-Guided Exploration 给探索建议
-    -> Adaptive Reward Synthesis 生成阶段性奖励
-    -> GRPO 更新策略
-    -> 成功适应后的权重写回记忆库
+OpenVLA-OFT base policy
+    -> encounter a new task
+    -> retrieve similar task weights from Experience Memory
+    -> collect online rollouts
+    -> receive exploration guidance
+    -> synthesize stage-aware rewards
+    -> update the policy with GRPO
+    -> write the adapted policy back to memory
 ```
 
-Therefore, it should be classified under `06-策略抓取或抓取VLA/大模型控制、VLA、VLM`, following VisualThink-VLA. It is related to LWD, PRTS, and RAW-Dream, but with a different focus:
+It is related to LWD, PRTS, and RAW-Dream through their shared goal of improving policies beyond offline behavior cloning, but each takes a different route:
 
 - LWD explains how to use deployment data to perform offline-to-online RL for real robot clusters.
 - PRTS discusses how to enable VLA's awareness of target accessibility during the pre-training phase.

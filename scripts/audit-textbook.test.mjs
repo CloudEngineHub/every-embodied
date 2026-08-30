@@ -78,6 +78,28 @@ test("collects the English tree only when explicitly requested", () => {
   fs.rmSync(root, { recursive: true, force: true });
 });
 
+test("rejects mixed Chinese and English prose but ignores code and link targets", () => {
+  const root = fixture();
+  write(root, "en/01-basics/clean.md", [
+    "# Clean English",
+    "",
+    "Run `python 中文目录/train.py` and open [the source](../中文目录/README.md).",
+  ].join("\n"));
+  write(root, "en/中文目录/README.md", "# Linked Target\n\nThis file verifies that link destinations are ignored.\n");
+  write(root, "en/01-basics/mixed.md", "# Mixed English\n\nThis physical常识 phrase requires revision.\n");
+
+  const report = auditRepository({
+    root,
+    markdownPaths: ["en/01-basics/clean.md", "en/01-basics/mixed.md"],
+    notebookPaths: [],
+  });
+  const findings = report.findings.filter((finding) => finding.category === "mixed-language-prose");
+  assert.equal(findings.length, 1);
+  assert.equal(findings[0].path, "en/01-basics/mixed.md");
+  assert.equal(report.summary.hardFailures, 1);
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
 test("accepts existing local media and reports external images", () => {
   const root = fixture();
   write(root, "01-基础/assets/demo.png", "not-a-real-png");

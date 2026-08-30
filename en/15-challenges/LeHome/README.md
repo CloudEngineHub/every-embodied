@@ -125,7 +125,7 @@ Recommendation order:
 
 1. Introduction/competition baseline: `dataset_challenge_merged`
 2. Requires in-depth experiments: add `observation.top_depth` on top of `merged`
-3. Needs to重构 data by oneself: further study `dataset_challenge` that is not `merged`
+3. Rebuild the data locally: continue with `dataset_challenge` rather than `merged`.
 
 ### 2.6 Which type of task should be chosen for teaching start?
 
@@ -302,7 +302,7 @@ python -m scripts.eval \
 
 ### 3.7.1 Why Teaching Does Not Start Directly with All Four Categories Together
 
-Since the four categories are done together, they will be叠加 for those who are using it for the first time:
+Because the four categories are trained together, their memory and compute requirements accumulate for first-time users:
 
 - Four data directories
 - Four model output directories
@@ -618,7 +618,7 @@ From the perspective of reproduction of ACT / Diffusion Policy papers and engine
 - Data loading time
 - Update time
 - Steps/sec or samples/sec
-- Success rate of阶段性 eval for checkpoint
+- Success rate from intermediate checkpoint evaluation
 - Average return `return`
 - Episode length
 - Success rate for different garments/categories
@@ -872,7 +872,7 @@ Then it may not be worth continuing to burn cards indefinitely.
 
 ## 3.15 Reference and Review of Public High-Score Solutions
 
-This section compiles the LeHome Challenge solutions that were available for public access on 2026-05-13. Let's clarify the findings first: **No complete open-source solutions were found for the top 1 to 3 places on the official rankings**. Among the publicly available materials, the most valuable references are the reviews of teams close to the top, the VLA improvement repository, and several参赛 repositories that can be used as comparators.
+This section compiles the LeHome Challenge solutions that were publicly accessible on 2026-05-13. **No complete open-source solution was found for the top three positions on the official ranking.** The most useful public references are reviews from teams near the top, the VLA improvement repository, and several competition repositories that can serve as comparison baselines.
 
 These contents are not recommended to be treated as a "copy and you'll make it into the top three" formula. A more reasonable approach is: first run through the `ACT/DP + state + RGB` baseline in the previous chapter, and then enhance each item according to the methods in this section.
 
@@ -999,7 +999,7 @@ Reference link:
 
 - [alifestone/lehome-challenge_S.N.N](https://github.com/alifestone/lehome-challenge_S.N.N)
 
-This repository is basically consistent with the `S.N.N Neural Lab` in the official website list. The average score of the list is 40.38%. It is not a high-scoring solution, but it can serve as a reference material: both are参赛 projects based on the official environment, and the final scores may still be around 40%.
+This repository is consistent with the `S.N.N Neural Lab` entry on the official list, whose average score is 40.38%. It is useful as a public comparison project built on the official environment, even though its final score remains near 40%.
 
 For tutorials, such repositories remind everyone that the main challenge with LeHome is not "whether it can start training," but rather:
 

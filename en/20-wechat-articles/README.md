@@ -1,11 +1,17 @@
 # Publication Archive
 
-This directory contains public-facing articles derived from the textbook and open-source project work. The articles introduce research context, system capabilities, representative results, and a minimal entry point; detailed installation, training, and evaluation procedures remain in the corresponding textbook chapters.
+This directory preserves public-facing articles derived from the textbook and open-source project work. It is a publication archive rather than part of the core sequential curriculum.
 
 - [EBench Article](./01-ebench.md)
 
 ## Editorial Scope
 
-Publication material should link technical claims to the corresponding chapter, experiment, benchmark, paper, or official project page. Reported model results should identify the task suite, evaluation split, and metric. Images, videos, and tables should retain a public source or an explicit project attribution.
+The articles present research context, system capabilities, representative results, and a minimal entry point. Detailed installation, training, and evaluation procedures remain in the corresponding textbook chapters or official documentation.
 
-Before publication, check that project, paper, dataset, and demonstration links still work; move large downloads and complete setup instructions to the textbook chapter; and remove expired event information, private paths, and internal coordination notes.
+## Publication Checklist
+
+1. The title accurately names the project or method.
+2. Images, videos, and tables identify a public source or explicit project attribution.
+3. Project, paper, dataset, and demonstration links remain accessible.
+4. Model results identify the task suite, evaluation split, and metric.
+5. Large downloads and full setup instructions link back to the textbook or an official release page.

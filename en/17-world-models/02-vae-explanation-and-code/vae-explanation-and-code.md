@@ -72,9 +72,9 @@ This only ensures that the training samples can be mapped near certain latent va
 
 Therefore, three problems will arise:
 
-1. There may be voids in the潜 space.
+1. There may be voids in the latent space.
 2. Randomly sampled $z$ may not generate reasonable samples.
-3. When performing插 value on潜 variables between two samples, the middle region may be meaningless.
+3. When interpolating latent variables between two samples, the intermediate region may be meaningless.
 
 The regular AE can be reconstructed, but its generation is not guaranteed.
 

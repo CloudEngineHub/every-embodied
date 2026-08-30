@@ -16,7 +16,7 @@ The core contributions of the paper can be divided into three modules:
 | Expected Gain | How to balance known high-value points and unknown region boundaries | Incorporate future potential benefits of the frontier into path scoring to avoid solely focusing on known gains |
 | RRAG | Real active perception involves a dynamic graph, requiring online graph construction | Use Rapidly-exploring Random Annulus Graph for incremental sampling of traversable viewpoints and maintain multiple orientations |
 
-From the perspective of the tutorial location, it is most suitable to be placed under `08-具身导航及VLN/03前沿VLN复现`. Although the directory name contains VLN, this article is not a language navigation guide, but rather a more basic **active perception path planning**: it can be reused by tasks such as VLN, drone exploration, mobile robot mapping, and scene scanning.
+This chapter studies **active-perception path planning**, a foundation shared by vision-language navigation, drone exploration, mobile-robot mapping, and scene scanning. Its objective is not language grounding itself, but selecting informative viewpoints while maintaining a traversable path.
 
 ## 2. Paper and Project Entrance
 
@@ -257,7 +257,7 @@ In real spaces, there are often narrow doors, gaps between tables and chairs, an
 
 The figure illustrates the meaning of the fallback local sampling-based planner: when a simple straight line cannot connect two nodes, the local sampling planner attempts to find a feasible curve or detour path to reconnect the broken parts.
 
-This is crucial for active perception. Because if the graph breaks at narrow channels, no matter how strong NBS is, it can only search on the wrong graph; the planner will assume that certain areas are unreachable, thus missing subsequent information benefits. RRAG's fallback is not a bonus, but an important engineering module that enables "online构图" to be effective in cluttered environments.
+This is crucial for active perception. If the graph breaks at a narrow channel, even a strong NBS can only search an incorrect graph; the planner will treat reachable regions as inaccessible and miss their information gain. RRAG's fallback is therefore an essential engineering module for reliable online graph construction in cluttered environments.
 
 ## 11. Three Types of Active Perception Tasks
 

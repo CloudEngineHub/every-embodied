@@ -2,15 +2,16 @@
 
 > Introduction to this paper: **Dexora: Open-source VLA for High-DoF Bimanual Dexterity**. This work was conducted by teams from Tsinghua University, Beijing AI Institute, Hong Kong University, Shanghai Jiao Tong University, ShanghaiTech University, and Peking University. Its arXiv ID is `2605.18722v1`. The official ICRA 2026 award page listed Dexora as a candidate for the **Best Paper Award on Robot Manipulation and Locomotion**.
 
-## 1. First, let's state the conclusion: Why it deserves to be included in the VLA section
+## 1. Why High-DoF Bimanual Dexterity Is Difficult
 
 Dexora addresses a very clear issue: most existing VLA systems rely on single-arm grippers, dual-armed low-degree-of-freedom grippers, or dexterous hands. They can perform tasks such as grasping, placing, and opening drawers, but when multiple tasks require **dual-arm coordination** and **fine contact with multiple fingers**, the motion space, data collection, and training stability become challenging.
 
 Dexora aims to push VLA into a higher high-DoF robotic form:
 
 ```text
-双臂 + 双灵巧手 + 36 DoF
-    -> 切菜、揉面、拧瓶盖、从书架抽书、双手搬运、装配拆卸
+Dual arms + dual dexterous hands + 36 DoF
+    -> cutting, kneading, opening bottles, retrieving books,
+       bimanual transport, assembly, and disassembly
 ```
 
 Here, we need to correct a common misreading: In the promotional materials, it is often written as “6 degrees of freedom for both hands”, but in the papers and project pages, it is emphasized as **36-DoF dual-arm dual-hand system**. The `6-DoF Fingers` shown in the figure is a control condition, meaning that the finger with low degrees of freedom perform worse than `12-DoF Fingers` in the bottle cap turning task. It does not mean that Dexora has only 6 degrees of freedom.
@@ -21,7 +22,7 @@ The key to Dexora is not just replacing a more articulate VLM, but integrating t
 2. **Mixed teleoperated data collection**: The exoskeleton backpack handles large-scale dual-arm movements, while Apple Vision Pro markerless hand tracking handles fine motor actions.
 3. **Quality-aware VLA training**: The offline discriminator assigns a quality score to the teleoperation clip, and then converts this score into a weighted loss for the diffusion-transformer policy, reducing the negative impacts of jitter, failures, and collisions.
 
-Therefore, it should be classified under `06-策略抓取或抓取VLA/大模型控制、VLA、VLM`, rather than the world model section. It is the systems engineering and training paradigm of VLA for high-DoF hand manipulation, not an action condition video prediction model.
+Dexora studies the systems engineering and training paradigm of VLA for high-DoF bimanual manipulation. It connects the robot embodiment, teleoperation data, and quality-aware policy training in one pipeline rather than predicting future video conditioned on actions.
 
 ## 2. Paper, project, code, and data entry points
 
@@ -33,7 +34,7 @@ Therefore, it should be classified under `06-策略抓取或抓取VLA/大模型�
 | Dataset | [Dexora/Dexora_Real-World_Dataset](https://huggingface.co/datasets/Dexora/Dexora_Real-World_Dataset) | Hugging Face dataset, containing real teleoperation data and task-level views |
 | ICRA 2026 | [Award Finalists](https://2026.ieee-icra.org/awards/) | Shortlisted for Best Paper Award in Robot Manipulation and Locomotion |
 
-The open-source status can be understood as follows: the project page, papers, code entry, and real dataset pages are already public. Currently, it is more suitable for **method reading, data structure understanding, material review, and light code entry inspection**. Full reproduction of high-DoF real robot experiments still requires dual hands hardware, remote operation devices, MuJoCo digital twin assets, model weights, and training computing power. Tutorials should not promise “one-click reproduction of real robot cooking/lever turning effects”.
+The project page, paper, code entry, and real-world dataset are public and support method study, data-structure analysis, and lightweight code inspection. Full reproduction of high-DoF real-robot experiments still requires dual-arm and dual-hand hardware, teleoperation devices, MuJoCo digital-twin assets, model weights, and training compute.
 
 ## 3. Overview Diagram: Four Core Blocks of Dexora
 
@@ -265,7 +266,7 @@ Therefore, the tutorial currently recommends using Dexora as a **method breakdow
 | π0 / π0.5 | Strong general manipulation VLA baseline | Dexora emphasizes dual-hand dexterous manipulation and high DoF data |
 | EventVLA | Long-time-domain visual evidence memory | Dexora focuses more on action space, teleoperation data, and quality weighting |
 | 3DVLA | 3D space and instance understanding | Dexora focuses more on dual-arm dual-hand actuator morphology and high-dimensional actions |
-| PhysBrain | Physical常识 pre-training | Dexora is trained directly on real high-DoF contact data |
+| PhysBrain | Physical common-sense pretraining | Dexora is trained directly on real high-DoF contact data. |
 | PRTS | Target accessibility/CRL pre-training | Dexora uses a discriminator to handle teleoperation quality |
 | G0.5 | Autoregressive CoT + action token flow | Dexora uses a diffusion-transformer policy and quality-aware training |
 | HumanoidMimicGen | Generation of full-body data via minimal humanoid teaching | Dexora is a dual-arm dual-hand dexterous manipulation VLA, not the generation of full-body loco-manipulation data |
@@ -290,7 +291,7 @@ The assignment can answer these questions:
 - What are exoskeletons and Apple Vision Pro responsible for in remote manipulation?
 - Why are both simulation data and real data required?
 - Why is discriminator-guided quality-aware training suitable for high-DoF teleop data?
-- What does the入围 of ICRA 2026 indicate, and what doesn’t?
+- What does selection for ICRA 2026 indicate, and what does it not indicate?
 - Which step is currently feasible with the public entry, and what conditions are still missing for complete reproduction on a real robot?
 
 ## 13. Citations and Image Sources

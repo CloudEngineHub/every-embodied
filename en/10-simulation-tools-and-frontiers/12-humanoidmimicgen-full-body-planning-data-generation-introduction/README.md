@@ -1,6 +1,6 @@
 # HumanoidMimicGen: Using full-body planning to expand a small amount of humanoid teaching into large-scale manipulation data
 
-This introduction corresponds to the paper **HumanoidMimicGen: Data Generation for Loco-Manipulation via Whole-Body Planning** by authors such as NVIDIA and UT Austin. It is suitable for inclusion in the `10-具身智能其他仿真工具及仿真前沿` section of this repository, following SIM1, InternDataEngine, UniLab + MotrixSim, serving as a supplementary approach to "simulation data generation + humanoid robot whole-body manipulation" at the cutting edge.
+This introduction covers **HumanoidMimicGen: Data Generation for Loco-Manipulation via Whole-Body Planning** by NVIDIA, UT Austin, and collaborators. It extends the simulation-data route from SIM1, InternDataEngine, and UniLab + MotrixSim to whole-body humanoid loco-manipulation.
 
 One-sentence summary:
 
@@ -287,7 +287,7 @@ If it is to be included in a curriculum system, it can be understood as follows:
 
 ## 13. Recommendations for Reproduction Route
 
-Currently, it is not recommended to write this up as a step-by-step reproduction experiment, because the official HumanoidMimicGen code and the benchmark environment entry have not been made public on the project page. A more appropriate approach is to first remove all dependencies, and then wait for the official code:
+The official HumanoidMimicGen code and benchmark entry points are not yet public on the project page. The current learning route therefore starts by decomposing the dependencies and interfaces; once the official code is released, the chapter can add end-to-end execution and result verification:
 
 1. **Read the project page and paper figures**: First, understand Figures 1, 2, and 3 to clarify their inputs, outputs, and intermediate modules.
 2. **Study the original MimicGen**: Read [NVlabs/mimicgen](https://github.com/NVlabs/mimicgen) to grasp object-centric skills, a small number of teaching augmentations, and the robosuite data generation process.

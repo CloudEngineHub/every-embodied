@@ -182,7 +182,7 @@ The current most reasonable judgment is not that “there is no grasping model a
 2. The current object mass is uniformly 0.5 kg, and the banana is set to the same weight as the box, which is very unfavorable for friction-only pinch.
 3. The Piper solver parameter `position=4, velocity=0` is not strong enough for stable contact; discussions about “the two-finger gripper drops the object, requiring adjustment of contact/solver/friction or control method” are also common in NVIDIA/Isaac Sim documentation and forums.
 4. Our submit-style PCA controller can only use RGB-D and proprio data, without reading the true object root; slight deviations in the grasp center/yaw/closing height estimated from a single perspective point cloud may lead to the situation where “it appears that the grip is deep, but in reality the finger contact normal is insufficient.”
-5. The old runner/collector sometimes works because it can更接近 the official scripted primitive: using more accurate object state/dynamic servo/true finger-center trace. This capability will be lost when transferring to the observation-only control of `demo/solution_pca.py`.
+5. The old runner/collector sometimes works because it more closely matches the official scripted primitive through accurate object state, dynamic servoing, and true finger-center tracking. That capability is lost when moving to the observation-only control in `demo/solution_pca.py`.
 
 In a nutshell: It’s not just a matter of “insufficient gripper force,” but a combination of contact geometry, closing height, gripper opening, trajectory during transportation, and official PhysX contact parameters.
 
@@ -224,7 +224,7 @@ pi0.5 has tried the 20-demo and 100-demo branches, but the current performance i
 
 ### 8.3 AnyGrasp
 
-AnyGrasp SDK has been integrated and can be推理, but there are license/distribution restrictions:
+AnyGrasp SDK has been integrated and supports inference, but its license and distribution restrictions still apply:
 
 - It is very valuable as a local candidate generator.
 - However, if the final image submitted contains non-distributable SDKs or weights, the code review risk is high.

@@ -1,6 +1,6 @@
 # RAW-Dream: Task-Independent World Model Enhancement VLA Introduction
 
-This introduction corresponds to the paper **Reinforcing VLAs in Task-Agnostic World Models**, and the method name is **RAW-Dream**. It is suitable to be placed in the `17-具身世界模型` section of this repository, rather than being presented as a complete reproduction tutorial: as of 2026-06-27, the author’s homepage and arXiv page do not provide the official code repository for RAW-Dream. Currently, it is more appropriate as a leading reading entry for “world model + VLA post-training”.
+This chapter introduces **RAW-Dream**, the method proposed in **Reinforcing VLAs in Task-Agnostic World Models**. RAW-Dream studies how a task-agnostic world model can support VLA post-training through imagined trajectories. As of 2026-06-27, the author homepage and arXiv page do not link an official code repository, so the current chapter focuses on the method, evidence, and a reproducibility plan.
 
 After completing this section, you need to focus on three key points for judgment:
 
@@ -16,7 +16,7 @@ After completing this section, you need to focus on three key points for judgmen
 | Author homepage link | [Kaixin Wang's homepage](https://kaixin96.github.io/) lists the arXiv link to this paper |
 | Official project page | No independent project page yet |
 | Official code | No RAW-Dream official repository yet |
-| Recommended reading order | Read the method figures, experimental tables, and implementation details in the appendix first; it is not recommended to attempt reproduction now |
+| Recommended reading order | Start with the method figures, experimental tables, and implementation details in the appendix; prepare the interfaces before the official implementation becomes available |
 
 If the code is released by the official team later, it is recommended to add another `02-RAW-Dream复现.md` under this directory. For now, this article serves as a paper introduction and a navigation guide for the repository.
 

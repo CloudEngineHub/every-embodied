@@ -7,7 +7,7 @@
 > RSS page: https://roboticsconference.org/program/papers/116/
 > Code status: As of 2026-07-18, no official project pages or code repositories were found by the authors; this tutorial primarily relies on the paper, arXiv HTML figures, and RSS information.
 
-This article is suitable to be placed under “Depth and Reinforcement Learning in Embodied Scenarios”, rather than in the world model or VLA foundation sections. It does not focus on “how robots simulate future scenarios within the world model”, nor on “upgrading to a more powerful vision-language-action model”. Instead, it addresses a more fundamental issue that is often overlooked: human demonstrations to robots may not fully express the actual task objectives, and the reward functions learned by robots from these incomplete demonstrations could be misaligned. Thus, can robots determine for themselves “what information is missing” and then specifically request additional demonstrations from humans?
+This chapter examines reward alignment in robot learning. Human demonstrations may not fully express the intended task objective, causing a learned reward function to overvalue incidental behavior or ignore an important constraint. The central question is whether a robot can identify what information is missing and request targeted additional demonstrations from a human.
 
 One-sentence summary: It introduces ASQ (Ambiguity-Sensitive Querying), using the variance signal of feature distribution during teaching to identify “under-specified features”, and then explaining in natural language that “I am not sure about this dimension” so that humans can provide more targeted corrective demonstrations, thereby correcting the reward misalignment in reinforcement learning.
 

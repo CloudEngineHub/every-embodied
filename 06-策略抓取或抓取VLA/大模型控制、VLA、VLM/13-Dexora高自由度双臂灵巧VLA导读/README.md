@@ -2,7 +2,7 @@
 
 > 本文导读 **Dexora: Open-source VLA for High-DoF Bimanual Dexterity**。这篇工作来自清华大学、北京智源人工智能研究院、香港大学、上海交通大学、上海科技大学、北京大学等团队，arXiv 编号为 `2605.18722v1`。ICRA 2026 官方奖项页面将 Dexora 列入 **Best Paper Award on Robot Manipulation and Locomotion** 候选论文名单。
 
-## 1. 先说结论：它为什么值得放进 VLA 章节
+## 1. 高自由度双臂灵巧操作难在哪里
 
 Dexora 解决的是一个很明确的问题：现有 VLA 大多停留在单臂夹爪、双臂低自由度夹爪，或者单臂灵巧手。它们能做抓取、放置、开关抽屉等任务，但一旦任务同时需要 **双臂协同** 和 **多手指精细接触**，动作空间、数据采集和训练稳定性都会变难。
 
@@ -21,7 +21,7 @@ Dexora 的关键不是只换了一个更会说话的 VLM，而是把三件事放
 2. **混合遥操作数据采集**：外骨骼背包负责双臂大范围运动，Apple Vision Pro markerless hand tracking 负责手指精细动作。
 3. **质量感知 VLA 训练**：离线 discriminator 给 teleoperation clip 打质量分，再把分数变成 diffusion-transformer policy 的加权损失，降低抖动、失败、碰撞演示的负面影响。
 
-所以它应该归入 `06-策略抓取或抓取VLA/大模型控制、VLA、VLM`，而不是世界模型章节。它是 VLA 在高自由度双手操作上的系统工程和训练范式，不是动作条件视频预测模型。
+Dexora 研究的是 VLA 在高自由度双手操作上的系统工程和训练范式：从双臂双手本体、遥操作数据到质量感知策略训练形成完整链路，而不是预测动作条件下的未来视频。
 
 ## 2. 论文、项目、代码和数据入口
 
@@ -33,7 +33,7 @@ Dexora 的关键不是只换了一个更会说话的 VLM，而是把三件事放
 | 数据集 | [Dexora/Dexora_Real-World_Dataset](https://huggingface.co/datasets/Dexora/Dexora_Real-World_Dataset) | Hugging Face 数据集，包含真实遥操作数据和任务级视图 |
 | ICRA 2026 | [Award Finalists](https://2026.ieee-icra.org/awards/) | 入围 Best Paper Award on Robot Manipulation and Locomotion |
 
-开源状态可以这样理解：项目页、论文、代码入口和真实数据集页面已经公开。当前更适合做 **方法阅读、数据结构理解、素材复盘和轻量代码入口检查**；完整复现高自由度真机实验仍然依赖双臂双手硬件、遥操作设备、MuJoCo 数字孪生资产、模型权重和训练算力。教程里不建议承诺“一键复现切菜/拧瓶盖真机效果”。
+项目页、论文、代码入口和真实数据集页面已经公开，可用于方法学习、数据结构分析和轻量代码检查。完整复现高自由度真机实验还需要双臂双手硬件、遥操作设备、MuJoCo 数字孪生资产、模型权重和训练算力。
 
 ## 3. 总览图：Dexora 的四个核心块
 

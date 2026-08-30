@@ -1,8 +1,8 @@
 # RoboDream: Introduction to Data Synthesis of Composite World Model
 
-This introduction corresponds to the paper **RoboDream: Compositional World Models for Scalable Robot Data Synthesis**, submitted to arXiv on 2026-06-01. The authors come from the USC Physical Superintelligence Lab and Toyota Research Institute. It is suitable to be placed in the `17-具身世界模型` section of this repository as a leading guide on world models after WoG and WALL-WM.
+This introduction covers **RoboDream: Compositional World Models for Scalable Robot Data Synthesis**, submitted to arXiv on 2026-06-01 by authors from the USC Physical Superintelligence Lab and Toyota Research Institute. It follows WoG and WALL-WM by focusing on scalable robot-data synthesis with composable world models.
 
-If arranged according to the current directory structure, it is not recommended to reorder the basic chapters such as `1、扩散数理基础`, `2、VAE`, and `3、DDPM`. RoboDream is more suitable as the **Article 6 introduction** in the world model前沿 methods: LeWM discusses the fundamental issues of latent world models, RISE discusses using composite world models for policy self-improvement, RAW-Dream discusses enhancing VLA within the world model, WoG discusses condition-space world modeling, WALL-WM discusses event-level world action models, and RoboDream focuses on **synthesizing robot teaching data using a composable video world model**.
+RoboDream follows the foundation chapters on diffusion mathematics, VAE, and DDPM and belongs to the frontier world-model sequence. LeWM introduces latent world models, RISE studies policy self-improvement with compositional world models, RAW-Dream enhances VLA through a world model, WoG models condition spaces, WALL-WM represents event-level world actions, and RoboDream focuses on **synthesizing robot demonstrations with a composable video world model**.
 
 After completing this section, everyone needs to focus on one sentence:
 

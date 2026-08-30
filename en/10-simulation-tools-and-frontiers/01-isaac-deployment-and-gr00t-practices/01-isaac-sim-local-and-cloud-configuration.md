@@ -310,7 +310,7 @@ Beginners are advised not to install ROS2 and Isaac Sim together on the first da
 
 ## 12. When to start the GR00T tutorial
 
-GR00T is not an introductory configuration for Isaac Sim, but rather a later-stage practice for robot base model development. The [ tutorial on阿里云 deploying Isaac Lab + GR00T](02-complete-tutorial-on-deploying-isaac-lab-gr00t-in-alibaba-cloud.md) in the repository has already set up a reproducible version: Isaac Sim 4.2.0, Isaac Lab v1.4.1, GR00T N1.6, PyTorch 2.5.1, and CUDA 12.1. This combination differs from the main line of Isaac Sim 5.1 used in this article.
+GR00T is not an introductory configuration for Isaac Sim, but a later-stage practice for robot foundation-model development. The repository's [Alibaba Cloud tutorial for deploying Isaac Lab and GR00T](02-complete-tutorial-on-deploying-isaac-lab-gr00t-in-alibaba-cloud.md) uses a reproducible version set: Isaac Sim 4.2.0, Isaac Lab v1.4.1, GR00T N1.6, PyTorch 2.5.1, and CUDA 12.1. This combination differs from the Isaac Sim 5.1 route used in this article.
 
 If you only want to study Isaac Sim locally, there is no need to install GR00T immediately. If your goal is to reproduce GR00T, it is recommended to use a separate cloud server or isolated environment and follow the original tutorial version. Do not install GR00T as a dependency in `env_isaacsim`. This approach can prevent PyTorch, CUDA, transformers, flash-attn, and the Isaac extension from interfering with each other.
 
@@ -322,7 +322,7 @@ If the first startup is slow, do not close the window immediately. The first lau
 
 If the pip installation on Windows reports a path-length error, enable long-path support or move the environment to a shorter directory such as `$env:USERPROFILE\isaacsim` instead of a deeply nested personal document directory.
 
-If the GUI on the cloud server cannot be opened, first determine whether Isaac can start headless. If the compatibility check passes, the issue is mostly with VNC, WebRTC, DISPLAY, Xauthority, or security group ports, rather than the Isaac Sim本体. In this case, you can first verify using a container headless command, and then address remote display issues.
+If the GUI on the cloud server cannot be opened, first determine whether Isaac can start headless. If the compatibility check passes, the issue is usually in VNC, WebRTC, DISPLAY, Xauthority, or security-group ports rather than Isaac Sim itself. Verify the headless route first, then address remote-display issues.
 
 ## 14. Light verification records of this tutorial
 

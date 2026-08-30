@@ -77,6 +77,6 @@ This means it is more like a detection script to check whether the "button hardw
 
 ## 5. How should this supplementary material be used?
 
-A more efficient way of using them is not to mechanically memorize the four scripts, but to regard them as templates for four underlying interfaces. After studying the main text, when reviewing this supplementary material, readers should be able to understand that when upper-level applications require actions, it usually falls on PWM; when light feedback is needed, it usually falls on SPI; when姿态 data is required, it usually falls on I2C; when physical buttons are needed as startup or switch signals, the first thing to address is GPIO event listening.
+A more efficient approach is to treat the four scripts as templates for four underlying interfaces. Upper-level actuation commonly maps to PWM, light feedback to SPI, attitude data to I2C, and physical buttons used as startup or mode-switch signals to GPIO event handling.
 
 Once this underlying understanding is established, Magicbox is no longer just a "running demo development board," but a hardware system that can be further developed, connected, and reconfigured. The subsequent sections on dual eyes, gestures, voice, and OpenClaw will all be based on this level of understanding.

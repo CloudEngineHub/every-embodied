@@ -2,7 +2,7 @@
 
 > 本文导读 **GE-Sim 2.0: A Roadmap Towards Comprehensive Closed-loop Video World Simulators for Robotic Manipulation**。论文 arXiv 编号为 `2605.27491v1`，2026 年 5 月 26 日提交。项目来自 AgiBot、BUAA、LV-NUS Lab、TJU 等团队，官方项目页为 [ge-sim-v2.github.io](https://ge-sim-v2.github.io/)，代码仓库为 [AgibotTech/GE-Sim-V2](https://github.com/AgibotTech/GE-Sim-V2)。
 
-## 1. 先说结论：它为什么应该放进世界模型章节
+## 1. 从视频生成到闭环世界模拟
 
 GE-Sim 2.0 的全称是 **Genie Envisioner World Simulator 2.0**。它不是 VLA 策略本身，也不是 MuJoCo / Isaac Sim 这类显式物理引擎。它更准确的定位是：
 

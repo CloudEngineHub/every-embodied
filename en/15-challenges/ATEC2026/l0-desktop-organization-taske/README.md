@@ -98,7 +98,7 @@ We have grasped and verified various planning grasping routes:
 - object_1 block “inclusion and closure” action;
 - object_3 banana low cradle/servo handling.
 
-These routes demonstrate that “perceptual and candidate grasping poses” are not completely infeasible, and object_1 / object_3 can be夹 between several seeds. However, the submit-style `demo/solution_pca.py` still exhibits instability in IK, finger-center tracking, contact retention, and transport release, and cannot replace ACT for final submission.
+These routes demonstrate that perception-driven candidate grasp poses are feasible in some cases, and object_1 and object_3 can be grasped under several seeds. However, the submission-style `demo/solution_pca.py` remains unstable in IK, finger-center tracking, contact retention, and transport release, and cannot replace ACT for final submission.
 
 Important lesson:
 

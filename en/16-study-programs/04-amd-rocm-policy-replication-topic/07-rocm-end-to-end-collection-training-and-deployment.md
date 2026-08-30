@@ -46,7 +46,7 @@ export OUTPUT_ROOT=/path/to/large-disk/outputs/every_embodied
 
 ## Data Collection Boundaries
 
-Data collection is independent of the GPU vendor. As long as the MuJoCo and LeRobot versions, scene XML, control frequency, state/action schema, and success判定 are consistent, data can be collected on another desktop machine with a NVIDIA GPU or just a CPU, and then the entire dataset directory can be synchronized to the AMD training machine.
+Data collection is independent of the GPU vendor. As long as the MuJoCo and LeRobot versions, scene XML, control frequency, state/action schema, and success criterion are consistent, data can be collected on another desktop machine with an NVIDIA GPU or only a CPU, then synchronized to the AMD training machine.
 
 07 Notebook made five corrections to the upstream interaction collection:
 

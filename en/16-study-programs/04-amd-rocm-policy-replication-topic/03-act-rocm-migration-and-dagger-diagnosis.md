@@ -12,7 +12,7 @@ When learning, remember the following three points first; there is no need to di
 | --- | --- | --- |
 | SmolVLA | `57/60` (red cup `27/30`, blue cup `30/30`) | Main case: First, watch the successful playback, then learn training and evaluation |
 | Pi0 | `12/14`; Unseen positions: `9/10`, hard group: `6/8` | Advanced case: Learn large model permissions, action alignment, and failure diagnosis |
-| ACT | Current protection candidate: `15/30`; Historical tutorial reference: `17/30` | Diagnosis case: Learn closed loop distribution deviation, Dagger, and strict success判定 |
+| ACT | Current protection candidate: `15/30`; Historical tutorial reference: `17/30` | Diagnosis case: study closed-loop distribution shift, DAgger, and strict success criteria. |
 
 The `15/30` here is the reproduction result of the protection candidate that has been completed on AMD395; the same native training recipe has been written into the Notebook, but it still needs to be actually executed from scratch in an environment with a Jupyter kernel to be considered a “Notebook-native reproduction”. Therefore, the tutorial will present both the executable recipe and the audit results separately, without mixing them up.
 
@@ -112,7 +112,7 @@ model_sha256 = b9b178377995a674a06bc5d1500c8e7e7fc5d02649268855f892b3987bf5bfeb4
 
 The currently auditable branches are: stable61/step2500 fallback on AMD395 is `7/30`; the old protected DAgger artifact is `2/30`; and the new repair15 protected candidate is `15/30`. `17/30` in the historical summary has not been fully restored by the current protection weight, so it is temporarily listed as a historical target. Note that there are `17/40` successful expert recovery collections in the logs; the number of successful data collection cannot be used as the policy closed loop success rate.
 
-The Notebook口径 must be specified separately: previously, the protection weight of `15/30` came from the low-learning-rate continuation wrapper of AMD395, not the result of the Notebook execution. `notebooks/16_act_end_to_end.ipynb` now includes the same native protected recipe (data packaging, trajectory weighted sampling, no-VAE, gripper BCE, tqdm, checkpoint, and strict evaluation), but before a native execution is completed in Jupyter runtime, `15/30` is not marked as a Notebook reproduction result.
+The notebook evaluation scope must be stated separately. The earlier `15/30` protected checkpoint came from the low-learning-rate continuation wrapper on AMD395 rather than from a notebook execution. `notebooks/16_act_end_to_end.ipynb` now includes the same native protected recipe: data packaging, trajectory-weighted sampling, no VAE, gripper BCE, progress display, checkpoint saving, and strict evaluation. The notebook result should be reported only after the full run completes in a Jupyter runtime.
 
 ## What to Record on ROCm
 

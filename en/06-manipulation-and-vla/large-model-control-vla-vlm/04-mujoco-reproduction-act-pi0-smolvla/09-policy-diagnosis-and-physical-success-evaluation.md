@@ -106,11 +106,11 @@ This smoke test proves only a few things:
 
 It does not prove that pi_0 has converged, nor does it represent the final success rate. After formal training, the red and blue cups still need to be evaluated using the same `physical_success` set of metrics.
 
-## Suggested public scripts
+## Reproduction Scripts
 
-To make this section a reproduction-ready experiment rather than just text, it is recommended to keep the public version of the following script in the tutorial directory. Before publishing, the local absolute path, private IP, token, remote account, and large file paths should be replaced with variables or placeholders.
+The following scripts form the reproducible entry points for this chapter. They receive data, model, and output paths through variables and read credentials from environment variables or interactive input.
 
-| Script | Purpose | Release Notes |
+| Script | Purpose | Runtime Contract |
 | --- | --- | --- |
 | `audit_language_policy_physical.py` | Conduct a rigorous physical success rate assessment for SmolVLA / pi_0 | Do not hardcode the remote path; output JSONL and summary |
 | `record_language_policy_video.py` | Record videos of the success or failure of a single seed | The video should not be submitted to the repository by default |
@@ -118,11 +118,11 @@ To make this section a reproduction-ready experiment rather than just text, it i
 | `run_pi0_train_eval_after_hf_ready.sh` | pi_0 permission check, 1-step smoke testing, official training and evaluation interfaces | Tokens are read only from environment variables or interactive input |
 | `compare_eval_summaries.py` | Generate a table of red/blue success rates for multiple checkpoints | Output a small TSV/Markdown table; do not save large logs |
 
-## Tutorial Organization Suggestions
+## Relationship to the Study Program
 
-It is recommended to use a "two-layer structure" for this part:
+The textbook provides two learning layers:
 
-1. **Chapter 06 Technical Text**: Located in the current MuJoCo ACT / pi_0 / SmolVLA directory, this section serves as an advanced chapter of the original tutorial, explaining diagnostic methods, scripts, and experimental procedures.
-2. **Special Team Learning Entry**: Create 4 to 5 tasks under `16-专题组队学习` so that users can complete the environment, data, ACT diagnosis, SmolVLA comparison, and pi_0 smoke weekly.
+1. **Chapter 06 technical text** explains diagnostic methods, reproduction scripts, and evaluation protocols.
+2. **The focused study program** decomposes environment setup, data, ACT diagnosis, SmolVLA comparison, and the pi_0 pipeline check into weekly tasks.
 
-This way, it does not disrupt the main flow of "collection - training - deployment" in the original tutorial, while providing a complete task rhythm for team-based learning.
+Complete the single-model route in the order “collection -> training -> deployment,” then use the study-program tasks for multi-model comparison.

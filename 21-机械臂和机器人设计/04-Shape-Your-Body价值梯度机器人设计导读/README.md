@@ -2,7 +2,7 @@
 
 > 本文导读 **Shape Your Body: Value Gradients for Multi-Embodiment Robot Design**。这篇工作来自 Technical University of Darmstadt、Robotics Institute Germany、DFKI 和 hessian.AI，作者为 Nico Bohlinger 与 Jan Peters。论文 arXiv 编号为 `2606.00702v1`，2026 年 5 月 30 日提交。项目页地址是 [nico-bohlinger.github.io/shape-your-body](https://nico-bohlinger.github.io/shape-your-body/)。
 
-## 1. 先说结论：它为什么值得放进机器人设计章节
+## 1. 如何用价值梯度优化机器人身体
 
 Shape Your Body 研究的是一个很有想象力、也很工程的问题：
 
@@ -250,7 +250,7 @@ Shape Your Body 还有一个很实用的副产品：value gradient 不只能产�
 
 ## 11. 复现边界：现在能做什么，暂时不能做什么
 
-当前项目页没有公开代码仓库，因此教程不建议写成“下载代码复现论文结果”。更现实的学习路径分三档。
+当前项目页没有公开代码仓库，因此本节把学习路径分为三个层级：先理解价值梯度设计，再复现通用优化接口，最后在官方代码发布后核对论文结果。
 
 第一档是 **方法阅读与交互 demo**。项目页提供浏览器 demo，可以选择 Unitree Go2、MIT Humanoid、Golem、ANYmal C、Booster T1、Mini PI、Fourier GR1-T2 等机器人，切换 Reference / Co-Design，查看 VGDS 迭代如何改变身体，并用速度命令控制 policy。这个 demo 适合理解“optimized design 不是静态图片，而是仍要配合 frozen policy 运动”。
 

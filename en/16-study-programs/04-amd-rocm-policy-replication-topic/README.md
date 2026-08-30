@@ -84,7 +84,7 @@ In the example experiment of this topic, ACT, SmolVLA, and pi_0 have all establi
 
 ![ Current Clone Status Overview ](../../../16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/model_status_summary.png)
 
-Figure 1: The阶段性 status of the example experiment in this topic. Here, more strict `physical_success` is used, and raw policy, learned head, and scaffold are separated. SmolVLA is currently the most stable, and ACT can now serve as a DAgger diagnostic case; the improvement in learned-head for pi_0 in fixed scenarios is real, but in random environments `1/4`, position generalization has not been achieved. The evaluation of the old 30 scaffold entries later revealed that the environment always remains at seed 0, which can only be interpreted as stability in policy sampling and cannot be used as evidence for spatial generalization.
+Figure 1: Intermediate status of the example experiments. The stricter `physical_success` criterion separates raw policies, learned heads, and scaffolds. SmolVLA is the most stable case, while ACT supports DAgger diagnosis. The learned pi_0 head improves fixed-scene behavior, but its `1/4` result in randomized environments does not demonstrate position generalization. A later audit of the earlier 30 scaffold runs found that the environment remained at seed 0, so those runs measure policy-sampling stability rather than spatial generalization.
 
 ## Recommended Learning Pace
 

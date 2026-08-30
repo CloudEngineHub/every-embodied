@@ -20,7 +20,7 @@ The public task description shows that the main input for Task B includes:
 - Head RGB-D image, used for search and long-distance target positioning.
 - End-effector RGB-D image, used for close-range alignment and manipulation.
 
-Here, "external" refers to the sensors on the robot body, not a上帝 perspective camera that can see everything. Even if third-party cameras are added to the environment for debugging, they cannot be automatically treated as policy observations.
+Here, "external" refers to sensors mounted on the robot body, not an omniscient camera that can see the entire scene. Even if third-party cameras are added for debugging, they are not automatically valid policy observations.
 
 ## 1.3 Ban Dependencies
 

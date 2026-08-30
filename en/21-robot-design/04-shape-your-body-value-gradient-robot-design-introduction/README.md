@@ -2,12 +2,13 @@
 
 > Introduction to this article **Shape Your Body: Value Gradients for Multi-Embodiment Robot Design**. This paper is from the Technical University of Darmstadt, Robotics Institute Germany, DFKI, and hessian.AI. The authors are Nico Bohlinger and Jan Peters. The arXiv ID of the paper is `2606.00702v1`, and it was submitted on May 30, 2026. The project page address is [nico-bohlinger.github.io/shape-your-body](https://nico-bohlinger.github.io/shape-your-body/).
 
-## 1. Let's start with the conclusion: Why it deserves to be included in the robot design section
+## 1. How Value Gradients Optimize a Robot Body
 
 "Shape Your Body" explores a very imaginative and engineering-related issue:
 
 ```text
-能不能像优化神经网络参数一样，用梯度优化机器人身体参数？
+Can robot body parameters be optimized with gradients,
+just like neural-network parameters?
 ```
 
 Traditional robot design typically involves manually designing the mechanical structure and then training a policy for that structure. Learning-based co-design optimizes both the body and the controller, but the common approach is costly: the outer layer searches for a robot body, while the inner layer re-trains or adapts the controller for each candidate body. As long as the design space is slightly larger—such as in terms of mass, inertia, geometric dimensions, joint limits, actuator torque, maximum speed, and PD gain—this cycle becomes very slow.
@@ -15,22 +16,18 @@ Traditional robot design typically involves manually designing the mechanical st
 The idea of Shape Your Body is to spread out the design costs:
 
 ```text
-先训练一个多具身 policy + value function
-    ↓
-冻结 policy 和 critic
-    ↓
-把 critic 当成可微分的设计代理模型
-    ↓
-对机器人身体参数求 value gradient
-    ↓
-用梯度更新新的机器人设计
+Train a multi-embodiment policy and value function
+    -> freeze the policy and critic
+    -> use the critic as a differentiable design surrogate
+    -> compute value gradients with respect to body parameters
+    -> update the robot design
 ```
 
 The paper refers to this design search method as **Value-Gradient Design Search (VGDS)**. In a nutshell:
 
 First, use multiple robots to perform reinforcement learning to learn “which body is easier to control by the current policy”, and then optimize the new robot design based on the gradient of body parameters using a value function.
 
-It should be placed in `21-机械臂和机器人设计`, rather than the VLA or world model section. The reason is that this paper focuses on **robot embodiment / morphology / continuous design parameters**, not perception, action generation, or video prediction. Its relationship with Build123d, Text-to-CAD, and ForgeCAD is as follows: the first three are more oriented toward “how to generate or edit geometry”, while Shape Your Body is more oriented toward “using learned control values to guide body parameters in reverse”.
+The paper focuses on **robot embodiment, morphology, and continuous design parameters**, rather than perception, action generation, or video prediction. Build123d, Text-to-CAD, and ForgeCAD address how geometry is generated or edited; Shape Your Body instead uses learned control value to guide body parameters in reverse.
 
 ## 2. Paper, Project Page, and Open Source Status
 
@@ -250,7 +247,7 @@ This makes VGDS not only an automatic search tool, but also a diagnostic tool fo
 
 ## 11. Reproduction boundaries: What can be done now, and what cannot be done temporarily
 
-The current project page does not have a public code repository, so the tutorial is not recommended to be titled “Download Code for Reproduction of Paper Results”. There are three realistic levels of learning paths.
+The current project page does not provide a public code repository. This chapter therefore uses three learning levels: understand value-gradient design, reproduce the generic optimization interface, and verify the paper results when the official code becomes available.
 
 The first level is **method reading and interaction demo**. The project page offers a browser demo. You can select robots such as Unitree Go2, MIT Humanoid, Golem, ANYmal C, Booster T1, Mini PI, and Fourier GR1-T2. Switch between Reference / Co-Design, observe how VGDS iterations affect the body, and control the policy using speed commands. This demo helps understand that "optimized design is not a static image, but still needs to move in conjunction with a frozen policy".
 

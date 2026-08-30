@@ -2,7 +2,7 @@
 
 > Introduction to this article: **PRTS: A Primitive Reasoning and Tasking System via Contrastive Representations**. This work was conducted by teams from China Telecom Artificial Intelligence Research Institute (TeleAI), Tsinghua University, Shanghai Jiao Tong University, and Fudan University. PRTS is a native reinforcement learning-based VLA foundation model. The core idea is not to add reinforcement learning after behavior cloning, but to integrate reward-label-free contrastive reinforcement learning into the VLA pre-training process itself.
 
-## 1. State the conclusion first
+## 1. Why PRTS Matters
 
 There are two reasons why PRTS is worth including in this tutorial.
 
@@ -14,7 +14,7 @@ One-sentence summary:
 
 > The key to PRTS is not “using a larger VLA backbone,” but instead treating the language goal as a goal, constructing a trajectory temporal structure for contrast RL supervision, so that the same Qwen3-VL backbone can learn both action generation and goal-reachability awareness.
 
-It should be placed in `06-策略抓取或抓取VLA/大模型控制、VLA、VLM`, after PhysBrain. It is neither a world model nor a navigation benchmark, but a significant change in the VLA pre-training paradigm.
+PRTS changes the VLA pre-training objective: the model learns not only to imitate expert actions, but also to estimate how states and actions relate to a language goal. This creates a direct comparison with behavior-cloning-only policies and provides a shared framework for analyzing long-horizon control, disturbance recovery, and goal progress.
 
 ## 2. Papers, Projects, Code, and Weights
 
@@ -284,7 +284,7 @@ MolmoSpaces reproduction requires more conditions:
 - Specified tasks, scenarios, cameras, robot initial states, and evaluation protocol.
 - Compatible with policy wrapper and MolmoSpaces evaluation harness.
 
-The official GitHub News states that the MolmoSpaces checkpoint is trained using the latest DROID fine-tuning launcher. The tutorial currently does not recommend performing the reproduction of MolmoSpaces step by step, as the full execution cost and engineering requirements are high. A more reasonable approach is to use the benchmark as an entry point for reading and as evidence for method validation.
+The official GitHub News states that the MolmoSpaces checkpoint was trained with the latest DROID fine-tuning launcher. A complete leaderboard run requires substantial compute and engineering dependencies, so this chapter first uses the leaderboard to verify the public result and then studies the method through the released LIBERO training and evaluation entry points. Readers with the required resources can extend the same workflow to a full MolmoSpaces evaluation.
 
 ## 13. Relationship with Other VLAs
 
@@ -293,8 +293,8 @@ The official GitHub News states that the MolmoSpaces checkpoint is trained using
 | OpenVLA / OpenVLA-OFT | Open-source VLA foundation and fine-tuning pipeline | PRTS emphasizes goal reachability in CRL pre-training |
 | π0 / π0.5 | Strong VLA policy baseline | π0.5 is used as a comparison object in PRTS papers and MolmoSpaces |
 | 3DVLA | Injecting VLA with 3D space and instance tokens | PRTS is not a geometric module, but learning of goal reachability representations |
-| PhysBrain | Extracting physical常识 from human videos and adapting it to VLA | PRTS constructs CRL goal-reachability supervision from offline trajectory sequences |
-| RAW-Dream | Reinforcing VLA within a task-agnostic world model | PRTS is not world model rollout RL, but改造 of VLA pre-training goals |
+| PhysBrain | Extracting physical common sense from human videos and adapting it to VLA | PRTS constructs CRL goal-reachability supervision from offline trajectory sequences |
+| RAW-Dream | Reinforcing VLA within a task-agnostic world model | PRTS does not use world-model rollout RL; it redesigns the VLA pretraining objective. |
 | WALL-OSS | Open-source VLA model and engineering framework | PRTS highlights reward-free contrastive RL into pre-training |
 
 If categorized by "Why VLA failed":
@@ -321,7 +321,7 @@ Fourth, reproducing the full MolmoSpaces ranking is not a lightweight task. It r
 
 In team learning, you can place PRTS in the manipulation control direction Task04:
 
-> Comparison of 3DVLA, PhysBrain, and PRTS: All three enhance VLA from three perspectives—3D space, physical常识, and target accessibility. What are their inputs, training signals, output actions, and open-source boundaries?
+> Comparison of 3DVLA, PhysBrain, and PRTS: All three enhance VLA from three perspectives—3D space, physical common sense, and target accessibility. What are their inputs, training signals, output actions, and open-source boundaries?
 
 Recommended delivery:
 

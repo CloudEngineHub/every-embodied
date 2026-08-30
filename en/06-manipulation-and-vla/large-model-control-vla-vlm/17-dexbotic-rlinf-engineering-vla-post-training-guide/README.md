@@ -9,7 +9,7 @@
 > RLinf Dexbotic Example: https://rlinf.readthedocs.io/en/latest/rst_source/examples/embodied/dexbotic.html
 > Dexbotic Technical Report: https://arxiv.org/abs/2510.23511
 
-This introduction is suitable to be placed in the VLA section. It is neither a new world model nor introduces a new VLA architecture separately, but rather a typical **VLA engineering-based training combination**: Dexbotic handles the model, data, experimental configuration, and user interface, while RLinf manages distributed rollout, environment workers, actor training, FSDP, logs, and checkpoints. It addresses a practical issue: if existing VLA toolkits want to perform online RL fine-tuning, how can they integrate the model side with the RL infrastructure side, instead of manually moving adapters, checkpoint paths, and task configurations between two repositories each time?
+Dexbotic-RLinf is a **VLA engineering and training integration** rather than a new world model or VLA architecture. Dexbotic handles models, data, experiment configuration, and user-facing workflows, while RLinf manages distributed rollouts, environment workers, actor training, FSDP, logs, and checkpoints. Together they address a practical question: how can a VLA toolkit connect its model interface to reinforcement-learning infrastructure without manually moving adapters, checkpoint paths, and task configurations between two repositories?
 
 One-sentence summary:
 

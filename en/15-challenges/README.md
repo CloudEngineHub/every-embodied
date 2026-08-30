@@ -1,12 +1,16 @@
-# Challenge Competition
+# Embodied AI Competition Case Studies
 
-This section contains the public reviews, code skeletons, experiment records, and reproduction instructions provided by members of the Every Embodied community during embodied AI competitions.
+This chapter collects task decomposition, training workflows, evaluation protocols, and engineering reviews from embodied AI competitions. Read it after completing the foundations of robot control, imitation learning, and simulation.
 
-## Current Project
+## Reading Route
 
-- [LeHome Challenge Image reproduction, training, and evaluation tutorial ](LeHome/README.md)
-- [ATEC2026 online competition reproduction and ranking improvement tutorial ](ATEC2026/README.md)
-- [TRONCamp Mani / RoboTwin ACT post-competition analysis ](TRONCamp-Mani/README.md)
-- [AgiBot World Model competition reproduction and improvement tutorial ](AgiBot_World_Model/agibot-world-model-competition-reproduction-and-improvement-tutorial.md)
+| Case | Focus | Recommended Foundation |
+| --- | --- | --- |
+| [LeHome Challenge](./LeHome/README.md) | Competition image, data, training, and evaluation workflow | LeRobot and imitation learning |
+| [ATEC2026](./ATEC2026/README.md) | Multi-task rules, system design, and release archive | Robot control and task planning |
+| [TRONCamp Mani](./TRONCamp-Mani/README.md) | ACT training, strict evaluation, and failure classification | ACT and RoboTwin |
+| [AgiBot World Model](./AgiBot_World_Model/agibot-world-model-competition-reproduction-and-improvement-tutorial.md) | Video-world-model setup and experiment improvement | Diffusion models and video generation |
 
-The public directory only stores content that can be safely redistributed. Original robot assets, training data, model weights, private logs, access tokens, and server credentials are not directly placed in Git. If redistribution is allowed, it should be done through the corresponding Hugging Face repository, and the version and SHA256 should be recorded in the project README.
+## How to Use the Cases
+
+Read the task definition and evaluation protocol on each case homepage before entering its code, experiment record, or troubleshooting review. Obtain training data, model weights, and official assets from their original release channels under the applicable licenses.

@@ -1,6 +1,6 @@
 # 3DVLA: A plug-and-play framework that injects three-dimensional space and instance understanding into VLA
 
-This introduction corresponds to the paper **3DVLA: Enhancing Vision-Language-Action Models via 3D Spatial and Instance Understanding**, from the Wang Xuan Institute of Computer Science at Peking University. It was submitted to arXiv on 2026-05-28. It is suitable to be placed in the `06-策略抓取或抓取VLA/大模型控制、VLA、VLM` section of this repository, following OpenVLA, DiT4DiT, EventVLA, and WALL-OSS/WALL-X.
+This introduction covers **3DVLA: Enhancing Vision-Language-Action Models via 3D Spatial and Instance Understanding**, from the Wangxuan Institute of Computer Technology at Peking University and submitted to arXiv on 2026-05-28. It connects the preceding VLA foundation models with later physical-understanding methods by showing how 3D spatial and instance representations enter the action expert.
 
 After completing this section, everyone needs to grasp a key judgment:
 

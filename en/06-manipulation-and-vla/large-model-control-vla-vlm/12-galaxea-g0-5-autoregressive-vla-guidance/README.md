@@ -2,7 +2,7 @@
 
 > Introduction to this article: **Galaxea G0.5 Technical Report**. G0.5 is an autoregressive Vision-Language-Action model released by Galaxea in June 2026. Its core approach is not to treat the VLM as a visual language encoder followed by a separate action head, but instead to let the same transformer decoder directly generate reasoning tokens and action tokens, placing “what is seen, the current sub-task, the goal location, and which set of action tokens to output” within the same next-token prediction chain.
 
-## 1. Let's start with the conclusion: Why memory + CoT + action representation can lead to success
+## 1. Why Memory, Reasoning, and Action Representation Work Together
 
 If we were to summarize G0.5 in one sentence, it would be:
 
@@ -16,7 +16,7 @@ But this "SOTA" needs to be understood calmly. The strength of G0.5 is not a sin
 2. **ActionCodec action representation**: Different robot actions are mapped to a shared 27-dimensional action space, and then discretized into tokens using a residual vector quantizer, enabling the autoregressive VLA to actually output actions in the token space.
 3. **Visual memory and structured CoT**: A 5-second window of 6 historical images is used, and `Subtask`, `BBox`, `Trace`, and `ActionHint` among other structured intermediate tokens are allowed to be generated, allowing the subsequent action tokens to directly attend to these intermediate results.
 
-So it is suitable to be placed in the `06-策略抓取或抓取VLA/大模型控制、VLA、VLM` section of this tutorial, after PRTS. G0.5 is neither a world model nor a navigation planning framework, but an important engineering advancement in the VLA structure and action representation.
+G0.5 primarily advances VLA architecture and action representation. A single autoregressive model jointly handles visual memory, structured reasoning, and action sequences, while a shared action space connects different robot embodiments. It does not predict future video or provide a separate navigation planner; instead, it unifies previously separate inputs, reasoning steps, and action interfaces into one generation pipeline.
 
 ## 2. Papers, Projects, Code, and Weights
 
@@ -271,7 +271,7 @@ The official README also clearly states that the current branch focuses on G0.5.
 
 ## 15. How to reproduce now
 
-It is not recommended to write the tutorial as "reproduce the G0.5 training from scratch". A more realistic approach is to reproduce it in three stages.
+Full G0.5 pre-training requires large-scale data and compute. This chapter therefore divides reproduction into three stages, starting with public checkpoints and interfaces before progressing to fine-tuning and full training.
 
 ### 15.1 Only check code and weight entries
 
@@ -348,7 +348,7 @@ Don't change your robot from the start. The G0.5 action token is linked to the e
 | π0 / π0.5 | Strong continuous action VLA baseline | G0.5 uses π0.5 as a comparison point for DROID / PP Bench on the project page |
 | EventVLA | Visual evidence memory | G0.5’s visual memory refers to short-term multi-frame history, not an event memory library |
 | 3DVLA | 3D space and instance understanding | G0.5 focuses on token flow, ActionCodec, and CoT |
-| PhysBrain | Physical常识 pre-training | G0.5 emphasizes action representation and multi-ontology control interfaces more |
+| PhysBrain | Physical common-sense pretraining | G0.5 places more emphasis on action representation and multi-embodiment control interfaces. |
 | PRTS | CRL goal reachability pre-training | G0.5 focuses more on autoregressive interfaces and action tokenization |
 | RAW-Dream | World model-based imagined RL | G0.5 is not a world model rollout, but a VLA policy that directly outputs actions |
 

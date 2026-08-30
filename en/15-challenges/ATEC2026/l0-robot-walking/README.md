@@ -2,7 +2,7 @@
 
 This article is aimed at those who wish to reproduce the ATEC2026 online competition, Track 1 "Robot Locomotion". We will cover registration, downloading the official code, setting up the Isaac Sim / Isaac Lab environment, running the official baseline, and completing the online submission, and then provide a complete review of a real local ranking experiment: why the official baseline can be submitted and yield valid scores, why the checkpoint can increase the score from 2.35 to around 5 points, and why local evaluation during the process is more important than blindly training intensively.
 
-This tutorial is not a “champion’s secret guide”. It is more like a reproduction experiment note: everyone can first run through the competition workflow smoothly, and then improve their policy based on the阶段性 score improvement experiences.
+This tutorial is a reproducible experiment guide: first complete the competition workflow, then improve the policy using the intermediate evaluation results and the documented optimization steps.
 
 ## 1. What is being tested in this competition
 
@@ -470,7 +470,7 @@ As of July 18, 2026, after searching using keywords such as `ATEC2026 机器人�
 The main ones that can be found are:
 
 - ATEC official baseline repository;
-- Reproduction tutorials on算力自由 / Zhihu, etc.;
+- Reproduction tutorials published by Suanli Ziyou, Zhihu authors, and other community sources;
 - ATEC press releases and competition introductions;
 - General robot locomotion projects such as RobotLab, RoboGauge, MoE-Loco, and Unitree RL Lab.
 

@@ -2,7 +2,7 @@
 
 > The introductory paper for this article is **τ0-WM: A Unified Video-Action World Model for Robotic Manipulation**. It comes from Shanghai Innovation Institute and AGIBOT Finch, and the project page was published on 2026-05-31. The official description positions it as an open-source video-action world model for robotic manipulation: it can predict actions, predict future videos resulting from those actions, and evaluate and refine actions using imagined future during testing.
 
-## 1. State the conclusion first
+## 1. Unifying Action Generation, Video Prediction, and Action Evaluation
 
 τ0-WM is not just a simple VLA, nor is it a world model that only generates videos. It attempts to integrate three things into one framework:
 
@@ -14,7 +14,7 @@ One-sentence summary:
 
 > The core of τ0-WM is not about robots generating videos, but about robots proposing actions, imagining the consequences of actions, evaluating those consequences, and correcting actions when necessary.
 
-This section should be placed in `17-具身世界模型`, rather than the VLA chapter. This is because although it includes a policy interface, the core innovation lies in integrating policy, video prediction, action-conditioned simulator, and test-time computation into a world model-style decision mechanism.
+Although τ0-WM includes a policy interface, its central contribution is to integrate policy generation, video prediction, action-conditioned simulation, and test-time computation into one world-model decision mechanism.
 
 ## 2. Papers, Projects, and Open Source Status
 
@@ -335,9 +335,9 @@ The repository README is written in more detail:
 
 This part is crucial for reproduction. Many failures in VLA / WAM reproduction are not due to the model failing to run, but rather an uneven action space: inconsistent coordinate systems, quaternion order, gripper opening/closing direction, and mixing of absolute/relative actions. As a result, the policy seems “capable of reasoning,” but the actions are completely unexecutable.
 
-## 11. How to reproduce is currently not recommended
+## 11. Tiered Reproduction Route
 
-This article temporarily does not recommend re-running the full paper experiments. There are three reasons for this.
+The currently released assets are not yet sufficient to rerun every paper experiment, for three reasons.
 
 First, the model and dependencies are very heavy. Wan2.2-TI2V-5B + VAM weights are not ordinary notebook tasks. Real deployment also involves multi-view cameras, robot state interfaces, and server-client latency.
 

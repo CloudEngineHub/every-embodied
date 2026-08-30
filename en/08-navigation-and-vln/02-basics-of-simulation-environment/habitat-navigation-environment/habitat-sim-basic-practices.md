@@ -339,7 +339,7 @@ Core function:
 
 * Navigation area determination: Mark the areas where the agent can walk in the scene (such as the ground and corridors), excluding obstacles (walls, furniture, floating areas, etc.).
 * Path planning foundation: Habitat’s PathFinder quickly calculates the optimal feasible path between two points based on NavMesh.
-* Movement合法性 verification: When the agent performs movement and turning actions, NavMesh is used to check whether the target position is traversable, preventing wall penetration or getting stuck in obstacles.
+* Movement-validity checking: When the agent performs movement and turning actions, NavMesh checks whether the target position is traversable, preventing wall penetration or entrapment in obstacles.
 * Spatial abstraction dimensionality reduction: The complex 3D scene geometry is abstracted into a 2D navigation grid, significantly reducing the computational complexity of motion planning.
 
 ### 2. Detailed Explanation of habitat_mesh.py Code

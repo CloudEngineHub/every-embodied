@@ -11,7 +11,7 @@ The developer cloud section is referenced and organized from [hello-rocm's AMD R
 | Entry | [tpe.aupcloud.io](https://tpe.aupcloud.io), log in using GitHub authorization | [AMD AI Developer Program Chinese site](https://developer.amd.com.cn/login?source=91kadjjnI) |
 | Hardware recorded in this topic | AMD Ryzen AI MAX+ 395, approximately 64 GB unified memory | AMD Radeon PRO 7900D, approximately 48 GB graphics memory |
 | Work area | JupyterHub or Code Server GPU Environment | Notebook / Workspace in Radeon Cloud Gallery |
-| Model and data preparation | Use Hugging Face, GitHub, and local persistent directories via Notebook | Prepare models and data according to the current template and platform methods; prioritize using魔搭 ModelScope |
+| Model and data preparation | Use Hugging Face, GitHub, and local persistent directories via Notebook | Prepare models and data according to the current template and platform methods; prioritize ModelScope when external access is restricted. |
 | Suitable tasks | Formal training in this topic, Notebook debugging, closed loop evaluation, and long task continuation | Directly start existing AMD ROCm templates for quick verification |
 | Pre-use checks | GitHub authorization, GPU image, persistent directory, and quota | Quota, work area template, and ModelScope login status |
 

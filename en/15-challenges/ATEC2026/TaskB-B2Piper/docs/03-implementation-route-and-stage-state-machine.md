@@ -55,7 +55,7 @@ Each state must output at least: `episode_id`, `step`, `target_class`, `phase`, 
 | Navigation | Multiple targets and multiple seeds can reach the takeover area | Do not write fixed coordinates as a universal solution |
 | End alignment | Visual error stabilizes and no continuous jitter occurs | Do not directly increase the movement amplitude |
 | Grabbing | The object moves with the gripper after being lifted | Do not use collision score instead of grasping confirmation |
-| Placement | The object enters the trash bin判定 area after release | Do not rely solely on “it looks placed” in the video |
+| Placement | The object enters the task-defined acceptance region of the trash bin after release | Do not rely solely on “it looks placed” in the video. |
 | Evaluation | Use the official evaluator and keep the original logs | Do not report only custom metrics |
 
 ## 3.4 Engineering Trade-offs for Task B

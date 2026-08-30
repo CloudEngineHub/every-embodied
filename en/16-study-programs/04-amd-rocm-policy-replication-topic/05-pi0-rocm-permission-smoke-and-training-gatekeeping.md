@@ -258,7 +258,7 @@ If the end segment aims for the model to learn, record “opening the gripper, r
 
 ### Route 2: Provide correction data for "deviation status"
 
-The paper emphasizes the corrections and recovery behaviors of pi_0, which is particularly crucial in small-data抓取. It only records perfect success trajectories. However, once the policy shifts the cup slightly, places it at the edge of the plate, closes the claws prematurely, or releases too early, it enters a state that has not been seen in the training set.
+The paper emphasizes the correction and recovery behavior of pi_0, which is particularly important in small-data grasping. A dataset containing only perfect trajectories does not cover states reached when the policy shifts the cup, places it near the plate edge, closes the gripper early, or releases too soon.
 
 The next batch of data should not only use the trajectory of “perfectly successful from reset,” but also specifically cover these states:
 
@@ -527,7 +527,7 @@ The current trainer only writes the model weights, not the AdamW and scheduler s
 
 ####  canonical91's 800-step gate: Improving offline does not mean the closed loop has learned
 
-After 800 steps of retraining from the official Pi0.5 base, the structural access control is still `91 episodes / 35284 frames / 0 行错位`, and the maximum error for `chunk[0]` with 273 episode boundary probes is 0. The training peak memory usage is approximately `11.14 GiB`, with no OOM, kernel crash, or NaN occurrences; the action expert parameters do change, and the sampling parameters of the frozen VLM remain unchanged at 0.
+After 800 steps of retraining from the official Pi0.5 base, the structural gate remains `91 episodes / 35284 frames / 0 misaligned rows`, and the maximum `chunk[0]` error across 273 episode-boundary probes is 0. Peak training memory is approximately `11.14 GiB`; the action-expert parameters change while the frozen VLM sampling parameters remain unchanged.
 
 | Metric | Pre-training | After 800 steps |
 | --- | ---: | ---: |
@@ -658,7 +658,7 @@ The action expert of s2400 has 430 million trainable parameters, and both the vi
 | `expert_vision` | action expert + vision tower + multimodal projector | Current main line, language model frozen |
 | `full` | Full model except for the unused expert LM head | High-risk control, not the default configuration for 64 GiB devices |
 
-`expert_vision` remains a raw-compatible VLA: The input consists only of dual-camera images, language, and robot proprio data, without target/plate coordinates, oracle prefix, external gripper head, or scripted finisher information. The official Pi0.5 example for LeRobot also clearly provides the complete tuning directions for `freeze_vision_encoder=false`, `train_expert_only=false`, and `batch_size=32`. In this experiment, we do not copy all the解冻 settings; instead, we first unfreeze the most relevant visual paths within a unified memory range: [ LeRobot Pi0.5 documentation ](https://github.com/huggingface/lerobot/blob/main/docs/source/pi05.mdx).
+`expert_vision` remains a raw-compatible VLA: the input contains only dual-camera images, language, and robot proprioception, without target or plate coordinates, an oracle prefix, an external gripper head, or scripted finisher information. The official LeRobot Pi0.5 example provides the full tuning settings for `freeze_vision_encoder=false`, `train_expert_only=false`, and `batch_size=32`. This experiment uses a memory-bounded subset of those unfreezing settings, beginning with the most relevant visual paths: [LeRobot Pi0.5 documentation](https://github.com/huggingface/lerobot/blob/main/docs/source/pi05.mdx).
 
 It is not enough to only look at `requires_grad=True`. The trainer has a parameter probe for each of FP32 vision patch embedding, action head, and language layer: the first two must undergo non-zero changes, while the language layer must remain at 0. If the BF16 parameters are updated by only approximately `1e-6`, the comparison may be quantized to 0. Therefore, the visual probe used is FP32 patch embedding.
 

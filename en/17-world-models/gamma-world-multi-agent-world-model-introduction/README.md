@@ -2,7 +2,7 @@
 
 This introduction corresponds to the paper **Gamma-World: Generative Multi-Agent World Modeling Beyond Two Players**, also known as the project **γ-World**. It was jointly developed by NVIDIA, Tsinghua University, the University of Toronto, and Vector Institute. The arXiv version was published on 2026-05-27, the project page was released on 2026-05-28, and the code and training pipeline were made open source on 2026-06-16.
 
-This chapter is suitable to be placed in the `17-具身世界模型` section, following LeWM, RISE, RAW-Dream, WoG, WALL-WM, and RoboDream. It is neither a VLA base nor a simple video generation model, but a **multi-agent generative world model** for interactive simulation: given the synchronized observations and actions of multiple agents, it generates future videos from multiple perspectives in the same shared world.
+Gamma-World follows LeWM, RISE, RAW-Dream, WoG, WALL-WM, and RoboDream in the world-model route. It is a **multi-agent generative world model** for interactive simulation: synchronized observations and actions from several agents condition future videos from multiple viewpoints in one shared world.
 
 After completing this chapter, focus on one key judgment:
 
@@ -300,7 +300,7 @@ If the network connection is stable, you can directly use the official default `
 
 The official repository comes with a `data/` example. Each sample directory includes:
 
-- `first_frame.png`: Horizontal拼接 multi-player first frame.
+- `first_frame.png`: Horizontally concatenated first frames from multiple agents.
 - `prompt.txt`: Text prompt.
 - `action_left.json` / `action_right.json`, or `action_0.json` to `action_N.json`: Action sequences of each agent.
 
@@ -397,7 +397,7 @@ Thirdly, the generalization of third and fourth agents stems from the structural
 
 Fourth, Sparse Hub Attention uses the hub token to compress cross-agent communication, which is highly efficient. However, if the hub capacity is too small, fine-grained interactions may be lost; if the capacity is too large, it will approach the cost of dense communication.
 
-第五，it is not a traditional physical simulation器. It can generate action-conditioned video rollouts, but it does not provide strict collision, dynamics, contact force, and verifiable state transitions. For robot training, it is more like an “interactive video world model” and a “data generation/assessment tool”, rather than a direct alternative to MuJoCo / Isaac Sim.
+Fifth, it is not a traditional physics simulator. It can generate action-conditioned video rollouts, but it does not provide strict collision handling, dynamics, contact forces, or verifiable state transitions. For robot training, it is better understood as an interactive video world model and a data-generation or assessment tool rather than a direct replacement for MuJoCo or Isaac Sim.
 
 ## 14. Recommended Reading Order
 

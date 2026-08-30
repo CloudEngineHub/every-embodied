@@ -6,11 +6,11 @@ After completing this chapter, you can finish three tasks:
 
 - Download and run `nvidia/LocateAnything-3B` locally.
 - Compare the output and speed of Locate Anything and YOLO26n using the same diagram.
-- Understand why it uses Parallel Box Decoding, and where it should be placed in the robot pipeline.
+- Understand Parallel Box Decoding and how localization connects to the robot perception pipeline.
 
 > This chapter places the environment, model weights, and runtime output in the main directory `$DATA_ROOT`. The tutorial repository only retains the Markdown format and lightweight result charts. Model weights, HF cache, pip cache, and runtime logs should not be submitted to the repository.
 
-## 1. Where is it suitable to be placed in the embodied system?
+## 1. Role in an Embodied Perception System
 
 The input of Locate Anything is images and text, and the output is a structured text similar to the following:
 

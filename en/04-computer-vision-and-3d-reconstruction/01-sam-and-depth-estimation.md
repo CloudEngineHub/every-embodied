@@ -31,7 +31,7 @@ In the academic and engineering fields, we usually focus on the following metric
 
 ## II. Interactive Demo: Clicking Division and Range Measurement (Interactive Demo)
 
-To provide a直观 experience of the "point and click" effect, we provide an interactive script.
+To provide an intuitive experience of the "point and click" effect, we provide an interactive script.
 **Function**: Load image -> Click on objects with mouse -> Generate Mask in real time -> Combine depth maps to calculate the average distance of the object.
 
 ### 2.1 Script code (`interactive_sam_depth.py`) (Please complete the fourth point of environment configuration first)

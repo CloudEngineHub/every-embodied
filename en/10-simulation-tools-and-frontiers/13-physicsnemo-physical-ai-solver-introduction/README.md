@@ -9,13 +9,13 @@
 
 PhysicsNeMo is a open-source deep learning framework developed by NVIDIA for physics AI / AI4Science / engineering simulation. Its primary goal is not to train VLA or enable robot simulation interactions, but rather to build, train, fine-tune, and reason over physical machine learning models, such as neural operators, graph neural networks, diffusion models, PINN, weather/climate models, CFD surrogates, structural mechanics, and electromagnetic field surrogate models.
 
-This article is placed in `10-具身智能其他仿真工具及仿真前沿` and is most suitable as supplementary reading. It is related to embodied AI, but the relationship is quite distant: while embodied robots certainly focus on contact, fluids, materials, soft bodies, and multi-physical fields, mainstream embodied learning tutorials more often use interactive simulators such as MuJoCo, Isaac Sim, ManiSkill, Genesis, and Habitat. PhysicsNeMo is more like a “fast surrogate solver for learning physical PDE/engineering simulations using neural networks”—it is not an environment designed for robots directly `env.step(action)`.
+PhysicsNeMo is an extension tool for physics surrogate modeling. Embodied robots also depend on contact, fluids, materials, soft bodies, and multiphysics, but MuJoCo, Isaac Sim, ManiSkill, Genesis, and Habitat provide interactive environments and dynamics stepping. PhysicsNeMo instead trains neural surrogate solvers for partial differential equations and engineering simulations; it does not directly provide a robot-facing `env.step(action)` environment.
 
 ![PhysicsNeMo Introduction Card](../../../10-具身智能其他仿真工具及仿真前沿/13-PhysicsNeMo物理AI求解器导读/assets/physicsnemo-card.svg)
 
 Figure 1: The role of PhysicsNeMo in the tutorial. Here, a local SVG is used to illustrate its core flow: physical data and PDE constraints enter the Physics-ML model, and a surrogate model capable of rapid inference is trained. Most of the diagrams on the official developer page are client case studies rather than clear architecture diagrams. Therefore, this chapter uses self-drawn diagrams to explain the concepts.
 
-## 1. Let's get to the point first: It has little to do with us, but it's worth knowing.
+## 1. Where PhysicsNeMo Fits
 
 If the goal is to reproduction OpenVLA, SmolVLA, ACT, robot grasping, navigation, world model, or real robot control, PhysicsNeMo is not a high-priority tool. It will not replace:
 
@@ -33,7 +33,7 @@ It is more suitable for these types of problems:
 - Perform large-scale Physics-ML training using PyTorch + NVIDIA GPU;
 - Research PINN, neural operators, mesh / point-cloud datapipe, and distributed training.
 
-Therefore, it is not recommended to use PhysicsNeMo as the main reproduction task in the tutorial. It is suitable as “readings on physical AI solvers”: just understand what it is, what it can solve, and how it differs from robot simulators.
+This chapter treats PhysicsNeMo as an extension on physical AI solvers: it first establishes what the framework solves and how it differs from robot simulators, then uses lightweight examples to validate installation and the neural-operator workflow.
 
 ## 2. Name change: Modulus to PhysicsNeMo
 
@@ -215,9 +215,9 @@ There are many approaches such as PINN, FNO, DeepONet, MeshGraphNet, and GraphCa
 
 However, from the perspectives of engineering and AI4Science, it remains an active project. The GitHub README indicates that the project is in a 'active' state, and the official documentation is maintaining new installations, examples, and a v2.0 migration guide. Therefore, a more accurate description is: its approach is relatively mature, but it has less connection to the main line of our robot tutorials, yet it is not a abandoned project.
 
-## 12. Reproduction Boundary
+## 12. Tiered Reproduction Route
 
-This chapter does not recommend writing it as “step-by-step reproduction of the complete PhysicsNeMo benchmark”. There are several reasons:
+The official PhysicsNeMo examples span several physics domains, so covering all of them is not a useful single learning task. The main reasons are:
 
 - The official examples cover a wide range of CFD, weather, PDE, GNN, and diffusion;
 - Many tasks require specialized dataset, and meaningful results cannot be obtained simply by using `pip install`;

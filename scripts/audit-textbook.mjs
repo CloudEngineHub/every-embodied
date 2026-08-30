@@ -16,6 +16,7 @@ const HARD_CATEGORIES = new Set([
   "broken-local-reference",
   "empty-document",
   "likely-secret",
+  "mixed-language-prose",
 ]);
 const SKIPPED_DIRS = new Set([
   ".git",
@@ -45,6 +46,7 @@ const CATEGORY_LABELS = {
   "heading-level-jump": "标题层级跳跃",
   "likely-secret": "疑似凭据",
   "machine-absolute-path": "机器相关绝对路径",
+  "mixed-language-prose": "英文正文中英粘连",
   "missing-h1": "缺少一级标题",
   "multiple-h1": "存在多个一级标题",
   "near-empty-document": "内容过少",
@@ -371,6 +373,24 @@ function auditMarkdownFile(root, relPath, options) {
   const h1 = headings.filter((heading) => heading.level === 1);
   const substantiveCharacters = countSubstantiveCharacters(source);
   const findings = [];
+
+  if (relPath.startsWith("en/")) {
+    for (const token of tokens) {
+      if (token.type !== "inline") continue;
+      for (const child of token.children || []) {
+        if (child.type !== "text") continue;
+        if (/(?:\p{Script=Latin}\p{Script=Han}|\p{Script=Han}\p{Script=Latin})/u.test(child.content)) {
+          findings.push({
+            category: "mixed-language-prose",
+            severity: "error",
+            path: relPath,
+            line: (token.map?.[0] ?? 0) + 1,
+            message: "英文正文包含直接粘连的中英文本",
+          });
+        }
+      }
+    }
+  }
 
   if (substantiveCharacters < options.emptyCharacters) {
     findings.push({

@@ -2,7 +2,7 @@
 
 > Introduction to this paper **VisualThink-VLA: Visual Intermediate Reasoning for Effective and Low-Latency Vision-Language-Action Policies**. The arXiv ID of the paper is `2605.30011v1`, and it was submitted on May 28, 2026. The authors include Mingjian Gao, Wenqiao Zhang, Yuqian Yuan, Yang Dai, Binhe Yu, Zheqi Lv, Haoyu Zheng, Jiaqi Zhu, Zhiqi Ge, Zixuan Wan, Siliang Tang, and Yueting Zhuang.
 
-## 1. Let's start with the conclusion: Why it deserves to be included in the VLA section
+## 1. Why Reason with Visual Evidence
 
 VisualThink-VLA discusses a very practical issue within VLA: how should robots "think before acting".
 
@@ -15,21 +15,22 @@ Second, the text CoT has a significant delay. The paper reports that the ECoT ha
 The core judgment of VisualThink-VLA is:
 
 ```text
-机器人不一定要用文字思考。
-更合适的中间推理形式，是紧凑、可路由、可审计的视觉证据。
+A robot does not have to reason in prose.
+A more suitable intermediate representation is compact, routable,
+and auditable visual evidence.
 ```
 
 Therefore, it is neither a world model nor a completely new VLA base training. It is more like adding a **visual evidence intermediate layer** to the frozen VLA:
 
 ```text
-RGB 当前帧 + 上一帧 + 语言指令
-    -> 提取 bbox / edge / motion / relation 等视觉证据
-    -> router 选择当前动作真正需要的证据通道
-    -> Visual State Composer 把证据变成轻量 soft states
-    -> 冻结 VLA backbone 在这些视觉证据条件下预测动作
+Current RGB frame + previous frame + language instruction
+    -> extract bbox, edge, motion, and relation evidence
+    -> route the evidence channels required by the current action
+    -> compose lightweight visual states
+    -> predict actions with the frozen VLA backbone
 ```
 
-So it should be placed in `06-策略抓取或抓取VLA/大模型控制、VLA、VLM`, after LWD. It belongs to the same "enabling VLA to do more than just behavior cloning" method line as EventVLA, G0.5, PRTS, and LWD. However, its focus is on **the efficiency and auditability of visual intermediate reasoning**.
+VisualThink-VLA joins EventVLA, G0.5, PRTS, and LWD in exploring how VLA can move beyond direct behavior cloning. Its distinctive focus is the **efficiency and auditability of visual intermediate reasoning**: the policy selects task-relevant visual evidence before acting and retains evidence channels that can be inspected.
 
 ## 2. Papers, Code, and Reproduction Entries
 

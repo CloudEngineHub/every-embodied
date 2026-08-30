@@ -2,7 +2,7 @@
 
 > 本文导读 **Agentic-VLA: Efficient Online Adaptation for Vision-Language-Action Models**。论文 arXiv 编号为 `2605.22896v1`，2026 年 5 月 21 日提交，作者为 Ruofan Jin 和 Zaixi Zhang。
 
-## 1. 先说结论：它应该放在 VLA 章节
+## 1. 在线适应解决什么问题
 
 Agentic-VLA 不是世界模型，也不是一个新的机器人仿真器。它讨论的是 VLA 部署后的一个核心问题：已有 VLA 在新任务、新场景里如果表现不够好，能不能不再完全依赖人工重新采示教，而是让模型通过在线交互、语言反馈、动态奖励和经验记忆更快适应。
 
@@ -25,7 +25,7 @@ OpenVLA-OFT 基础策略
     -> 成功适应后的权重写回记忆库
 ```
 
-因此它应该归入 `06-策略抓取或抓取VLA/大模型控制、VLA、VLM`，接在 VisualThink-VLA 后面。它和 LWD、PRTS、RAW-Dream 有关联，但侧重点不同：
+它和 LWD、PRTS、RAW-Dream 都关注离线行为克隆之外的策略改进，但侧重点不同：
 
 - LWD 讲真机机群如何用部署数据做 offline-to-online RL。
 - PRTS 讲如何在预训练阶段让 VLA 具备目标可达性意识。
