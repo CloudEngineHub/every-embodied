@@ -1,6 +1,6 @@
 # 3DVLA：给 VLA 注入三维空间和实例理解的即插即用框架
 
-这篇导读对应论文 **3DVLA: Enhancing Vision-Language-Action Models via 3D Spatial and Instance Understanding**，来自北京大学王选计算机研究所，arXiv 于 2026-05-28 提交。本节衔接前面的 VLA 基础模型与后续的物理理解方法，重点说明三维空间和实例表示如何进入动作专家。
+这篇导读对应论文 **3DVLA: Enhancing Vision-Language-Action Models via 3D Spatial and Instance Understanding**，来自北京大学王选计算机研究所，arXiv 于 2026-05-28 提交。它适合放在本仓库的 `06-策略抓取或抓取VLA/大模型控制、VLA、VLM` 章节中，接在 OpenVLA、DiT4DiT、EventVLA、WALL-OSS/WALL-X 之后。
 
 学完这一节后，大家需要抓住一个核心判断：
 

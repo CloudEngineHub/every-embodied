@@ -426,7 +426,6 @@ input {
   font-size: 34px;
   line-height: 1.18;
   overflow-wrap: anywhere;
-  text-wrap: balance;
   word-break: break-word;
 }
 
@@ -1477,7 +1476,7 @@ body.showcase-mode .reader {
   }
 
   .home-hero h1 {
-    font-size: 40px;
+    font-size: 48px;
   }
 
   .home-hero p:not(.home-kicker) {

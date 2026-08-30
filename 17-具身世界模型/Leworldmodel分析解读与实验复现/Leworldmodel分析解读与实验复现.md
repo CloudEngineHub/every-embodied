@@ -1,6 +1,7 @@
 # LEWM世界模型分析解读
 
-本章围绕 LeWM 的表征崩溃问题、SIGReg 正则化和高维正态分布假设展开，说明它相对 JEPA、PLDM 的结构差异，并给出实验复现时需要检查的关键环节。
+### 是不是看完LeWM论文还是一头雾水？是不是复现代码时被表征崩溃、SIGReg、高维正态分布绕晕？是不是搞不懂它为啥能比 JEPA、PLDM 更简单稳定？
+### 这篇文章用最通俗的话、最清晰的结构，把LeWM从头到尾讲明白，一步到位带你吃透最新的LeWM世界模型算法，不管是入门世界模型还是深入科研都能用！
 
 ## 一、先搞懂最核心的痛点：表征崩溃到底是个啥？
 
@@ -250,7 +251,7 @@ lewm
 这里一定要设置成多一个文件夹的路径，否则模型权重会在你的lewm下保存，会显得很杂乱。后面每一步都需要加载这个路径。
 
 ```python
-export STABLEWM_HOME=/path/to/lewm-workspace/tworoom
+export STABLEWM_HOME=/home/your-user/lewm/tworoom
 ```
 
 训练部分：

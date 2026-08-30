@@ -109,26 +109,16 @@ DiT4DiT 可以理解为一个面向机器人操作任务的“大模型 + 扩散
 
 ## 三、服务器和目录规划
 
-大模型、运行环境和长期保留的缓存应放在容量充足的长期盘；数据、日志和临时训练输出可放在可清理的实验盘。先用环境变量定义统一布局：
+本章的一个关键原则是：大模型和 conda 环境可以复用收费共享盘，训练数据、日志和教学产物放到免费数据盘。这样既能跑通流程，又不会因为 smoke test 留下 20GB 级 checkpoint 把免费盘撑满。
 
-```bash
-export DIT4DIT_ROOT=/path/to/dit4dit-workspace
-export DIT4DIT_ENV_ROOT="$DIT4DIT_ROOT/envs"
-export DIT4DIT_MODEL_ROOT="$DIT4DIT_ROOT/models"
-export DIT4DIT_RUN_ROOT="$DIT4DIT_ROOT/runs"
-export DIT4DIT_SECRET_ROOT="$HOME/.config/dit4dit"
-
-export COSMOS_MODEL="$DIT4DIT_MODEL_ROOT/Cosmos-Predict2.5-2B"
-export DIT4DIT_CHECKPOINT="$DIT4DIT_MODEL_ROOT/dit4dit-model/dit4dit_libero/final_model/pytorch_model.pt"
-mkdir -p "$DIT4DIT_ENV_ROOT" "$DIT4DIT_MODEL_ROOT" "$DIT4DIT_RUN_ROOT" "$DIT4DIT_SECRET_ROOT"
-```
-
-| 类型 | 统一变量 | 用途 |
+| 类型 | 实测路径 | 用途 |
 | :-- | :-- | :-- |
-| 项目根目录 | `$DIT4DIT_ROOT` | DiT4DiT 与 LIBERO 源码 |
-| 运行环境 | `$DIT4DIT_ENV_ROOT` | 策略服务、训练和仿真评估环境 |
-| 模型目录 | `$DIT4DIT_MODEL_ROOT` | Cosmos 基座模型与 DiT4DiT 预训练权重 |
-| 实验目录 | `$DIT4DIT_RUN_ROOT` | 数据、日志和训练输出 |
+| 项目根目录 | `/root/gpufree-share/dit4dit_eval` | DiT4DiT 仓库、LIBERO 仓库、模型缓存 |
+| DiT4DiT 环境 | `/root/gpufree-share/conda-envs/dit4dit` | policy server 与训练脚本 |
+| LIBERO 环境 | `/root/gpufree-share/conda-envs/libero` | MuJoCo / robosuite 仿真评估 |
+| 免费数据盘 | `/root/gpufree-data/dit4dit_train_test` | 单 suite 数据集、训练日志、smoke test 输出 |
+| Cosmos backbone | `/root/gpufree-share/dit4dit_eval/models/Cosmos-Predict2.5-2B` | gated Hugging Face 模型 |
+| DiT4DiT checkpoint | `/root/gpufree-share/dit4dit_eval/models/dit4dit-model/dit4dit_libero/final_model/pytorch_model.pt` | 预训练策略权重 |
 
 如果大家使用自己的服务器，可以保留这个思想，但把路径换成自己的挂载盘。建议至少准备 48GB 显存做单卡评估和 smoke training。RTX 4090 也可能跑通部分流程，但 24GB 显存更容易遇到 OOM。
 
@@ -138,22 +128,22 @@ mkdir -p "$DIT4DIT_ENV_ROOT" "$DIT4DIT_MODEL_ROOT" "$DIT4DIT_RUN_ROOT" "$DIT4DIT
 
 Cosmos-Predict2.5-2B 是 gated model，需要 Hugging Face 账号同意 NVIDIA 模型许可。服务器上只要保证当前 shell 能读取 `HF_TOKEN` 即可，不建议把 token 写进教程、脚本或 Git 仓库。
 
-推荐做法是在用户配置目录中保存一个只有当前用户可读的环境文件：
+推荐做法是在服务器上保存一个私有 env 文件：
 
 ```bash
-mkdir -p "$DIT4DIT_SECRET_ROOT"
-chmod 700 "$DIT4DIT_SECRET_ROOT"
-cat > "$DIT4DIT_SECRET_ROOT/tokens.env" <<'EOF'
+mkdir -p /root/.secrets
+chmod 700 /root/.secrets
+cat > /root/.secrets/codex_tokens.env <<'EOF'
 export HF_TOKEN=hf_xxx
 export HUGGING_FACE_HUB_TOKEN="$HF_TOKEN"
 EOF
-chmod 600 "$DIT4DIT_SECRET_ROOT/tokens.env"
+chmod 600 /root/.secrets/codex_tokens.env
 ```
 
 然后在项目环境脚本或当前 shell 中加载：
 
 ```bash
-source "$DIT4DIT_SECRET_ROOT/tokens.env"
+source /root/.secrets/codex_tokens.env
 ```
 
 检查 token 是否已经被当前 shell 读到时，不要直接打印 token 值。可以只检查变量是否存在：
@@ -165,7 +155,7 @@ for k in HF_TOKEN HUGGING_FACE_HUB_TOKEN; do
 done
 ```
 
-如果输出是 `HF_TOKEN=set`，说明环境变量已经生效；如果还是 `missing`，先检查当前终端是否已加载 `$DIT4DIT_SECRET_ROOT/tokens.env`。
+如果输出是 `HF_TOKEN=set`，说明环境变量已经生效；如果还是 `missing`，先检查是不是没有 `source /root/.secrets/codex_tokens.env`，或者登录 shell 没有自动加载这个文件。
 
 如果服务器访问 GitHub / Hugging Face 很慢，可以在远程服务器直接安装 Clash-compatible core，例如 `mihomo`。本次复现中，Hugging Face 下载曾经卡在 Xet 分片下载路径，最后通过固定较稳定代理节点，并设置下面几个环境变量恢复：
 
@@ -180,23 +170,23 @@ export HF_HUB_DOWNLOAD_TIMEOUT=600
 本章复现需要两个模型资源：
 
 ```bash
-source "$DIT4DIT_ROOT/env.sh"
+source /root/gpufree-share/dit4dit_eval/env.sh
 
 # DiT4DiT LIBERO checkpoint
 huggingface-cli download mondo-robotics/dit4dit-model \
-  --local-dir "$DIT4DIT_MODEL_ROOT/dit4dit-model"
+  --local-dir /root/gpufree-share/dit4dit_eval/models/dit4dit-model
 
 # Cosmos backbone，需要 HF gated model 权限
 huggingface-cli download nvidia/Cosmos-Predict2.5-2B \
-  --local-dir "$COSMOS_MODEL"
+  --local-dir /root/gpufree-share/dit4dit_eval/models/Cosmos-Predict2.5-2B
 ```
 
 下载完成后，建议大家立刻做两个检查：
 
 ```bash
-du -sh "$DIT4DIT_MODEL_ROOT/dit4dit-model"
-du -sh "$COSMOS_MODEL"
-find "$COSMOS_MODEL" -name '*.incomplete' | wc -l
+du -sh /root/gpufree-share/dit4dit_eval/models/dit4dit-model
+du -sh /root/gpufree-share/dit4dit_eval/models/Cosmos-Predict2.5-2B
+find /root/gpufree-share/dit4dit_eval/models/Cosmos-Predict2.5-2B -name '*.incomplete' | wc -l
 ```
 
 第一个检查确认模型确实落盘；第二个检查确认 Cosmos 目录里没有残留的 `.incomplete` 文件。如果 `.incomplete` 数量不为 0，说明下载可能被中断过，后面加载模型时很容易报 shard 缺失或 safetensors 读取错误。
@@ -204,17 +194,17 @@ find "$COSMOS_MODEL" -name '*.incomplete' | wc -l
 训练 smoke test 只需要下载一个 LIBERO suite：
 
 ```bash
-mkdir -p "$DIT4DIT_RUN_ROOT/datasets"
+mkdir -p /root/gpufree-data/dit4dit_train_test/datasets
 
 huggingface-cli download IPEC-COMMUNITY/libero_spatial_no_noops_1.0.0_lerobot \
   --repo-type dataset \
-  --local-dir "$DIT4DIT_RUN_ROOT/datasets/libero_spatial_no_noops_1.0.0_lerobot"
+  --local-dir /root/gpufree-data/dit4dit_train_test/datasets/libero_spatial_no_noops_1.0.0_lerobot
 ```
 
 实测下载后的目录占用如下：
 
 ```text
-362M  $DIT4DIT_RUN_ROOT/datasets
+362M  /root/gpufree-data/dit4dit_train_test/datasets
 ```
 
 只下载一个 suite 的好处是很明显的：它足够小，可以快速验证训练 dataloader；同时又是真实 LIBERO 数据，不是随便造的假样本。这样大家看到的 loss、video decode、state/action 字段映射，都和后续扩大实验时一致。
@@ -224,8 +214,8 @@ huggingface-cli download IPEC-COMMUNITY/libero_spatial_no_noops_1.0.0_lerobot \
 DiT4DiT 的 LIBERO 评估一般分成两个进程：一个进程启动 policy server，另一个进程启动 LIBERO 仿真 client。为了教学方便，可以把它封装成一个脚本：
 
 ```bash
-"$DIT4DIT_ROOT/scripts/run_libero_one_suite.sh" \
-  "$DIT4DIT_CHECKPOINT" \
+/root/gpufree-share/dit4dit_eval/scripts/run_libero_one_suite.sh \
+  /root/gpufree-share/dit4dit_eval/models/dit4dit-model/dit4dit_libero/final_model/pytorch_model.pt \
   libero_spatial \
   1 \
   0
@@ -287,7 +277,7 @@ assets/logs/run_train_smoke_libero_spatial.sh
 服务器上的执行命令是：
 
 ```bash
-"$DIT4DIT_RUN_ROOT/run_train_smoke_libero_spatial.sh" 2 1
+/root/gpufree-data/dit4dit_train_test/run_train_smoke_libero_spatial.sh 2 1
 ```
 
 其中 `2` 表示训练 2 step，`1` 表示 per-device batch size 为 1。脚本做了几件关键事情：
@@ -380,15 +370,15 @@ fi
 如果大家确实想保留 checkpoint，可以这样运行：
 
 ```bash
-KEEP_FINAL_MODEL=1 "$DIT4DIT_RUN_ROOT/run_train_smoke_libero_spatial.sh" 2 1
+KEEP_FINAL_MODEL=1 /root/gpufree-data/dit4dit_train_test/run_train_smoke_libero_spatial.sh 2 1
 ```
 
 本次清理后的磁盘占用如下：
 
 ```text
-362M  $DIT4DIT_RUN_ROOT/datasets
-96K   $DIT4DIT_RUN_ROOT/logs
-76K   $DIT4DIT_RUN_ROOT/results
+362M  /root/gpufree-data/dit4dit_train_test/datasets
+96K   /root/gpufree-data/dit4dit_train_test/logs
+76K   /root/gpufree-data/dit4dit_train_test/results
 ```
 
 ## 九、为训练数据补充 DiT4DiT 需要的元数据

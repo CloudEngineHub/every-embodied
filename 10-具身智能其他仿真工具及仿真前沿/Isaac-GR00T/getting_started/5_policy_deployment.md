@@ -1,4 +1,4 @@
-# GR00T 策略部署
+## 策略部署
 
 > 本教程要求用户拥有训练好的模型检查点和一个物理的So100 Lerobot机器人来运行策略。
 
@@ -6,7 +6,7 @@
 
 ![alt text](../media/so100_eval_demo.gif)
 
-## 1. 加载策略
+### 1. 加载策略
 
 运行以下命令启动策略服务器。
 
@@ -23,7 +23,7 @@ python scripts/inference_service.py --server \
  - 实施标签是用于策略的实施标签，用户在新机器人上微调时应使用new_embodiment
  - 数据配置是用于策略的数据配置。用户应使用`so100`。如果想使用不同的机器人，请实现自己的`ModalityConfig`和`TransformConfig`
 
-## 2. 客户端节点
+### 2. 客户端节点
 
 要部署微调后的模型，可以使用`scripts/inference_policy.py`脚本。该脚本将启动一个策略服务器。
 
@@ -41,7 +41,7 @@ raw_action_chunk: Dict[str, Any] = policy.get_action(raw_obs_dict)
 
 用户可以直接复制该类并在单独的隔离环境中实现自己的客户端节点。
 
-## 3. SO-100 LeRobot 机械臂示例
+### So100 Lerobot机械臂示例
 
 我们为So100 Lerobot机械臂提供了一个示例客户端节点实现。有关更多详细信息，请参阅示例脚本`scripts/eval_gr00t_so100.py`。
 

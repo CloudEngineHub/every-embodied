@@ -1,4 +1,4 @@
-# 从“能跑通”到“能诊断”：上海 AI Lab 推出具身操作仿真评测基座 EBench
+## 标题：从“能跑通”到“能诊断”：上海AI Lab推出具身操作仿真评测基座EBench
 
 在大模型不断刷新认知智能上限之后，具身智能正把研究重点进一步推向真实物理世界。这里的核心问题不再只是模型“能不能理解”，而是机器人能否真正完成复杂操作，并在新环境、新物体和新任务条件下保持稳定表现。
 
@@ -76,7 +76,7 @@ EBench 想做的第一件事，是把“任务是否成功”进一步还原到�
 
 从验证集进入隔离测试集后，不同模型的分数波动并不一致。InternVLA-A1 与 π0 的波动相对较小，π0.5 的下降更明显。这说明，在缺少隔离机制的评测中，验证集上的领先可能包含对训练分布的适配，而不一定代表真实泛化能力。
 
-![不同模型在隔离测试集上的能力结构对比](./assets/1777464256082-9.png)
+![img](https://aicarrier.feishu.cn/space/api/box/stream/download/asynccode/?code=ZGM3Y2FkMjdhOGEzZGNlNmM5NTk4NDI5YjdjNWZlNjhfdE5nZ1RtZEp1UmJxYkVvTEFwNDI1WUVZNlJhTHhzTjNfVG9rZW46UFZBRGJydkx4b1Q0Vmt4TEJqemNLWDlvbnRmXzE3Nzc0NjQxODU6MTc3NzQ2Nzc4NV9WNA)
 
 以移动操作和灵巧操作为例，InternVLA-A1 在移动操作任务中表现突出，但在灵巧操作上下降明显；π0 则在两类操作形态之间更加均衡。
 
@@ -119,13 +119,12 @@ EBench 想做的第一件事，是把“任务是否成功”进一步还原到�
 
 ### 2. 准备环境
 
-建议把 Python 虚拟环境放在本地数据盘，减少安装和解压时的 IO 开销。先定义数据目录，再接受 Omniverse EULA：
+建议把 Python 虚拟环境放在数据盘，而不是共享盘，减少安装和解压时的 IO 开销。启动 Isaac Sim 前需要接受 Omniverse EULA：
 
 ```bash
 export OMNI_KIT_ACCEPT_EULA=YES
-export DATA_ROOT=/path/to/ebench-data
-export HF_HOME="$DATA_ROOT/hf_home"
-export TMPDIR="$DATA_ROOT/tmp"
+export HF_HOME=/root/gpufree-data/hf_home
+export TMPDIR=/root/gpufree-data/tmp
 ```
 
 cuRobo 建议固定到 `v0.7.8`。GenManip 当前代码会使用旧版导入路径：

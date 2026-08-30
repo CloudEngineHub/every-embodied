@@ -1,5 +1,3 @@
-# RDK X5 连接 LeRobot 机械臂进行遥操作
-
 准备电源5V/5A 烧录镜像
 
 https://developer.d-robotics.cc/rdk_doc/Quick_start/hardware_introduction/rdk_x5

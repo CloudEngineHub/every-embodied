@@ -1,16 +1,12 @@
-# 具身智能竞赛案例
+# Challenge 竞赛
 
-本章收录具身智能竞赛中的任务拆解、训练流程、评测协议和工程复盘。它属于项目案例集，适合在完成机器人控制、模仿学习和仿真基础后选读。
+这里收录 Every Embodied 社区成员在具身智能竞赛中的公开复盘、代码骨架、实验记录和可复现说明。
 
-## 阅读路线
+## 当前项目
 
-| 案例 | 重点 | 推荐基础 |
-| --- | --- | --- |
-| [LeHome 挑战赛](./LeHome/README.md) | 比赛镜像、数据、训练与评测流程 | LeRobot、模仿学习 |
-| [ATEC2026](./ATEC2026/README.md) | 多任务规则理解、方案设计与发布归档 | 机器人控制、任务规划 |
-| [TRONCamp Mani](./TRONCamp-Mani/README.md) | ACT 策略训练、严格评测与失败分类 | ACT、RoboTwin |
-| [AgiBot World Model](./AgiBot_World_Model/AgiBot_World_Model比赛复现与改进教程.md) | 视频世界模型的环境搭建与实验改进 | 扩散模型、视频生成 |
+- [LeHome 挑战赛镜像、训练与评测教程](./LeHome/README.md)
+- [ATEC2026 线上赛复现与冲榜教程](./ATEC2026/README.md)
+- [TRONCamp Mani / RoboTwin ACT 赛后复盘](./TRONCamp-Mani/README.md)
+- [AgiBot World Model 比赛复现与改进教程](./AgiBot_World_Model/AgiBot_World_Model比赛复现与改进教程.md)
 
-## 使用方式
-
-先阅读案例首页中的任务定义和评测口径，再进入代码、实验记录或问题复盘。竞赛目录保留经过核实的结果边界和必要的归档说明；训练数据、模型权重和官方资产按照各自许可证从原始发布渠道获取。
+公开目录只保存能够安全再分发的内容。原始机器人资产、训练数据、模型权重、私有日志、访问令牌和服务器凭据不直接放入 Git；如确有再分发许可，应通过对应的 Hugging Face 仓库，并在项目 README 中登记版本与 SHA256。

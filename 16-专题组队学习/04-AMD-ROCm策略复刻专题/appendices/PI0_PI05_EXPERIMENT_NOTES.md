@@ -111,7 +111,7 @@ git clone https://huggingface.co/datasets/Datawhale/datawhale_eai_pnp_language d
 下面的视频展示了同一个 episode 的左右对比。左侧是 raw pi_0，右侧是加脚本收尾器后的混合诊断结果：
 
 <video controls muted preload="metadata" width="100%">
-  <source src="../assets/pi0_ep2_raw_vs_finisher_side_by_side.mp4" type="video/mp4">
+  <source src="./assets/pi0_ep2_raw_vs_finisher_side_by_side.mp4" type="video/mp4">
 </video>
 
 图 2：pi_0 episode2 raw-vs-hybrid 对比视频。这个视频用于解释失败机制，不代表 raw pi_0 已经达到 100% 成功率。
@@ -129,7 +129,7 @@ git clone https://huggingface.co/datasets/Datawhale/datawhale_eai_pnp_language d
 
 再加上 pi_0 使用 action chunking 思路，一次预测一段连续动作。Physical Intelligence 在 [Real-Time Action Chunking](https://www.pi.website/research/real_time_chunking) 中明确讨论了 chunk 边界、延迟和训练时未出现的暂停会带来的执行问题；[Real-Time Execution of Action Chunking Flow Policies](https://arxiv.org/html/2506.07339v1) 也把 action chunking 的边界和实时执行列为关键问题。放到这次小数据抓杯里，前段移动还能被模型平均出来，最后几厘米的 release / raise / stabilize 就很容易被累积误差击穿。
 
-脚本收尾器用于诊断尾段动作建模：如果加入固定尾段后可以从失败转为成功，说明原始策略的缺口包含尾段动作。完整 20 条 template-tail 的结果仅为 `4/20`，表明前段接触、抓稳、搬运和姿态控制同样重要。后续实验可以补充阶段化数据与纠偏数据；若将 scripted finisher 作为工程兜底，应与原始 pi_0 策略成功率分开统计。
+所以，脚本收尾器不是“作弊式宣布成功”，而是一个干净的诊断工具：如果加上一个固定尾段就能从失败变成成功，说明 raw policy 的主要缺口确实包含尾段动作建模。但完整 20 条 template-tail 只有 `4/20`，也说明前段接触、抓稳、搬运和姿态控制同样重要。后续要么补阶段化数据和纠偏数据，要么把 scripted finisher 作为工程兜底单独报告，不能把它混成 raw pi_0 成功率。
 
 ## pi_0 成功率怎么往上提
 
@@ -373,7 +373,7 @@ EEF-delta 的第一轮 64 条数据训练完成后，我们又在全新随机位
 图 3：seed `2133`、horizon 5 的四视角时间序列。机械臂在杯子上方和周围移动，但没有进入稳定抓取高度，也没有形成抬升。关键帧图应和逐步 TCP/gripper 日志一起看，不能仅凭“夹爪动过”判断抓取成功。
 
 <video controls muted preload="metadata" width="100%">
-  <source src="../assets/pi05_eefdelta_h5_seed2133.mp4" type="video/mp4">
+  <source src="./assets/pi05_eefdelta_h5_seed2133.mp4" type="video/mp4">
 </video>
 
 视频 2：同一条 seed `2133`、horizon 5 的 25 秒四视角完整 rollout。视频保留失败过程，是为了观察接近高度、闭爪时机和动作顺序，不应剪成只剩“看起来接近”的片段。
@@ -557,14 +557,14 @@ python "$TOPIC_ROOT/code/pi0/pi05_rocm_finetune.py" \
 
 逐步日志进一步缩小了问题范围。四个全新 seed 中，TCP 最接近杯子时的平面距离约 `5.4-6.7 cm`，但仍比杯体中心高约 `10.4-13.8 cm`，夹爪已经接近闭合；随后 TCP 继续越过杯子，最后才在杯子外下降。也就是说，模型不是完全没有识别蓝杯，而是把“继续接近、下降、闭合”三个阶段排错了。
 
-日志还暴露了控制幅值问题：记录到的 432 个动作行中有 123 行至少一个 XYZ 分量超过 `4 mm`，最大单轴增量达到 `9.56 mm`，而专家数据的最大单轴增量约为 `4.08 mm`。因此后续增加一个固定 `--eef-delta-max-step 0.004` 对照。它只表达控制器物理步长上限，不读取数据集 min/max、杯盘坐标或 phase；由于它改变了执行动作，actuator-bound protocol 与完全不限幅的 raw rollout 应分开统计。
+日志还暴露了控制幅值问题：记录到的 432 个动作行中有 123 行至少一个 XYZ 分量超过 `4 mm`，最大单轴增量达到 `9.56 mm`，而专家数据的最大单轴增量约为 `4.08 mm`。因此后续增加一个固定 `--eef-delta-max-step 0.004` 对照。它只表达控制器物理步长上限，不读取数据集 min/max、杯盘坐标或 phase；但它确实改变了执行动作，所以必须标为 actuator-bound protocol，不能把结果和完全不限幅的 raw rollout 混在一起。
 
 ![Pi0.5 canonical91 训练内 seed1003 失败序列](../assets/pi05_canonical_s800_seed1003_montage.png)
 
 图 5：seed `1003` 来自训练数据覆盖的位置。策略靠近蓝杯后在上方/侧面闭合，接着将杯子推倒并越过目标。杯子最大瞬时抬升约 `1.63 cm`，没有达到连续 3 步、至少 `3 cm` 的严格抬升条件。
 
 <video controls muted preload="metadata" width="100%">
-  <source src="../assets/pi05_canonical_s800_seed1003.mp4" type="video/mp4">
+  <source src="./assets/pi05_canonical_s800_seed1003.mp4" type="video/mp4">
 </video>
 
 视频 3：canonical91、800-step checkpoint 在训练内 seed1003 上的完整 raw Pi0.5 失败 rollout。它没有使用 target/plate 坐标、oracle prefix、外置 head 或 scripted finisher。

@@ -1,6 +1,6 @@
 # RoboDream：可组合世界模型数据合成导读
 
-本章导读论文 **RoboDream: Compositional World Models for Scalable Robot Data Synthesis**。论文于 2026-06-01 提交至 arXiv，作者来自 USC Physical Superintelligence Lab 与 Toyota Research Institute；其内容承接 WoG 与 WALL-WM，重点讨论可组合世界模型驱动的机器人数据合成。
+这篇导读对应论文 **RoboDream: Compositional World Models for Scalable Robot Data Synthesis**，arXiv 于 2026-06-01 提交，作者来自 USC Physical Superintelligence Lab 与 Toyota Research Institute。它适合放在本仓库的 `17-具身世界模型` 章节里，作为 WoG、WALL-WM 之后的世界模型前沿导读。
 
 如果按现有目录组织来排，不建议重排 `1、扩散数理基础`、`2、VAE`、`3、DDPM` 这些基础章节。RoboDream 更适合作为世界模型前沿方法里的 **第 6 篇导读**：LeWM 讲 latent world model 的基础问题，RISE 讲用组合世界模型做策略自改进，RAW-Dream 讲在 world model 里强化 VLA，WoG 讲 condition-space world modeling，WALL-WM 讲事件级 world action model，RoboDream 则讲 **用可组合视频世界模型合成机器人示教数据**。
 
@@ -24,7 +24,7 @@
 | 训练资源 | 论文报告为 2 个节点、每个节点 8 张 NVIDIA A100，训练约 1 周 |
 | 下游策略 | Diffusion Policy，用于隔离观察 RoboDream 生成数据对策略学习的影响 |
 
-当前公开材料尚不足以支持从零复现全部论文结果。本章先梳理架构、数据流、实验结论和边界条件；官方代码完善后，再补充训练、生成与策略复现实验。
+当前这篇不适合写成“从零跑通论文结果”的复现教程。更合理的学习方式是：先把它的架构图、数据流、实验结论和边界条件吃透；等官方代码补齐后，再按官方训练/生成/策略 pipeline 做复现。
 
 ## 2. 它到底在解决什么问题
 

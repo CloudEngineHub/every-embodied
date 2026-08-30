@@ -166,9 +166,7 @@ RDK套件目前提供 Ubuntu 22.04 系统镜像，可支持 Desktop 桌面图形
 
 系统首次启动时会进行默认环境配置，整个过程持续45秒左右，配置结束后会在显示器输出 Ubuntu 系统桌面，如下图：
 
-![RDK X5 首次启动后的 Ubuntu 桌面](assets/images/rdk-x5-desktop.jpg)
-
-来源：[本教程原始 GitHub 附件](https://github.com/user-attachments/assets/71b86912-e6c1-4639-89fb-b539775d8a5c)，已本地归档。
+![image-desktop_display](https://github.com/user-attachments/assets/71b86912-e6c1-4639-89fb-b539775d8a5c)
 
 > [!TIP]
 > 开发板指示灯说明
@@ -230,9 +228,7 @@ bbox: [530.825439, 513.695679, 555.200256, 536.498352], score: 0.459818, id: 0, 
 
 并且输出渲染结果到 `output_image.jpg` 文件中，如下图：
 
-![YOLOv5 目标检测输出结果](assets/images/yolov5-detection-result.png)
-
-来源：[本教程原始 GitHub 附件](https://github.com/user-attachments/assets/b60f44b5-a962-4b49-805e-90aeba38bc41)，已本地归档。
+![image](https://github.com/user-attachments/assets/b60f44b5-a962-4b49-805e-90aeba38bc41)
 
 ## 摄像头应用
 
@@ -240,9 +236,7 @@ bbox: [530.825439, 513.695679, 555.200256, 536.498352], score: 0.459818, id: 0, 
 
 本示例 `vio_capture` 示例实现了 `MIPI` 摄像头图像采集，并将 `RAW` 和 `YUV` 两种格式的图像本地保存的功能。示例流程框图如下：
 
-![MIPI 摄像头图像采集流程](assets/images/mipi-capture-flow.jpg)
-
-来源：[本教程原始 GitHub 附件](https://github.com/user-attachments/assets/fd6903ec-514a-47cc-bf81-35434ac9ccf8)，已本地归档。
+![image-capture](https://github.com/user-attachments/assets/fd6903ec-514a-47cc-bf81-35434ac9ccf8)
 
 #### 环境准备
 

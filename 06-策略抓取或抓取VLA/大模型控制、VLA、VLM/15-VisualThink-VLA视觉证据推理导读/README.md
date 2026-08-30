@@ -2,7 +2,7 @@
 
 > 本文导读 **VisualThink-VLA: Visual Intermediate Reasoning for Effective and Low-Latency Vision-Language-Action Policies**。论文 arXiv 编号为 `2605.30011v1`，2026 年 5 月 28 日提交。作者包括 Mingjian Gao、Wenqiao Zhang、Yuqian Yuan、Yang Dai、Binhe Yu、Zheqi Lv、Haoyu Zheng、Jiaqi Zhu、Zhiqi Ge、Zixuan Wan、Siliang Tang、Yueting Zhuang。
 
-## 1. 为什么要用视觉证据思考
+## 1. 先说结论：它为什么值得放进 VLA 章节
 
 VisualThink-VLA 讨论的是 VLA 里一个很现实的问题：机器人到底应该怎样“先想一下再行动”。
 
@@ -29,7 +29,7 @@ RGB 当前帧 + 上一帧 + 语言指令
     -> 冻结 VLA backbone 在这些视觉证据条件下预测动作
 ```
 
-VisualThink-VLA 与 EventVLA、G0.5、PRTS、LWD 共同探索“让 VLA 不只做直接行为克隆”的方法线，但它的切入点是 **视觉中间推理的效率和可审计性**：策略在输出动作前选择真正相关的视觉证据，同时保留可以检查的证据通道。
+所以它应该放在 `06-策略抓取或抓取VLA/大模型控制、VLA、VLM`，接在 LWD 后面。它和 EventVLA、G0.5、PRTS、LWD 属于同一条“让 VLA 不只做直接行为克隆”的方法线，但它的切入点是 **视觉中间推理的效率和可审计性**。
 
 ## 2. 论文、代码和复现入口
 

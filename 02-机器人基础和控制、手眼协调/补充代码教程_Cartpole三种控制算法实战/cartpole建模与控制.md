@@ -1,6 +1,6 @@
 # Cartpole建模与PID、LQR、MPC控制算法的Python实现
 
-CartPole 问题的目标是保持杆子竖直（角度为 0）并使小车停留在轨道中心（位置为 0）。
+### CartPole问题的目标是保持杆子竖直（角度为0）和小车在轨道中心（位置为0）。
 
 教程中不涉及公式推导，如需了解PID\LQR\MPC的底层原理，可自行学习。
 
@@ -248,5 +248,6 @@ def mpc_prediction(x_k, E, H, N, p):
 <img src="code/MPC_CartPole-v1.gif"/>
 
 <img src="code/MPC.png"/>
+
 
 

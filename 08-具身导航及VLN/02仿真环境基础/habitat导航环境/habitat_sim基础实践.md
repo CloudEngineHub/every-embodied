@@ -1,6 +1,6 @@
 # Habitat-sim基础实践
 
-本章以 Habitat-Sim 0.2.5 为基准，从核心模块使用进入基础仿真任务，依次完成 Matterport3D 场景加载、RGB-D 传感器配置、动作配置和导航网格实践。
+### 本章中将完成从habitat-sim入门到上手这个目标，以Habitat-Sim 0.2.5 版本（当前应用最广泛的稳定版）为基准，从核心模块的入门使用，再到基础仿真任务的实现。我们将避开纯理论堆砌，以 “问题驱动” 为导向 —— 每个实践步骤都对应实际开发中最常遇到的需求（如如何快速加载 Matterport3D 场景、如何配置 RGB-D 传感器等），为后续进阶的具身导航算法实现打下坚实的基础。
 
 ## 一、Habitat-sim的Hello World
 ### 1. 下载MP3D的示例场景数据
@@ -668,3 +668,4 @@ if display_path_agent_renders:
 参考资料：
 
 https://github.com/facebookresearch/habitat-sim
+

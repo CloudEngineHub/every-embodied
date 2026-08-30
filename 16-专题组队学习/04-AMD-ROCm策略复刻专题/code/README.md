@@ -78,8 +78,8 @@ python code/task11_smolvla_eval.py
 
 它只是设置 POLICY_TYPE=smolvla 和四个默认 seed，然后调用
 run_closed_loop.py。如果模型路径不同，优先显式设置 MODEL_RUN_DIR；不会
-再通过固定 Notebook cell 编号执行代码，也不会修改当前用户的
-`.Xauthority` 文件。
+再通过固定 Notebook cell 编号执行代码，也不会写入服务器上的
+/root/.Xauthority。
 
 ## 数据集回放
 

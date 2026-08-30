@@ -2,7 +2,7 @@
 
 > 本文导读论文 **τ0-WM: A Unified Video-Action World Model for Robotic Manipulation**。它来自 Shanghai Innovation Institute 与 AGIBOT Finch，项目页发布时间为 2026-05-31。官方把它定位为一个面向机器人操作的开源 video-action world model：既能预测动作，也能预测动作导致的未来视频，还能在测试时用 imagined future 评估和修正动作。
 
-## 1. 统一动作生成、视频预测与动作评估
+## 1. 先说结论
 
 τ0-WM 不是单纯的 VLA，也不是只会生成视频的世界模型。它试图把三件事放到同一个框架里：
 
@@ -14,7 +14,7 @@
 
 > τ0-WM 的核心不是“机器人会生成视频”，而是让机器人在执行前先提出动作、想象动作后果、评估后果，再必要时修正动作。
 
-τ0-WM 虽然包含策略接口，但核心创新是把策略、视频预测、动作条件模拟器和测试时计算统一为世界模型式决策机制，因此本章从世界模型角度展开。
+这篇适合放在 `17-具身世界模型`，而不是 VLA 章节。原因是它虽然包含策略接口，但核心创新是把 policy、video prediction、action-conditioned simulator 和 test-time computation 统一成一个世界模型式决策机制。
 
 ## 2. 论文、项目和开源状态
 
@@ -37,7 +37,7 @@
 
 ## 3. 它为什么值得放进世界模型线
 
-可以从下面几类世界模型的谱系中理解 τ0-WM：
+本仓库前面已经有几类世界模型导读。τ0-WM 可以放在下面这个谱系里理解：
 
 | 方法 | 世界模型预测什么 | 怎样服务机器人 |
 | :--- | :--- | :--- |
@@ -161,7 +161,7 @@ ACVS 不是传统物理仿真器。它没有显式接触力、刚体状态、碰
 | 5B | 项目传播中强调的视频 diffusion backbone / world model 规模 |
 | 5.5B VAM | 论文架构里把 5B video DiT backbone 和 0.5B Action DiT 分支合在一起算 |
 
-本章统一使用 **5B 级开源具身世界模型** 的表述，并在架构细节中注明 VAM 的 5.5B 口径。
+教程里建议统一称为 **5B 级开源具身世界模型**，在架构细节处补充 VAM 的 5.5B 口径。
 
 ## 7. 异构数据训练：每种数据只监督它真的有的信号
 
@@ -335,9 +335,9 @@ bash scripts/train.sh main.py \
 
 这部分对复现非常关键。很多 VLA / WAM 复现失败不是模型跑不起来，而是 action space 对不齐：坐标系、四元数顺序、夹爪开合方向、绝对/相对动作混了，结果策略看起来“能推理”，但动作完全不可执行。
 
-## 11. 分层复现路线
+## 11. 当前不建议怎么复现
 
-当前公开资产尚不足以完整重跑论文实验，主要有三个原因。
+这篇暂时不建议大家把完整论文实验重跑一遍，原因有三个。
 
 第一，模型和依赖很重。Wan2.2-TI2V-5B + VAM 权重不是普通笔记本任务，真实部署还涉及多视角相机、机器人状态接口和 server-client 延迟。
 
@@ -446,3 +446,4 @@ reward model: future -> score
 ## 17. 引用与图片来源
 
 本文图片来自 [τ0-WM 官方项目页](https://finch.agibot.com/research/tau0-wm)，为了教程稳定访问已压缩保存到本地 `assets/`。论文内容参考 [arXiv:2606.01027](https://arxiv.org/abs/2606.01027)、[官方 PDF](https://finch-static.agibot.com/VAM/blog/tau_0_wm.pdf)、[GitHub 仓库](https://github.com/sii-research/tau-0-wm) 和 [Hugging Face 权重页](https://huggingface.co/sii-research/tau-0-wm)。
+

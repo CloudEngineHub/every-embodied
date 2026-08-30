@@ -1,10 +1,8 @@
-# Go 与 S3 下载工具安装
-
 **特别注意最后一步配置国内代理，否则在国内无法下载包。**
 
 ------
 
-## 方案一：使用 Conda 安装
+### 方案一：使用 Conda 安装（最推荐，不需要 root 权限）
 
 既然你经常使用 Python 环境，使用 `conda` 安装 Go 是最简单、最干净的方式，而且不需要管理员（sudo）权限。
 
@@ -20,7 +18,7 @@ conda install -c conda-forge go
 
 ------
 
-## 方案二：Linux 服务器安装官方二进制
+### 方案二：Linux 服务器标准安装（官方二进制）
 
 如果你需要全局安装（并且有 `sudo` 权限），或者不想依赖 Conda，这是最标准的做法。
 
@@ -60,14 +58,14 @@ conda install -c conda-forge go
 
 ------
 
-## 方案三：Windows 与 macOS 安装
+### 方案三：Windows / macOS 安装
 
 - **Windows**: 直接去官网下载 `.msi` 安装包，双击运行，一路 Next 即可。它会自动配置环境变量。
 - **macOS**: 如果装了 Homebrew，直接运行 `brew install go`。
 
 ------
 
-## 配置 Go 模块代理
+### 🚨 关键步骤：配置国内加速代理（GOPROXY）
 
 这一步非常重要！
 
@@ -87,7 +85,7 @@ go env -w GOPROXY=https://goproxy.cn,direct
 
 ------
 
-## 验证 Go 安装
+### 验证是否成功
 
 安装并配置完后，运行以下命令测试：
 
@@ -114,7 +112,7 @@ go env -w GOPROXY=https://goproxy.cn,direct
 
 
 
-## 下载 S3 对象
+# 备注 其他下载方式
 
 
 
@@ -130,7 +128,7 @@ go env -w GOPROXY=https://goproxy.cn,direct
 
 ------
 
-### 方法一：使用 `s5cmd`
+### 方法一：使用 `s5cmd` (推荐，速度最快)
 
 如果你追求**极致的多线程下载速度**，强烈推荐使用 [s5cmd](https://github.com/peak/s5cmd)。它是用 Go 写的，并发性能极强，比官方 CLI 快很多。
 

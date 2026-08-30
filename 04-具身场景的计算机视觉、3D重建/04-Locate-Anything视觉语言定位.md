@@ -77,6 +77,17 @@ export TORCH_EXTENSIONS_DIR=/path/to/large_disk/cache/torch_extensions
 mkdir -p "$DATA_ROOT" "$HF_HOME" "$PIP_CACHE_DIR" "$UV_CACHE_DIR" "$TORCH_EXTENSIONS_DIR"
 ```
 
+如果和本机一样使用 `/data/Data14TB` 作为大盘，可以这样设置：
+
+```bash
+export DATA_ROOT=/data/Data14TB/01Proj/locate-anything
+export ENV_ROOT=/data/Data14TB/envs/locate-anything
+export HF_HOME=/data/Data14TB/cache/huggingface
+export PIP_CACHE_DIR=/data/Data14TB/cache/pip
+export UV_CACHE_DIR=/data/Data14TB/cache/uv
+export TORCH_EXTENSIONS_DIR=/data/Data14TB/cache/torch_extensions
+```
+
 克隆官方仓库：
 
 ```bash

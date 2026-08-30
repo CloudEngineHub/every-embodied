@@ -36,17 +36,14 @@
 
 1. **获取代码 & 安装依赖**
    ```bash
-   export WORKSPACE=$HOME/robotics
-   export JOYCON_WEB_ROOT=$WORKSPACE/robosuite-joycon-web
-   export ROBOSUITE_JOYCON_ROOT=$WORKSPACE/robosuite-joycon
-   cd "$JOYCON_WEB_ROOT"
+   cd /home/kewei/17robo/robosuite-joycon-web
    bun install
    pip install -r requirements.txt
    
    # 安装 robosuite（首次运行需要）
-   cd "$ROBOSUITE_JOYCON_ROOT"
+   cd /home/kewei/17robo/robosuite-joycon
    pip install -e .
-   cd "$JOYCON_WEB_ROOT"
+   cd /home/kewei/17robo/robosuite-joycon-web
    ```
 
 2. **运行无渲染自检（适合 WSL/服务器）**
@@ -93,7 +90,7 @@
 ### 2. 前端界面
 
 ```bash
-cd "$JOYCON_WEB_ROOT"
+cd /home/kewei/17robo/robosuite-joycon-web
 bun run dev
 ```
 

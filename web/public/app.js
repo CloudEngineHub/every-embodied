@@ -37,16 +37,10 @@ const els = {
   starCount: document.getElementById("starCount"),
 };
 
-const homeTitleLines = ["从基础到系统，", "构建具身智能能力。"];
+const homeTitleLines = ["从 0 到 1，", "走进具身智能。"];
 const GITHUB_REPO_URL = "https://github.com/datawhalechina/every-embodied";
 
 const homeDemos = [
-  {
-    title: "教材学习地图",
-    subtitle: "四卷课程、章节依赖与分方向学习路线",
-    media: "assets/main.png",
-    doc: "教材学习地图.md",
-  },
   {
     title: "AMD Physical AI Evidence Lab",
     subtitle: "家庭操作、灵巧手、仿真迁移与安全控制的完整 AMD 实践",
@@ -105,39 +99,6 @@ const homeDemos = [
 ];
 
 const homeModules = [
-  {
-    id: "module-foundations",
-    label: "Foundations",
-    title: "基础教材",
-    headline: "先建立统一的机器人系统语言。",
-    copy: "从具身智能系统、坐标变换和运动学开始，再进入视觉感知、学习算法与最小仿真实验。",
-    cards: [
-      {
-        title: "具身智能概述",
-        copy: "理解感知、决策、控制和环境交互组成的闭环系统。",
-        image: "assets/main.png",
-        doc: "01-具身智能概述/README.md",
-      },
-      {
-        title: "机器人基础与控制",
-        copy: "学习坐标变换、运动学、动力学和手眼协调。",
-        image: "01-具身智能概述/module1_2_机器人系统组成与分类/images/six_dof_manipulator.png",
-        doc: "02-机器人基础和控制、手眼协调/README.md",
-      },
-      {
-        title: "视觉与三维重建",
-        copy: "从分割、深度估计到视觉语言定位和视频建图。",
-        image: "assets/lingbot_map_university.gif",
-        doc: "04-具身场景的计算机视觉、3D重建/README.md",
-      },
-      {
-        title: "最小 MuJoCo 实验",
-        copy: "用一个机械臂抓取任务连接轨迹、控制和物理步进。",
-        image: "assets/quick_start.gif",
-        doc: "examples/README.md",
-      },
-    ],
-  },
   {
     id: "module-navigation",
     label: "Navigation Model",

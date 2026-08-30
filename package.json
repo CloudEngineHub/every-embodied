@@ -5,9 +5,6 @@
   "scripts": {
     "start": "node web/server.js",
     "build:pages": "node scripts/build-pages.js",
-    "qa:textbook": "node scripts/audit-textbook.mjs",
-    "qa:all": "node scripts/audit-textbook.mjs --include-english",
-    "test:textbook": "node --test scripts/audit-textbook.test.mjs",
     "test:translation": "node --test scripts/translate-markdown.test.mjs",
     "translation:paths": "node scripts/build-translation-path-map.mjs"
   },

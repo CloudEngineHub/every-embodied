@@ -2,7 +2,7 @@
 
 这一节对应同济大学 Boundless Large Model Lab 开源的 **Boundless-World-Model**，简称 **BWM**。项目仓库为 [boundless-large-model/boundless-world-model](https://github.com/boundless-large-model/boundless-world-model)，模型权重发布在 [BLM-Lab/Boundless-World-Model](https://huggingface.co/BLM-Lab/Boundless-World-Model)。
 
-BWM 承接 RAW-Dream、WoG、WALL-WM、RoboDream 与 Gamma-World，并将自身定义为 **physically consistent, action-conditioned video world model**，目标是为机器人操作提供低成本、高保真的视频级世界模拟器。
+它适合放在本仓库的 `17-具身世界模型` 章节中，接在 RAW-Dream、WoG、WALL-WM、RoboDream、Gamma-World 之后。原因很清楚：BWM 明确把自己定义为 **physically consistent, action-conditioned video world model**，目标是给机器人操作提供低成本、高保真的视频级 world simulator。
 
 学完这一节后，大家需要抓住一个核心判断：
 
@@ -81,7 +81,7 @@ WorldArena 的指标并不只看“视频像不像”。从榜单列名可以看
 
 ## 3. BWM 在世界模型谱系里的位置
 
-可以从下面几类世界模型的关系中理解 BWM：
+本仓库前面已经放了几类世界模型导读。BWM 可以放到下面这个坐标里理解：
 
 | 方法 | 输入条件 | 输出 | 主要用途 |
 | :--- | :--- | :--- | :--- |
@@ -231,7 +231,7 @@ BWM 的自回归逻辑来自 `scripts/infer.py`：
 
 ## 8. 如何跑官方推理 demo
 
-官方 README 当前仍将训练代码标记为 `Coming soon`，因此本节提供推理最小运行验证，不包含训练复现。
+这一节只写推理 smoke test，不写训练复现，因为官方 README 当前仍把 training 标为 `Coming soon`。
 
 建议准备一台 Linux + CUDA 机器。README 推荐 Python 3.10.20、PyTorch 2.8.0 cu128、DiffSynth 2.0.11。仓库依赖还包括 `numpy==1.26.4`、`omegaconf==2.3.0`、`imageio`、`imageio-ffmpeg`、`pyarrow`、`Pillow`、`einops`、`tqdm`、`safetensors`。
 

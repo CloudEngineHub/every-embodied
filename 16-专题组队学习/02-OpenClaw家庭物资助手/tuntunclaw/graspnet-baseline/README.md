@@ -7,13 +7,11 @@ Baseline model for "GraspNet-1Billion: A Large-Scale Benchmark for General Objec
 [[doc](https://graspnetapi.readthedocs.io/en/latest/index.html)]
 
 <div align="center">    
-    <img src="assets/official_images/scene-0114.gif" width="240" alt="GraspNet scene 0114" />
-    <img src="assets/official_images/scene-0116.gif" width="240" alt="GraspNet scene 0116" />
-    <img src="assets/official_images/scene-0117.gif" width="240" alt="GraspNet scene 0117" />
+    <img src="https://github.com/chenxi-wang/materials/blob/master/graspnet-baseline/doc/gifs/scene_0114.gif", width="240", alt="scene_0114" />
+    <img src="https://github.com/chenxi-wang/materials/blob/master/graspnet-baseline/doc/gifs/scene_0116.gif", width="240", alt="scene_0116" />
+    <img src="https://github.com/chenxi-wang/materials/blob/master/graspnet-baseline/doc/gifs/scene_0117.gif", width="240", alt="scene_0117" />
     <br> Top 50 grasps detected by our baseline model.
 </div>
-
-Source: [GraspNet Baseline official repository](https://github.com/graspnet/graspnet-baseline).
 
 ![teaser](doc/teaser.png)
 

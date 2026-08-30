@@ -1,6 +1,6 @@
 # Windows 主机 OpenClaw 语音桥接与家庭物资助手
 
-本章说明桌宠系统的架构、启动方式、数据文件和飞书链路，并给出完整的演示与验收流程。
+本文档说明当前这套桌宠系统的实际架构、启动方式、数据文件、飞书链路，以及后续汇报时应如何介绍这套方案。
 
 ## 一、项目目标
 
@@ -40,24 +40,16 @@ Windows 主机负责“真正的思考”。
 
 ## 三、当前已落地的功能
 
-先在 PowerShell 中定义项目目录。后续命令均使用这两个变量，避免绑定到某一台电脑的用户目录。
-
-```powershell
-$WORKSPACE = "C:\path\to\magicbox-project"
-$PROJECT_ROOT = Join-Path $WORKSPACE "openclaw_magicbox"
-$DATA_ROOT = Join-Path $WORKSPACE "household_data"
-```
-
 ### 3.1 家庭剩余物资清单
 
 当前库存采用本地 CSV 固化，便于长期维护和查阅。
 
-数据目录包含：
+文件位置如下：
 
-- `$DATA_ROOT\inventory.csv`
-- `$DATA_ROOT\locations.csv`
-- `$DATA_ROOT\restock_orders.csv`
-- `$DATA_ROOT\README.md`
+- [inventory.csv](C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\household_data\inventory.csv)
+- [locations.csv](C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\household_data\locations.csv)
+- [restock_orders.csv](C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\household_data\restock_orders.csv)
+- [README.md](C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\household_data\README.md)
 
 其中 `inventory.csv` 保存核心库存信息，字段包括：
 
@@ -77,14 +69,16 @@ $DATA_ROOT = Join-Path $WORKSPACE "household_data"
 2. 查询某个物品所在位置
 3. 为指定物资生成补货单
 
-本地查询入口为 `$PROJECT_ROOT\tools\household_inventory_cli.py`。
+本地查询脚本如下：
+
+- [household_inventory_cli.py](C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\openclaw_magicbox\tools\household_inventory_cli.py)
 
 典型命令如下：
 
 ```bash
-python "$PROJECT_ROOT\tools\household_inventory_cli.py" top --limit 3 --format text
-python "$PROJECT_ROOT\tools\household_inventory_cli.py" locate --name 剪刀 --format text
-python "$PROJECT_ROOT\tools\household_inventory_cli.py" create-order --name 苹果 --send-feishu --format text
+python C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\openclaw_magicbox\tools\household_inventory_cli.py top --limit 3 --format text
+python C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\openclaw_magicbox\tools\household_inventory_cli.py locate --name 剪刀 --format text
+python C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\openclaw_magicbox\tools\household_inventory_cli.py create-order --name 苹果 --send-feishu --format text
 ```
 
 ### 3.3 飞书补货提醒与订单推送
@@ -125,10 +119,10 @@ Windows 主机侧负责：
 3. 进行库存查询、位置查询、补货单生成
 4. 把回复文本发回板端 TTS
 
-桥接入口包括：
+桥接脚本如下：
 
-- `$PROJECT_ROOT\tools\magicbox_voice_bridge.py`
-- `$PROJECT_ROOT\tools\start_magicbox_voice_bridge.ps1`
+- [magicbox_voice_bridge.py](C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\openclaw_magicbox\tools\magicbox_voice_bridge.py)
+- [start_magicbox_voice_bridge.ps1](C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\openclaw_magicbox\tools\start_magicbox_voice_bridge.ps1)
 
 ### 4.3 当前唤醒词
 
@@ -168,7 +162,9 @@ Windows 主机侧负责：
 2. 聆听中：呼吸灯
 3. 回答中：走马灯
 
-板端灯效入口为 `$PROJECT_ROOT\bin\magicbox-hw`。
+板端灯效脚本已经扩展：
+
+- [magicbox-hw](C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\openclaw_magicbox\bin\magicbox-hw)
 
 新增的灯效包括：
 
@@ -197,7 +193,7 @@ openclaw gateway restart
 在 Windows 主机上执行：
 
 ```powershell
-python "$PROJECT_ROOT\tools\magicbox_voice_bridge.py" prepare
+python C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\openclaw_magicbox\tools\magicbox_voice_bridge.py prepare
 ```
 
 这一步会做四件事：
@@ -212,16 +208,16 @@ python "$PROJECT_ROOT\tools\magicbox_voice_bridge.py" prepare
 在 Windows 主机上执行：
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File "$PROJECT_ROOT\tools\start_magicbox_voice_bridge.ps1"
+powershell -ExecutionPolicy Bypass -File "C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\openclaw_magicbox\tools\start_magicbox_voice_bridge.ps1"
 ```
 
 或者直接：
 
 ```powershell
-python "$PROJECT_ROOT\tools\magicbox_voice_bridge.py" run
+python C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\openclaw_magicbox\tools\magicbox_voice_bridge.py run
 ```
 
-## 七、演示与验收流程
+## 七、当前汇报时推荐的演示流程
 
 建议演示顺序如下：
 
@@ -230,7 +226,7 @@ python "$PROJECT_ROOT\tools\magicbox_voice_bridge.py" run
 3. 展示飞书消息推送
 4. 展示语音唤醒和问答
 
-下面用三个任务检查库存查询、补货推送和位置查询链路。
+推荐演示话术如下。
 
 ### 演示一：库存预警查询
 
@@ -279,28 +275,28 @@ python "$PROJECT_ROOT\tools\magicbox_voice_bridge.py" run
 剪刀在您身后的柜子上。
 ```
 
-## 八、关键文件一览
+## 八、当前关键文件一览
 
 ### 8.1 家庭库存与订单
 
-- `$DATA_ROOT\inventory.csv`
-- `$DATA_ROOT\locations.csv`
-- `$DATA_ROOT\restock_orders.csv`
+- [inventory.csv](C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\household_data\inventory.csv)
+- [locations.csv](C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\household_data\locations.csv)
+- [restock_orders.csv](C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\household_data\restock_orders.csv)
 
 ### 8.2 主机侧逻辑
 
-- `$PROJECT_ROOT\tools\household_inventory_cli.py`
-- `$PROJECT_ROOT\tools\magicbox_voice_bridge.py`
-- `$PROJECT_ROOT\tools\start_magicbox_voice_bridge.ps1`
+- [household_inventory_cli.py](C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\openclaw_magicbox\tools\household_inventory_cli.py)
+- [magicbox_voice_bridge.py](C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\openclaw_magicbox\tools\magicbox_voice_bridge.py)
+- [start_magicbox_voice_bridge.ps1](C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\openclaw_magicbox\tools\start_magicbox_voice_bridge.ps1)
 
 ### 8.3 板端控制
 
-- `$PROJECT_ROOT\bin\magicboxctl`
-- `$PROJECT_ROOT\bin\magicbox-hw`
+- [magicboxctl](C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\openclaw_magicbox\bin\magicboxctl)
+- [magicbox-hw](C:\Users\kewei\Documents\2026\202603\06地瓜机器人新版教程桌宠\openclaw_magicbox\bin\magicbox-hw)
 
-## 九、验收标准
+## 九、当前状态说明
 
-完成部署后，依次确认：
+当前这套方案的核心思路已经明确并且代码已经落地：
 
 1. 板端只负责 ASR/TTS
 2. Windows 主机负责 OpenClaw 推理
@@ -308,4 +304,6 @@ python "$PROJECT_ROOT\tools\magicbox_voice_bridge.py" run
 4. 飞书用于补货消息和订单查看
 5. 唤醒词和灯效已按“囤囤钳”场景改造
 
-系统采用“板端语音前端 + Windows 主机 OpenClaw 中枢”的结构：开发板处理语音输入输出，主机完成任务理解、家庭库存分析和飞书订单推送。
+如果汇报时需要一句总括，可以直接使用下面这句话：
+
+> 这套桌宠系统已经从“板端大模型一体化”改造成“板端语音前端 + Windows 主机 OpenClaw 中枢”的结构，既保留了开发板天然适合做的语音输入输出，又把真正的任务理解、家庭库存分析和飞书订单推送交给了更灵活的主机侧智能体。

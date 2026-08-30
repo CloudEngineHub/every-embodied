@@ -117,7 +117,7 @@ Figure 1: The pi_0 raw policy is very close to the target in representing the ep
 The video below shows a comparison between the left and right sides of the same episode. The left side is raw pi_0, while the right side is the mixed diagnostic result after adding the script terminator:
 
 <video controls muted preload="metadata" width="100%">
-  <source src="../../../../16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/pi0_ep2_raw_vs_finisher_side_by_side.mp4" type="video/mp4">
+  <source src="../../../../16-专题组队学习/04-AMD-ROCm策略复刻专题/appendices/assets/pi0_ep2_raw_vs_finisher_side_by_side.mp4" type="video/mp4">
 </video>
 
 Figure 2: pi_0 episode2 raw-vs-hybrid comparison video. This video is used to explain the failure mechanism, and does not indicate that raw pi_0 has achieved 100% success rate.
@@ -264,7 +264,7 @@ If the end segment wants the model to learn, record “opening the gripper, rais
 
 ### Route 2: Add correction data for "deviation status"
 
-The paper emphasizes the correction and recovery behavior of pi_0, which is particularly important in small-data grasping. A dataset containing only perfect trajectories does not cover states reached when the policy shifts the cup, places it near the plate edge, closes the gripper early, or releases too soon.
+The paper emphasizes the corrections and recovery behaviors of pi_0, which is particularly crucial in small-data抓取. It only records perfect success trajectories. However, once the policy shifts the cup slightly, places it at the edge of the plate, closes the claws prematurely, or releases too early, it enters a state not seen in the training dataset.
 
 The next batch of data should not only adopt the trajectory of “perfectly successful from reset”, but also specifically cover these states:
 
@@ -379,7 +379,7 @@ After completing the training of 64 data points for the first round of EEF-delta
 Figure 3: seed `2133`, four-view time series for horizon 5. The robotic arm moves above and around the cup, but it does not reach a stable grasping height or form an elevation. Key frame images should be viewed together with the progressive TCP/gripper logs; success of grasping cannot be determined merely based on the presence of the gripper moving.
 
 <video controls muted preload="metadata" width="100%">
-  <source src="../../../../16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/pi05_eefdelta_h5_seed2133.mp4" type="video/mp4">
+  <source src="../../../../16-专题组队学习/04-AMD-ROCm策略复刻专题/appendices/assets/pi05_eefdelta_h5_seed2133.mp4" type="video/mp4">
 </video>
 
 Video 2: A full 25-second four-view rollout of Horizon 5 with the same seed `2133`. The video retains the failure process to observe the approach height, claw closure timing, and action sequence. It should not be cut into segments that only appear "approachable".
@@ -533,7 +533,7 @@ The current trainer only writes the model weights, not the AdamW and scheduler s
 
 ####  canonical91's 800-step gate: Improving offline does not mean the closed loop has learned
 
-After 800 steps of retraining from the official Pi0.5 base, the structural gate remains `91 episodes / 35284 frames / 0 misaligned rows`, and the maximum `chunk[0]` error across 273 episode-boundary probes is 0. Peak training memory is approximately `11.14 GiB`; the action-expert parameters change while the frozen VLM sampling parameters remain unchanged.
+After 800 steps of retraining from the official Pi0.5 base, the structural access control remains `91 episodes / 35284 frames / 0 行错位`, and the maximum error for `chunk[0]` with 273 episode boundary probes is 0. The training peak memory usage is approximately `11.14 GiB`, with no OOM, kernel crash, or NaN occurrences; the action expert parameters do change, and the sampling parameters of the frozen VLM remain unchanged at 0.
 
 | Metric | Pre-training | After 800 steps |
 | --- | ---: | ---: |
@@ -570,7 +570,7 @@ The logs also reveal the issue of control amplitude limitations: among the 432 r
 Figure 5: The seed `1003` comes from a position covered by training data. The policy closes above or beside the blue cup, then pushes the cup over the target. The maximum instantaneous lift of the cup is approximately `1.63 cm`, which does not meet the strict lifting condition of 3 consecutive steps and at least `3 cm`.
 
 <video controls muted preload="metadata" width="100%">
-  <source src="../../../../16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/pi05_canonical_s800_seed1003.mp4" type="video/mp4">
+  <source src="../../../../16-专题组队学习/04-AMD-ROCm策略复刻专题/appendices/assets/pi05_canonical_s800_seed1003.mp4" type="video/mp4">
 </video>
 
 Video 3: Complete raw Pi0.5 failure rollout of canonical91 and 800-step checkpoint on seed1003 during training. It did not use target/plate coordinates, oracle prefix, external head, or scripted finisher.
@@ -664,7 +664,7 @@ The action expert of s2400 has 430 million trainable parameters, and both the vi
 | `expert_vision` | action expert + vision tower + multimodal projector | Current main line, language model frozen |
 | `full` | Full model except for the unused expert LM head | High-risk control, not the default configuration for 64 GiB devices |
 
-`expert_vision` remains a raw-compatible VLA: the input contains only dual-camera images, language, and robot proprioception, without target or plate coordinates, an oracle prefix, an external gripper head, or scripted finisher information. The official LeRobot Pi0.5 example provides the full tuning settings for `freeze_vision_encoder=false`, `train_expert_only=false`, and `batch_size=32`. This experiment uses a memory-bounded subset of those unfreezing settings, beginning with the most relevant visual paths: [LeRobot Pi0.5 documentation](https://github.com/huggingface/lerobot/blob/main/docs/source/pi05.mdx).
+`expert_vision` remains a raw-compatible VLA: the input consists only of dual-camera images, language, and robot proprio data, without target/plate coordinates, oracle prefix, external gripper head, or scripted finisher information. The official Pi0.5 example for LeRobot also clearly shows the complete tuning directions for `freeze_vision_encoder=false`, `train_expert_only=false`, and `batch_size=32`; in this experiment, we did not copy all the解冻 settings, but first unfreezed the most relevant visual paths within a unified memory range: [ LeRobot Pi0.5 documentation ](https://github.com/huggingface/lerobot/blob/main/docs/source/pi05.mdx).
 
 It is not enough to only look at `requires_grad=True`. The trainer places a parameter probe for each of the FP32 vision patch embedding, action head, and language layer. For the first two, non-zero changes must occur, while the language layer must remain at 0. If the BF16 parameters are updated by only approximately `1e-6`, direct comparison may be quantized to 0. Therefore, the visual probe used is the FP32 patch embedding.
 

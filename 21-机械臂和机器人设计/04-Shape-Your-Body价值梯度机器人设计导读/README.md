@@ -2,7 +2,7 @@
 
 > 本文导读 **Shape Your Body: Value Gradients for Multi-Embodiment Robot Design**。这篇工作来自 Technical University of Darmstadt、Robotics Institute Germany、DFKI 和 hessian.AI，作者为 Nico Bohlinger 与 Jan Peters。论文 arXiv 编号为 `2606.00702v1`，2026 年 5 月 30 日提交。项目页地址是 [nico-bohlinger.github.io/shape-your-body](https://nico-bohlinger.github.io/shape-your-body/)。
 
-## 1. 如何用价值梯度优化机器人身体
+## 1. 先说结论：它为什么值得放进机器人设计章节
 
 Shape Your Body 研究的是一个很有想象力、也很工程的问题：
 
@@ -30,7 +30,7 @@ Shape Your Body 的思路是把设计成本摊薄：
 
 > 先用多机器人强化学习学会“什么身体更容易被当前策略控制好”，再用价值函数对身体参数的梯度来优化新的机器人设计。
 
-这篇论文研究的对象不是感知、动作生成或视频预测，而是 **robot embodiment / morphology / continuous design parameters**。Build123d、Text-to-CAD 与 ForgeCAD 更关注如何生成或编辑几何，Shape Your Body 则研究如何用学习到的控制价值反向指导身体参数。
+它应该放在 `21-机械臂和机器人设计`，而不是 VLA 或世界模型章节。原因是这篇论文的对象不是感知、动作生成或视频预测，而是 **robot embodiment / morphology / continuous design parameters**。它和 Build123d、Text-to-CAD、ForgeCAD 的关系是：前三者更偏“如何生成或编辑几何”，Shape Your Body 更偏“如何用学习到的控制价值来反向指导身体参数”。
 
 ## 2. 论文、项目页和开源状态
 
@@ -42,7 +42,7 @@ Shape Your Body 的思路是把设计成本摊薄：
 | 视频 | [YouTube](https://www.youtube.com/watch?v=_SHSWUSQZvg) | 项目页 Video 指向的视频 |
 | 代码 | 项目页当前显示 `Code (soon)` | 还没有看到官方公开代码仓库入口 |
 
-截至 2026 年 7 月 18 日，项目页、论文和交互式网页演示已经公开，可以体验不同机器人和设计搜索轨迹；官方代码入口仍标注为 `Code (soon)`。本章据此提供方法导读、图解和复现准备说明。官方代码公开后，可继续补充环境配置和最小复现实验。
+截至 2026 年 7 月 18 日，本教程核查到的状态是：项目页和论文已公开，交互式网页 demo 可以体验不同机器人和设计搜索轨迹，但官方代码入口仍标注为 `Code (soon)`。因此本章不写成手把手复现训练教程，而是写成方法导读、图解和复现准备说明。后续如果代码公开，可以再补环境配置和最小复现实验。
 
 ## 3. 总览图：先训练价值函数，再用价值梯度塑形
 
@@ -250,7 +250,7 @@ Shape Your Body 还有一个很实用的副产品：value gradient 不只能产�
 
 ## 11. 复现边界：现在能做什么，暂时不能做什么
 
-当前项目页没有公开代码仓库，因此本节把学习路径分为三个层级：先理解价值梯度设计，再复现通用优化接口，最后在官方代码发布后核对论文结果。
+当前项目页没有公开代码仓库，因此教程不建议写成“下载代码复现论文结果”。更现实的学习路径分三档。
 
 第一档是 **方法阅读与交互 demo**。项目页提供浏览器 demo，可以选择 Unitree Go2、MIT Humanoid、Golem、ANYmal C、Booster T1、Mini PI、Fourier GR1-T2 等机器人，切换 Reference / Co-Design，查看 VGDS 迭代如何改变身体，并用速度命令控制 policy。这个 demo 适合理解“optimized design 不是静态图片，而是仍要配合 frozen policy 运动”。
 
@@ -313,7 +313,7 @@ Shape Your Body 不会替代机械工程师，也不会自动生成可制造机�
 - direct-design critic 为什么比普通 critic 更适合求设计梯度？
 - VGDS 为什么需要 soft trust region？
 - 价值梯度给出的设计变化怎样转化成工程师可理解的 body-part / parameter-type 诊断？
-- 在官方代码尚未公开时，完整复现需要先补齐哪些模块？
+- 当前没有代码开源时，后续复现应该先补哪些模块？
 
 ## 14. 资料来源
 

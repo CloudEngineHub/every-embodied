@@ -15,7 +15,7 @@ EventVLA 的全名是 **EventVLA: Event-Driven Visual Evidence Memory for Long-H
 | 代码 | [InternRobotics/EventVLA](https://github.com/InternRobotics/EventVLA) |
 | 模型权重 | [Hugging Face: ganlinyang/EventVLA](https://huggingface.co/ganlinyang/EventVLA) |
 | 数据集 | [Hugging Face: RoboTwin-MeM](https://huggingface.co/datasets/ganlinyang/RoboTwin-MeM) |
-| 开源边界 | 仿真训练与评测代码、RoboTwin-MeM 数据和模型权重已发布；官方 README 仍将真机推理与评测代码、真机微调权重列为待发布内容 |
+| 开源边界 | 仿真训练/评测代码、RoboTwin-MeM 数据和 checkpoint 已放出；README 中 real-world inference/evaluation code 与 real-world fine-tuned model 仍在 Todo |
 
 所以，EventVLA 当前可以作为“能跑仿真评测的开源项目”来看，但不适合直接承诺大家能完整复现实机结果。
 
@@ -173,7 +173,7 @@ reproduce_route
 
 来源：[EventVLA arXiv HTML](https://arxiv.org/html/2606.20092v1)。
 
-真实机器人实验说明该方法并非纯仿真概念。不过，官方 README 仍将真机推理与评测代码、真机微调权重列为待发布内容，因此当前公开材料支持仿真复现和真机方法分析，尚不支持按官方资产完整复现真机实验。可以据此区分以下两条学习路径：
+真实机器人部分说明这个方法不是纯仿真概念，但当前开源边界要讲清楚：官方 README 中 real-world inference/evaluation code 和 real-world fine-tuned model 仍在 Todo。因此教程里不建议写“大家可以直接复现实机实验”。更稳妥的表述是：
 
 - 仿真评测可以跟官方代码和 released checkpoints 走。
 - 真机实验可以先读论文和视频材料，等待官方补齐部署代码和模型。

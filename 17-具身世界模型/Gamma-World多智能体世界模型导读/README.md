@@ -2,7 +2,7 @@
 
 这篇导读对应论文 **Gamma-World: Generative Multi-Agent World Modeling Beyond Two Players**，项目名也写作 **γ-World**。它由 NVIDIA、清华大学、多伦多大学和 Vector Institute 共同完成，arXiv 版本发布于 2026-05-27，项目页在 2026-05-28 放出，代码和训练 pipeline 在 2026-06-16 开源。
 
-Gamma-World 承接 LeWM、RISE、RAW-Dream、WoG、WALL-WM 与 RoboDream，研究面向交互式仿真的 **多智能体生成式世界模型**：给定多个智能体的同步观测和动作，生成同一共享世界中多个视角的未来视频。它的重点不是 VLA 基座或单纯的视频生成，而是多主体之间保持一致的交互预测。
+本章适合放在 `17-具身世界模型` 章节中，接在 LeWM、RISE、RAW-Dream、WoG、WALL-WM、RoboDream 之后。它不是 VLA 基座，也不是单纯的视频生成模型，而是一个面向交互式仿真的 **多智能体生成式世界模型**：给定多个 agent 的同步观测和动作，生成同一个共享世界中多个视角的未来视频。
 
 学完这一章后，重点抓住一个判断：
 
@@ -373,7 +373,7 @@ python scripts/convert_checkpoint_to_dcp.py \
 - 再读懂 `gamma_world/_src/gamma_world/datasets/` 的多 agent 数据格式。
 - 最后只做 mock data 或小数据 smoke training，验证 trainer 和 config 链路。
 
-## 12. 与其他世界模型的关系
+## 12. 和本仓库其他世界模型的关系
 
 | 教程 | 类型 | 和 γ-World 的区别 |
 | :--- | :--- | :--- |

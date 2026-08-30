@@ -1,14 +1,10 @@
-# 解决 LeRobot 安装时的 PyAV 编译失败
-
-下面的日志表示安装器没有找到 FFmpeg 开发库，因此尝试从源码构建 PyAV 时失败。
-
-```text
+```
 (isaac) root@gpufree-container:~/gpufree-data/openpi# uv sync
 warning: The `tool.uv.dev-dependencies` field (used in `packages/openpi-client/pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
 Resolved 281 packages in 1m 04s
     Updated https://github.com/huggingface/lerobot (0cf8
-      Built openpi-client @ file://<OPENPI_ROOT>/packages/openpi-client
-      Built openpi @ file://<OPENPI_ROOT>
+      Built openpi-client @ file:///root/gpufree-data/op
+      Built openpi @ file:///root/gpufree-data/openpi
       Built lerobot @ git+https://github.com/huggingface
       Built tree==0.2.4
       Built antlr4-python3-runtime==4.9.3
@@ -85,11 +81,7 @@ Resolved 281 packages in 1m 04s
 
 
 ```bash
-export OPENPI_ROOT=/path/to/openpi
-mkdir -p "$OPENPI_ROOT/third_party"
-git clone https://github.com/huggingface/lerobot "$OPENPI_ROOT/third_party/lerobot"
-cd "$OPENPI_ROOT/third_party/lerobot"
-git checkout 0cf864870cf29f4738d3ade893e6fd13fbd7cdb5
+mkdir -p /root/gpufree-data/openpi/third_party && git clone https://github.com/huggingface/lerobot /root/gpufree-data/openpi/third_party/lerobot && cd /root/gpufree-data/openpi/third_party/lerobot && git checkout 0cf864870cf29f4738d3ade893e6fd13fbd7cdb5
 
 
 ```
@@ -106,7 +98,7 @@ git checkout 0cf864870cf29f4738d3ade893e6fd13fbd7cdb5
 2.  **配置本地依赖**：修改了 `openpi/pyproject.toml`，将 `lerobot` 的来源从远程仓库改为本地路径，并添加了 `av==12.3.0` 的强制覆盖（override）。
 3.  **成功同步环境**：执行 `uv sync` 已成功安装所有依赖，没有再出现 `av` 编译失败的问题。
 
-## 验证修复后的环境
+### 现在的状态
 环境已经就绪。关于您提到的命令，有一个小细节：命令末尾的 `@gpufree-data/openpi` 看起来是 shell 提示符（Prompt）被误粘进来了，**实际运行命令时需要去掉它**。
 
 **建议运行的完整命令：**
@@ -117,7 +109,7 @@ XLA_PYTHON_CLIENT_MEM_FRACTION=0.5 uv run scripts/serve_policy.py policy:checkpo
     --policy.dir=gs://openpi-assets/checkpoints/pi0_fast_droid_jointpos
 ```
 
-## 启动策略服务后的流程
+### 执行后会发生什么？
 1.  **加载配置**：使用 `pi0_fast_droid_jointpos_polaris` 配置，这是针对 DROID 机械臂联合位置控制的 π₀-FAST 模型。
 2.  **下载模型**：`uv` 会自动从 Google Cloud 存储下载模型参数和资源，并缓存到 `~/.cache/openpi/openpi-assets/checkpoints/pi0_fast_droid_jointpos`。
 3.  **启动服务**：在本地启动一个 WebSocket 推理服务器（默认 8000 端口）。

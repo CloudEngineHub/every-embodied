@@ -158,7 +158,7 @@ python -c "import build123d, vtk, trimesh, ezdxf; print('CAD runtime OK')"
 5. 不要复刻网络图片，只做原创教学模型，并说明它不是可制造成品。
 ```
 
-这类任务不直接手写或修改 STEP/STL 文件。标准流程是先把需求转成 `examples/every_embodied_6dof_arm.py` 这样的源文件，再调用官方生成入口 `skills/cad/scripts/step`，最后用 `skills/cad/scripts/inspect` 做几何检查。本章同时保留生成后的源文件，便于重复验证。
+Codex 接到这类任务后，不应该直接手写或修改 STEP/STL。CAD skill 的正确流程是先把需求转成 `examples/every_embodied_6dof_arm.py` 这样的源文件，再调用官方生成入口 `skills/cad/scripts/step`，最后用 `skills/cad/scripts/inspect` 做几何检查。本章本地复现采用的就是这个流程；区别只是当前教程把生成后的源文件也保留下来，方便大家不用重新让 agent 生成一遍也能验证。
 
 ```text
 自然语言任务书
@@ -196,7 +196,7 @@ Copy-Item ..\every-embodied\21-机械臂和机器人设计\02Text-to-CAD工程�
 
 上面的 `..\every-embodied\...` 只是示例相对路径。大家实际操作时，只需要把教程目录中的 `examples/every_embodied_6dof_arm.py` 放到 `text-to-cad/examples/` 下即可。
 
-然后运行官方 CAD skill 的 STEP 生成工具。注意这里的 `--stl`、`--3mf`、`--glb` 输出路径要使用 `/`，不要使用 Windows 反斜杠 `\`。若写成 `outputs\xxx.stl`，工具会报 `stl must use POSIX '/' separators`。
+然后运行官方 CAD skill 的 STEP 生成工具。注意这里的 `--stl`、`--3mf`、`--glb` 输出路径要使用 `/`，不要使用 Windows 反斜杠 `\`。本机实测如果写成 `outputs\xxx.stl`，工具会报 `stl must use POSIX '/' separators`。
 
 ```powershell
 .\.venv\Scripts\python.exe skills\cad\scripts\step examples/every_embodied_6dof_arm.py --stl outputs/every_embodied_6dof_arm.stl --3mf outputs/every_embodied_6dof_arm.3mf --glb outputs/every_embodied_6dof_arm.glb
@@ -216,7 +216,7 @@ Checkpoint 3：确认输出文件存在。
 Get-ChildItem .\examples, .\examples\outputs
 ```
 
-该流程会生成以下文件：
+本机实测生成了以下文件：
 
 ```text
 examples/every_embodied_6dof_arm.py
@@ -295,7 +295,7 @@ Set-Location .\skills\cad-explorer\scripts\explorer
 npm run dev -- --host 127.0.0.1 --port 4178
 ```
 
-访问 `http://127.0.0.1:4178/?file=examples/every_embodied_6dof_arm.step` 并收到 HTTP 200 响应，说明 CAD Explorer 页面已经启动，且能够以当前仓库作为工作空间。
+本机实测 `http://127.0.0.1:4178/?file=examples/every_embodied_6dof_arm.step` 返回 HTTP 200，说明 CAD Explorer 页面可以访问。这里的重点不是端口号，而是确认本地查看器可以启动，并且能以当前仓库作为工作空间。
 
 Checkpoint 5：CAD Explorer 页面能够打开。这个检查证明 Node.js 依赖和前端查看器可用；模型是否显示正确，还需要大家在浏览器中实际查看 STEP 文件。
 
@@ -323,14 +323,14 @@ http://127.0.0.1:4178/?file=examples/every_embodied_6dof_arm.step
 ./scripts/codex-install.sh
 ```
 
-Windows 上如果没有可用 Bash，也可以直接调用安装脚本背后的 Python 入口。部分 Windows/WSL 配置会使 Bash 路径触发服务错误，此时可改用 Python 入口：
+Windows 上如果没有可用 Bash，也可以直接调用安装脚本背后的 Python 入口。本机实测 Bash 路径会触发 Windows/WSL 服务错误，但 Python 入口可以正常安装：
 
 ```powershell
 python .\scripts\install-skills.py --agent codex --dry-run
 python .\scripts\install-skills.py --agent codex
 ```
 
-`--dry-run` 会先打印目标路径，确认无误后再去掉 `--dry-run` 执行安装。安装结果包括 `cad`、`cad-explorer`、`urdf`、`sdf`、`srdf` 和 `sendcutsend`。安装完成后需要重启 Codex，因为技能列表在会话启动时加载，当前会话不能热加载刚复制的技能。
+`--dry-run` 会先打印将要复制到哪里，确认无误后再去掉 `--dry-run` 执行安装。本机实测安装结果包括 `cad`、`cad-explorer`、`urdf`、`sdf`、`srdf` 和 `sendcutsend`。安装完成后需要重启 Codex，因为 Codex 的 skill 列表是在会话启动时加载的，当前会话不能热加载刚复制进去的新 skill。
 
 不同 agent 的目录规则不同，建议以官方 [INSTALLATION.md](https://github.com/earthtojake/text-to-cad/blob/main/INSTALLATION.md) 为准。
 

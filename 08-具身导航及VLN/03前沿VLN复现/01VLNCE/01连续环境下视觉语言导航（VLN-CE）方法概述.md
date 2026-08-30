@@ -1,4 +1,4 @@
-# 连续环境视觉语言导航方法概述
+# 任务定义
 
 <div align="center">
   <img src="images/image-12.png" width="80%">
@@ -58,7 +58,7 @@ $$
 
 ---
 
-## VLNCE 任务数据集
+# VLNCE 任务数据集
 
 ### 常用数据集
 
@@ -177,7 +177,7 @@ $$
 SDTW = \frac{1}{N} \sum_{i=1}^N S_i \cdot \text{nDTW}_i
 $$
 
-## 连续环境视觉语言导航方法
+# 连续环境视觉语言导航方法
 
 ## 1. 传统单阶段方法
 

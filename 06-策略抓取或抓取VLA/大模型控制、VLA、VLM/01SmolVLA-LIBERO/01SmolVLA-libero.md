@@ -1,23 +1,17 @@
-# 在 LIBERO 上训练与评估 SmolVLA
+下载：
 
-本章完成 SmolVLA 在 LIBERO 基准上的环境安装、数据准备、训练续跑和闭环评估。读者最终应获得可加载的策略目录、固定回合评估日志和逐回合视频，并能区分训练损失与任务成功率。
+https://huggingface.co/lerobot/smolvla_base
 
-所需资源：
+模型可以用我们的工具
 
-- [SmolVLA 基础权重](https://huggingface.co/lerobot/smolvla_base)
-- [LIBERO LeRobot 格式数据集](https://huggingface.co/datasets/nikriz/aopoli-lv-libero_combined_no_noops_lerobot_v21)
-- [LeRobot](https://github.com/huggingface/lerobot)
-- [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO)
+https://huggingface.co/datasets/nikriz/aopoli-lv-libero_combined_no_noops_lerobot_v21
 
-## 1. 环境与版本
-
-本章使用固定 LeRobot 提交，以保证训练参数和评估接口一致：
+数据还是推荐使用git lfs clone，因为单个比较小，总量比较大
 
 ```bash
 git clone https://github.com/huggingface/lerobot
-cd lerobot
-git checkout d602e816
-cd ..
+cd lerobot && git stash
+cd lerobot && git checkout d602e816 # 必须要这个版本，后续版本可能会报错！
 git clone https://github.com/Lifelong-Robot-Learning/LIBERO
 ```
 
@@ -26,16 +20,20 @@ export DATA_ROOT=/path/to/data
 python3 download_hf_files.py nikriz/aopoli-lv-libero_combined_no_noops_lerobot_v21 main --repo-type dataset --download_path "$DATA_ROOT/aopoli-lv-libero"
 ```
 
+### 最开始需要进行环境配置
+
 ```bash
-micromamba create -n smolvla python=3.10 -c conda-forge --yes
-micromamba activate smolvla
+~$ micromamba create -n smolvla python=3.10 -c conda-forge --yes
 
-# 根据本机计算平台安装兼容的 PyTorch 后，再安装项目依赖。
-pip install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1
+~$ mamba activate smolvla_new
+~$ pip install torch==2.7.1+cu121 torchvision==0.22.1+cu121 torchaudio==2.7.1+cu121 -f https://mirror.sjtu.edu.cn/pytorch-wheels/cu121/ 
 
-cd lerobot
-pip install -e ".[smolvla]"
-cd ..
+pip install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 -f https://mirror.sjtu.edu.cn/pytorch-wheels/cu121/  
+
+# 特别注意！如果是windows，请执行这句：
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+
+cd lerobot && pip install -e ".[smolvla]"
 
 cd LIBERO
 pip install -e .
@@ -46,33 +44,41 @@ pip install gym
 pip install matplotlib
 ```
 
-为避免多进程数据加载与分词器线程池相互影响，在训练前设置：
+为了避免 Hugging Face `tokenizers` 库可能产生的警告或死锁问题，建议在运行脚本前设置以下环境变量：
 
 ```bash
 export TOKENIZERS_PARALLELISM=false
 ```
 
-### 1.1 兼容新版 `torch.load`
+你可以将这行命令加入到你的 `~/.bashrc` 或 `~/.zshrc` 文件中，这样每次登录就不用重新设置了。
+
+#### 第 4 步：修复 `torch.load` 问题 (如遇到)
 
 在运行评估脚本时，如果遇到 `_pickle.UnpicklingError: Weights only load failed.` 这个错误，需要手动修改 LIBERO 的代码。
 
-1. 打开 `LIBERO/libero/libero/benchmark/__init__.py`。
+1. 找到文件：`.../LIBERO/libero/libero/benchmark/__init__.py` (在你克隆的 LIBERO 仓库路径下)。
 2. 定位到第 164 行左右。
 3. 将:
 
-   ```python
+   Python
+
+   ```
    init_states = torch.load(init_states_path)
    ```
 
    修改为:
 
-   ```python
+   Python
+
+   ```
    init_states = torch.load(init_states_path, weights_only=False)
    ```
 
-该参数只应在初始化状态文件来源可信时使用。
+   保存文件即可。
 
-## 2. 训练 SmolVLA
+现在，你的环境已经完全配置好了，可以按照 Issue 中总结的训练和评估命令来复现 SmolVLA 在 LIBERO 上的结果了。
+
+### 第一步是在自由子集上训练 smolvla
 
 ```bash
 export MODEL_ROOT=/path/to/models
@@ -90,26 +96,57 @@ python -m lerobot.scripts.train \
   --output_dir="$OUTPUT_ROOT/libero_smolvla_scratch" \
   --job_name=libero_smolvla_scratch_ckk \
   --policy.push_to_hub=False
-```
-
-`MODEL_ROOT`、`DATA_ROOT` 和 `OUTPUT_ROOT` 分别指向基础权重、数据集与实验输出目录。多卡机器可以在命令前设置 `CUDA_VISIBLE_DEVICES` 选择训练设备。
-
-从已有检查点继续训练时，读取该检查点保存的配置，并把 `steps` 设为新的总步数：
-
-```bash
+  
+# 继续训练的方法
+python -m lerobot.scripts.train \
+  --resume=true \
+  --config_path="$OUTPUT_ROOT/libero_smolvla_scratch/checkpoints/200000/pretrained_model/train_config.json" \
+  --steps=200170
+  
+  20260124
+  
 python -m lerobot.scripts.train \
   --resume=true \
   --config_path="$OUTPUT_ROOT/libero_smolvla_scratch/checkpoints/200000/pretrained_model/train_config.json" \
   --steps=200340
 ```
 
+170步大概5min
+
+我用的镜像是yaya1
+
+![image-20251030144540186](assets/image-20251030144540186.png)
+
+CUDA\_VISIBLE\_DEVICEs="0" 用于解决多 GPU 训练中的问题。另外，我建议将 save\_freq 调高。
+
+我在 RTX 3090 上的训练如下：
+
+<img width="740" height="635" alt="1c46d2c5-443c-4958-ade5-d9b2cbf0ff24" src="https://github.com/user-attachments/assets/44c88c9a-75d0-439d-9acb-d4e502c2ea5a" />
+
+
+训练10小时左右
+
 ![SmolVLA LIBERO 训练日志](assets/image-20251030144540186.png)
 
-训练时间取决于显卡、批量大小、数据读取速度和日志频率，应以训练日志中的每步耗时估算。保存频率需要同时兼顾恢复粒度与磁盘容量。
+上面其他人报告的结果在 60k 步以上时还不错。我提前停止了，因为我想测试一下评估脚本。
 
-## 3. 闭环评估
+2. 安装 LIBERO
 
-下面的评估脚本基于 [LeRobot issue #1316](https://github.com/huggingface/lerobot/issues/1316) 中的社区实现整理。脚本加载策略、按 LIBERO 任务创建无头环境、运行固定回合，并保存成功统计与视频。
+其中最困难的部分是安装[LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO)。
+
+忽略 LIBERO 的官方安装脚本。这是我安装后的安装步骤`lerobot`：
+
+conda activate lerobot
+cd <LIBERO\>
+pip install -e .
+pip install robosuite==1.4.0
+pip install bddl
+pip install easydict
+pip install gym
+
+3. 使用以下方法评估[@zlw21gxy](https://github.com/zlw21gxy)的剧本
+
+我要再次将其复制并粘贴到这里，我做了一些日志更改。
 
 ```python
 """
@@ -187,7 +224,7 @@ class Args:
     """Task suite. Options: libero_spatial, libero_object, libero_goal, libero_10, libero_90"""
     num_steps_wait: int = 10
     """Number of steps to wait for objects to stabilize in sim."""
-    num_trials_per_task: int = 1  # 每个任务的评估回合数
+    num_trials_per_task: int = 1 #TODO:你可以修改这里
     """Number of rollouts per task."""
 
     # --- Evaluation arguments ---
@@ -496,7 +533,7 @@ class Args:
     """Task suite. Options: libero_spatial, libero_object, libero_goal, libero_10, libero_90"""
     num_steps_wait: int = 10
     """Number of steps to wait for objects to stabilize in sim."""
-    num_trials_per_task: int = 10  # 每个任务的评估回合数
+    num_trials_per_task: int = 10 #TODO:你可以修改这里
     """Number of rollouts per task."""
 
     # --- Evaluation arguments ---
@@ -508,7 +545,7 @@ class Args:
     seed: int = 7
     """Random Seed (for reproducibility)"""
     
-    specific_task_id: Optional[int] = 1  # 指定任务编号；None 表示遍历任务
+    specific_task_id: Optional[int] = 1 # TODO: 你可以修改这里更改任务
     """Specific task ID to run (if None, runs all tasks). For task1, set to 1."""
 
 
@@ -742,31 +779,69 @@ if __name__ == "__main__":
 
 
 
-将脚本保存为 `eval_LIBERO.py` 后，指定待评估策略目录：
+要运行此脚本，请使用：
 
-```bash
+```
 export OUTPUT_ROOT=/path/to/outputs
-python eval_LIBERO.py \
-  --policy_path="$OUTPUT_ROOT/libero_smolvla_scratch/checkpoints/200340/pretrained_model/"
+
+python eval_LIBERO.py --policy_path="$OUTPUT_ROOT/libero_smolvla_scratch/checkpoints/140000/pretrained_model/"
+
+python eval_LIBERO.py --policy_path="$OUTPUT_ROOT/libero_smolvla_scratch/checkpoints/130000/pretrained_model/"
+
+python eval_LIBERO.py --policy_path="$OUTPUT_ROOT/libero_smolvla_scratch/checkpoints/200000/pretrained_model/"
+
+python eval_LIBERO.py --policy_path="$OUTPUT_ROOT/libero_smolvla_scratch/checkpoints/200170/pretrained_model/"
+
+python eval_LIBERO-task1.py --policy_path="$OUTPUT_ROOT/libero_smolvla_scratch/checkpoints/200170/pretrained_model/"
+
+
+python eval_LIBERO.py --policy_path="$OUTPUT_ROOT/libero_smolvla_scratch/checkpoints/200340/pretrained_model/"
+
+python eval_LIBERO-task1.py --policy_path="$OUTPUT_ROOT/libero_smolvla_scratch/checkpoints/200340/pretrained_model/"
+
+
+python eval_LIBERO-task1-libero10.py --policy_path="$OUTPUT_ROOT/libero_smolvla_scratch/checkpoints/200340/pretrained_model/"
+
 ```
 
-评估前固定任务集合、每任务回合数、初始状态和最大步数。比较多个检查点时，每个检查点必须使用同一协议。
 
-## 4. 已保存的评估记录
 
-仓库原始实验日志记录了一次 500 回合评估：成功 356 回合，汇总成功率为 0.71。该数字对应当时日志中的特定权重与脚本配置，应与新的复现实验分开记录。视频文件名还记录了任务编号、回合编号和自然语言任务，便于从汇总结果回查单回合行为。
 
-复现时建议把结果保存为结构化文件，至少包含：
 
-- 策略目录与训练步数；
-- 任务编号、回合编号和初始状态；
-- 成功标记、终止原因和执行步数；
-- 视频路径与总成功率。
 
-## 5. 本章检查点
 
-- LeRobot、LIBERO、数据集和基础权重均能从配置变量定位。
-- 训练可以从已保存配置继续，且新的总步数大于检查点步数。
-- 评估脚本能够加载初始化状态并生成逐回合视频。
-- 多个检查点使用相同任务、回合数和初始状态进行比较。
-- 汇总成功率可以追溯到逐回合结果，而不是从训练损失推断。
+
+
+
+
+
+
+如果您遇到此错误：
+
+File "/home/tay/Documents/robo-intel-action/finetuning\_lerobot/LIBERO/libero/libero/benchmark/\_\_init\_\_.py", line 164, in get\_task\_init\_states
+init\_states = torch.load(init\_states\_path)
+File "/home/tay/miniconda3/envs/lerobot/lib/python3.10/site-packages/torch/serialization.py", line 1524, in load
+raise pickle.UnpicklingError(\_get\_wo\_message(str(e))) from None
+\_pickle.UnpicklingError: Weights only load failed. This file can still be loaded, to do so you have two options, do those steps only if you trust the source of the checkpoint.
+
+`libero.benchmark.__init__.py`将第 164 行从以下内容更改：
+
+init\_states \= torch.load(init\_states\_path)
+
+对此：
+
+init_states = torch.load(init_states_path, weights_only=False)
+4. 结果
+
+评估脚本在终端中输出一些部署和统计数据（我将它们输出到`evaluation_log.txt`）。
+
+2025-08-07 10:49:34,622 - INFO - --- Evaluation finished ---
+2025-08-07 10:49:34,622 - INFO - Total success rate: 0.71
+2025-08-07 10:49:34,622 - INFO - Total episodes: 500
+2025-08-07 10:49:34,622 - INFO - Total successes: 356
+
+推出任务9第47集：把黑碗放到木柜上并放到盘子上成功.mp4 推出任务3第26集：拿起饼干盒上的黑碗并将其放在盘子上成功.mp4
+
+
+
+

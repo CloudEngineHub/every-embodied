@@ -1,10 +1,4 @@
-# 将 Windows 蓝牙设备连接到 WSL 2
-
-本页使用 `usbipd` 把 Windows 管理的蓝牙适配器挂载到 WSL 2。操作前关闭正在占用该适配器的 Windows 蓝牙应用。
-
-## 安装 WSL 端工具
-
-```bash
+```
 sudo apt install linux-tools-generic hwdata
 
 sudo update-alternatives --install /usr/local/bin/usbip usbip /usr/lib/linux-tools/*-generic/usbip 20
@@ -40,3 +34,4 @@ usbipd: info: Using WSL distribution 'Ubuntu-22.04' to attach; the device will b
 usbipd: info: Detected networking mode 'mirrored'.
 usbipd: info: Using IP address 127.0.0.1 to reach the host.
 ```
+

@@ -2,7 +2,7 @@
 
 > 本文导读 **PRTS: A Primitive Reasoning and Tasking System via Contrastive Representations**。这篇工作来自中国电信人工智能研究院 TeleAI、清华大学、上海交通大学、复旦大学等团队。PRTS 是一个强化学习原生的 VLA 基础模型，核心不是在行为克隆后面补一点 RL，而是把 reward-label-free contrastive reinforcement learning 放进 VLA 预训练本身。
 
-## 1. PRTS 为什么值得关注
+## 1. 先说结论
 
 PRTS 值得放进本教程有两个原因。
 
@@ -14,7 +14,7 @@ PRTS 值得放进本教程有两个原因。
 
 > PRTS 的关键不是“换了一个更大的 VLA backbone”，而是把语言目标看成 goal，用轨迹时序结构构造对比 RL 监督，让同一个 Qwen3-VL backbone 同时学动作生成和 goal-reachability awareness。
 
-从方法谱系看，PRTS 改变的是 VLA 预训练目标：模型不仅拟合专家动作，还学习当前状态和动作相对语言目标的可达性。这使它与只做行为克隆的策略形成直接对照，也为后续长时程控制、扰动恢复和目标进度估计提供了统一分析框架。
+它应该放在 `06-策略抓取或抓取VLA/大模型控制、VLA、VLM`，接在 PhysBrain 之后。它不是世界模型，也不是导航 benchmark，而是 VLA 预训练范式的一次重要变化。
 
 ## 2. 论文、项目、代码和权重
 
@@ -284,7 +284,7 @@ MolmoSpaces 排名复现需要更多条件：
 - 指定任务、场景、相机、机器人初始状态和 evaluation protocol。
 - policy wrapper 与 MolmoSpaces evaluation harness 适配。
 
-官方 GitHub News 提到 MolmoSpaces checkpoint 是用最新 DROID fine-tuning launcher 训练的。完整跑榜需要较高的计算资源和工程依赖，因此本节先把榜单用于核对公开结果，再通过已发布的 LIBERO 训练与评测入口理解方法；具备相应资源后，可继续接入 MolmoSpaces 做完整评测。
+官方 GitHub News 提到 MolmoSpaces checkpoint 是用最新 DROID fine-tuning launcher 训练的。教程当前不建议写成手把手 MolmoSpaces 复现，因为完整跑榜成本和工程依赖较高。更合理的是先把榜单作为阅读入口和方法验证证据。
 
 ## 13. 和其他 VLA 工作的关系
 
@@ -334,3 +334,4 @@ MolmoSpaces 排名复现需要更多条件：
 ## 16. 引用与图片来源
 
 本文图片来自 [TeleHuman/PRTS 官方 GitHub](https://github.com/TeleHuman/PRTS)，为了教程稳定访问已保存到本地 `assets/`。论文内容参考 [arXiv:2604.27472](https://arxiv.org/abs/2604.27472)、[PRTS-4B Hugging Face 模型卡](https://huggingface.co/TeleEmbodied/PRTS-4B)、[MolmoSpaces Leaderboard](https://molmospaces.allen.ai/leaderboard/ms)、[MolmoSpaces 论文](https://arxiv.org/abs/2602.11337) 和 [Ai2 MolmoSpaces 介绍](https://allenai.org/blog/molmospaces)。
+

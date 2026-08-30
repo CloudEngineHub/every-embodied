@@ -1,5 +1,3 @@
-# DETR 代码来源
-
 This part of the codebase is modified from DETR https://github.com/facebookresearch/detr under APACHE 2.0.
 
     @article{Carion2020EndtoEndOD,

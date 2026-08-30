@@ -2,7 +2,7 @@
 
 这一节对应论文 **PhysBrain 1.0 Technical Report**，论文号为 [arXiv:2605.15298](https://arxiv.org/abs/2605.15298)，项目页为 [phys-brain.github.io](https://phys-brain.github.io/)，VLA 代码仓库为 [Phys-Brain/PhysBrain-VLA](https://github.com/Phys-Brain/PhysBrain-VLA)。
 
-PhysBrain 1.0 位于本教材的 VLA 操作策略路线，衔接 3DVLA 的三维理解与后续策略训练。它服务于机器人控制和 VLA 后训练，不提供仿真器式的 `step(action)` 交互，也不生成视频形式的未来轨迹。
+它适合放在本仓库的 `06-策略抓取或抓取VLA/大模型控制、VLA、VLM` 章节中，接在 OpenVLA、DiT4DiT、EventVLA、WALL-OSS/WALL-X、3DVLA 之后。原因很直接：PhysBrain 1.0 最终服务的是机器人控制和 VLA 后训练，它不是一个可以像仿真器一样 `step(action)` 的世界模型，也不是专门做视频 rollout 的神经世界模型。
 
 学完这一节后，大家需要抓住一个核心判断：
 

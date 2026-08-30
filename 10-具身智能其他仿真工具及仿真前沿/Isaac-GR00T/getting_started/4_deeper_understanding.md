@@ -62,7 +62,7 @@ GR00T通过专用动作头设计，可以与不同类型的机器人（实施）
 状态转换处理机器人状态信息：
 
 - **StateActionToTensor**：将状态数据（如手臂位置、手部配置）转换为PyTorch张量。
-- **StateActionTransform**：对状态数据应用归一化。根据模态键，有不同的归一化模式。可以在官方源码的 [`state_action.py`](https://github.com/NVIDIA/Isaac-GR00T/blob/main/gr00t/data/transform/state_action.py) 中查看转换逻辑。
+- **StateActionTransform**：对状态数据应用归一化。根据模态键，有不同的归一化模式。可以在[state_action.py](../gr00t/data/transform/state_action.py)文件中找到转换逻辑。
 
 #### 3. 动作转换
 

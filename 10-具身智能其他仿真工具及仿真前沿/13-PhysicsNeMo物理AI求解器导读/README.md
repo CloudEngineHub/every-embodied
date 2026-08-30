@@ -9,13 +9,13 @@
 
 PhysicsNeMo 是 NVIDIA 面向 Physics AI / AI4Science / 工程仿真的开源深度学习框架。它的主要目标不是训练 VLA，也不是做机器人仿真交互，而是构建、训练、微调和推理物理机器学习模型，例如 neural operator、graph neural network、diffusion model、PINN、天气/气候模型、CFD surrogate、结构力学或电磁场代理模型。
 
-PhysicsNeMo 适合作为物理代理建模的扩展工具。具身机器人同样关心接触、流体、材料、柔体和多物理场，但 MuJoCo、Isaac Sim、ManiSkill、Genesis、Habitat 负责交互式环境和动力学步进；PhysicsNeMo 则用神经网络学习偏微分方程或工程仿真的快速代理求解器，不直接提供机器人调用的 `env.step(action)` 环境。
+这篇放在 `10-具身智能其他仿真工具及仿真前沿`，作为扩展阅读最合适。它和具身智能有关系，但关系比较远：具身机器人当然也关心接触、流体、材料、柔体和多物理场，但主流具身学习教程更常用 MuJoCo、Isaac Sim、ManiSkill、Genesis、Habitat 这类可交互仿真器。PhysicsNeMo 更像“用神经网络学一个物理 PDE / 工程仿真的快速代理求解器”，不是给机器人直接 `env.step(action)` 的环境。
 
 ![PhysicsNeMo 导读卡片](assets/physicsnemo-card.svg)
 
 图 1 PhysicsNeMo 在教程中的定位。这里用本地 SVG 概括其核心链路：物理数据和 PDE 约束进入 Physics-ML 模型，训练出可快速推理的 surrogate model。官方 developer 页提供的多为客户案例图，不是清晰架构图，因此本章用自绘图说明概念。
 
-## 1. PhysicsNeMo 的适用范围
+## 1. 先说结论：它和我们关系不大，但可以知道
 
 如果目标是复现 OpenVLA、SmolVLA、ACT、机器人抓取、导航、世界模型或真机控制，PhysicsNeMo 不是优先级很高的工具。它不会替代：
 
@@ -33,7 +33,7 @@ PhysicsNeMo 适合作为物理代理建模的扩展工具。具身机器人同�
 - 用 PyTorch + NVIDIA GPU 做大规模 Physics-ML 训练；
 - 研究 PINN、neural operator、mesh / point-cloud datapipe、分布式训练。
 
-本节把 PhysicsNeMo 作为物理 AI 求解器扩展：先明确它能解决的问题及其与机器人仿真器的区别，再选择轻量示例验证安装和神经算子流程。
+所以教程里不建议把 PhysicsNeMo 作为主线复现任务。它适合作为“物理 AI 求解器扩展阅读”：知道它是什么、能解决什么、和机器人仿真器有什么区别即可。
 
 ## 2. 名字变化：Modulus 到 PhysicsNeMo
 
@@ -215,9 +215,9 @@ PINN、FNO、DeepONet、MeshGraphNet、GraphCast 这类路线很多都已经发�
 
 但从工程和 AI4Science 角度看，它仍然是活跃项目。GitHub README 显示项目状态为 active，官方文档也在维护新的安装、示例和 v2.0 migration guide。因此更准确的说法是：它的方法方向相对成熟，和我们的机器人教程主线关系较弱，但不是废弃项目。
 
-## 12. 分层复现路线
+## 12. 复现边界
 
-PhysicsNeMo 的官方示例横跨多个物理领域，完整覆盖并不适合作为单个学习任务。主要原因包括：
+本章不建议写成“手把手复现完整 PhysicsNeMo benchmark”。原因有几个：
 
 - 官方 examples 跨 CFD、天气、PDE、GNN、diffusion，范围太大；
 - 很多任务需要专用数据集，不是 `pip install` 后就能跑出有意义结果；

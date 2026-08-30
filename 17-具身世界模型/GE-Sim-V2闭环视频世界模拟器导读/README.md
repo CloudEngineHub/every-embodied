@@ -2,7 +2,7 @@
 
 > 本文导读 **GE-Sim 2.0: A Roadmap Towards Comprehensive Closed-loop Video World Simulators for Robotic Manipulation**。论文 arXiv 编号为 `2605.27491v1`，2026 年 5 月 26 日提交。项目来自 AgiBot、BUAA、LV-NUS Lab、TJU 等团队，官方项目页为 [ge-sim-v2.github.io](https://ge-sim-v2.github.io/)，代码仓库为 [AgibotTech/GE-Sim-V2](https://github.com/AgibotTech/GE-Sim-V2)。
 
-## 1. 从视频生成到闭环世界模拟
+## 1. 先说结论：它为什么应该放进世界模型章节
 
 GE-Sim 2.0 的全称是 **Genie Envisioner World Simulator 2.0**。它不是 VLA 策略本身，也不是 MuJoCo / Isaac Sim 这类显式物理引擎。它更准确的定位是：
 
@@ -20,7 +20,7 @@ GE-Sim 2.0 的全称是 **Genie Envisioner World Simulator 2.0**。它不是 VLA
 可外接/论文提出的任务评价奖励
 ```
 
-GE-Sim 2.0 的核心问题不是“策略如何输出动作”，而是“给定策略动作后，世界模型能否像模拟器一样生成后果，并支持策略在学习到的世界中闭环执行、评估和学习”。因此，本章从世界模型与闭环模拟的角度展开。
+所以它应该放在 `17-具身世界模型`，而不是 VLA 章节。原因很清楚：GE-Sim 2.0 的核心问题不是“策略怎么输出动作”，而是“给定一个策略动作，世界模型能不能像 simulator 一样生成后果，并让策略在这个 learned world 里闭环执行、评估和学习”。
 
 这篇的价值在于它把 **action-conditioned video generation** 往 **closed-loop world simulator** 推了一步。GE-Sim 1.0 / BWM / WALL-WM 这类方法已经能根据动作生成未来视频，但对机器人策略训练来说，只会生成视频还不够。真正闭环还缺三件事：
 
@@ -206,7 +206,7 @@ GE-Sim 2.0 的思路是让 VLM-based judge 看生成 rollout 和任务指令，�
 
 用户提到的“全球第一”对应的核心来源是 WorldArena 榜单结果。论文摘要写得很明确：GE-Sim 2.0 在 only 2B parameters 下 tops the public WorldArena leaderboard，并且超过 dedicated robotic world models 与 closed-source general video generators。Hugging Face 模型卡也写它是 **WorldArena CVPR Challenge champion**。
 
-这一能力需要结合其输入输出边界理解。
+这件事很强，但要避免误读。
 
 强在三点：
 
@@ -497,7 +497,7 @@ GE-Sim 2.0 已经比很多前沿世界模型更可操作，但仍有边界。
 
 第一，当前 released checkpoint 是 **G01 + OmniPicker** 版本。Hugging Face 写明它是 post-trained on Genie-01(G01) + OmniPicker(OP) data，G02 支持在 roadmap。其他机器人不能直接假设即插即用。
 
-第二，World Judge 尚未完整开源。论文和项目页展示了 integrated world judge，但 HF 模型卡写 `coming soon`，GitHub README 说明 reward 默认为空，需要接入 `RewardClient`。当前公开版本因此不包含可直接运行的 reward-driven learning 完整链路。
+第二，World Judge 尚未完整开源。论文和项目页展示了 integrated world judge，但 HF 模型卡写 `coming soon`，GitHub README 说明 reward 默认为空，需要接 `RewardClient`。所以当前教程不能写成“下载后直接有 reward-driven learning”。
 
 第三，它不是严格物理仿真器。它主要输出视频和预测状态，不提供可验证接触力、碰撞约束、刚体求解器、关节动力学和安全边界。对真实机器人训练来说，仍然需要真实验证和安全门控。
 

@@ -1,6 +1,6 @@
 # HumanoidMimicGen：用全身规划把少量人形示教扩成大规模操作数据
 
-这篇导读对应 NVIDIA、UT Austin 等作者的论文 **HumanoidMimicGen: Data Generation for Loco-Manipulation via Whole-Body Planning**。它衔接 SIM1、InternDataEngine 与 UniLab + MotrixSim，把仿真数据生成扩展到人形机器人的全身移动操作。
+这篇导读对应 NVIDIA、UT Austin 等作者的论文 **HumanoidMimicGen: Data Generation for Loco-Manipulation via Whole-Body Planning**。它适合放在本仓库的 `10-具身智能其他仿真工具及仿真前沿` 章节中，接在 SIM1、InternDataEngine、UniLab + MotrixSim 之后，作为“仿真数据生成 + 人形机器人全身操作”的前沿方法补充。
 
 一句话概括：
 
@@ -22,7 +22,7 @@
 | 代码 | 截至 2026-07-18，官方项目页未提供 GitHub/Code 链接 |
 | 相关开源入口 | [NVlabs/mimicgen](https://github.com/NVlabs/mimicgen) 是原始 MimicGen 的官方仓库，可用于理解“少量示教扩增”谱系 |
 
-本章定位为 HumanoidMimicGen 方法导读与复现准备，重点梳理 MimicGen、DexMimicGen、robosuite、MuJoCo 和 cuRobo 的接口关系。官方代码、基准环境与数据生成脚本发布后，可按本章给出的模块边界补充运行命令和评估步骤。
+这里需要特别说明：用户现在如果想完整复刻 HumanoidMimicGen 论文结果，最理想的路径还是等官方代码、benchmark 环境和数据生成脚本发布。当前教程的定位是方法导读和复现路线预埋，不把它写成已经可以一键跑通的工程教程。读者可以先学习 MimicGen / DexMimicGen / robosuite / MuJoCo / cuRobo 的相关接口，等官方仓库放出后再补齐运行步骤。
 
 ## 2. 官方效果预览
 
@@ -287,7 +287,7 @@ HumanoidMimicGen 生成的是示教数据，最终还要训练 policy。论文�
 
 ## 13. 复现路线建议
 
-官方 HumanoidMimicGen 代码和基准环境入口尚未在项目页公开，因此当前学习路线先拆解依赖与接口；官方代码发布后，再补充端到端运行与结果核对：
+当前不建议把它写成手把手复现实验，因为官方 HumanoidMimicGen 代码和 benchmark 环境入口尚未在项目页公开。更合适的学习路线是先拆依赖，再等官方代码：
 
 1. **读项目页和论文图**：先把 Figure 1、Figure 2、Figure 3 读懂，明确它的输入、输出和中间模块。
 2. **学习原始 MimicGen**：阅读 [NVlabs/mimicgen](https://github.com/NVlabs/mimicgen)，理解 object-centric skill、少量示教扩增、robosuite 数据生成流程。

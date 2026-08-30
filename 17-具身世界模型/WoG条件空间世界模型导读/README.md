@@ -1,6 +1,6 @@
 # WoG：条件空间世界模型导读
 
-本章导读论文 **World Guidance: World Modeling in Condition Space for Action Generation**，方法名为 **WoG / World Guidance**，由 ByteDance Seed 与香港大学团队提出，论文于 2026-02-25 提交至 arXiv。它补充了 LeWM 与 RAW-Dream 之外的路线：LeWM 用潜变量世界模型预测未来状态，RAW-Dream 将世界模型作为 VLA 后训练环境，而 WoG **不预测完整未来图像，而是预测对动作生成有用的未来条件向量**。
+这篇导读对应论文 **World Guidance: World Modeling in Condition Space for Action Generation**，方法名是 **WoG / World Guidance**，来自 ByteDance Seed 与香港大学团队，arXiv 于 2026-02-25 提交。它适合放在本仓库的 `17-具身世界模型` 章节里，作为 LeWM、RAW-Dream 之后的补充：LeWM 讲 latent world model 如何预测未来状态，RAW-Dream 讲 world model 如何作为 VLA 后训练环境，WoG 则讲另一条路线：**不预测完整未来图像，而是预测一个对动作有用的未来条件向量**。
 
 学完这一节后，大家需要抓住一个核心判断：WoG 很聪明，也很有工程价值，但它不是“机器人脑中可交互 rollout 的世界模拟器”。更准确地说，它是一个 **future observation distillation for action generation** 方法：训练时看未来帧，把未来帧压缩成 action-relevant latent condition；测试时不看未来帧，让 VLA 从当前观测中预测这个 condition，再用它辅助动作生成。
 

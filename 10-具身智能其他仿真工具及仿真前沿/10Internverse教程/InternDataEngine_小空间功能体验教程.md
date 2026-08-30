@@ -1,6 +1,6 @@
 # 不下载 200GB 资产，也能体验 InternDataEngine：一份小空间复现实战教程
 
-InternDataEngine 是 InternVerse 具身数据平台中的数据合成引擎。官方文档覆盖安装、快速开始、工作流、技能、物体、相机、机器人、控制器、域随机化、资产和训练等完整链路。本教程使用小规模资产完成核心功能验证，适合先熟悉配置、控制与数据导出流程。
+InternDataEngine 是 InternVerse 具身数据平台里的数据合成引擎。官方文档覆盖了安装、Quick Start、Workflow、Skills、Objects、Cameras、Robots、Controllers、Domain Randomization、Assets 和 Training 等完整链路，但如果只是想先“摸一遍功能”，直接下载 full assets 并跑完整任务库并不划算。
 
 本文走一条更轻量的路线：不下载约 200GB 的完整资产包，只使用仓库自带的小资产、必要的 CuRobo / Drake 依赖，以及一个约 1MB 的铰接垃圾桶资产，尽可能覆盖 InternDataEngine 的核心能力，并生成可以直接嵌入 Markdown 的三视角视频。
 
@@ -10,7 +10,7 @@ InternDataEngine 是 InternVerse 具身数据平台中的数据合成引擎。�
 - 想给课程、汇报或博客准备可视化 demo；
 - 想理解 InternDataEngine 的配置、技能、相机、随机化和数据输出链路，但暂时不想拉取 full assets。
 
-本文聚焦小资产条件下的环境启动、任务规划、相机渲染和数据导出。完成这些步骤后，可继续接入完整资产并扩展抓取、放置与开合任务。
+本文不会声称已经完整跑通官方 Pick / Place / Open 全任务。它们在小资产路线下进入了相应规划阶段，但仍需要进一步调约束和位姿。本文的重点是：用最小空间先把平台主链路跑起来，把能稳定展示的功能做成素材。
 
 ## 最终效果预览
 
@@ -67,7 +67,7 @@ InternDataEngine 是 InternVerse 具身数据平台中的数据合成引擎。�
 - 四组可嵌入 Markdown 的三视角视频；
 - 四个可复跑的本地最小任务配置；
 - 对当前环境中必要兼容补丁的清晰说明；
-- 一份关于抓取、放置与开合任务的运行状态说明。
+- 一份关于 Pick / Place / Open 当前状态的如实记录。
 
 这条路线实际覆盖了：
 
@@ -83,12 +83,10 @@ InternDataEngine 是 InternVerse 具身数据平台中的数据合成引擎。�
 
 ## 目录约定
 
-先设置项目、资产和文档镜像目录。实际目录可以按磁盘布局调整：
+本文默认项目位于：
 
 ```bash
-export PROJECT_ROOT="${PROJECT_ROOT:-$HOME/InternDataEngine}"
-export ASSET_ROOT="${ASSET_ROOT:-$HOME/internverse_assets}"
-export DOC_MIRROR_ROOT="${DOC_MIRROR_ROOT:-$HOME/internverse-docs-mirror}"
+/root/gpufree-data/InternDataEngine
 ```
 
 Isaac Sim Python 位于：
@@ -97,13 +95,27 @@ Isaac Sim Python 位于：
 /isaac-sim/python.sh
 ```
 
+辅助资产目录位于：
+
+```bash
+/root/gpufree-share/internverse_assets
+```
+
 进入项目根目录：
 
 ```bash
-cd "$PROJECT_ROOT"
+cd /root/gpufree-data/InternDataEngine
 ```
 
-后文所有命令都默认从这个目录执行。小资产路线覆盖以下能力：
+后文所有命令都默认从这个目录执行。
+
+
+
+
+
+本文记录如何在一台已经预装 Isaac Sim 的服务器上，用尽量少的磁盘空间体验 InternDataEngine 的核心功能，并生成可以嵌入 Markdown 的多视角视频素材。
+
+本教程的目标不是复现官方完整任务库，也不是下载约 200GB 的 full assets，而是用小资产覆盖以下能力：
 
 - Workflow：`simbox_plan_and_render` 端到端执行
 - YAML Config：任务、机器人、相机、技能、资产配置
@@ -122,13 +134,13 @@ cd "$PROJECT_ROOT"
 教程文件位于：
 
 ```bash
-$PROJECT_ROOT/docs_artifacts/InternDataEngine_小空间功能体验教程.md
+/root/gpufree-data/InternDataEngine/docs_artifacts/InternDataEngine_小空间功能体验教程.md
 ```
 
 视频和封面图放在同级 `assets/` 目录：
 
 ```bash
-$PROJECT_ROOT/docs_artifacts/assets/
+/root/gpufree-data/InternDataEngine/docs_artifacts/assets/
 ```
 
 当前已经整理好的素材包括：
@@ -140,18 +152,18 @@ assets/object_dr_three_views.mp4
 assets/articulation_three_views.mp4
 ```
 
-这些视频由 InternDataEngine 本地渲染生成，可直接用于课程文档和项目报告。
+这些视频都是由 InternDataEngine 本地渲染生成，不是外链素材。
 
 ## 2. 先回答：改了哪些 Isaac Sim / InternDataEngine API
 
-兼容改动集中在当前工作区的 InternDataEngine 代码，用于适配 Isaac Sim 5.1、Python 3.11、Torch 2.7 和新版 Drake API。`/isaac-sim` 安装目录保持官方结构。
+这次没有修改 Isaac Sim 本体，也没有改 `/isaac-sim` 安装目录里的接口实现。实际改动发生在当前工作区的 InternDataEngine 代码里，目的是让官方代码能在当前环境的 Isaac Sim 5.1、Python 3.11、Torch 2.7、Drake 新 API 下继续运行。
 
 ### 2.1 保留 `arena_file`，避免重复 reset 丢配置
 
 文件：
 
 ```bash
-$PROJECT_ROOT/workflows/simbox_dual_workflow.py
+/root/gpufree-data/InternDataEngine/workflows/simbox_dual_workflow.py
 ```
 
 修改前，workflow 在 reset 过程中会执行：
@@ -178,7 +190,7 @@ self.task_cfg.pop("logger_file", None)
 文件：
 
 ```bash
-$PROJECT_ROOT/workflows/simbox/solver/planner_utils.py
+/root/gpufree-data/InternDataEngine/workflows/simbox/solver/planner_utils.py
 ```
 
 官方代码假设 `pydrake.multibody.plant.MultibodyPlantConfig` 支持 `discrete_contact_solver` 参数：
@@ -213,7 +225,7 @@ except AttributeError:
 同一个文件：
 
 ```bash
-$PROJECT_ROOT/workflows/simbox/solver/planner_utils.py
+/root/gpufree-data/InternDataEngine/workflows/simbox/solver/planner_utils.py
 ```
 
 官方代码使用旧接口：
@@ -259,15 +271,15 @@ franka = add_model_from_file(parser, franka_combined_path)
 本教程基于以下路径组织：
 
 ```bash
-$PROJECT_ROOT
+/root/gpufree-data/InternDataEngine
 /isaac-sim/python.sh
-$ASSET_ROOT
+/root/gpufree-share/internverse_assets
 ```
 
 开始前进入仓库：
 
 ```bash
-cd $PROJECT_ROOT
+cd /root/gpufree-data/InternDataEngine
 ```
 
 检查 Isaac Sim Python 是否存在：
@@ -300,7 +312,7 @@ git status --short
 官方文档已镜像到本地：
 
 ```bash
-$DOC_MIRROR_ROOT/internrobotics.github.io/InternDataEngine-Docs/index.html
+/root/gpufree-data/internverse-docs-mirror/internrobotics.github.io/InternDataEngine-Docs/index.html
 ```
 
 可以用浏览器打开这个 HTML，离线查看 Installation、Quick Start、Workflow、Skills、Objects、Cameras、Robots、Controllers、Domain Randomization、Assets、Training 等页面。
@@ -308,7 +320,7 @@ $DOC_MIRROR_ROOT/internrobotics.github.io/InternDataEngine-Docs/index.html
 如果需要重新镜像官方文档，可使用类似命令：
 
 ```bash
-cd "$(dirname "$PROJECT_ROOT")"
+cd /root/gpufree-data
 wget \
   --mirror \
   --convert-links \
@@ -360,7 +372,7 @@ workflows/simbox/core/configs/tasks/example/local_open_trashcan.yaml
 运行命令：
 
 ```bash
-cd $PROJECT_ROOT
+cd /root/gpufree-data/InternDataEngine
 bash scripts/simbox/simbox_plan_and_render.sh \
   workflows/simbox/core/configs/tasks/example/track_the_targets.yaml \
   1 \
@@ -417,7 +429,7 @@ find output/track_the_targets_plan_and_render_seed_9 \
 运行命令：
 
 ```bash
-cd $PROJECT_ROOT
+cd /root/gpufree-data/InternDataEngine
 bash scripts/simbox/simbox_plan_and_render.sh \
   workflows/simbox/core/configs/tasks/example/local_control_mix.yaml \
   1 \
@@ -463,7 +475,7 @@ name: track
 运行命令：
 
 ```bash
-cd $PROJECT_ROOT
+cd /root/gpufree-data/InternDataEngine
 bash scripts/simbox/simbox_plan_and_render.sh \
   workflows/simbox/core/configs/tasks/example/local_object_dr_showcase.yaml \
   1 \
@@ -542,7 +554,7 @@ Kps/close_h/keypoints_final.json
 运行展示任务：
 
 ```bash
-cd $PROJECT_ROOT
+cd /root/gpufree-data/InternDataEngine
 bash scripts/simbox/simbox_plan_and_render.sh \
   workflows/simbox/core/configs/tasks/example/local_articulation_showcase.yaml \
   1 \
@@ -630,7 +642,7 @@ duration=14.666667
 下面命令把三视角拼接视频复制到教程同级的 `assets/` 目录。
 
 ```bash
-cd $PROJECT_ROOT
+cd /root/gpufree-data/InternDataEngine
 mkdir -p docs_artifacts/assets
 
 cp docs_artifacts/videos/track_the_targets/seed9_three_views.mp4 \
@@ -772,7 +784,7 @@ pkill -f 'launcher.py --config configs/simbox/de_plan_and_render_template.yaml' 
 第一次复现时建议按这个顺序跑：
 
 ```bash
-cd $PROJECT_ROOT
+cd /root/gpufree-data/InternDataEngine
 
 bash scripts/simbox/simbox_plan_and_render.sh \
   workflows/simbox/core/configs/tasks/example/track_the_targets.yaml \

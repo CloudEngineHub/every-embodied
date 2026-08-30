@@ -7,7 +7,7 @@
 - 理解 RISE 为什么要把机器人策略改进放到世界模型里，而不是直接在真机上试错；
 - 看清 RISE 仓库的三段式流水线：离线 policy/value 训练、动作条件 dynamics world model、online imagination RL；
 - 在 Blackwell GPU 机器上复刻 RISE 的核心 Python 环境，并下载和校验公开的 dynamics model 资产；
-- 区分官方效果、最小运行验证和公开权重边界，分别记录环境可运行性与论文结果复现程度。
+- 分清官方效果、本地 smoke test、公开权重边界，避免把“能跑通环境”误解成“完整复现论文所有结果”。
 
 ## 一、RISE 到底解决什么问题
 
@@ -530,7 +530,7 @@ cd $RISE_ROOT/dynamics/dynamics_model
 
 ## 十一、公开复现边界
 
-复现实验包含以下边界：
+这里必须把边界讲清楚，避免大家误解：
 
 - 官方仓库公开了训练代码、文档、sample data 和预训练 dynamics model；
 - 公开资产中没有完整 policy/value checkpoint；

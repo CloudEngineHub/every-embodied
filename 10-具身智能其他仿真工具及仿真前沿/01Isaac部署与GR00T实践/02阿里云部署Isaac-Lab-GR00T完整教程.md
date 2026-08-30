@@ -634,14 +634,12 @@ python -c 'from gr00t.policy.gr00t_policy import Gr00tPolicy; print("GR00T loade
 ```bash
 conda activate groot
 cd ~/Isaac-GR00T
-export MODEL_ROOT="$HOME/models/gr00t"
-mkdir -p "$MODEL_ROOT"
 
 # 下载通用模型 GR00T-N1.6-3B
-HF_ENDPOINT=https://hf-mirror.com python -c "import os; from huggingface_hub import snapshot_download; snapshot_download('nvidia/GR00T-N1.6-3B', local_dir=os.path.expandvars('$MODEL_ROOT/groot_n16_model'))"
+HF_ENDPOINT=https://hf-mirror.com python -c "from huggingface_hub import snapshot_download; snapshot_download('nvidia/GR00T-N1.6-3B', local_dir='/root/groot_n16_model')"
 
 # 下载 G1 机器人专用模型（用于评估）
-HF_ENDPOINT=https://hf-mirror.com python -c "import os; from huggingface_hub import snapshot_download; snapshot_download('nvidia/GR00T-N1.6-G1-PnPAppleToPlate', local_dir=os.path.expandvars('$MODEL_ROOT/groot_g1_model'))"
+HF_ENDPOINT=https://hf-mirror.com python -c "from huggingface_hub import snapshot_download; snapshot_download('nvidia/GR00T-N1.6-G1-PnPAppleToPlate', local_dir='/root/groot_g1_model')"
 ```
 
 ### 6.5 测试 GR00T 推理
@@ -651,14 +649,13 @@ cd ~/Isaac-GR00T
 
 # 创建测试脚本
 cat > test_groot.py << 'EOF'
-import os
 import numpy as np
 from gr00t.policy.gr00t_policy import Gr00tPolicy
 from gr00t.data.embodiment_tags import EmbodimentTag
 
 print('Loading GR00T N1.6...')
 policy = Gr00tPolicy(
-    model_path=os.path.expandvars('$MODEL_ROOT/groot_n16_model'),
+    model_path='/root/groot_n16_model',
     embodiment_tag=EmbodimentTag('gr1'),
     device='cuda',
 )
@@ -781,7 +778,7 @@ sed -i 's/onscreen=False/onscreen=True/' ~/Isaac-GR00T/gr00t/eval/rollout_policy
 cd ~/Isaac-GR00T
 conda activate groot
 python gr00t/eval/run_gr00t_server.py \
-  --model-path "$MODEL_ROOT/groot_g1_model" \
+  --model-path /root/groot_g1_model \
   --embodiment-tag UNITREE_G1 \
   --use-sim-policy-wrapper
 ```
@@ -1048,7 +1045,7 @@ conda activate groot
 
 # 启动 GR00T Server
 python gr00t/eval/run_gr00t_server.py \
-  --model-path "$MODEL_ROOT/groot_g1_model" \
+  --model-path /root/groot_g1_model \
   --embodiment-tag UNITREE_G1 \
   --use-sim-policy-wrapper
 ```

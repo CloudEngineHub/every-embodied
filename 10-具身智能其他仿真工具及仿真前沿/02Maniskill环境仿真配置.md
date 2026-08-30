@@ -1,8 +1,4 @@
-# ManiSkill 环境配置、交互控制与可视化
-
-本页完成 Vulkan 运行时检查、基础环境验证、交互控制、运动规划和多种观测数据可视化。所有命令均应在已安装 ManiSkill 的 Python 环境中执行。
-
-## 安装 Vulkan
+安装vulkan
 
 ```bash
 sudo apt-get install libvulkan1
@@ -50,11 +46,11 @@ while not done:
     env.render()  # a display is required to render
 env.close()
 
-## 无图形界面运行
+# run headless / without a display
 
 python -m mani_skill.examples.demo_random_action -e PickCube-v1
 
-## 图形界面与光线追踪
+# run with A GUI and ray tracing
 
 python -m mani_skill.examples.demo_random_action -e PickCube-v1 --render-mode="human" --shader="rt-fast"
 
@@ -64,11 +60,11 @@ python -m mani_skill.examples.benchmarking.gpu_sim --num-envs=1024
 
 并行真的超快
 
-## 渲染彩色图与深度图
+# rendering RGB + Depth data from all cameras
 
 python -m mani_skill.examples.benchmarking.gpu_sim --num-envs=64 --obs-mode="rgbd"
 
-## 批量导出观测视频
+# directly save 64 videos of the visual observations put into one video
 
 python -m mani_skill.examples.benchmarking.gpu_sim --num-envs=64 --save-video
 
@@ -180,15 +176,19 @@ python -m mani_skill.examples.teleoperation.interactive_panda -e "StackCube-v1"
 
 有关如何使用此工具（用于演示和数据收集）的更多详细信息，请参阅[主页](https://maniskill.readthedocs.io/en/latest/user_guide/data_collection/teleoperation.html#click-drag-system)。下面的视频显示了系统的运行情况。
 
-如果出现 `No module named 'mani_skill.examples.motionplanning.panda_stick'`，说明示例脚本与已安装的 ManiSkill 版本不一致。先对照当前源码检查导入路径：
+关于这个，有一个bug，我提了discord
 
-```python
-from mani_skill.examples.motionplanning.panda.motionplanner_stick import (
-    PandaStickMotionPlanningSolver,
-)
-```
+- python -m mani\_skill.examples.teleoperation.interactive\_panda -e "StackCube-v1" Traceback (most recent call last): File "/home/kewei/micromamba/envs/dl/lib/python3.9/runpy.py", line 197, in \_run\_module\_as\_main return \_run\_code(code, main\_globals, None, File "/home/kewei/micromamba/envs/dl/lib/python3.9/runpy.py", line 87, in \_run\_code exec(code, run\_globals) File "/home/kewei/micromamba/envs/dl/lib/python3.9/site-packages/mani\_skill/examples/teleoperation/interactive\_panda.py", line 11, in <module> from mani\_skill.examples.motionplanning.panda\_stick.motionplanner import \\ ModuleNotFoundError: No module named 'mani\_skill.examples.motionplanning.panda\_stick' hi could anyone help me with this problem?
 
-示例代码和安装包应来自同一个发布版本或 Git 提交。
+- _\[_17:36_\]_
+  
+  ok well I have solved it. Just install from github not pypi helped me out
+
+- ### kewei_—_ 今天17:43
+  
+  it might be a issue in example code. the right should be
+  
+  `from mani_skill.examples.motionplanning.panda.motionplanner_stick import PandaStickMotionPlanningSolver`
 
 ![](assets/2025-03-07-17-55-50-image.png)
 
@@ -266,7 +266,10 @@ ManiSkill3 支持通过 GPU 模拟 + 渲染 RT-1 和 Octo 等策略进行极快�
 pip install "pyglet<2" # make sure to install this dependency
 python -m mani_skill.examples.demo_vis_pcd -e "StackCube-v1"
 
-旧版示例可能直接把 GPU 张量传给 `trimesh`。如果出现设备或类型错误，检查 `mani_skill/examples/demo_vis_pcd.py` 中的点云构建代码：
+/home/kewei/17robo/ManiSkill/mani_skill/examples/demo_vis_pcd.py
+这个文件也要改
+
+在 `demo_vis_pcd.py` 的第 46 行：
 
 `pcd = trimesh.points.PointCloud(xyz, colors)`
 
@@ -286,7 +289,40 @@ python -m mani_skill.examples.demo_vis_segmentation -e "StackCube-v1" \
 
 ![](assets/2025-03-07-18-12-29-image.png)
 
-`id_of_part` 是占位符。先不传 `--id` 运行一次，读取程序输出的 actor/link 映射，再把实际名称传入 `--id`。直接传入 `id_of_part` 会触发 `KeyError`。
+这一句命令目前还有报错
+
+Visualizing 2 RGBD cameras
+ID to Actor/Link name mappings
+0: Background
+1: Link, name - panda_link0
+2: Link, name - panda_link1
+3: Link, name - panda_link2
+4: Link, name - panda_link3
+5: Link, name - panda_link4
+6: Link, name - panda_link5
+7: Link, name - panda_link6
+8: Link, name - panda_link7
+9: Link, name - panda_link8
+10: Link, name - panda_hand
+11: Link, name - panda_hand_tcp
+12: Link, name - panda_leftfinger
+13: Link, name - panda_rightfinger
+14: Link, name - camera_base_link
+15: Link, name - camera_link
+16: Actor, name - table-workspace
+17: Actor, name - ground
+18: Actor, name - cubeA
+19: Actor, name - cubeB
+Traceback (most recent call last):
+  File "/home/kewei/micromamba/envs/dl/lib/python3.9/runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/kewei/micromamba/envs/dl/lib/python3.9/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/home/kewei/17robo/ManiSkill/mani_skill/examples/demo_vis_segmentation.py", line 144, in <module>
+    main(parse_args())
+  File "/home/kewei/17robo/ManiSkill/mani_skill/examples/demo_vis_segmentation.py", line 118, in main
+    selected_id = reverse_seg_id_map[selected_id]
+KeyError: 'id_of_part'
 
 ## 可视化相机纹理（RGB、深度、反照率等）[#](https://maniskill.readthedocs.io/en/latest/user_guide/demos/scripts.html#visualize-camera-textures-rgb-depth-albedo-etc "此标题的永久链接")
 

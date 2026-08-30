@@ -32,18 +32,12 @@
 
 ## Linux 服务器环境配置
 
-1. **准备工作目录与 LeRobot 源码**
+1. **准备 LeRobot 源码**
    ```bash
-   export WORKSPACE=$HOME/robotics
-   export LEROBOT_SRC=$WORKSPACE/lerobot
-   export BIMANUAL_APP=$WORKSPACE/lerobot_bimanual_remote
-   mkdir -p "$WORKSPACE"
-   git clone https://github.com/huggingface/lerobot.git "$LEROBOT_SRC"
-   cd "$LEROBOT_SRC"
+   git clone https://github.com/huggingface/lerobot.git /home/sunrise/17robo/250602/lerobot
    pip install -e ".[feetech]"
+   # 或使用已有版本，注意与 Windows 侧保持一致
    ```
-
-   Windows 与 Linux 两端应使用同一 LeRobot 版本。本章中的网页服务端为双臂集成应用，不属于 LeRobot 主仓库；需将自己的服务端实现放在 `$BIMANUAL_APP`，并保持下文使用的端口、接口和脚本名一致。
    
 2. **创建并激活 Python 环境**（示例使用 mamba）
    ```bash
@@ -54,8 +48,8 @@
 
 3. **启动服务器脚本**
    ```bash
-   cd "$BIMANUAL_APP"
-   export PYTHONPATH="$LEROBOT_SRC/src:${PYTHONPATH:-}"
+   cd /home/sunrise/lerobot_bimanual_remote
+   export LEROBOT_SRC=/home/sunrise/17robo/250602/lerobot  # 如路径不同请自行修改
    ./start_server.sh
    
    #可以先找到bus位置，需要修改配置文件
@@ -79,10 +73,9 @@
 1. 安装 Python 3.10+，建议使用 Anaconda / Miniconda。
 2. 克隆与 Linux 侧一致的 LeRobot 源码：
    ```powershell
-   $LEROBOT_ROOT = Join-Path $HOME "lerobot"
-   git clone https://github.com/huggingface/lerobot.git "$LEROBOT_ROOT"
+   git clone https://github.com/huggingface/lerobot.git C:\lerobot
    # 可以考虑git checkout user/michel-aractingi/2025-06-02-docs-for-hil-serl
-   Set-Location "$LEROBOT_ROOT"
+   cd C:\lerobot
    pip install -e ".[feetech]"
    ```
 3. 根据实际串口（`COM3`, `COM4` 等）准备好主臂连接。
@@ -197,7 +190,7 @@
    ```python
    import requests
    
-   LINUX_SERVER = "http://<linux-host>:8000"
+   LINUX_SERVER = "http://192.168.1.100:8000"
    
    def push_leader(side, positions):
        requests.post(

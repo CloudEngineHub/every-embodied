@@ -1,8 +1,6 @@
 
 
-# 将 Git 依赖地址统一为 HTTPS
-
-## 方法一：全局重写地址
+### 方法一：强制将所有 git 请求转换为 HTTPS（推荐，最快）
 
 如果不想手动修改配置文件，可以直接运行这条全局配置命令。它会告诉 Git：每当遇到 `git@github.com:` 的地址时，自动替换为 `https://github.com/`。
 
@@ -26,7 +24,7 @@ git submodule update --init --recursive
 
 ------
 
-## 方法二：修改 `.gitmodules` 文件
+### 方法二：手动修改 `.gitmodules` 文件
 
 如果希望永久性地修改这个项目的配置，可以编辑项目根目录下的 `.gitmodules` 文件。
 
@@ -73,7 +71,7 @@ git submodule update --init --recursive
 
 ------
 
-## 方法三：仅修改当前仓库配置
+### 方法三：仅修改本地 git 配置（不影响文件）
 
 如果不想改动代码里的 `.gitmodules` 文件（以免提交上去影响别人），可以只修改 `.git/config` 文件。
 
@@ -89,7 +87,7 @@ git submodule update --init --recursive
 
 3. 保存退出，直接运行更新命令。
 
-## 选择建议
+### 总结建议
 
 既然在 `root@gpufree-container` 环境下，我建议直接使用 **方法一**。它不需要通过编辑器修改文件，且能立即生效解决所有子模组的类似问题。
 

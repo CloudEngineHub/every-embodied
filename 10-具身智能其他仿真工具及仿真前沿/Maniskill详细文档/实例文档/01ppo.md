@@ -1,3 +1,7 @@
+<think>我需要访问指定的文件并进行翻译。首先，我将查看是否可以直接访问要翻译的文件。</think>
+
+Read file: /home/kewei/17robo/ManiSkill/examples/baselines/ppo/README.md
+
 # 近端策略优化 (PPO)
 
 PPO 强化学习算法的代码改编自 [CleanRL](https://github.com/vwxyzjn/cleanrl/) 和 [LeanRL](https://github.com/pytorch-labs/LeanRL/)。代码设计为单文件形式，易于理解和阅读，同时支持基于状态的强化学习和基于视觉的强化学习。

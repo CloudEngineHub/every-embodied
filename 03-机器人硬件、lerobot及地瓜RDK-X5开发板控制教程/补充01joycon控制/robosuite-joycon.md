@@ -1,11 +1,4 @@
-# Linux 下使用 Joy-Con 控制 robosuite
-
-本节完成 Joy-Con 蓝牙手柄、HID 权限和 robosuite 控制示例的连接。下文默认在一个可写的工作目录中执行。
-
-```bash
-export WORKSPACE=$HOME/robotics
-mkdir -p "$WORKSPACE"
-cd "$WORKSPACE"
+```
 
 # create conda env
 conda create -n robosuite python=3.10
@@ -24,6 +17,8 @@ cd joycon-robotics
 pip install -e .
 sudo apt install dkms
 make install
+
+---
 
 cd ..
 cd robosuite-joycon
@@ -56,7 +51,7 @@ sudo snap install bun-js
 
 
 
-## 问题排查
+# 问题排查
 
 1、如果缺少相关依赖
 
@@ -144,6 +139,5 @@ Python 的 `hid` 包（也叫 `hidapi`）无法在你的系统里找到它需要
 Bash
 
 ```
-cd "$WORKSPACE/robosuite-joycon"
-python robosuite/demos/demo_device_control_joycon_bimanual.py
+python /home/kewei/17robo/robosuite-joycon/robosuite/demos/demo_device_control_joycon_bimanual.py
 ```

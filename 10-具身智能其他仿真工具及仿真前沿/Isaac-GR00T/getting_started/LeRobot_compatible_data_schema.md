@@ -44,7 +44,7 @@
 - 注释：存储为annotation.<annotation_source>.<annotation_type>(.<annotation_name>)（参见示例配置中的注释字段以了解命名示例）。其他列不应使用annotation前缀，如果对添加多个注释感兴趣，请参阅(multiple-annotation-support)。
 
 #### 示例Parquet文件
-以下是[demo_data](../demo_data/robot_sim.PickNPlace/)目录中存在的 `robot_sim.PickNPlace` 数据集示例。
+以下是[demo_data](../../demo_data/robot_sim.PickNPlace/)目录中存在的robot_sim.PickNPlace数据集的示例。
 ```
 {
     "observation.state":[-0.01147082911843003,...,0], // 基于modality.json文件的连接状态数组
@@ -254,4 +254,5 @@ GR00T LeRobot是标准LeRobot格式的一种变体，具有更多固定要求：
 
 ## 示例
 
-请参阅[示例数据集](../demo_data/robot_sim.PickNPlace/)以获取完整参考。
+请参阅[示例数据集](../../demo_data/robot_sim.PickNPlace/)以获取完整参考。
+

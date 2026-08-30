@@ -1,14 +1,8 @@
-# 使用 ModelScope 按目录下载模型或数据集
-
-## 安装依赖
-
-```bash
 pip install modelscope
 
 pip install "datasets>=2.16.0,<3.0.0" -i https://pypi.tuna.tsinghua.edu.cn/simple
-```
 
-## 编写下载脚本
+download.py
 
 ```python
 from modelscope.hub.snapshot_download import snapshot_download
@@ -17,7 +11,7 @@ import os
 # 1. 设置下载参数
 repo_id = 'agibot_world/GenieSim3.0-Dataset'
 # 目标本地存放路径
-local_dir = os.path.expandvars("$MODEL_ROOT/organize_items")
+local_dir = "/root/gpufree-data/openpi/checkpoints/organize_items"
 
 # 2. 执行下载
 # allow_patterns 用于匹配你想要的子目录或特定文件
@@ -35,9 +29,3 @@ snapshot_download(
 print(f"下载完成！文件已存放在: {local_dir}")
 ```
 
-运行前设置输出根目录：
-
-```bash
-export MODEL_ROOT=/path/to/models
-python download.py
-```

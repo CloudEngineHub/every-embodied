@@ -15,8 +15,7 @@
 
 ## 平台专题
 
-- [ManiSkill 自定义任务](Maniskill详细文档/01任务构建.md) - 从环境注册、场景构建到成功条件的完整任务生命周期。
-- [ManiSkill 详细文档](Maniskill详细文档/) - 继续学习核心概念、数据集、数据采集、强化学习和演示学习。
+- [ManiSkill 详细文档](Maniskill详细文档/) - ManiSkill 仿真平台的详细使用文档。
 - [Isaac Sim 本地与云端配置教程](01Isaac部署与GR00T实践/01Isaac-Sim本地与云端配置.md) - 本地工作站、云服务器、Docker、pip 和 micromamba 配置。
 - [Isaac Lab + GR00T 云部署教程](01Isaac部署与GR00T实践/02阿里云部署Isaac-Lab-GR00T完整教程.md) - 阿里云环境下的历史版本 Isaac Lab 和 GR00T 部署流程。
 - [Genesis 环境配置](Genesis仿真环境配置/01环境配置和测试.md) - Genesis 仿真平台环境配置。
