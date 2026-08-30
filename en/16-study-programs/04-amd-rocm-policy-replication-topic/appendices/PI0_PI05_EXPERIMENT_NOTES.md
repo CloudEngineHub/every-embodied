@@ -117,7 +117,7 @@ Figure 1: The pi_0 raw policy is very close to the target in representing the ep
 The video below shows a comparison between the left and right sides of the same episode. The left side is raw pi_0, while the right side is the mixed diagnostic result after adding the script terminator:
 
 <video controls muted preload="metadata" width="100%">
-  <source src="../../../../16-专题组队学习/04-AMD-ROCm策略复刻专题/appendices/assets/pi0_ep2_raw_vs_finisher_side_by_side.mp4" type="video/mp4">
+  <source src="../../../../16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/pi0_ep2_raw_vs_finisher_side_by_side.mp4" type="video/mp4">
 </video>
 
 Figure 2: pi_0 episode2 raw-vs-hybrid comparison video. This video is used to explain the failure mechanism, and does not indicate that raw pi_0 has achieved 100% success rate.
@@ -379,7 +379,7 @@ After completing the training of 64 data points for the first round of EEF-delta
 Figure 3: seed `2133`, four-view time series for horizon 5. The robotic arm moves above and around the cup, but it does not reach a stable grasping height or form an elevation. Key frame images should be viewed together with the progressive TCP/gripper logs; success of grasping cannot be determined merely based on the presence of the gripper moving.
 
 <video controls muted preload="metadata" width="100%">
-  <source src="../../../../16-专题组队学习/04-AMD-ROCm策略复刻专题/appendices/assets/pi05_eefdelta_h5_seed2133.mp4" type="video/mp4">
+  <source src="../../../../16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/pi05_eefdelta_h5_seed2133.mp4" type="video/mp4">
 </video>
 
 Video 2: A full 25-second four-view rollout of Horizon 5 with the same seed `2133`. The video retains the failure process to observe the approach height, claw closure timing, and action sequence. It should not be cut into segments that only appear "approachable".
@@ -570,7 +570,7 @@ The logs also reveal the issue of control amplitude limitations: among the 432 r
 Figure 5: The seed `1003` comes from a position covered by training data. The policy closes above or beside the blue cup, then pushes the cup over the target. The maximum instantaneous lift of the cup is approximately `1.63 cm`, which does not meet the strict lifting condition of 3 consecutive steps and at least `3 cm`.
 
 <video controls muted preload="metadata" width="100%">
-  <source src="../../../../16-专题组队学习/04-AMD-ROCm策略复刻专题/appendices/assets/pi05_canonical_s800_seed1003.mp4" type="video/mp4">
+  <source src="../../../../16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/pi05_canonical_s800_seed1003.mp4" type="video/mp4">
 </video>
 
 Video 3: Complete raw Pi0.5 failure rollout of canonical91 and 800-step checkpoint on seed1003 during training. It did not use target/plate coordinates, oracle prefix, external head, or scripted finisher.

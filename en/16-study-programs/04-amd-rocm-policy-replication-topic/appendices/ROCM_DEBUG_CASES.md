@@ -468,7 +468,7 @@ This set of enhancements and the recompletion of complete task data are directly
 There is another example of a language protocol failure. Using the full instruction `Pick up the blue mug and place it on the plate.` during training, the head of seed3 is activated for 269 steps, and the final strict judgment is reached at step 270. When replaced with a shorter equivalent instruction `Place the blue mug on the plate.`, the prototype distance gate refuses to take over throughout the process, resulting in failure. The current small-data head uses valid language input, but still lacks language rewriting generalization. In the next round, 30–50 multi-position trajectories should be relected after correcting the seed, along with prompt paraphrase enhancement, and then three gates for fixed scene, random position, and language paraphrase should be applied respectively.
 
 <video controls muted preload="metadata" width="100%">
-  <source src="../../../../16-专题组队学习/04-AMD-ROCm策略复刻专题/appendices/assets/pi0_ep2_raw_vs_finisher_side_by_side.mp4" type="video/mp4">
+  <source src="../../../../16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/pi0_ep2_raw_vs_finisher_side_by_side.mp4" type="video/mp4">
 </video>
 
 Figure 4: Raw-vs-hybrid videos of the same episode. The raw pi_0 on the left did not succeed through strict physics, while it succeeded after the scripted finisher was applied on the right. This video is used to identify the bottleneck at the end, not as evidence of the success rate of raw pi_0.

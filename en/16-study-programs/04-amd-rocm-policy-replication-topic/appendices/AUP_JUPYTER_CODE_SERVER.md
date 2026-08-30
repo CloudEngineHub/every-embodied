@@ -243,6 +243,6 @@ Check whether the file is written to `/ryzers/notebooks`. When running again, se
 After the platform manipulation is completed, proceed in the following order:
 
 1. [ Device and environment confirmation ](../01-amd-rocm-device-and-environment-confirmation.md)
-2. [ Simulation benchmark download and unified directory ](../10-simulation-benchmark-download-and-unified-directory.md)
+2. [ Simulation benchmark download and unified directory ](../../../../16-专题组队学习/04-AMD-ROCm策略复刻专题/README_10_仿真基准下载与统一目录.md)
 3. [ Notebook execution index ](../notebooks/README.md)
-4. [ Unified evaluation, video, and result archiving ](../16-unify-the-evaluation-videos-and-result-archiving.md)
+4. [ Unified evaluation, video, and result archiving ](../../../../16-专题组队学习/04-AMD-ROCm策略复刻专题/README_16_统一评估视频与结果归档.md)
