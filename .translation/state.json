@@ -213,7 +213,7 @@
     },
     "05-具身场景的深度和强化学习/README.md": {
       "target": "en/05-deep-and-reinforcement-learning/README.md",
-      "sourceHash": "2df23ac4aaaa5561537be868fd25ae4363a36a2883b2cce6a04fa6dfd2cd3525",
+      "sourceHash": "e84c174cc76ea7d595a4594f8c7c70baabef7d2d4d1f10d8b64e43c4c7d90abb",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -1792,6 +1792,12 @@
     "16-专题组队学习/04-AMD-ROCm策略复刻专题/appendices/ROCM_DEBUG_CASES.md": {
       "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/appendices/ROCM_DEBUG_CASES.md",
       "sourceHash": "0a957761fc4196c3050cc4ab8c5fabf7d60fee4d1e1702584c17eb16e1454f4c",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "05-具身场景的深度和强化学习/05-OpenDuckMini与Microduck双足强化学习/README.md": {
+      "target": "en/05-deep-and-reinforcement-learning/05-open-duck-mini-and-microduck-biped-rl/README.md",
+      "sourceHash": "88853406c374e1298a057923c1feaf266bf4f7e47b6d2b80b23372f16d144afa",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
