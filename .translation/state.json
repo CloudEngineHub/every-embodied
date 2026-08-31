@@ -477,7 +477,7 @@
     },
     "09-具身智能数据及评估基准benchmark/99-相关开源项目推荐.md": {
       "target": "en/09-data-and-benchmarks/99-recommended-related-open-source-projects.md",
-      "sourceHash": "4de3eeef74ecd1c0ee6281189b75a2f2cc931a76fd336feefaae987da2b952e3",
+      "sourceHash": "e0931986a1e8317423cec154d638378c7588214f3d3106e8ea6a2b6aab935c24",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -657,7 +657,7 @@
     },
     "10-具身智能其他仿真工具及仿真前沿/Maniskill详细文档/01任务构建.md": {
       "target": "en/10-simulation-tools-and-frontiers/maniskill-detailed-documentation/01-task-construction.md",
-      "sourceHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sourceHash": "422b7a45f077d634385f30aea92fdaa2157b7256a6acfe1efa6d61a29b512224",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -747,7 +747,7 @@
     },
     "11-其他辅助工具/网络测试工具.md": {
       "target": "en/11-auxiliary-tools/network-testing-tools.md",
-      "sourceHash": "4ebf1a5abaf378ee4d21aebeaa653b6a78513d8b008185f891d5e31660eede3d",
+      "sourceHash": "d8a3b2437d3f6bd81ffaa6b6c5302b00d235a91718c098f434d33eedaac189eb",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
