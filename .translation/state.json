@@ -777,7 +777,7 @@
     },
     "11-其他辅助工具/docker相关/docker登录.md": {
       "target": "en/11-auxiliary-tools/docker-related/docker-login.md",
-      "sourceHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sourceHash": "402bbf2df9e4c89b4275c8154a0b67856496746d1a83720df737d2c2477004ae",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -969,7 +969,7 @@
     },
     "12-具身智能面试问题汇总/99面试草稿.md": {
       "target": "en/12-interview-questions/99-interview-draft.md",
-      "sourceHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sourceHash": "8bd4e57957c1c3502e87603f2313f50e03930c9bc23816375eecc987ebdd7f39",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -1011,7 +1011,7 @@
     },
     "13-其他前沿项目复现/omnigibson.md": {
       "target": "en/13-frontier-project-reproduction/omnigibson.md",
-      "sourceHash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "sourceHash": "57fb157762bd1ed686b94d9448dbdca15ae9843dbc668bf84466e23006aca473",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
