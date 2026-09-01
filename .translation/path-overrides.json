@@ -20,6 +20,7 @@
   "03前沿VLN复现": "03-frontier-vln-reproduction",
   "04-Locate-Anything视觉语言定位.md": "04-locate-anything-visual-language-localization.md",
   "05-OpenDuckMini与Microduck双足强化学习": "05-open-duck-mini-and-microduck-biped-rl",
+  "06-SMP可复用分数匹配运动先验": "06-smp-reusable-score-matching-motion-priors",
   "04家务机器人环境配置.md": "04-household-robot-environment-configuration.md",
   "05执行器原理与选型.md": "05-actuator-principles-and-selection.md",
   "06_公开发布与可复现检查.md": "06-public-release-and-reproducibility-check.md",
