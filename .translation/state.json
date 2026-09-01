@@ -213,7 +213,7 @@
     },
     "05-具身场景的深度和强化学习/README.md": {
       "target": "en/05-deep-and-reinforcement-learning/README.md",
-      "sourceHash": "e84c174cc76ea7d595a4594f8c7c70baabef7d2d4d1f10d8b64e43c4c7d90abb",
+      "sourceHash": "eb0f25ee59cb2fb7c2cf282dbee9427e4c8060247903c0453f077ee2b6e33ea3",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -1799,6 +1799,18 @@
       "target": "en/05-deep-and-reinforcement-learning/05-open-duck-mini-and-microduck-biped-rl/README.md",
       "sourceHash": "88853406c374e1298a057923c1feaf266bf4f7e47b6d2b80b23372f16d144afa",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "05-具身场景的深度和强化学习/06-SMP可复用分数匹配运动先验/README.md": {
+      "target": "en/05-deep-and-reinforcement-learning/06-smp-reusable-score-matching-motion-priors/README.md",
+      "sourceHash": "01ec99105bf2e78edf3c39d3090cb571e9630723e675a00aef8ed57007ae71de",
+      "model": "manually-reviewed after tencent/Hy-MT2-1.8B-GGUF:Q4_K_M token-guard failure",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "05-具身场景的深度和强化学习/06-SMP可复用分数匹配运动先验/assets/README.md": {
+      "target": "en/05-deep-and-reinforcement-learning/06-smp-reusable-score-matching-motion-priors/assets/README.md",
+      "sourceHash": "4ae1fd1c39fc9712e5961e58e9cbc3832833d5402f01b6641dc31cb2de7d1e66",
+      "model": "manually-reviewed after tencent/Hy-MT2-1.8B-GGUF:Q4_K_M token-guard failure",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
   }
