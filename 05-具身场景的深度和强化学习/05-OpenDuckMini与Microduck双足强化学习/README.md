@@ -153,7 +153,14 @@ uv sync
 uv run wandb login
 ```
 
-如果本地环境暂时不方便，也可以把同一套命令放到云端开发机执行。例如在算力自由创建 Linux 开发实例后，直接从控制台进入 Jupyter Terminal 或复制 SSH 命令登录，不需要改变 Microduck RL 的训练代码。建议把项目、依赖缓存和训练输出都放在数据盘，而不是默认系统盘：
+如果本地环境暂时不方便，也可以把同一套命令放到云端开发机执行。例如在算力自由创建 Linux 开发实例后，直接从控制台进入 Jupyter Terminal 或复制 SSH 命令登录，不需要改变 Microduck RL 的训练代码。
+
+> [!TIP]
+> **算力自由推荐镜像：[Mujoco 物理引擎：机器人学习研究与仿真到现实](https://www.gpufree.cn/images/101302)**
+>
+> 该镜像已经准备好 Ubuntu 22.04、CUDA 12.8、MuJoCo 3.4.1、`mujoco_warp` 和 `mujoco_playground`，适合从浏览器远程桌面观察仿真，也可以直接使用 Jupyter 或 SSH 运行下面的命令。镜像自带的 Playground 环境不是 Microduck RL 项目的锁定环境，因此仍要执行 `git clone` 和 `uv sync`，不要跳过项目自己的依赖安装。
+
+建议把项目、依赖缓存和训练输出都放在数据盘，而不是默认系统盘：
 
 ```bash
 export WORKSPACE=/root/gpufree-data/microduck
