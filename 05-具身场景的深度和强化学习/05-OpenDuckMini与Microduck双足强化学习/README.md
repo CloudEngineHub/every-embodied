@@ -153,6 +153,22 @@ uv sync
 uv run wandb login
 ```
 
+如果本地环境暂时不方便，也可以把同一套命令放到云端开发机执行。例如在算力自由创建 Linux 开发实例后，直接从控制台进入 Jupyter Terminal 或复制 SSH 命令登录，不需要改变 Microduck RL 的训练代码。建议把项目、依赖缓存和训练输出都放在数据盘，而不是默认系统盘：
+
+```bash
+export WORKSPACE=/root/gpufree-data/microduck
+export UV_CACHE_DIR=/root/gpufree-data/.cache/uv
+
+mkdir -p "$WORKSPACE" "$UV_CACHE_DIR"
+cd "$WORKSPACE"
+
+git clone https://github.com/pollen-robotics/microduck_rl.git
+cd microduck_rl
+uv sync
+```
+
+接下来仍然按照本节的 smoke test、正式训练和 ONNX 导出顺序执行。这样 `logs/`、checkpoint、录像和 `output.onnx` 都保存在数据盘目录中，可以通过 Jupyter 文件列表下载。暂时离开时先在控制台关机；确认已经下载结果且不再使用后，再决定是否释放实例，避免把“关机”和“删除数据”混为一谈。
+
 DGX Spark/GB10 或 Jetson 等 ARM 机器首次下载 CUDA wheel 时，官方建议增大 `uv` 超时：
 
 ```bash
@@ -197,6 +213,16 @@ uv run train Mjlab-Velocity-Flat-MicroDuck \
 ```
 
 官方 README 给出的经验是，4096 个环境下约 1–2 小时可以看到可用步态，但真正的收敛时间会受 GPU、当前配置、随机种子和 curriculum 影响。不要把这个数字当成硬性保证。
+
+如果目标是先完整经历“训练、保存 checkpoint、导出 ONNX、回放”的全过程，可以沿用 smoke test 的 64 个环境，但把迭代数提高。下面是一条更容易在普通开发机或云端实例上启动的练习配置：
+
+```bash
+uv run train Mjlab-Velocity-Flat-MicroDuck \
+  --env.scene.num-envs 64 \
+  --agent.max_iterations 10000
+```
+
+这里的 `64 x 10000` 是缩小并行规模后的教学配置，不是把五轮 smoke test 直接当成训练结果，也不等价于官方 4096 环境配置的训练效率。第一次练习可以在确认 checkpoint 已经正常写入、奖励曲线持续变化后主动停止，再进入导出环节；需要更好的步态时，再延长训练或提高并行环境数。
 
 一次正常训练至少应监控：
 
@@ -406,5 +432,6 @@ playground/open_duck_mini_v2/data/polynomial_coefficients.pkl
 - [BAM: Better Actuator Models](https://github.com/Rhoban/bam)
 - [mjlab](https://github.com/mujocolab/mjlab)
 - [MuJoCo Playground](https://github.com/google-deepmind/mujoco_playground)
+- [microduck 小白完整训练教程（Bilibili）](https://www.bilibili.com/video/BV1jUtG6KEiC/)
 
-本节两段视频和页首图均来自上述官方项目页；视频仅做格式转换、缩放和片段截取，未改变实验内容。Open Duck Mini、Microduck 和 Microduck RL 仓库均以 Apache-2.0 许可证发布；使用前仍应以各仓库当前的 `LICENSE` 和第三方资产声明为准。
+本节两段视频和页首图均来自上述官方项目页；视频仅做格式转换、缩放和片段截取，未改变实验内容。Microduck 和 Microduck RL 的软件代码采用 Apache-2.0，Microduck RL 中的 3D 模型采用 Creative Commons BY-SA-NC；Open Duck Mini 的代码与机械资产也应分别以对应仓库当前的 `LICENSE` 和第三方资产声明为准。Bilibili 教程仅提供原页面链接，不在本仓库转载其视频文件。
