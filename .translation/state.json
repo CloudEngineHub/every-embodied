@@ -1797,7 +1797,7 @@
     },
     "05-具身场景的深度和强化学习/05-OpenDuckMini与Microduck双足强化学习/README.md": {
       "target": "en/05-deep-and-reinforcement-learning/05-open-duck-mini-and-microduck-biped-rl/README.md",
-      "sourceHash": "88853406c374e1298a057923c1feaf266bf4f7e47b6d2b80b23372f16d144afa",
+      "sourceHash": "4b6c8801079edca7dedd2f8baaf84f0163713fd7dbf606f66ea1a6ed03bdb955",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
