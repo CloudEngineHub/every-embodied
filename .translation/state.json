@@ -1017,7 +1017,7 @@
     },
     "14-相关参考/参考项目.md": {
       "target": "en/14-references/reference-project.md",
-      "sourceHash": "1a57a1ffb229471abd9c26f0d9b16c4f89191009b23a21766168d90038bfc252",
+      "sourceHash": "8b8eddcb04a0328710c31c6dd61bf8ff4bbdf7b35bba6a8e859855ea145239b3",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -1515,7 +1515,7 @@
     },
     "16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/README.md": {
       "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/assets/README.md",
-      "sourceHash": "173b751881f78371301fb6e9c7bea4ce3d60b73db9d8af41d20ee7f8f207406d",
+      "sourceHash": "b4913eacfbc7dd82540673c75d80290095876dba6beea0b2d28c758b9c29d41f",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -1811,6 +1811,12 @@
       "target": "en/05-deep-and-reinforcement-learning/06-smp-reusable-score-matching-motion-priors/assets/README.md",
       "sourceHash": "4ae1fd1c39fc9712e5961e58e9cbc3832833d5402f01b6641dc31cb2de7d1e66",
       "model": "manually-reviewed after tencent/Hy-MT2-1.8B-GGUF:Q4_K_M token-guard failure",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/04-AMD-ROCm策略复刻专题/code/README.md": {
+      "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/code/README.md",
+      "sourceHash": "c8c811b50994ca681af5e900c08a38ff26926a284711f884fae0d4c8174208a7",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
   }
