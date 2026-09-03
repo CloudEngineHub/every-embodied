@@ -40,10 +40,28 @@
 **视频 1 Microduck 官方真机走路片段。** 这段素材来自 Microduck RL 官方项目页的真机演示，教程截取了前 20 秒并转为浏览器更易播放的 H.264 MP4。这展示的是官方策略效果，不是本教程在本地重新训练收敛的结果。
 
 <video controls muted playsinline preload="metadata" width="100%">
+  <source src="assets/local_videos/microduck_4096env_6000iter_walk.mp4" type="video/mp4">
+</video>
+
+**视频 2 本教程实际完成的 4096 环境强化学习结果。** 我们从 `microduck_rl` 的 `29e887e` 版本出发，在 `Mjlab-Velocity-Flat-MicroDuck` 上训练 6000 次 PPO 迭代，再用最终的 `model_5999.pt` 以固定 `0.4 m/s` 前进命令回放。录像关闭了测试阶段的外力推搡事件，但没有对 checkpoint 做后处理或剪接成功片段。
+
+| 复现实验项 | 实际值 |
+| :-- | :-- |
+| 并行环境数 | 4096 |
+| 每环境每轮采样步数 | 24 |
+| PPO 迭代数 | 6000 |
+| 累计仿真 transition | 589,824,000 |
+| 训练耗时 | 1 小时 27 分 41 秒 |
+| 最终 mean reward / mean episode length | 119.57 / 972.52 |
+| 导出 ONNX 契约 | `[1, 61] -> [1, 14]` |
+
+这些数值用于说明本节展示视频的来源和复现规模，不应脱离代码版本、随机种子和 curriculum 与其他实验直接横向排名。
+
+<video controls muted playsinline preload="metadata" width="100%">
   <source src="assets/official_videos/open_duck_mini_v2_sim_walking.mp4" type="video/mp4">
 </video>
 
-**视频 2 Open Duck Mini v2 官方仿真走路片段。** 这段视频来自 Open Duck Mini v2 项目中“转向 MuJoCo Playground”部分。它对应旧款 42 cm 机器人，不对应新 Microduck 的 14 自由度策略契约。
+**视频 3 Open Duck Mini v2 官方仿真走路片段。** 这段视频来自 Open Duck Mini v2 项目中“转向 MuJoCo Playground”部分。它对应旧款 42 cm 机器人，不对应新 Microduck 的 14 自由度策略契约。
 
 ## 三、从架构图看完整训练链路
 
@@ -221,6 +239,16 @@ uv run train Mjlab-Velocity-Flat-MicroDuck \
 
 官方 README 给出的经验是，4096 个环境下约 1–2 小时可以看到可用步态，但真正的收敛时间会受 GPU、当前配置、随机种子和 curriculum 影响。不要把这个数字当成硬性保证。
 
+本节视频采用的完整命令如下。`WANDB_MODE=offline` 让训练日志只写入本地，适合暂时不连接 W&B 的工作站；需要云端实验追踪时，删除这一项并提前执行 `wandb login`。
+
+```bash
+WANDB_MODE=offline uv run train Mjlab-Velocity-Flat-MicroDuck \
+  --env.scene.num-envs 4096 \
+  --agent.max_iterations 6000 \
+  --agent.save-interval 500 \
+  --agent.run-name every-embodied-4096x6000
+```
+
 如果目标是先完整经历“训练、保存 checkpoint、导出 ONNX、回放”的全过程，可以沿用 smoke test 的 64 个环境，但把迭代数提高。下面是一条更容易在普通开发机或云端实例上启动的练习配置：
 
 ```bash
@@ -260,19 +288,30 @@ uv run play Mjlab-Velocity-Flat-MicroDuck \
   --wandb-run-path <entity/project/run_id>
 ```
 
-如果需要保留视频，导出脚本本身提供 `--video`、`--video-length`、`--video-width` 和 `--video-height` 参数：
+如果 checkpoint 保存在本地，可以直接用 `--checkpoint-file` 回放：
 
 ```bash
-uv run scripts/export.py Mjlab-Velocity-Flat-MicroDuck \
-  --wandb-run-path <entity/project/run_id> \
-  --video \
-  --video-length 600 \
-  --video-width 1280 \
-  --video-height 720 \
-  --onnx-file output.onnx
+uv run play Mjlab-Velocity-Flat-MicroDuck \
+  --checkpoint-file logs/rsl_rl/velocity/<run-name>/model_<iteration>.pt
 ```
 
-录像会写到 checkpoint 日志目录下的 `videos/play/`。它是检查步态物理行为的证据，不能用总奖励曲线替代。
+官方 `play` 命令适合交互观察，但录完指定帧数后仍会继续运行 Viser 服务。为了在无桌面的 Linux 工作站上自动生成一段有限时长、近景跟拍的视频，本教程提供了 `record_microduck_policy.py`：
+
+```bash
+export EVERY_EMBODIED=/path/to/every-embodied
+
+MUJOCO_GL=egl uv run python \
+  "$EVERY_EMBODIED/05-具身场景的深度和强化学习/05-OpenDuckMini与Microduck双足强化学习/record_microduck_policy.py" \
+  --checkpoint logs/rsl_rl/velocity/<run-name>/model_<iteration>.pt \
+  --output-dir artifacts/microduck-video \
+  --frames 600 \
+  --width 960 \
+  --height 540 \
+  --speed 0.4 \
+  --seed 42
+```
+
+脚本会关闭训练中的外力推搡事件，固定向前速度命令，并在录完 600 帧后主动关闭环境。视频写入 `artifacts/microduck-video/`。它只改变回放条件，不改变 checkpoint；录像是检查步态、滑脚、摔倒和抖动的物理证据，不能用总奖励曲线替代。
 
 ### 5. 导出 ONNX 与 CPU MuJoCo 演练
 
@@ -322,14 +361,13 @@ uv run scripts/infer_policy.py \
 
 这一步要检查三件事：ONNX 输入/输出是否为 `[1,61] -> [1,14]`，命令槽位是否与 runtime 一致，策略切换时是否出现姿态突跳。
 
-`infer_policy.py` 使用原生 MuJoCo 交互窗口，需要有效的桌面会话和 OpenGL 上下文。通过纯 SSH 终端启动时，模型维度修正后仍可能遇到 `GLXBadDrawable`；这属于显示链路错误，与 ONNX 本身是两个问题。需要键盘控制时，应在本机桌面或远程桌面/VNC 会话的终端中运行上面的命令。只想在无桌面服务器上验证模型时，先运行契约检查；需要生成非交互视频时，可使用 EGL 离屏渲染：
+`infer_policy.py` 使用原生 MuJoCo 交互窗口，需要有效的桌面会话和 OpenGL 上下文。通过纯 SSH 终端启动时，模型维度修正后仍可能遇到 `GLXBadDrawable`；这属于显示链路错误，与 ONNX 本身是两个问题。需要键盘控制时，应在本机桌面或远程桌面/VNC 会话的终端中运行上面的命令。只想在无桌面服务器上验证模型时，先运行契约检查；需要生成非交互视频时，使用上一节的录制脚本并启用 EGL：
 
 ```bash
-MUJOCO_GL=egl uv run scripts/export.py Mjlab-Velocity-Flat-MicroDuck \
-  --wandb-run-path <entity/project/run_id> \
-  --video \
-  --video-length 600 \
-  --onnx-file output.onnx
+MUJOCO_GL=egl uv run python \
+  "$EVERY_EMBODIED/05-具身场景的深度和强化学习/05-OpenDuckMini与Microduck双足强化学习/record_microduck_policy.py" \
+  --checkpoint logs/rsl_rl/velocity/<run-name>/model_<iteration>.pt \
+  --output-dir artifacts/microduck-video
 ```
 
 若契约检查通过而交互窗口失败，就只排查 `DISPLAY`、远程桌面会话和 OpenGL/GLX，不要重新导出 ONNX；若契约检查本身失败，再回到 checkpoint、导出脚本和 observation contract 排查。
