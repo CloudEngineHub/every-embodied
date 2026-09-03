@@ -125,7 +125,7 @@ Microduck RL 并不依赖一个完全准确的仿真器，而是同时做四件�
 官方工程当前要求：
 
 - Linux x86_64 或官方已适配的 Linux ARM 环境；
-- NVIDIA CUDA GPU，训练通过 MuJoCo Warp 执行；
+- 支持当前训练栈的 CUDA GPU，训练通过 MuJoCo Warp 执行；不要求某个具体显卡型号；
 - Python `>=3.12,<3.13`，由 `uv` 按 `uv.lock` 创建；
 - 正式训练默认使用 Weights & Biases 保存实验和 checkpoint。
 
@@ -281,10 +281,33 @@ uv run scripts/export.py Mjlab-Velocity-Flat-MicroDuck \
   --wandb-run-path <entity/project/run_id> \
   --onnx-file output.onnx
 
-uv run scripts/infer_policy.py --walking output.onnx
+uv run scripts/infer_policy.py --walking output.onnx --new-cmd-obs
 ```
 
 `scripts/export.py` 不只是把 PyTorch 网络改个后缀。它会把训练时的 observation normalizer 烘入 ONNX 计算图。手工转换 checkpoint 即使维度对得上，也可能因为输入未归一化而在部署时完全失效。
+
+在打开 MuJoCo 窗口之前，建议先做一次不依赖显示器的 ONNX 契约检查：
+
+```bash
+uv run python - <<'PY'
+import numpy as np
+import onnxruntime as ort
+
+session = ort.InferenceSession("output.onnx")
+model_input = session.get_inputs()[0]
+model_output = session.get_outputs()[0]
+print(f"input : {model_input.name} {model_input.shape} {model_input.type}")
+print(f"output: {model_output.name} {model_output.shape} {model_output.type}")
+
+assert model_input.shape == [1, 61], model_input.shape
+assert model_output.shape == [1, 14], model_output.shape
+action = session.run(None, {model_input.name: np.zeros((1, 61), dtype=np.float32)})[0]
+assert action.shape == (1, 14) and np.isfinite(action).all()
+print("ONNX contract and one-step inference: PASS")
+PY
+```
+
+当前策略的 61 维输入由 48 维本体观测和 13 维命令组成，命令布局是 `twist(3) + head_pose(4) + body_pose(6)`。`infer_policy.py` 为兼容旧 checkpoint，默认仍构造 51 维输入，即 48 维本体观测加旧版 3 维命令；因此，新模型若漏掉 `--new-cmd-obs`，就会出现 `Got: 51 Expected: 61`。这里应修正推理参数，不能随意裁剪模型输入或在末尾盲目补零，因为命令槽位的语义和排列也必须与训练一致。
 
 `infer_policy.py` 支持键盘速度命令，也能同时加载 walking、standing、sit-stand 和 roulade 等策略：
 
@@ -298,6 +321,18 @@ uv run scripts/infer_policy.py \
 ```
 
 这一步要检查三件事：ONNX 输入/输出是否为 `[1,61] -> [1,14]`，命令槽位是否与 runtime 一致，策略切换时是否出现姿态突跳。
+
+`infer_policy.py` 使用原生 MuJoCo 交互窗口，需要有效的桌面会话和 OpenGL 上下文。通过纯 SSH 终端启动时，模型维度修正后仍可能遇到 `GLXBadDrawable`；这属于显示链路错误，与 ONNX 本身是两个问题。需要键盘控制时，应在本机桌面或远程桌面/VNC 会话的终端中运行上面的命令。只想在无桌面服务器上验证模型时，先运行契约检查；需要生成非交互视频时，可使用 EGL 离屏渲染：
+
+```bash
+MUJOCO_GL=egl uv run scripts/export.py Mjlab-Velocity-Flat-MicroDuck \
+  --wandb-run-path <entity/project/run_id> \
+  --video \
+  --video-length 600 \
+  --onnx-file output.onnx
+```
+
+若契约检查通过而交互窗口失败，就只排查 `DISPLAY`、远程桌面会话和 OpenGL/GLX，不要重新导出 ONNX；若契约检查本身失败，再回到 checkpoint、导出脚本和 observation contract 排查。
 
 ### 6. 真机部署边界
 
@@ -417,6 +452,8 @@ playground/open_duck_mini_v2/data/polynomial_coefficients.pkl
 | URDF 只显示坐标轴，没有机器人外观 | 只下载了 `robot.urdf`，或 resource root 错误 | 下载整个 `open_duck_mini_v2/` 目录，将资源根指向 STL 所在目录 |
 | 训练 reward 上升但机器人不走 | 奖励钻空子，例如原地晃动或局部擦地 | 录制回放，分项检查 tracking、air-time、slip 和 action-rate |
 | 仿真回放正常，手工导出的 ONNX 失效 | observation normalizer 没有进入计算图 | 只用 `scripts/export.py` 导出 |
+| ONNX Runtime 报 `Got: 51 Expected: 61` | 新版 61 维模型使用了旧版 51 维推理观测 | 先做 ONNX 契约检查，再给 `infer_policy.py` 增加 `--new-cmd-obs` |
+| 远程运行报 `GLXBadDrawable` | SSH 会话没有可用的桌面/GLX 上下文，或图形窗口已失效 | 交互回放改在本机桌面或 VNC 中运行；无界面录像使用 `MUJOCO_GL=egl` |
 | 策略在真机上高频抖动 | 动作延迟、关节顺序、零位或执行器动力学不匹配 | 退回 CPU MuJoCo 演练和悬空小幅度测试，不要在地面上继续试错 |
 | Reference generator 提示 STL storage representation 错误 | Git LFS 网格未拉取 | 在仓库中执行 `git lfs pull` |
 
