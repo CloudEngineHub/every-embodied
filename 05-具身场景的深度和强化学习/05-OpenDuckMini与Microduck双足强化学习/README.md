@@ -39,11 +39,9 @@
 
 **视频 1 Microduck 官方真机走路片段。** 这段素材来自 Microduck RL 官方项目页的真机演示，教程截取了前 20 秒并转为浏览器更易播放的 H.264 MP4。这展示的是官方策略效果，不是本教程在本地重新训练收敛的结果。
 
-<video controls muted playsinline preload="metadata" width="100%">
-  <source src="assets/local_videos/microduck_4096env_6000iter_walk.mp4" type="video/mp4">
-</video>
+[![Microduck 4096 环境训练走路动态预览](assets/local_videos/microduck_4096env_6000iter_walk.gif)](assets/local_videos/microduck_4096env_6000iter_walk.mp4)
 
-**视频 2 本教程实际完成的 4096 环境强化学习结果。** 我们从 `microduck_rl` 的 `29e887e` 版本出发，在 `Mjlab-Velocity-Flat-MicroDuck` 上训练 6000 次 PPO 迭代，再用最终的 `model_5999.pt` 以固定 `0.4 m/s` 前进命令回放。录像关闭了测试阶段的外力推搡事件，但没有对 checkpoint 做后处理或剪接成功片段。
+**视频 2 本教程实际完成的 4096 环境强化学习结果。** 我们从 `microduck_rl` 的 `29e887e` 版本出发，在 `Mjlab-Velocity-Flat-MicroDuck` 上训练 6000 次 PPO 迭代，再用最终的 `model_5999.pt` 以固定 `0.4 m/s` 前进命令回放。录像关闭了测试阶段的外力推搡事件，但没有对 checkpoint 做后处理或剪接成功片段。页面展示的是同一视频生成的 GIF，点击画面可打开 960×540 的 H.264 原视频。
 
 | 复现实验项 | 实际值 |
 | :-- | :-- |
