@@ -55,6 +55,8 @@
 
 这些数值用于说明本节展示视频的来源和复现规模，不应脱离代码版本、随机种子和 curriculum 与其他实验直接横向排名。
 
+本次训练的完整阶段权重、最终 ONNX、配置、TensorBoard 日志与验证视频已经发布到 [Datawhale/Microduck-RL-4096x6000](https://huggingface.co/Datawhale/Microduck-RL-4096x6000)。模型仓库同时提供 `SHA256SUMS`，方便下载后校验文件是否完整。
+
 [![Microduck 命令编舞动态预览](assets/local_videos/microduck_command_dance.gif)](assets/local_videos/microduck_command_dance.mp4)
 
 **视频 3 本教程用同一 walking policy 完成的命令编舞。** 这不是单独训练的 dance checkpoint，而是按时间改变 `vx / vy / yaw rate` 和四维头部姿态命令，让已经训练好的 61 维策略实时执行点头、侧移、左右转向、前后步和弧线动作。整段 12 秒视频来自连续闭环 rollout，没有逐帧修改机器人姿态。页面展示的是压缩 GIF，点击画面可打开 960×540 的 H.264 原视频。
@@ -280,6 +282,26 @@ uv run train Mjlab-Velocity-Flat-MicroDuck \
   --agent.load-checkpoint model_29999.pt \
   --agent.resume True
 ```
+
+#### 下载本教程公开权重
+
+不想重新完成 6000 次 PPO 迭代时，可以从 Datawhale 的 Hugging Face 模型仓库下载本节实际使用的权重。仓库保留 `model_0.pt`、每 500 次迭代的阶段 checkpoint 以及最终 `model_5999.pt`，还包含对应的 `agent.yaml`、`env.yaml`、训练日志和 61 维输入 ONNX。
+
+```bash
+# 安装或更新 Hugging Face CLI
+python -m pip install -U huggingface_hub
+
+# 下载最终 checkpoint
+hf download Datawhale/Microduck-RL-4096x6000 \
+  checkpoints/model_5999.pt \
+  --local-dir Microduck-RL-4096x6000
+
+# 下载全部阶段权重和复现材料
+hf download Datawhale/Microduck-RL-4096x6000 \
+  --local-dir Microduck-RL-4096x6000
+```
+
+下载后建议先核对 [模型卡](https://huggingface.co/Datawhale/Microduck-RL-4096x6000) 中记录的上游提交、观测契约和许可边界。训练末轮的 `mean reward = 119.57` 只是该次运行的日志值，不应当作跨随机种子 benchmark。
 
 ### 4. 回放与录制走路或编舞视频
 
