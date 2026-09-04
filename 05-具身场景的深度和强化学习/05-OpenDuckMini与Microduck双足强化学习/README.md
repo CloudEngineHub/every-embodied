@@ -57,11 +57,9 @@
 
 这些数值用于说明本节展示视频的来源和复现规模，不应脱离代码版本、随机种子和 curriculum 与其他实验直接横向排名。
 
-<video controls muted playsinline preload="metadata" width="100%">
-  <source src="assets/local_videos/microduck_command_dance.mp4" type="video/mp4">
-</video>
+[![Microduck 命令编舞动态预览](assets/local_videos/microduck_command_dance.gif)](assets/local_videos/microduck_command_dance.mp4)
 
-**视频 3 本教程用同一 walking policy 完成的命令编舞。** 这不是单独训练的 dance checkpoint，而是按时间改变 `vx / vy / yaw rate` 和四维头部姿态命令，让已经训练好的 61 维策略实时执行点头、侧移、左右转向、前后步和弧线动作。整段 12 秒视频来自连续闭环 rollout，没有逐帧修改机器人姿态。
+**视频 3 本教程用同一 walking policy 完成的命令编舞。** 这不是单独训练的 dance checkpoint，而是按时间改变 `vx / vy / yaw rate` 和四维头部姿态命令，让已经训练好的 61 维策略实时执行点头、侧移、左右转向、前后步和弧线动作。整段 12 秒视频来自连续闭环 rollout，没有逐帧修改机器人姿态。页面展示的是压缩 GIF，点击画面可打开 960×540 的 H.264 原视频。
 
 <video controls muted playsinline preload="metadata" width="100%">
   <source src="assets/official_videos/open_duck_mini_v2_sim_walking.mp4" type="video/mp4">

@@ -23,9 +23,7 @@
 
 ## 二、先看它到底统一了什么
 
-<video controls muted playsinline preload="metadata" width="100%">
-  <source src="assets/official_videos/mano_skill_composition.mp4" type="video/mp4">
-</video>
+[![UniCross MANO 连续技能动态预览](assets/official_videos/mano_skill_composition.gif)](assets/official_videos/mano_skill_composition.mp4)
 
 **视频 1 UniCross 的连续技能组合。** 同一个策略依次完成抓取、搬移和手内操作。关键不只是每一段都能成功，而是上一段结束时的手-物状态可以直接成为下一段的有效初始状态。来源：[UniCross 官方项目页](https://zdchan.github.io/UniCross/)。
 
@@ -166,16 +164,9 @@ $$
 
 未见物体使用 sphere、hexagonal prism 和 elongated octagonal prism。策略只在 box/cylinder 上训练，仍保持接近训练形状的结果。扰动实验对物体持续施加最高 `10 m_obj g` 的随机力，四类技能仅小幅下降。
 
-<table>
-  <tr>
-    <td width="50%"><video controls muted playsinline preload="metadata" width="100%"><source src="assets/official_videos/allegro_skill_composition.mp4" type="video/mp4"></video></td>
-    <td width="50%"><video controls muted playsinline preload="metadata" width="100%"><source src="assets/official_videos/sharpa_skill_composition.mp4" type="video/mp4"></video></td>
-  </tr>
-  <tr>
-    <td align="center">Allegro Hand</td>
-    <td align="center">Sharpa Wave</td>
-  </tr>
-</table>
+| Allegro Hand | Sharpa Wave |
+| :--: | :--: |
+| [![Allegro Hand 技能组合动态预览](assets/official_videos/allegro_skill_composition.gif)](assets/official_videos/allegro_skill_composition.mp4) | [![Sharpa Wave 技能组合动态预览](assets/official_videos/sharpa_skill_composition.gif)](assets/official_videos/sharpa_skill_composition.mp4) |
 
 **视频 2 不同手型上的技能组合。** 作者没有把 Allegro 的关节权重直接复制到 Sharpa，而是在相同任务表述下为每种形态分别训练统一策略。这里证明的是 formulation 可迁移，不是同一个 checkpoint 零样本跨手部署。来源：[UniCross 官方项目页](https://zdchan.github.io/UniCross/)。
 
@@ -194,9 +185,7 @@ $$
 
 ## 六、Isaac Gym、Isaac Lab 与 mjlab 的关系
 
-<video controls muted playsinline preload="metadata" width="100%">
-  <source src="assets/official_videos/mjlab_implementation.mp4" type="video/mp4">
-</video>
+[![UniCross mjlab 实现动态预览](assets/official_videos/mjlab_implementation.gif)](assets/official_videos/mjlab_implementation.mp4)
 
 **视频 3 官方项目页展示的 mjlab 运行效果。** 论文主体说明训练使用 Isaac Gym，项目页随后展示了 IsaacLab、IsaacGym 和 mjlab 三种实现效果。视频能确认作者已经完成跨仿真器运行，但在代码入口开放前，不能据此确认公开仓库的安装步骤、版本锁定、资产许可或三套后端是否同时发布。来源：[UniCross 官方项目页](https://zdchan.github.io/UniCross/)。
 
@@ -229,4 +218,3 @@ UniCross 最有价值的创新不是换了更大的网络，而是找到一个�
 
 1. Hui Zhang, Julian Ferchow, Jie Song, Mirko Meboldt. [UniCross: Unified Cross-Skill Dexterous Manipulation Synthesis](https://arxiv.org/abs/2607.28198), 2026.
 2. [UniCross 官方项目页](https://zdchan.github.io/UniCross/).
-
