@@ -58,10 +58,16 @@
 这些数值用于说明本节展示视频的来源和复现规模，不应脱离代码版本、随机种子和 curriculum 与其他实验直接横向排名。
 
 <video controls muted playsinline preload="metadata" width="100%">
+  <source src="assets/local_videos/microduck_command_dance.mp4" type="video/mp4">
+</video>
+
+**视频 3 本教程用同一 walking policy 完成的命令编舞。** 这不是单独训练的 dance checkpoint，而是按时间改变 `vx / vy / yaw rate` 和四维头部姿态命令，让已经训练好的 61 维策略实时执行点头、侧移、左右转向、前后步和弧线动作。整段 12 秒视频来自连续闭环 rollout，没有逐帧修改机器人姿态。
+
+<video controls muted playsinline preload="metadata" width="100%">
   <source src="assets/official_videos/open_duck_mini_v2_sim_walking.mp4" type="video/mp4">
 </video>
 
-**视频 3 Open Duck Mini v2 官方仿真走路片段。** 这段视频来自 Open Duck Mini v2 项目中“转向 MuJoCo Playground”部分。它对应旧款 42 cm 机器人，不对应新 Microduck 的 14 自由度策略契约。
+**视频 4 Open Duck Mini v2 官方仿真走路片段。** 这段视频来自 Open Duck Mini v2 项目中“转向 MuJoCo Playground”部分。它对应旧款 42 cm 机器人，不对应新 Microduck 的 14 自由度策略契约。
 
 ## 三、从架构图看完整训练链路
 
@@ -279,7 +285,7 @@ uv run train Mjlab-Velocity-Flat-MicroDuck \
   --agent.resume True
 ```
 
-### 4. 回放与录制走路视频
+### 4. 回放与录制走路或编舞视频
 
 官方 quickstart 使用 W&B run path 定位 checkpoint：
 
@@ -311,7 +317,45 @@ MUJOCO_GL=egl uv run python \
   --seed 42
 ```
 
-脚本会关闭训练中的外力推搡事件，固定向前速度命令，并在录完 600 帧后主动关闭环境。视频写入 `artifacts/microduck-video/`。它只改变回放条件，不改变 checkpoint；录像是检查步态、滑脚、摔倒和抖动的物理证据，不能用总奖励曲线替代。
+`--motion walk` 是默认模式。脚本会关闭训练中的外力推搡事件，固定向前速度命令，并在录完 600 帧后主动关闭环境。视频写入 `artifacts/microduck-video/`。它只改变回放条件，不改变 checkpoint；录像是检查步态、滑脚、摔倒和抖动的物理证据，不能用总奖励曲线替代。
+
+#### 用同一个策略编排一段舞蹈
+
+walking policy 的 61 维观测已经包含 `twist(3) + head_pose(4) + body_pose(6)` 命令槽位，因此不必为了每一段展示动作重新训练策略。增加 `--motion dance` 后，脚本会在 12 秒内写入一组有界、连续变化的命令：
+
+```bash
+MUJOCO_GL=egl uv run python \
+  "$EVERY_EMBODIED/05-具身场景的深度和强化学习/05-OpenDuckMini与Microduck双足强化学习/record_microduck_policy.py" \
+  --checkpoint logs/rsl_rl/velocity/<run-name>/model_<iteration>.pt \
+  --output-dir artifacts/microduck-dance \
+  --motion dance \
+  --frames 600 \
+  --width 960 \
+  --height 540 \
+  --seed 42
+```
+
+| 时间 | 写入的主要命令 | 可见动作 |
+| :-- | :-- | :-- |
+| 0-2 s | 速度为零，头部正弦运动 | 原地点头、摆头和侧倾 |
+| 2-4 s | `vy` 左右变化 | 横向踏步 |
+| 4-6 s | `yaw rate` 左右变化 | 左右转身 |
+| 6-8 s | `vx` 正负变化 | 前进后退 |
+| 8-10 s | 正向 `vx` 加固定 `yaw rate` | 绕弧线移动 |
+| 10-12 s | 侧移、转向和头部命令叠加 | 组合收尾 |
+
+脚本每个控制周期先更新 `command_manager` 中的命令张量，再构造 observation、调用 policy 并推进 MuJoCo。动作仍由 PPO policy 输出，不是直接把预设关节角写入仿真。所有速度和头部命令都限制在该策略训练时的采样范围内。
+
+这里要区分“命令编舞”和“新技能训练”。命令编舞复用已有 walking policy，适合快速验证统一命令接口；前滚翻、踢球和轮滑旋转改变了接触模式或机器人模型，需要训练各自的官方任务：
+
+| 想展示的技巧 | 官方任务 | 是否复用 walking checkpoint |
+| :-- | :-- | :-- |
+| 坐下再站起 | `Mjlab-SitStand-Flat-MicroDuck` | 否 |
+| 前滚翻 | `Mjlab-Roulade-Flat-MicroDuck` | 否 |
+| 踢球 | `Mjlab-BallKick-Flat-MicroDuck` | 否 |
+| 轮滑旋转 | `Mjlab-Spin-Flat-MicroDuck` | 否，且使用 rollers 模型 |
+
+Microduck RL 当前没有名为 `Dance` 的注册任务。因此，本教程把上面的视频准确标为 command choreography；如果要训练可抗扰动、可任意触发的舞蹈技能，应新增带相位或参考动作的任务配置，而不是把展示脚本当作训练结果。
 
 ### 5. 导出 ONNX 与 CPU MuJoCo 演练
 

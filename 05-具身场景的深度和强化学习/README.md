@@ -10,7 +10,8 @@
 - [Robots That Know What to Ask 奖励对齐导读](04-Robots-That-Know-What-to-Ask奖励对齐导读/README.md)：拆解 ASQ 如何识别示教中的欠指定奖励特征，并用自然语言解释引导人类补充 corrective demonstrations。
 - [Open Duck Mini 与 Microduck 双足强化学习](05-OpenDuckMini与Microduck双足强化学习/README.md)：区分两代小鸭子机器人，跑通 URDF/STL 资产下载、Microduck PPO smoke test、正式训练、视频回放与 ONNX 导出链路。
 - [SMP 可复用分数匹配运动先验](06-SMP可复用分数匹配运动先验/README.md)：拆解扩散运动先验如何通过 SDS、ESM、Adaptive Normalization 和 GSI 变成 PPO 奖励，并给出 MimicKit 原始实现与 Unitree G1 开源复现路线。
+- [UniCross 统一跨技能灵巧操作导读](07-UniCross统一跨技能灵巧操作导读/README.md)：从手-物关系运动出发，拆解抓取、搬移、手内旋转和平移的统一观测、动作和奖励，以及十个 PPO 专家如何通过 DAgger 蒸馏成单一跨技能策略。
 
 ## 学习建议
 
-如果大家刚接触机器人强化学习，建议先看 HIMLoco 章节，理解 proprioception、privileged critic 和 sim-to-real 的基本思路；然后通过 Open Duck Mini/Microduck 做一次体量更小、资产和命令更清晰的双足训练练习；接着看 SMP，理解如何把动作扩散模型冻结成可复用的运动先验奖励；再看 AGILE 章节，学习更完整的人形机器人任务配置、teacher-student 蒸馏、评估报告和 Sim2MuJoCo 复核流程。对 VLA、世界模型后训练或人类示教数据感兴趣的同学，可以继续看 Robots That Know What to Ask，重点理解 reward misalignment、欠指定特征和 human-in-the-loop 奖励修正。
+如果大家刚接触机器人强化学习，建议先看 HIMLoco 章节，理解 proprioception、privileged critic 和 sim-to-real 的基本思路；然后通过 Open Duck Mini/Microduck 做一次体量更小、资产和命令更清晰的双足训练练习；接着看 SMP，理解如何把动作扩散模型冻结成可复用的运动先验奖励；再看 UniCross，理解统一任务表述为什么能让多个接触技能共享一个策略；最后看 AGILE 章节，学习更完整的人形机器人任务配置、teacher-student 蒸馏、评估报告和 Sim2MuJoCo 复核流程。对 VLA、世界模型后训练或人类示教数据感兴趣的同学，可以继续看 Robots That Know What to Ask，重点理解 reward misalignment、欠指定特征和 human-in-the-loop 奖励修正。

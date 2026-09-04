@@ -215,6 +215,7 @@
   两段完整回合均在 AMD Ryzen AI MAX+ 395 上完成闭环推理和视频录制。查看 [AMD Physical AI 仿真基准与长程视频复现教程](./16-专题组队学习/04-AMD-ROCm策略复刻专题/README_09_AMD_Physical_AI仿真基准与长程视频复现.md)，继续学习 Every Embodied、RoboCasa365、DexJoCo、DISCOVERSE、RoboWits 和 Unitree G1 的任务协议、评估结果与多视角导出流程。
 
   ## 🔥 News & Highlights
+  - **[2026-09-04]** 新增 [UniCross 统一跨技能灵巧操作导读](./05-具身场景的深度和强化学习/07-UniCross统一跨技能灵巧操作导读/README.md)：归入强化学习与灵巧操作章节，系统拆解抓取、搬移、手内旋转和手内平移如何共享手-物关系观测、增量动作空间与奖励结构，十个 PPO 专家如何通过 DAgger 蒸馏为单一策略，以及未见物体、扰动、Allegro / MANO / Sharpa Wave 跨手型和长时程组合实验；同时更新 [Microduck 双足强化学习教程](./05-具身场景的深度和强化学习/05-OpenDuckMini与Microduck双足强化学习/README.md)，加入由同一 walking policy 实时执行的 12 秒命令编舞视频和可复现录制参数。
   - **[2026-08-29]** 新增 [AMD Physical AI 仿真基准与长程视频复现教程](./16-专题组队学习/04-AMD-ROCm策略复刻专题/README_09_AMD_Physical_AI仿真基准与长程视频复现.md)：汇总 Every Embodied、RoboCasa365、DexJoCo、DISCOVERSE、RoboWits 和 Unitree G1 的 AMD ROCm 运行链路、正式评估协议与多视角视频，并提供 DexJoCo 双臂河内塔和 RoboCasa365 长程装餐任务的完整成功回合。
   - **[2026-08-23]** 新增 [EVA-Client 真机部署与评测工程导航](./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/19-EVA-Client真机部署与评测工程导航/README.md)：归入现有 VLA 章节，系统讲解 EVA-Client 如何衔接 LeRobot 数据、外部 VLA 策略服务器与真实机器人，覆盖 Transport、Robot Definition、Policy Client、五种 action chunk 调度策略、七类控制台工作流、可审计评测日志、无真机 open-loop 体验和两进程真机部署模式；同时明确当前官方版本尚未提供 SO-101 适配，并给出社区扩展所需的机器人描述、硬件节点、动作契约、配置与安全验证清单。
   - **[2026-08-01]** 新增 [ATEC2026 赛后复盘与开源方案教程](./15-Challenge竞赛/ATEC2026/README.md)：将 Task A/B/D/E 的任务边界、观测契约、环境视角调试、Task B 公开方案对照、评估与复现边界，以及中文 Workspace Memory 统一归入第 15 章，并配套 [Task B 公开复现归档](https://huggingface.co/datasets/Datawhale/atec2026-task-b-reproducibility) 与 Task E 开源资源。
