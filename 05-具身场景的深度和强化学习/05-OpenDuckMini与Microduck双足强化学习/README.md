@@ -7,7 +7,7 @@
 - 区分 Open Duck Mini v2、Open Duck Playground、Microduck 和 Microduck RL 四个工程的责任边界；
 - 只下载 Open Duck Mini v2 的 URDF 及其 STL 网格，并检查资产是否完整；
 - 对 Microduck RL 先跑 `64 个环境 x 5 次迭代` 的 smoke test，再启动正式训练；
-- 回放策略、录制仿真视频、导出带观测归一化的 ONNX，并在 CPU MuJoCo 中做部署前演练；
+- 回放策略、录制仿真视频、导出带观测归一化的 ONNX，并让 RDK X5 作为策略大脑驱动 Ubuntu 电脑中的 MuJoCo；
 - 理解一个“仿真里会走”的策略距离真机上 50 Hz 稳定走路还缺哪些工程环节。
 
 ## 一、先分清四个项目
@@ -61,11 +61,19 @@
 
 **视频 3 本教程用同一 walking policy 完成的命令编舞。** 这不是单独训练的 dance checkpoint，而是按时间改变 `vx / vy / yaw rate` 和四维头部姿态命令，让已经训练好的 61 维策略实时执行点头、侧移、左右转向、前后步和弧线动作。整段 12 秒视频来自连续闭环 rollout，没有逐帧修改机器人姿态。页面展示的是压缩 GIF，点击画面可打开 960×540 的 H.264 原视频。
 
+[![RDK X5 作为策略大脑控制单只 Microduck](assets/local_videos/microduck_rdk_brain_single_preview.png)](assets/local_videos/microduck_rdk_brain_single_12s.mp4)
+
+**视频 4 RDK X5 策略大脑控制单只 Microduck。** Ubuntu 电脑只负责 MuJoCo 物理仿真与画面渲染；每个 50 Hz 控制周期生成的 61 维观测都通过局域网发给 RDK，RDK 运行 `microduck_policy_5999.onnx` 后返回 14 维动作。视频为连续 12 秒、600 个控制周期、360 帧的完整闭环，不是预先算好动作后再播放。点击画面可打开 960×540、30 FPS 的 H.264 原视频。
+
+[![RDK X5 作为策略大脑控制 3x3 Microduck 方阵](assets/local_videos/microduck_rdk_brain_3x3_preview.png)](assets/local_videos/microduck_rdk_brain_3x3_12s.mp4)
+
+**视频 5 RDK X5 策略大脑控制 3×3 Microduck 方阵。** 九只鸭子位于同一个 MuJoCo world，每只都有独立的自由基座、关节状态、IMU 观测、历史动作和 BAM M6 XL330 执行器状态。Ubuntu 电脑把九组观测打包为一次网络请求，RDK 逐组执行 ONNX 并返回九组动作，再分别写回对应机器人。它验证的是单策略的批量边缘推理与多实例可视化，不代表九只机器人学会了通信或多智能体协同。
+
 <video controls muted playsinline preload="metadata" width="100%">
   <source src="assets/official_videos/open_duck_mini_v2_sim_walking.mp4" type="video/mp4">
 </video>
 
-**视频 4 Open Duck Mini v2 官方仿真走路片段。** 这段视频来自 Open Duck Mini v2 项目中“转向 MuJoCo Playground”部分。它对应旧款 42 cm 机器人，不对应新 Microduck 的 14 自由度策略契约。
+**视频 6 Open Duck Mini v2 官方仿真走路片段。** 这段视频来自 Open Duck Mini v2 项目中“转向 MuJoCo Playground”部分。它对应旧款 42 cm 机器人，不对应新 Microduck 的 14 自由度策略契约。
 
 ## 三、从架构图看完整训练链路
 
@@ -434,7 +442,112 @@ MUJOCO_GL=egl uv run python \
 
 若契约检查通过而交互窗口失败，就只排查 `DISPLAY`、远程桌面会话和 OpenGL/GLX，不要重新导出 ONNX；若契约检查本身失败，再回到 checkpoint、导出脚本和 observation contract 排查。
 
-### 6. 真机部署边界
+### 6. RDK X5 作为策略大脑，Ubuntu 电脑负责仿真与渲染
+
+直接在 RDK 上运行 MuJoCo 是可行的。本教程实测在 RDK X5 上安装 `mujoco==3.3.7` 后，可以编译 Microduck 官方 MJCF、运行 BAM 执行器和输出 H.264 视频。但 RDK 的板载 EGL 驱动没有暴露 MuJoCo 离屏渲染所需的 `eglQueryDevicesEXT`，改用 OSMesa 后，渲染详细 STL 网格的成本又远高于策略推理。更符合真实机器人系统分工的做法是：
+
+```mermaid
+flowchart LR
+  A["Ubuntu 电脑<br/>MuJoCo 物理状态"] -->|"61 维观测 / 50 Hz"| B["RDK X5<br/>ONNX 策略大脑"]
+  B -->|"14 维关节动作"| A
+  A --> C["BAM M6 XL330<br/>接触与动力学"]
+  A --> D["离屏渲染 + H.264 视频"]
+  B -. "后续实体部署" .-> E["IMU + 舵机 + 安全控制器"]
+```
+
+**图 3 RDK 策略大脑与 Ubuntu 仿真端的职责划分。** 这不是把 ONNX 留在 Ubuntu 上假装板端部署。远程模式下，渲染脚本不会创建本地 ONNX Runtime session；RDK 服务启动时先返回模型的输入/输出维度和 SHA256，随后在一条持久 TCP 连接上接收观测并返回动作。Ubuntu 电脑只保存和推进物理状态，因此断开 RDK 或返回维度不一致时，仿真会直接停止。
+
+本教程提供三个脚本：
+
+| 脚本 | 运行位置 | 用途 |
+| :-- | :-- | :-- |
+| [`rdk_policy_smoke.py`](rdk_policy_smoke.py) | RDK | 检查 ONNX 契约、纯推理延迟和 50 Hz deadline |
+| [`rdk_policy_server.py`](rdk_policy_server.py) | RDK | 通过持久 TCP 连接提供批量 `61 -> 14` 策略推理 |
+| [`rdk_microduck_video.py`](rdk_microduck_video.py) | Ubuntu 电脑 | 运行单鸭或多鸭 MuJoCo，向 RDK 请求动作并编码 MP4 |
+
+#### 第一步：在 RDK 上启动策略服务
+
+先把 ONNX 和 `rdk_policy_server.py` 放到 RDK。板端不需要安装 `mjlab`、PyTorch 或 MuJoCo，只需要 NumPy 与 ONNX Runtime：
+
+```bash
+python3 -m pip install --user numpy onnxruntime
+
+python3 rdk_policy_smoke.py \
+  --model microduck_policy_5999.onnx \
+  --iterations 2000 \
+  --paced-steps 250 \
+  --control-hz 50 \
+  --json-output rdk_smoke_report.json
+
+python3 rdk_policy_server.py \
+  --model microduck_policy_5999.onnx \
+  --host 0.0.0.0 \
+  --port 8765
+```
+
+服务端协议先发送 `MDP1 + 输入维度 + 输出维度 + 模型 SHA256` 握手。每个请求由一个批量大小和连续的 `float32` 观测组成，响应为相同批量大小的 `float32` 动作。单鸭请求是 `[1,61] -> [1,14]`；九鸭方阵则在一次控制周期内发送 `[9,61]`，RDK 使用固定批量为 1 的 ONNX 逐组推理，再返回 `[9,14]`。这一设计和当前模型的静态 batch 契约一致，也避免为展示视频重新导出另一个模型。
+
+#### 第二步：在 Ubuntu 电脑上生成单鸭视频
+
+Ubuntu 电脑需要已经安装好的 Microduck RL 环境和 `ffmpeg`。`--policy-host` 必须填写 RDK 在同一局域网中的地址；远程模式不需要 `--model`：
+
+```bash
+export EVERY_EMBODIED=/path/to/every-embodied
+export MICRODUCK_RL=/path/to/microduck_rl
+cd "$MICRODUCK_RL"
+
+MUJOCO_GL=egl uv run python \
+  "$EVERY_EMBODIED/05-具身场景的深度和强化学习/05-OpenDuckMini与Microduck双足强化学习/rdk_microduck_video.py" \
+  --microduck-repo "$MICRODUCK_RL" \
+  --policy-host <RDK_IP> \
+  --policy-port 8765 \
+  --output microduck_rdk_brain_single_12s.mp4 \
+  --rows 1 --cols 1 \
+  --duration 12 --fps 30 \
+  --width 960 --height 540 \
+  --speed 0.30 \
+  --camera-distance 0.70
+```
+
+脚本使用训练同源的投影重力、关节相对位置、关节速度、历史动作和 13 维命令槽位构造观测，并以 `4 x 0.005 s = 20 ms` 的控制周期推进物理。视频旁边还会生成同名 JSON，记录模型哈希、控制步数、RDK 往返延迟、每只机器人的位移、最低躯干高度和视频编码参数。
+
+#### 第三步：在同一场景生成九鸭方阵
+
+方阵不是把单鸭视频复制九份。脚本通过 MuJoCo `MjSpec.attach` 将九份带独立命名前缀的 Microduck 机器人合并到同一个 world，再给每只机器人分别建立关节、IMU、历史动作和执行器索引：
+
+```bash
+MUJOCO_GL=egl uv run python \
+  "$EVERY_EMBODIED/05-具身场景的深度和强化学习/05-OpenDuckMini与Microduck双足强化学习/rdk_microduck_video.py" \
+  --microduck-repo "$MICRODUCK_RL" \
+  --policy-host <RDK_IP> \
+  --policy-port 8765 \
+  --output microduck_rdk_brain_3x3_12s.mp4 \
+  --rows 3 --cols 3 \
+  --duration 12 --fps 30 \
+  --width 960 --height 540 \
+  --speed 0.30 \
+  --camera-distance 1.65
+```
+
+这里的九只鸭子共享同一个策略权重和速度命令，但不共享物理状态。它们的动作看起来同步，是因为初始姿态和确定性策略相同；轻微差异来自同一 world 中各自的接触求解。要研究队形保持、避碰或通信，应在 observation、reward 和训练任务中显式加入邻居状态，这不属于本次边缘部署验证。
+
+#### 本次实际验证记录
+
+| 检查项 | RDK X5 实测结果 |
+| :-- | :-- |
+| 系统与推理运行时 | RDK 系统 `3.3.3`，ARM64，ONNX Runtime `1.23.2` |
+| 模型契约 | `obs [1,61] -> actions [1,14]` |
+| 模型 SHA256 | `216fff94da1b88159327c426686fcfcca4763f571b4d123be6b2ca549042f9f0` |
+| 2000 次板内推理 | 平均 `0.315 ms`，p50 `0.309 ms`，p99 `0.437 ms` |
+| 250 步 50 Hz 定时循环 | p50 `0.399 ms`，p99 `0.785 ms`，最大 `0.809 ms`，deadline miss `0/250` |
+| 单鸭完整闭环 | 12 秒，600 次 RDK 控制请求，360 帧 H.264 视频 |
+| 3×3 方阵完整闭环 | 12 秒，600 次批量请求、共 5400 次 RDK ONNX 推理，360 帧 H.264 视频 |
+
+板内定时测试与完整运行记录分别保存在 [`rdk_policy_smoke_report.json`](assets/local_reports/rdk_policy_smoke_report.json)、[`microduck_rdk_brain_single_12s.json`](assets/local_reports/microduck_rdk_brain_single_12s.json) 和 [`microduck_rdk_brain_3x3_12s.json`](assets/local_reports/microduck_rdk_brain_3x3_12s.json)。这组数据的用途是证明板端模型契约、持续推理和闭环控制链路已经跑通，不用于和其他硬件做速度排名。
+
+RDK 系统虽然提供 `hobot_dnn`、`hrt_model_exec` 和 BPU 设备节点，但 `hrt_model_exec` 不能直接加载普通 ONNX，它需要先用匹配版本的地瓜工具链转换为板端模型。当前 14 自由度 MLP 在 CPU 上已经远小于 20 ms 控制预算，因此把小策略强行迁移到 BPU 没有实际收益；后续接入视觉检测或深度网络时，再把 BPU 留给计算量更大的感知模型更合理。
+
+### 7. 真机部署边界
 
 Microduck 真机仓库中的 `robotd` 以 50 Hz 运行，读取 IMU 和舵机状态，生成 61 维观测，调用 ONNX 策略，再将 14 维动作变成关节目标。但从 `output.onnx` 到真机之间仍然必须有：
 
