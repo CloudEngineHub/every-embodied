@@ -213,7 +213,7 @@
     },
     "05-具身场景的深度和强化学习/README.md": {
       "target": "en/05-deep-and-reinforcement-learning/README.md",
-      "sourceHash": "eb0f25ee59cb2fb7c2cf282dbee9427e4c8060247903c0453f077ee2b6e33ea3",
+      "sourceHash": "8556650dfa2cd56b62912ae634f80589b7c223dff0fdc34cbbe68998ec3ba192",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -1797,7 +1797,7 @@
     },
     "05-具身场景的深度和强化学习/05-OpenDuckMini与Microduck双足强化学习/README.md": {
       "target": "en/05-deep-and-reinforcement-learning/05-open-duck-mini-and-microduck-biped-rl/README.md",
-      "sourceHash": "4b6c8801079edca7dedd2f8baaf84f0163713fd7dbf606f66ea1a6ed03bdb955",
+      "sourceHash": "5bac52fb3c21abd62791181d3f5c6834c150491878379388a9880a5b002c1c0c",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -1816,6 +1816,12 @@
     "16-专题组队学习/04-AMD-ROCm策略复刻专题/code/README.md": {
       "target": "en/16-study-programs/04-amd-rocm-policy-replication-topic/code/README.md",
       "sourceHash": "c8c811b50994ca681af5e900c08a38ff26926a284711f884fae0d4c8174208a7",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "05-具身场景的深度和强化学习/07-UniCross统一跨技能灵巧操作导读/README.md": {
+      "target": "en/05-deep-and-reinforcement-learning/07-unicross-unified-cross-skill-agile-manipulation-guide/README.md",
+      "sourceHash": "ae45a97f58747c84084678123ea87eaf16147a43c60518134fb891a88281c993",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
