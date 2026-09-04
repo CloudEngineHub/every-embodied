@@ -1,12 +1,14 @@
-# Open Duck Mini 与 Microduck：从 URDF 模型到双足强化学习走路
+# Open Duck Mini 与 Microduck：从 URDF 模型到强化学习走路、踢球与网页部署
 
-这一节带大家拆解两代“小鸭子”开源双足机器人：[Open Duck Mini v2](https://github.com/apirrone/Open_Duck_Mini/tree/v2) 和 [Microduck](https://github.com/pollen-robotics/microduck)。我们不把它们当成同一个仓库里的两个脚本，而是把整条链路看清楚：机器人描述文件从哪里下载，强化学习环境如何组装，PPO 如何学会速度跟踪，以及 checkpoint 为什么必须经过官方导出脚本才能变成真机可用的 ONNX 策略。
+这一节带大家拆解两代“小鸭子”开源双足机器人：[Open Duck Mini v2](https://github.com/apirrone/Open_Duck_Mini/tree/v2) 和 [Microduck](https://github.com/pollen-robotics/microduck)。我们不把它们当成同一个仓库里的两个脚本，而是把整条链路看清楚：机器人描述文件从哪里下载，强化学习环境如何组装，PPO 如何学习走路与踢球，以及 checkpoint 怎样导出为 ONNX 并在 RDK 或浏览器中运行。
 
 学完这一节后，大家应该能够：
 
 - 区分 Open Duck Mini v2、Open Duck Playground、Microduck 和 Microduck RL 四个工程的责任边界；
 - 只下载 Open Duck Mini v2 的 URDF 及其 STL 网格，并检查资产是否完整；
 - 对 Microduck RL 先跑 `64 个环境 x 5 次迭代` 的 smoke test，再启动正式训练；
+- 拆解 `Mjlab-BallKick-Flat-MicroDuck` 的非对称 actor-critic、奖励、球体随机化和左右脚训练方式；
+- 在本地启动基于 MuJoCo WebAssembly 与 `onnxruntime-web` 的 Microduck Sandbox，并替换为自己导出的踢球策略；
 - 回放策略、录制仿真视频、导出带观测归一化的 ONNX，并让 RDK X5 作为策略大脑驱动 Ubuntu 电脑中的 MuJoCo；
 - 理解一个“仿真里会走”的策略距离真机上 50 Hz 稳定走路还缺哪些工程环节。
 
@@ -383,7 +385,219 @@ MUJOCO_GL=egl uv run python \
 
 Microduck RL 当前没有名为 `Dance` 的注册任务。因此，本教程把上面的视频准确标为 command choreography；如果要训练可抗扰动、可任意触发的舞蹈技能，应新增带相位或参考动作的任务配置，而不是把展示脚本当作训练结果。
 
-### 5. 导出 ONNX 与 CPU MuJoCo 演练
+### 5. 训练踢球策略，并把策略放进浏览器
+
+走路策略解决的是持续速度跟踪，踢球则是一次性的接触技能。两者虽然都输出 14 维关节目标，但状态分布和奖励完全不同：走路策略需要连续追踪速度命令，踢球策略要先稳定站立，再用一条腿快速摆动、保持支撑脚不离地，并在动作结束后回到可交接的站姿。因此，不能把行走 ONNX 改名为踢球策略，也不能在展示脚本中直接写死关节角后声称完成了强化学习。
+
+#### 5.1 BallKick 的任务结构
+
+官方任务 ID 是 `Mjlab-BallKick-Flat-MicroDuck`，核心配置位于：
+
+```text
+src/mjlab_microduck/tasks/microduck_ball_kick_env_cfg.py
+```
+
+这个任务使用直径 70 mm、质量 15 g 的自由球体。每个 episode 长 5 秒，球心初始位置在踢球脚前方约 `x=0.09 m`、`|y|=0.042 m`，并在平面内加入 `±0.015 m` 的位置扰动。这个扰动很关键：策略没有视觉输入，真机上需要操作者先把机器人对准球，策略只能通过训练时的位置随机化容忍少量瞄准误差。
+
+```mermaid
+flowchart LR
+  A["随机站姿、质量与执行器参数"] --> B["61 维 actor 观测"]
+  C["球位置与球速度"] --> D["critic 专用观测"]
+  B --> E["PPO actor<br/>512-256-128"]
+  D --> F["PPO critic<br/>512-256-128"]
+  E --> G["14 维关节位置目标"]
+  G --> H["BAM M6 执行器 + MuJoCo 接触"]
+  H --> I["支撑脚接触、身体姿态、球速度"]
+  I --> J["目标速度奖励 + 超速惩罚"]
+  J --> E
+```
+
+**图 3 BallKick 的非对称 actor-critic 数据流。** actor 只读取 IMU、关节、本轮命令和历史动作，critic 在训练时额外读取球的位置与速度。部署时只保留 actor，因此策略不依赖仿真器中的球真值。
+
+BallKick 的 61 维 actor 输入仍遵守所有 Microduck 策略共用的契约：
+
+| 分块 | 维度 | 作用 |
+| :-- | --: | :-- |
+| 基座角速度 | 3 | 判断身体旋转状态 |
+| 投影重力 | 3 | 判断倾斜与是否保持直立 |
+| 14 个关节位置 | 14 | 当前姿态 |
+| 14 个关节速度 | 14 | 当前运动趋势 |
+| 上一步动作 | 14 | 抑制突变并形成短期动作记忆 |
+| `twist + head + body` 命令槽 | 13 | 本任务只保留统一接口，未使用的槽位补零 |
+| 合计 | 61 | ONNX 输入形状为 `[1,61]` |
+
+训练采用 asymmetric actor-critic：critic 额外看到 `ball_position(3) + ball_velocity(3)`，actor 不看球。这样既能让价值函数更准确地判断“这一脚是否会碰到球”，又不会把真机上不存在的球真值传感器带进部署模型。
+
+奖励不是简单的“球滚得越远越好”。当前配置把目标球速设为 `1.0 m/s`，由下列几组约束共同塑形：
+
+| 奖励或约束 | 主要作用 |
+| :-- | :-- |
+| `ball_forward_velocity` | 奖励球沿机器人初始朝向前进，并在目标速度处截断 |
+| `ball_speed_overshoot` | 惩罚超过目标的速度，避免策略只追求暴力击球 |
+| `support_foot_grounded` | 要求非踢球脚持续接地，抑制双脚起跳和乱跑撞球 |
+| `pose_stand_legs` / `pose_stand_neck` | 动作前后回到可交接的站姿 |
+| `upright` / `height_stand` | 防止蹲得过低、侧倒或用身体撞球 |
+| `action_rate_l2` | 经课程学习逐步加大动作平滑约束 |
+| 自碰撞、角动量等正则项 | 降低仿真中特有的投机动作 |
+
+训练中还会随机化躯干与头部质心、惯量、关节摩擦、armature、IMU 安装角、编码器偏置和外部推力。课程学习先让策略发现摆腿动作，再逐步把动作变化惩罚和外力推搡加进来；如果一开始就施加全部扰动，短促接触动作通常更难探索出来。
+
+#### 5.2 先做小规模训练检查
+
+教程目录提供了 [`train_microduck_ballkick.sh`](train_microduck_ballkick.sh)。脚本不修改官方任务，只把环境数量、迭代数、保存间隔和 W&B 模式变成环境变量。进入 `microduck_rl` 根目录后，先用 64 个环境跑 5 次迭代：
+
+```bash
+export MICRODUCK_RL=$PWD
+export NUM_ENVS=64
+export MAX_ITERATIONS=5
+export SAVE_INTERVAL=5
+export WANDB_MODE=offline
+
+bash /path/to/every-embodied/05-具身场景的深度和强化学习/05-OpenDuckMini与Microduck双足强化学习/train_microduck_ballkick.sh
+```
+
+这一步只证明五件事：任务注册成功、球体资产可加载、接触传感器可工作、PPO 能完成反向传播、checkpoint 能写入磁盘。5 次迭代不会学出可用踢球动作，不能把 smoke test 录像当成训练结果。
+
+本教程已在上游提交 `29e887e` 上实际完成这组 `64 env x 5 iterations` 检查：进程正常退出，共采样 7680 步，写出了 `model_0.pt`、`model_4.pt` 和 ONNX；末轮平均回报为 `1.31`。这些数字只用于验证执行链路，不代表策略质量。机器可读的环境、哈希和末轮指标见 [`microduck_ballkick_smoke.json`](assets/local_reports/microduck_ballkick_smoke.json)。
+
+确认显存和日志正常后，再启动正式训练：
+
+```bash
+export MICRODUCK_RL=$PWD
+export NUM_ENVS=4096
+export MAX_ITERATIONS=6000
+export SAVE_INTERVAL=250
+export WANDB_MODE=offline
+
+bash /path/to/every-embodied/05-具身场景的深度和强化学习/05-OpenDuckMini与Microduck双足强化学习/train_microduck_ballkick.sh \
+  2>&1 | tee ballkick_train.log
+```
+
+默认 `KICK_FOOT = "right"`，因此上面训练右脚策略。左右脚策略需要分成两次运行；训练左脚时，在独立 Git 分支中把 `microduck_ball_kick_env_cfg.py` 顶部的 `KICK_FOOT` 改为 `"left"`，不要在同一日志目录中覆盖右脚运行。官方明确关闭了该任务的左右对称数据增强，因为“哪条腿踢、哪条腿支撑”本身就是任务语义。
+
+6000 次迭代是本教程采用的训练预算，不是官方保证收敛点。检查 checkpoint 时至少观察：
+
+1. 球是否由脚接触后沿机器人朝向运动，而不是初始化穿模或身体碰撞造成位移；
+2. 支撑脚在击球阶段是否保持接地；
+3. 机器人是否在击球后恢复站姿；
+4. 不同球初始偏差、随机种子和外力扰动下是否仍能命中；
+5. 是否出现“踢得更猛但超速惩罚更高”的策略退化。
+
+#### 5.3 导出本地 checkpoint
+
+本地离线训练不必先上传 W&B。使用 `--checkpoint-file` 指向保存的模型，官方导出器会把 observation normalizer 一并烘入 ONNX：
+
+```bash
+uv run scripts/export.py Mjlab-BallKick-Flat-MicroDuck \
+  --checkpoint-file logs/rsl_rl/ball_kick_right/<run-name>/model_5999.pt \
+  --onnx-file ball_kick_right.onnx
+```
+
+导出后先按下一节的 ONNX 契约检查验证 `[1,61] -> [1,14]`。如果输入变成 51 维，说明拿到了旧命令布局的模型，不能直接塞进当前网页模拟器。
+
+#### 5.4 截图中的网页模拟器是怎样运行的
+
+截图对应 Pollen Robotics 官方 [Microduck Sandbox](https://huggingface.co/spaces/pollen-robotics/microduck-simulator)。它不是把 Ubuntu 桌面通过视频流传给浏览器，也没有 Python 推理后端；MuJoCo 物理和 ONNX 网络都在当前浏览器标签页内执行：
+
+```mermaid
+flowchart LR
+  A["键盘 / 手柄 / 触屏"] --> B["Controller 输入仲裁"]
+  B --> C["61 维 observation builder"]
+  C --> D["onnxruntime-web<br/>50 Hz 策略推理"]
+  D --> E["14 维关节目标"]
+  E --> F["MuJoCo WebAssembly<br/>4×5 ms 物理步"]
+  F --> G["qpos / qvel / 接触"]
+  G --> C
+  G --> H["Three.js 运动学渲染骨架"]
+  H --> I["React + MUI HUD"]
+```
+
+**图 4 Microduck Sandbox 浏览器闭环。** 浏览器每个控制周期执行一次 ONNX，再推进 4 个 `5 ms` MuJoCo 物理步，得到约 50 Hz 的控制频率；Three.js 读取 `qpos` 更新可视化网格。
+
+源码分工如下：
+
+| 文件 | 责任 |
+| :-- | :-- |
+| `app/src/game/game.js` | 加载 MJCF、注入地面/围栏/球，构造 61 维观测，运行 50 Hz 策略与物理循环 |
+| `app/src/game/duck.js` | 从 `kinematics.json` 和 STL/GLB 构建 Three.js 机器人骨架 |
+| `app/src/game/controls/` | 统一键盘、手柄、触屏和 waypoint 输入 |
+| `app/src/game/ball-actor.js` | 管理球的出现、消失和物理姿态同步 |
+| `app/src/scene/GameCanvas.jsx` | 管理 React Three Fiber 画布、灯光与每帧更新 |
+| `app/src/store.js` | 用 Zustand 在仿真核心和 React HUD 之间传递状态 |
+| `app/public/policies/` | walking、sitstand、roulade、左右脚 kick 等 ONNX |
+| `app/public/robot/mjlab/` | MJCF、运动学描述和经过处理的机器人网格 |
+
+多人半透明机器人使用 Trystero 通过公共 Nostr relay 建立 WebRTC 点对点连接，只以 10 Hz 广播姿态；它与本地物理闭环相互独立。公共 relay 临时不可达时，多人“幽灵”会消失，但单机走路、踢球和 ONNX 推理仍能工作。
+
+<p align="center">
+  <img src="assets/local_images/microduck_web_ballkick.png" width="92%" alt="Microduck 浏览器端右脚踢球实测">
+</p>
+
+**图 5 本教程在本机浏览器触发右脚 BallKick 的瞬间。** 页面使用官方 `ball_kick_right.onnx`，自动化验收先把球放到训练任务的右脚标称位置，再触发一次 one-shot 策略。球在平面内位移约 `1.11 m`，证明 WASM 物理、ONNX 推理、策略切换与球接触都已实际运行。完整机器可读记录见 [`microduck_web_kick_qa.json`](assets/local_reports/microduck_web_kick_qa.json)。
+
+需要注意，网页是交互沙盒，不是训练 benchmark：当前网页把球设为 30 g，并允许把球随机生成到鸭子前方较远位置；训练任务使用 15 g 球并在脚尖附近做 `±1.5 cm` 随机化。网页中的击球距离不能直接当作训练指标。
+
+#### 5.5 在本地或局域网启动网页
+
+先安装 Git LFS。ONNX、STL、GLB 和音频都由 LFS 管理；只拉到几十字节的 pointer 文件时，页面会在启动阶段报 `Unexpected token 'v'`，因为 `version https://git-lfs...` 被误当成模型或 JSON 解析。
+
+```bash
+git lfs install
+git clone https://huggingface.co/spaces/pollen-robotics/microduck-simulator
+cd microduck-simulator
+git lfs pull
+
+cd app
+npm ci
+npm test
+npm run dev -- --host 0.0.0.0 --port 5175
+```
+
+本机打开 `http://localhost:5175/`。同一局域网内的其他设备访问 `http://<运行网页电脑的局域网地址>:5175/`；如果页面无法连接，先检查系统防火墙是否允许 Node.js 监听 5175 端口。手机建议横屏使用。
+
+常用操作如下：
+
+| 输入 | 行为 |
+| :-- | :-- |
+| 方向键或 WASD/ZQSD | 前后移动与转向 |
+| Q / E | 左脚 / 右脚踢球 |
+| F | 左右脚交替踢球 |
+| R | 腿式坐下/站起，轮式下蹲滑行 |
+| G | 低头叼取 |
+| M | 切换 FEET / ROLLERS |
+| C | 切换跟随镜头 |
+| Space | 重置场景 |
+
+网页中的踢球策略只接管 25 个控制周期，即 `0.5 s`；随后还有 `0.4 s` 输入锁定，再交还 walking policy。这种“短时技能策略 -> 稳定策略”的热切换方式与真机运行时一致，避免一次性策略在动作结束后继续输出无意义关节目标。
+
+要换成本地训练出的右脚策略，只替换同名 ONNX 后重新构建：
+
+```bash
+cp /path/to/ball_kick_right.onnx \
+  app/public/policies/ball_kick_right.onnx
+
+cd app
+npm test
+npm run build
+npm run preview -- --host 0.0.0.0 --port 5175
+```
+
+生产静态文件位于 `app/dist/`，可以交给 Nginx、GitHub Pages 类静态托管或容器服务。官方 Space 使用 Docker 构建 Vite，再由非特权 Nginx 在 8080 端口提供静态文件；运行时不需要 GPU，也不需要服务器保存仿真状态。当前 Space 可以公开读取源码，但仓库根目录没有单独的 `LICENSE` 文件；学习和本地运行没有障碍，若要分发修改版网页，应先向维护者确认网页壳代码和配套素材的许可范围。
+
+#### 5.6 网页端常见问题
+
+| 现象 | 判断与处理 |
+| :-- | :-- |
+| BIOS 停在 `SYSTEM HALTED`，并出现 LFS pointer 文本 | 执行 `git lfs pull`，确认 ONNX 文件约数百 KB 而不是几十字节 |
+| 页面只有 HUD、没有机器人 | 检查 WebGL2 与浏览器硬件加速，查看第一个 WASM/MJCF 加载错误 |
+| 控制台反复出现 Nostr/WebSocket 错误 | 只影响多人姿态同步；本地 `CTRL 50HZ` 正常即可继续 |
+| 按 Q/E 有摆腿但没有碰到球 | 该策略看不到球，需要先走到合适距离并让球对准对应脚 |
+| 替换 ONNX 后机器人立即倒下 | 先核对 `[1,61] -> [1,14]`、normalizer 是否烘入、关节顺序和训练所用 MJCF |
+| 手机界面过窄 | 切到横屏；触屏摇杆与动作按钮会按移动端布局显示 |
+| 开发服务器关闭后网页失效 | `npm run dev` 是前台进程；长期展示应使用 `npm run build` 后托管 `dist/` |
+
+
+### 6. 导出 ONNX 与 CPU MuJoCo 演练
 
 ```bash
 uv run scripts/export.py Mjlab-Velocity-Flat-MicroDuck \
@@ -442,7 +656,7 @@ MUJOCO_GL=egl uv run python \
 
 若契约检查通过而交互窗口失败，就只排查 `DISPLAY`、远程桌面会话和 OpenGL/GLX，不要重新导出 ONNX；若契约检查本身失败，再回到 checkpoint、导出脚本和 observation contract 排查。
 
-### 6. RDK X5 作为策略大脑，Ubuntu 电脑负责仿真与渲染
+### 7. RDK X5 作为策略大脑，Ubuntu 电脑负责仿真与渲染
 
 直接在 RDK 上运行 MuJoCo 是可行的。本教程实测在 RDK X5 上安装 `mujoco==3.3.7` 后，可以编译 Microduck 官方 MJCF、运行 BAM 执行器和输出 H.264 视频。但 RDK 的板载 EGL 驱动没有暴露 MuJoCo 离屏渲染所需的 `eglQueryDevicesEXT`，改用 OSMesa 后，渲染详细 STL 网格的成本又远高于策略推理。更符合真实机器人系统分工的做法是：
 
@@ -547,7 +761,7 @@ MUJOCO_GL=egl uv run python \
 
 RDK 系统虽然提供 `hobot_dnn`、`hrt_model_exec` 和 BPU 设备节点，但 `hrt_model_exec` 不能直接加载普通 ONNX，它需要先用匹配版本的地瓜工具链转换为板端模型。当前 14 自由度 MLP 在 CPU 上已经远小于 20 ms 控制预算，因此把小策略强行迁移到 BPU 没有实际收益；后续接入视觉检测或深度网络时，再把 BPU 留给计算量更大的感知模型更合理。
 
-### 7. 真机部署边界
+### 8. 真机部署边界
 
 Microduck 真机仓库中的 `robotd` 以 50 Hz 运行，读取 IMU 和舵机状态，生成 61 维观测，调用 ONNX 策略，再将 14 维动作变成关节目标。但从 `output.onnx` 到真机之间仍然必须有：
 
@@ -676,13 +890,16 @@ playground/open_duck_mini_v2/data/polynomial_coefficients.pkl
 2. 稀疏克隆 Open Duck Mini v2 模型目录，弄清 URDF、STL、link 和 joint 的对应关系。
 3. 在 Microduck RL 中跑通 CPU tests 和 `64 env x 5 iterations` smoke test。
 4. 启动 4096 环境正式训练，同时看分项奖励和行为视频。
-5. 使用官方导出脚本生成 ONNX，在 CPU MuJoCo 里演练键盘控制和策略切换。
-6. 只有在观测契约、关节标定和硬件安全机制都通过后，才进入真机。
+5. 单独训练 BallKick，检查击球方向、支撑脚接触和动作后站稳，不用 walking checkpoint 冒充技巧策略。
+6. 使用官方导出脚本生成 ONNX，先在 CPU MuJoCo 演练，再替换进 Microduck Sandbox 做浏览器闭环验证。
+7. 只有在观测契约、关节标定和硬件安全机制都通过后，才进入真机。
 
 ## 九、参考资料与素材来源
 
 - [Pollen Robotics Microduck 真机运行时](https://github.com/pollen-robotics/microduck)
 - [Pollen Robotics Microduck RL](https://github.com/pollen-robotics/microduck_rl)
+- [Pollen Robotics Microduck Sandbox（官方浏览器模拟器）](https://huggingface.co/spaces/pollen-robotics/microduck-simulator)
+- [Microduck Sandbox 源码](https://huggingface.co/spaces/pollen-robotics/microduck-simulator/tree/main)
 - [Open Duck Mini v2](https://github.com/apirrone/Open_Duck_Mini/tree/v2)
 - [Open Duck Playground](https://github.com/apirrone/Open_Duck_Playground)
 - [Open Duck Reference Motion Generator](https://github.com/apirrone/Open_Duck_reference_motion_generator)
@@ -691,4 +908,4 @@ playground/open_duck_mini_v2/data/polynomial_coefficients.pkl
 - [MuJoCo Playground](https://github.com/google-deepmind/mujoco_playground)
 - [microduck 小白完整训练教程（Bilibili）](https://www.bilibili.com/video/BV1jUtG6KEiC/)
 
-本节两段视频和页首图均来自上述官方项目页；视频仅做格式转换、缩放和片段截取，未改变实验内容。Microduck 和 Microduck RL 的软件代码采用 Apache-2.0，Microduck RL 中的 3D 模型采用 Creative Commons BY-SA-NC；Open Duck Mini 的代码与机械资产也应分别以对应仓库当前的 `LICENSE` 和第三方资产声明为准。Bilibili 教程仅提供原页面链接，不在本仓库转载其视频文件。
+本节官方视频和页首图来自上述项目页；视频仅做格式转换、缩放和片段截取，未改变实验内容。图 5 是本教程对官方 Sandbox 的本机运行截图。Microduck 与 Microduck RL 软件代码采用 Apache-2.0，Microduck RL 中的 3D 模型采用 Creative Commons BY-SA-NC；Sandbox 当前公开源码但没有单独的根目录许可证，因此本教程不镜像其完整源码。Open Duck Mini 的代码与机械资产也应分别以对应仓库当前的 `LICENSE` 和第三方资产声明为准。Bilibili 教程仅提供原页面链接，不在本仓库转载其视频文件。

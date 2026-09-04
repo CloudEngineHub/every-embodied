@@ -8,7 +8,7 @@
 - [HIMLoco 四足机器人运动控制 Isaac Lab 复现](02HIMLoco-IsaacLab复现/README.md)：从论文理解、旧 Isaac Gym 栈排障到 Isaac Lab 新栈 smoke test。
 - [AGILE 人形机器人 Loco-Manipulation Isaac Lab 复现](03AGILE人形机器人Loco-Manipulation复现/README.md)：理解 AGILE 的人形机器人 RL 工作流、官方任务边界、本地 Isaac Sim 5.1 复刻视频和评估导出链路。
 - [Robots That Know What to Ask 奖励对齐导读](04-Robots-That-Know-What-to-Ask奖励对齐导读/README.md)：拆解 ASQ 如何识别示教中的欠指定奖励特征，并用自然语言解释引导人类补充 corrective demonstrations。
-- [Open Duck Mini 与 Microduck 双足强化学习](05-OpenDuckMini与Microduck双足强化学习/README.md)：区分两代小鸭子机器人，跑通 URDF/STL 资产下载、Microduck PPO smoke test、正式训练、视频回放与 ONNX 导出链路。
+- [Open Duck Mini 与 Microduck 双足强化学习](05-OpenDuckMini与Microduck双足强化学习/README.md)：区分两代小鸭子机器人，跑通 URDF/STL 资产下载、走路与踢球 PPO 训练、ONNX 导出、RDK 策略推理和 MuJoCo WebAssembly 浏览器部署链路。
 - [SMP 可复用分数匹配运动先验](06-SMP可复用分数匹配运动先验/README.md)：拆解扩散运动先验如何通过 SDS、ESM、Adaptive Normalization 和 GSI 变成 PPO 奖励，并给出 MimicKit 原始实现与 Unitree G1 开源复现路线。
 - [UniCross 统一跨技能灵巧操作导读](07-UniCross统一跨技能灵巧操作导读/README.md)：从手-物关系运动出发，拆解抓取、搬移、手内旋转和平移的统一观测、动作和奖励，以及十个 PPO 专家如何通过 DAgger 蒸馏成单一跨技能策略。
 
