@@ -34,6 +34,37 @@ jobs:
       - name: Build static site
         run: npm run build:pages
 
+      - name: Build browser-side Microduck ONNX demo
+        shell: bash
+        run: |
+          set -euo pipefail
+          MICRODUCK_SOURCE="$RUNNER_TEMP/microduck-simulator"
+          MICRODUCK_COMMIT="e81974b932c7ca1819843b7bb3dcd42e2993e98e"
+
+          git init "$MICRODUCK_SOURCE"
+          git -C "$MICRODUCK_SOURCE" remote add origin \
+            https://huggingface.co/spaces/pollen-robotics/microduck-simulator.git
+          git -C "$MICRODUCK_SOURCE" fetch --depth 1 origin "$MICRODUCK_COMMIT"
+          git -C "$MICRODUCK_SOURCE" checkout --detach FETCH_HEAD
+          git -C "$MICRODUCK_SOURCE" lfs install --local
+          git -C "$MICRODUCK_SOURCE" lfs pull
+
+          cp -a web/demos/microduck-overlay/. "$MICRODUCK_SOURCE/"
+          cd "$MICRODUCK_SOURCE/app"
+          npm ci
+          npm test
+          VITE_BASE="/every-embodied/zh-cn/demos/microduck/" npm run build
+
+          DEMO_TARGET="$GITHUB_WORKSPACE/dist/zh-cn/demos/microduck"
+          mkdir -p "$DEMO_TARGET"
+          cp -a dist/. "$DEMO_TARGET/"
+          cat > "$DEMO_TARGET/SOURCE.txt" <<EOF
+          Browser-side Microduck ONNX demo
+          Upstream: https://huggingface.co/spaces/pollen-robotics/microduck-simulator
+          Upstream commit: $MICRODUCK_COMMIT
+          Tutorial: https://github.com/datawhalechina/every-embodied
+          EOF
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

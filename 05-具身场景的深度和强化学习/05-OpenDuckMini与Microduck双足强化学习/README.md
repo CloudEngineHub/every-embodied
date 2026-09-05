@@ -505,6 +505,10 @@ uv run scripts/export.py Mjlab-BallKick-Flat-MicroDuck \
 
 #### 5.4 截图中的网页模拟器是怎样运行的
 
+> **在线演示：[在 GitHub Pages 中运行 Microduck MuJoCo 与 ONNX](https://datawhalechina.github.io/every-embodied/zh-cn/demos/microduck/)**
+>
+> 这个地址不依赖作者电脑或 RDK X5 常开。网页、九个 ONNX 策略和机器人资源由 GitHub Pages 作为静态文件提供；访问者打开页面后，MuJoCo WebAssembly 与 `onnxruntime-web` 都在自己的浏览器中执行。公开页面默认采用浏览器 ONNX 模式，只有本地调试显式传入 `?rdk=...` 时才会切换到 RDK 策略桥接。
+
 截图对应 Pollen Robotics 官方 [Microduck Sandbox](https://huggingface.co/spaces/pollen-robotics/microduck-simulator)。它不是把 Ubuntu 桌面通过视频流传给浏览器，也没有 Python 推理后端；MuJoCo 物理和 ONNX 网络都在当前浏览器标签页内执行：
 
 ```mermaid
