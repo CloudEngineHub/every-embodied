@@ -1,0 +1,51 @@
+{
+  "training": {
+    "upstream_commit": "29e887ecfbf5d37144759e5a9f8a176dfb83d547",
+    "task": "Mjlab-BallKick-Flat-MicroDuck",
+    "side": "right",
+    "parallel_envs": 4096,
+    "iterations": 6000,
+    "transitions": 589824000,
+    "wall_time": "02:06:15",
+    "final_mean_reward": 89.42,
+    "final_mean_episode_length": 250.0,
+    "final_ball_forward_velocity_reward": 11.4758,
+    "checkpoint_sha256": "cf3f34ed68dec9137260d20f4e2cfdd507415df651d86fe31f2ac9daa8073c7c",
+    "onnx_sha256": "bd03168c2554de6f95a69903143997c3ff85fec73c28a010225868216d3ea518"
+  },
+  "browser_demo": {
+    "simulator": "Microduck Sandbox / MuJoCo WASM / ONNX Runtime Web",
+    "control_frequency_hz": 50,
+    "initial_ball_robot_frame_m": [0.42, -0.11],
+    "selected_foot": "right",
+    "state_path": [
+      "searching",
+      "aligning",
+      "approaching",
+      "aligning-foot",
+      "approaching-foot",
+      "kick-ready",
+      "kicking",
+      "complete",
+      "recovering",
+      "complete"
+    ],
+    "ball_displacement_m": 0.30903581417822773,
+    "recovery_result": "walk",
+    "video": {
+      "codec": "H.264",
+      "resolution": "1440x900",
+      "fps": 25,
+      "duration_s": 10.48,
+      "sha256": "c1533cf61174608fe9b1bfd19bd470ba2fd7d5047f300ed970533bb183c81f6c"
+    }
+  },
+  "contact_sweep": {
+    "grid_x_m": [0.08, 0.10, 0.12, 0.14, 0.16],
+    "grid_y_m": [-0.08, -0.04, 0.0, 0.04, 0.08],
+    "best_left": {"x_m": 0.08, "y_m": 0.08, "displacement_m": 1.03},
+    "best_right": {"x_m": 0.08, "y_m": -0.08, "displacement_m": 0.93},
+    "controller_target": {"x_m": 0.095, "left_y_m": 0.043, "right_y_m": -0.043}
+  },
+  "detector_note": "The browser bounding box is obtained by projecting MuJoCo ground truth through the first-person camera. It validates the detector/controller interface and closed-loop state machine, but it is not a learned detector benchmark."
+}

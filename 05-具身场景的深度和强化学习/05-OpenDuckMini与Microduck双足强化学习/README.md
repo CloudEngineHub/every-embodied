@@ -71,11 +71,15 @@
 
 **视频 5 RDK X5 策略大脑控制 3×3 Microduck 方阵。** 九只鸭子位于同一个 MuJoCo world，每只都有独立的自由基座、关节状态、IMU 观测、历史动作和 BAM M6 XL330 执行器状态。Ubuntu 电脑把九组观测打包为一次网络请求，RDK 逐组执行 ONNX 并返回九组动作，再分别写回对应机器人。它验证的是单策略的批量边缘推理与多实例可视化，不代表九只机器人学会了通信或多智能体协同。
 
+[![Microduck 第一视角自主追球、右脚踢球与摔倒恢复](assets/local_videos/microduck_visual_soccer_recovery_preview.png)](assets/local_videos/microduck_visual_soccer_recovery.mp4)
+
+**视频 6 第一视角视觉追球、选脚踢球与摔倒恢复。** 浏览器先从头部相机显示足球检测框，状态机自动完成转向、接近、右脚脚位对齐和 BallKick 策略切换；接触前切到第三视角，以便看清脚与球的碰撞，随后注入一次确定性侧倒并由 stand policy 自动起身。本次连续录像使用本教程训练 6000 次迭代得到的 ONNX，球在平面内实际位移约 `0.309 m`，恢复后回到 walking policy。点击封面可播放 1440×900 H.264 原视频。
+
 <video controls muted playsinline preload="metadata" width="100%">
   <source src="assets/official_videos/open_duck_mini_v2_sim_walking.mp4" type="video/mp4">
 </video>
 
-**视频 6 Open Duck Mini v2 官方仿真走路片段。** 这段视频来自 Open Duck Mini v2 项目中“转向 MuJoCo Playground”部分。它对应旧款 42 cm 机器人，不对应新 Microduck 的 14 自由度策略契约。
+**视频 7 Open Duck Mini v2 官方仿真走路片段。** 这段视频来自 Open Duck Mini v2 项目中“转向 MuJoCo Playground”部分。它对应旧款 42 cm 机器人，不对应新 Microduck 的 14 自由度策略契约。
 
 ## 三、从架构图看完整训练链路
 
@@ -595,6 +599,88 @@ npm run preview -- --host 0.0.0.0 --port 5175
 | 替换 ONNX 后机器人立即倒下 | 先核对 `[1,61] -> [1,14]`、normalizer 是否烘入、关节顺序和训练所用 MJCF |
 | 手机界面过窄 | 切到横屏；触屏摇杆与动作按钮会按移动端布局显示 |
 | 开发服务器关闭后网页失效 | `npm run dev` 是前台进程；长期展示应使用 `npm run build` 后托管 `dist/` |
+
+#### 5.7 从“盲踢”扩展为第一视角自主踢球
+
+官方 BallKick ONNX 只看 61 维本体观测，输入中没有图像、检测框或球坐标。它擅长的是“球已经在脚前时，稳定地完成一次摆腿接触”，不能独立解决找球和走到球前。因此，一个完整的自主踢球系统至少要分成三层：
+
+```mermaid
+flowchart LR
+    A[头部 RGB 图像] --> B[足球检测器]
+    B -->|bbox / confidence| C[方位与距离估计]
+    C --> D[视觉伺服状态机]
+    D -->|vx / wz| E[Walking ONNX]
+    D -->|kickL / kickR| F[BallKick ONNX]
+    E --> G[MuJoCo / 真机执行器]
+    F --> G
+    G --> H[倾倒检测]
+    H -->|fallen| I[Stand ONNX]
+    I --> E
+```
+
+这不是把几个模型同时输出再平均，而是有明确职责和所有权的分层控制：检测器回答“球在哪里”，walking policy 负责连续移动，左右 BallKick policy 只在接触窗口内短时接管，stand policy 只在跌倒状态接管。
+
+##### 5.7.1 浏览器检测框的含义
+
+本教程网页演示用 MuJoCo 中的球真值坐标生成一个与真实检测器相同形状的接口。设机器人平面位姿为 `(x_r, y_r, θ)`，球心为 `(x_b, y_b)`，先把世界坐标差旋转到机体坐标系：
+
+```text
+dx = x_b - x_r,  dy = y_b - y_r
+ball_x =  cos(θ) * dx + sin(θ) * dy
+ball_y = -sin(θ) * dx + cos(θ) * dy
+bearing = atan2(ball_y, ball_x)
+```
+
+再把三维球心投影到第一视角相机，依据投影中心与球半径生成 `bbox = [left, top, right, bottom]`。HUD 展示 `BALL xx%`、距离、角度和检测框。这种做法验证了相机、检测输出、控制状态机和策略切换的完整接口，但**不是训练好的视觉检测器，也不能把检测精度当成实验结果**。接到 RDK 或真机时，只需用 YOLO 等检测器替换 `bbox/confidence` 来源，状态机不需要重写。
+
+##### 5.7.2 为什么要“晚选脚”
+
+球刚进入视野时的左右位置会随机器人转向不断变化。如果第一次检测就永久选择左脚或右脚，最终到达脚前时可能已经跨过身体中线。本教程在距离小于 `0.24 m` 后才依据 `ball_y` 选择脚，并在踢球发出前允许更新：
+
+| 条件 | 决策 |
+| :-- | :-- |
+| `ball_y > 0.006 m` | 倾向左脚，目标横向位置约 `+0.043 m` |
+| 其他情况 | 倾向右脚，目标横向位置约 `-0.043 m` |
+| 人工键盘、手柄或触屏输入出现 | 人工输入立即抢占，自动命令归零 |
+
+这里的正负方向是 Microduck 机体坐标定义，不应照搬到关节命名或相机镜像方向不同的机器人上。
+
+##### 5.7.3 六阶段视觉伺服
+
+| 状态 | 进入条件 | 输出与退出条件 |
+| :-- | :-- | :-- |
+| `searching` | 没有球或球不在视场 | 原地搜索；检测到球后转入对准 |
+| `aligning` | 球方位角较大 | 用 walking policy 转向，带滞回避免左右抖动 |
+| `approaching` | 球在前方且距离较远 | 直行接近，只保留小角速度修正 |
+| `aligning-foot` | 球进入约 `0.17 m` 的近场 | 原地转动，把球移到选定脚的横向接触带 |
+| `approaching-foot` | 横向位置合格、纵向仍稍远 | 低速直行到脚尖前方 |
+| `kick-ready / kicking` | `x≈0.07–0.122 m` 且横向误差足够小 | 先零命令站稳约 `0.55 s`，再让对应 BallKick ONNX 接管 `0.5 s` |
+
+转向和前进采用离散阶段而不是长期同时给较小的 `vx+wz`。原因不是经典控制器不能画弧线，而是该 walking policy 在低速复合命令附近可能收敛到几乎静止的姿态；先转、再走并加入滞回，对这个已训练策略更稳定。
+
+##### 5.7.4 用接触扫描确定踢球窗口
+
+“看起来离脚很近”不是可靠阈值。本教程在同一 MuJoCo 网页运行时固定机器人站姿，遍历 `x={0.08,0.10,0.12,0.14,0.16} m`、`y={-0.08,-0.04,0,+0.04,+0.08} m`，分别执行左右脚策略并记录球的水平位移。结果表明有效接触集中在：
+
+| 策略 | 主要接触带 | 扫描中最大位移 |
+| :-- | :-- | :-- |
+| 左脚 | `x≈0.08–0.12 m, y≈+0.04 m` | 约 `1.03 m` |
+| 右脚 | `x≈0.08–0.12 m, y≈-0.04 m` | 约 `0.93 m` |
+
+最大位移只用于定位接触热区，不是稳健性统计。正式验收还要从较远的偏置球位开始，要求 walking policy 自己走过去，并以球坐标变化而非“状态进入 kicking”判定成功。本次视频的初始机体坐标为 `(0.42, -0.11) m`，自动选择右脚，最终球位移约 `0.309 m`。
+
+##### 5.7.5 摔倒检测与恢复
+
+网页每个 50 Hz 控制周期检查机体坐标系中的重力投影。若 `gravity_z > -0.5` 持续 `0.2 s`，说明躯干倾角已经明显偏离直立，状态机先冻结 `0.3 s` 等待碰撞稳定，再切换 stand policy。只有 `gravity_z < -0.85` 连续 `1 s` 才算恢复成功并交还 walking policy；尝试 `6 s` 仍未恢复则重置，避免坏状态无限运行。
+
+训练出的最终 checkpoint、右脚 ONNX 和机器可读验收记录发布在 [Datawhale/Microduck-BallKick-4096x6000](https://huggingface.co/Datawhale/Microduck-BallKick-4096x6000)。本地下载：
+
+```bash
+hf download Datawhale/Microduck-BallKick-4096x6000 \
+  --local-dir Microduck-BallKick-4096x6000
+```
+
+详细训练与网页数据见 [`microduck_ballkick_visual_qa.json`](assets/local_reports/microduck_ballkick_visual_qa.json)。复现时至少同时保存：代码提交、任务名、并行环境数、checkpoint/ONNX 哈希、球初始位姿、选脚结果、球位移和恢复状态；只上传一个视频无法判断策略契约是否一致。
 
 
 ### 6. 导出 ONNX 与 CPU MuJoCo 演练
