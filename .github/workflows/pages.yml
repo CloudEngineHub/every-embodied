@@ -52,7 +52,7 @@ jobs:
           cp -a web/demos/microduck-overlay/. "$MICRODUCK_SOURCE/"
           cd "$MICRODUCK_SOURCE/app"
           npm ci
-          npm test
+          node --test test/*.test.js
           VITE_BASE="/every-embodied/zh-cn/demos/microduck/" npm run build
 
           DEMO_TARGET="$GITHUB_WORKSPACE/dist/zh-cn/demos/microduck"
