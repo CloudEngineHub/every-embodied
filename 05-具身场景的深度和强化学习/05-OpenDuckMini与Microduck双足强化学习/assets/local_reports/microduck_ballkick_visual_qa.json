@@ -16,8 +16,12 @@
   "browser_demo": {
     "simulator": "Microduck Sandbox / MuJoCo WASM / ONNX Runtime Web",
     "control_frequency_hz": 50,
-    "initial_ball_robot_frame_m": [0.42, -0.11],
-    "selected_foot": "right",
+    "initial_ball_robot_frames_m": [
+      [0.42, -0.11],
+      [0.38, 0.10],
+      [0.36, -0.09]
+    ],
+    "selected_feet": ["right", "left", "right"],
     "state_path": [
       "searching",
       "aligning",
@@ -26,22 +30,44 @@
       "approaching-foot",
       "kick-ready",
       "kicking",
-      "complete",
-      "recovering",
       "complete"
     ],
     "camera_sequence": ["first", "second", "third"],
     "default_camera": "third",
     "single_player_by_default": true,
     "multiplayer_opt_in_query": "?multiplayer=1",
-    "ball_displacement_m": 0.4983405919784501,
-    "recovery_result": "walk",
+    "ball_displacements_m": [
+      0.18242539382864056,
+      0.16809308100759154,
+      0.10808861816769182
+    ],
+    "fall_injected": false,
+    "final_mode": "walk",
+    "final_recovery_state": null,
+    "final_projected_gravity_z": -0.9999653697013855,
     "video": {
       "codec": "H.264",
       "resolution": "1440x900",
       "fps": 25,
-      "duration_s": 9.72,
-      "sha256": "ada2ad6b234cdf6f7f6d7a5a16e3c8ca8c20d8a191c3190b2fc5d4c09b7dd18c"
+      "duration_s": 17.16,
+      "sha256": "a2aae769d3998c75968ade305b6647825efac6a1b1bda35b988834618e1c9fb4"
+    }
+  },
+  "physical_recovery_demo": {
+    "disturbance": "floating-base generalized velocity impulse",
+    "lateral_velocity_impulse_m_s": 1.55,
+    "roll_velocity_impulse_rad_s": 5.4,
+    "pose_teleported": false,
+    "recovery_latency_s": 1.957,
+    "final_mode": "walk",
+    "final_projected_gravity_z": -0.9999786615371704,
+    "final_base_height_m": 0.11651060192225239,
+    "video": {
+      "codec": "H.264",
+      "resolution": "1440x900",
+      "fps": 25,
+      "duration_s": 4.08,
+      "sha256": "200800aab30167ba5c99ebdd4e22b65faa2cf2d9f05b92775a87af873b7c3935"
     }
   },
   "contact_sweep": {

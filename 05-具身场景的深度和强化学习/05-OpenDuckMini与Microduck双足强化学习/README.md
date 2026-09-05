@@ -71,9 +71,13 @@
 
 **视频 5 RDK X5 策略大脑控制 3×3 Microduck 方阵。** 九只鸭子位于同一个 MuJoCo world，每只都有独立的自由基座、关节状态、IMU 观测、历史动作和 BAM M6 XL330 执行器状态。Ubuntu 电脑把九组观测打包为一次网络请求，RDK 逐组执行 ONNX 并返回九组动作，再分别写回对应机器人。它验证的是单策略的批量边缘推理与多实例可视化，不代表九只机器人学会了通信或多智能体协同。
 
-[![Microduck 三视角自主追球、右脚踢球与摔倒恢复](assets/local_videos/microduck_visual_soccer_recovery_preview.png)](assets/local_videos/microduck_visual_soccer_recovery.mp4)
+[![Microduck 三视角连续三次自主追球与踢球](assets/local_videos/microduck_visual_soccer_three_kicks_preview.png)](assets/local_videos/microduck_visual_soccer_three_kicks.mp4)
 
-**视频 6 三视角视觉追球、选脚踢球与摔倒恢复。** 浏览器先短暂展示头部传感器第一视角和近距离跟随第二视角，随后切到默认的第三视角，并在接近、脚位对齐、BallKick 策略切换、触球和恢复阶段持续把鸭子稳定在画面中部。第一、第二视角显示足球检测框；第三视角保留距离、方位、选脚和状态信息，但在足球可能被鸭身遮挡时不绘制具有误导性的框。随后系统注入一次确定性侧倒，并由 stand policy 自动起身。本次连续录像使用本教程训练 6000 次迭代得到的 ONNX，球在平面内实际位移约 `0.498 m`，恢复后回到 walking policy。点击封面可播放 1440×900 H.264 原视频。
+**视频 6A 三视角连续三次视觉追球与选脚踢球。** 浏览器先短暂展示头部传感器第一视角和近距离跟随第二视角，随后切到默认的第三视角，并在接近、脚位对齐、BallKick 策略切换、触球和稳定收尾阶段持续把鸭子保持在画面中部。第一、第二视角显示足球检测框；第三视角保留距离、方位、选脚和状态信息，但在足球可能被鸭身遮挡时不绘制具有误导性的框。本次连续录像依次执行右脚、左脚、右脚三次闭环，每次都从较远偏置球位重新进入视觉伺服状态机；三次足球平面位移分别约为 `0.182 m`、`0.168 m` 和 `0.108 m`。每次踢球结束后控制权都返回 walking policy，三次接触过程中机体始终保持直立。点击封面可播放 1440×900、25 FPS、H.264 原视频。
+
+[![Microduck 物理冲量侧倒与自动起身](assets/local_videos/microduck_physical_impulse_recovery_preview.png)](assets/local_videos/microduck_physical_impulse_recovery.mp4)
+
+**视频 6B 物理扰动与自动起身。** 这段恢复测试与踢球主片分开录制。测试不直接改写机器人位姿或四元数，而是给浮动基座施加一次横向线速度与滚转角速度冲量；后续倾倒、地面接触和姿态变化全部由 MuJoCo 的重力、碰撞、关节约束和求解器自然推进。摔倒检测器确认失稳后，stand policy 接管并在约 `1.96 s` 后恢复直立，再把控制权交还 walking policy。最终 `gravity_z=-0.99998`、基座高度约 `0.1165 m`。该视频验证的是外力扰动下的恢复链路，不把“直接把模型放倒”冒充物理实验。
 
 <video controls muted playsinline preload="metadata" width="100%">
   <source src="assets/official_videos/open_duck_mini_v2_sim_walking.mp4" type="video/mp4">
@@ -677,11 +681,13 @@ bearing = atan2(ball_y, ball_x)
 | 左脚 | `x≈0.08–0.12 m, y≈+0.04 m` | 约 `1.03 m` |
 | 右脚 | `x≈0.08–0.12 m, y≈-0.04 m` | 约 `0.93 m` |
 
-最大位移只用于定位接触热区，不是稳健性统计。正式验收还要从较远的偏置球位开始，要求 walking policy 自己走过去，并以球坐标变化而非“状态进入 kicking”判定成功。本次视频的初始机体坐标为 `(0.42, -0.11) m`，自动选择右脚，最终球位移约 `0.498 m`。
+最大位移只用于定位接触热区，不是稳健性统计。正式验收还要从较远的偏置球位开始，要求 walking policy 自己走过去，并以球坐标变化而非“状态进入 kicking”判定成功。视频 6A 从 `(0.42, -0.11) m`、`(0.38, +0.10) m`、`(0.36, -0.09) m` 三组机体坐标依次启动，自动选择右脚、左脚、右脚，三次均产生可测球位移；最终重力投影 `gravity_z=-0.99996`，机体保持直立。
 
 ##### 5.7.5 摔倒检测与恢复
 
 网页每个 50 Hz 控制周期检查机体坐标系中的重力投影。若 `gravity_z > -0.5` 持续 `0.2 s`，说明躯干倾角已经明显偏离直立，状态机先冻结 `0.3 s` 等待碰撞稳定，再切换 stand policy。只有 `gravity_z < -0.85` 连续 `1 s` 才算恢复成功并交还 walking policy；尝试 `6 s` 仍未恢复则重置，避免坏状态无限运行。
+
+恢复验收使用广义速度冲量模拟瞬时外力：浮动基座横向速度增加 `1.55 m/s`、滚转角速度增加 `5.4 rad/s`。这种测试等价于对自由基座施加理想瞬时冲量，改变的是速度而不是位姿；后续运动仍满足仿真动力学。若要做持续推力或接触式碰撞实验，可进一步在多个 MuJoCo 子步内写入 `qfrc_applied`，并同步记录外力、接触冲量和能量变化。
 
 训练出的最终 checkpoint、右脚 ONNX 和机器可读验收记录发布在 [Datawhale/Microduck-BallKick-4096x6000](https://huggingface.co/Datawhale/Microduck-BallKick-4096x6000)。本地下载：
 
@@ -690,7 +696,7 @@ hf download Datawhale/Microduck-BallKick-4096x6000 \
   --local-dir Microduck-BallKick-4096x6000
 ```
 
-详细训练与网页数据见 [`microduck_ballkick_visual_qa.json`](assets/local_reports/microduck_ballkick_visual_qa.json)。复现时至少同时保存：代码提交、任务名、并行环境数、checkpoint/ONNX 哈希、球初始位姿、选脚结果、球位移和恢复状态；只上传一个视频无法判断策略契约是否一致。
+详细训练与网页数据见 [`microduck_ballkick_visual_qa.json`](assets/local_reports/microduck_ballkick_visual_qa.json)。复现时至少同时保存：代码提交、任务名、并行环境数、checkpoint/ONNX 哈希、球初始位姿、选脚结果、球位移和最终机体状态；只上传一个视频无法判断策略契约是否一致。
 
 
 ### 6. 导出 ONNX 与 CPU MuJoCo 演练
