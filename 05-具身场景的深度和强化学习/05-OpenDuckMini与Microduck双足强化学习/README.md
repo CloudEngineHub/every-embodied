@@ -863,6 +863,135 @@ MUJOCO_GL=egl uv run python \
 
 RDK 系统虽然提供 `hobot_dnn`、`hrt_model_exec` 和 BPU 设备节点，但 `hrt_model_exec` 不能直接加载普通 ONNX，它需要先用匹配版本的地瓜工具链转换为板端模型。当前 14 自由度 MLP 在 CPU 上已经远小于 20 ms 控制预算，因此把小策略强行迁移到 BPU 没有实际收益；后续接入视觉检测或深度网络时，再把 BPU 留给计算量更大的感知模型更合理。
 
+#### 第四步：把 RDK 扩展为多技能策略大脑
+
+前面的 `MDP1` 服务只装载一个 walking 模型，适合验证单鸭与方阵。踢球网页需要在行走、左右脚踢球和跌倒恢复之间切换，因此本教程又提供了 `MDP2` 多策略协议。RDK 启动时返回具名策略目录，Ubuntu 或网页按照名称请求动作：
+
+```mermaid
+flowchart LR
+  A["浏览器<br/>视觉状态机与 61 维观测"] -->|"同源 HTTP/float32"| B["Ubuntu 桥接器"]
+  B -->|"MDP2 持久 TCP"| C["RDK X5<br/>九策略 ONNX registry"]
+  C -->|"14 维动作"| B
+  B -->|"14 维动作"| A
+  A --> D["浏览器 MuJoCo WASM<br/>接触、足球与相机"]
+  C -. "相同策略接口" .-> E["后续实体鸭<br/>IMU + 舵机"]
+```
+
+这里的职责边界必须明确：浏览器负责球检测结果、自动接近、对准、左右脚选择和 MuJoCo；RDK X5 只根据 61 维 actor 观测运行被选中的 ONNX 并返回 14 维动作。BallKick actor 在训练时看不到球，球状态只供 critic 使用，所以“追球”本来就应由视觉控制层完成，不能把球坐标偷偷塞进部署 actor。
+
+新增脚本如下：
+
+| 文件 | 运行位置 | 作用 |
+| :-- | :-- | :-- |
+| [`rdk_policy_protocol.py`](rdk_policy_protocol.py) | 两端 | `MDP2` 握手、具名请求与错误响应 |
+| [`rdk_multi_policy_server.py`](rdk_multi_policy_server.py) | RDK X5 | 多客户端、九策略 registry；每个模型均公开维度与 SHA256 |
+| [`start_rdk_brain.sh`](start_rdk_brain.sh) | RDK X5 | 用固定策略名启动完整网页技能集 |
+| [`rdk_policy_client.py`](rdk_policy_client.py) | Ubuntu | 严格客户端；维度、有限值、必需策略和延迟检查 |
+| [`rdk_multi_policy_smoke.py`](rdk_multi_policy_smoke.py) | Ubuntu | 网页在线时也能并发验收 walking/左右踢球 |
+| [`rdk_web_policy_bridge.py`](rdk_web_policy_bridge.py) | Ubuntu | 浏览器 HTTP 与板端 MDP2 TCP 之间的薄桥接，可同时托管网页静态文件 |
+| [`rdk_web_policy_provider.js`](rdk_web_policy_provider.js) | 浏览器源码 | 将 `walk/kickL/kickR/...` 映射为 RDK 策略名并校验响应 |
+| [`rdk_microduck_soccer.py`](rdk_microduck_soccer.py) | Ubuntu | 原生 MuJoCo 离屏闭环、连续追同一只球并编码 MP4 |
+
+把浏览器仿真器的九个 ONNX 放入 RDK。下例假定已将上述 Python 和 shell 文件放在 `~/microduck_policy_v2/`：
+
+```bash
+# 在 Ubuntu 电脑执行；<RDK_IP> 换成开发板地址。
+scp microduck-simulator/app/public/policies/*.onnx \
+  sunrise@<RDK_IP>:~/microduck_policy_v2/models/
+
+scp rdk_policy_protocol.py rdk_multi_policy_server.py start_rdk_brain.sh \
+  sunrise@<RDK_IP>:~/microduck_policy_v2/
+
+ssh sunrise@<RDK_IP> \
+  'chmod +x ~/microduck_policy_v2/start_rdk_brain.sh && \
+   cd ~/microduck_policy_v2 && \
+   nohup ./start_rdk_brain.sh >logs/server.log 2>&1 &'
+```
+
+九个名称不是文件名猜测，而是网页状态机与板端 registry 的稳定接口：
+
+| RDK 名称 | ONNX 文件 | 网页行为 |
+| :-- | :-- | :-- |
+| `walking` | `BEST_alpha_walking.onnx` | 行走、转向、追球和脚位调整 |
+| `kick_left` / `kick_right` | `ball_kick_left.onnx` / `ball_kick_right.onnx` | 左右脚单次技巧动作 |
+| `stand` | `BEST_alpha_stand.onnx` | 摔倒后的站起控制 |
+| `sitstand` | `BEST_alpha_sitstand.onnx` | 坐下与起立 |
+| `roll` | `roulade.onnx` | 翻滚技巧 |
+| `groundpick` | `alpha_ground_pick.onnx` | 低头捡拾 |
+| `drive` / `crouch` | `BEST_roller.onnx` / `BEST_roller_crouch.onnx` | 轮滑与蹲滑 |
+
+先做独立验收。脚本建立第二条 TCP 连接，因此可以在网页长连接保持在线时运行：
+
+```bash
+python rdk_multi_policy_smoke.py \
+  --host <RDK_IP> --port 8766 \
+  --iterations 100 \
+  --json-output rdk_multi_policy_smoke_report.json
+```
+
+看到 catalog 中九个策略均为 `[1,61] -> [1,14]`，且 walking、`kick_left`、`kick_right` 都返回有限值，才进入网页闭环。报告会把板端 ONNX Runtime provider、每个模型的 SHA256 和网络往返延迟一起保存，避免拿错 checkpoint 后只凭画面猜测。
+
+#### 第五步：网页 MuJoCo 由 RDK X5 供应动作
+
+浏览器不能直接建立原始 TCP，因此 Ubuntu 上需要薄桥接器。桥接器不做推理，只转发 `float32` 观测和动作；RDK 重启后会重连一次，但不会创建本地 ONNX session。先构建修改后的 Microduck Sandbox：
+
+```bash
+cd /path/to/microduck-simulator/app
+npm ci
+npm run build
+
+python "$EVERY_EMBODIED/05-具身场景的深度和强化学习/05-OpenDuckMini与Microduck双足强化学习/rdk_web_policy_bridge.py" \
+  --rdk-host <RDK_IP> --rdk-port 8766 \
+  --listen-host 0.0.0.0 --listen-port 8767 \
+  --static-root "$PWD/dist"
+```
+
+同一局域网浏览器打开：
+
+```text
+http://<UBUNTU_IP>:8767/?rdk=self
+```
+
+`rdk=self` 表示网页和策略桥接 API 使用同一个 origin，不会在每个 50 Hz 周期额外触发 CORS 预检。开发时也可以在 Vite 中把 `/rdk-api` 反向代理到 `127.0.0.1:8767`，再打开 `http://localhost:5173/?rdk=/rdk-api`。
+
+网页集成时，将原来的：
+
+```js
+const out = await activeSession().run({
+  obs: new ort.Tensor("float32", observation, [1, 61]),
+});
+const action = out.actions.data;
+```
+
+替换为：
+
+```js
+const rdk = await RdkPolicyProvider.connect(window.location.origin);
+const { actions, latencyMs } = await rdk.run(activePolicySlot(), observation);
+```
+
+远程模式不要再下载 walking、kick 或 stand ONNX。catalog 缺少必需策略时启动失败；运行中 RDK 断线时停止控制并显示 `RDK X5 / OFFLINE`。只有这种 fail-closed 行为，才能证明网页画面中的动作确实来自开发板。
+
+本次实测从网页初始场景重新启动，第三视角依次进入 `AUTO APPROACH`、`ALIGN TARGET`，触发 `kick_right` 后又回到 `SEARCH BALL`，继续搜索未被重置的同一颗球。HUD 全程显示 `BRAIN RDK X5 / ONLINE`；桥接日志记录到 walking 和 `kick_right` 的成功响应，网页未加载本地策略作为后备。独立 300 次 smoke 的局域网往返均值约 `2.1 ms`，原始记录见 [`rdk_multi_policy_smoke_report.json`](assets/local_reports/rdk_multi_policy_smoke_report.json)。这些数字用于检查 20 ms 控制预算，不用于硬件排名。
+
+#### 第六步：Ubuntu 原生 MuJoCo 生成踢球视频
+
+需要无浏览器、可归档的 H.264 视频时运行原生脚本。球只在开局放置一次，后续踢完不会瞬移复位；控制器继续寻找滚走的同一只球：
+
+```bash
+MUJOCO_GL=egl uv run python \
+  "$EVERY_EMBODIED/05-具身场景的深度和强化学习/05-OpenDuckMini与Microduck双足强化学习/rdk_microduck_soccer.py" \
+  --microduck-repo "$MICRODUCK_RL" \
+  --policy-host <RDK_IP> --policy-port 8766 \
+  --output microduck_rdk_soccer.mp4 \
+  --max-kicks 3 --max-duration 90 \
+  --fps 30 --width 1280 --height 720
+```
+
+脚本不会接受本地 `--model` 参数，也不会断线降级。只有 JSON 中 `ball_placement_count = 1`、`completed_kicks = 3`，且 `rdk_latency` 同时出现 walking 和踢球策略，才算完成连续追球验收。
+
+后续在显卡工作站训练新动作时，不需要改变协议：用官方 exporter 生成 `[1,61] -> [1,14]` ONNX，复制到 RDK，在 `start_rdk_brain.sh` 增加一条 `--policy 技能名=models/文件.onnx`，再在网页状态机增加同名映射即可。显卡负责训练，Ubuntu 负责世界与画面，RDK X5 始终是部署侧策略大脑。
+
 ### 8. 真机部署边界
 
 Microduck 真机仓库中的 `robotd` 以 50 Hz 运行，读取 IMU 和舵机状态，生成 61 维观测，调用 ONNX 策略，再将 14 维动作变成关节目标。但从 `output.onnx` 到真机之间仍然必须有：
