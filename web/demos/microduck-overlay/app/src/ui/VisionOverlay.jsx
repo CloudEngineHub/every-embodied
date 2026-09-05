@@ -15,6 +15,11 @@ const stateLabel = {
   recovering: "FALL RECOVERY",
   "aligning-foot": "ALIGN FOOT",
   "approaching-foot": "FINAL APPROACH",
+  "circling-ball": "ROUTE BEHIND BALL",
+  "staging-shot": "SET SHOT LINE",
+  "clearing-ball": "CREATE SPACE",
+  "aligning-shot": "AIM AT GOAL",
+  goal: "GOAL SCORED",
   "manual-override": "MANUAL OVERRIDE",
 };
 
@@ -44,6 +49,9 @@ export default function VisionOverlay() {
         </Box>
         {vision.distance > 0 ? `${vision.distance.toFixed(2)} M  ${Math.round(vision.bearing * 180 / Math.PI)} DEG` : "NO TARGET"}
         <br />{vision.foot ? `${vision.foot.toUpperCase()} FOOT SELECTED` : "FOOT PENDING"}
+        <br />GOAL {vision.goalDistance > 0 ? `${vision.goalDistance.toFixed(2)} M` : "LOCKING"} / AIM {Math.round(vision.shotError * 180 / Math.PI)} DEG
+        <br />SCORE {vision.score} {vision.scored ? "/ VERIFIED OVER LINE" : "/ LIVE"}
+        <br />CMD {(vision.command?.[0] ?? 0).toFixed(2)} / {(vision.command?.[2] ?? 0).toFixed(2)}
         <br />CAM {vision.cameraMode === "first" ? "1P SENSOR" : vision.cameraMode === "second" ? "2P FOLLOW" : "3P CHASE"}
         <br />BRAIN {policyBrain.name.toUpperCase()} / {policyBrain.status.toUpperCase()}
         {policyBrain.status === "online" && policyBrain.latencyMs > 0
@@ -58,6 +66,24 @@ export default function VisionOverlay() {
           borderLeft: `1px solid ${CREAM}`, borderRight: `1px solid ${CREAM}`,
           "&::before": { content: '""', position: "absolute", left: -7, right: -7, top: 12, borderTop: `1px solid ${CREAM}` },
         }} />
+      )}
+
+      {vision.goalTarget && (
+        <Box sx={{
+          position: "absolute",
+          left: `${vision.goalTarget.x * 100}%`, top: `${vision.goalTarget.y * 100}%`,
+          width: 34, height: 34, transform: "translate(-50%, -50%)",
+          border: `2px solid ${CREAM}`, borderRadius: "50%",
+          boxShadow: "0 0 0 1px rgba(0,0,0,0.75), 0 0 18px rgba(255,122,47,0.55)",
+          "&::before": { content: '\"\"', position: "absolute", left: -8, right: -8, top: 15, borderTop: `1px solid ${ORANGE}` },
+          "&::after": { content: '\"\"', position: "absolute", top: -8, bottom: -8, left: 15, borderLeft: `1px solid ${ORANGE}` },
+        }}>
+          <Box sx={{
+            position: "absolute", top: -22, left: "50%", transform: "translateX(-50%)",
+            px: "5px", whiteSpace: "nowrap", background: CREAM, color: "#09090d",
+            fontFamily: MONO, fontWeight: 900, fontSize: "0.56rem",
+          }}>GOAL TARGET</Box>
+        </Box>
       )}
 
       {box && (

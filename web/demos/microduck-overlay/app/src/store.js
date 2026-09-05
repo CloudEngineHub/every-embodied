@@ -42,6 +42,12 @@ export const useGame = create(
       distance: 0,
       bearing: 0,
       foot: null,
+      goalTarget: null,
+      goalDistance: 0,
+      shotError: 0,
+      score: 0,
+      scored: false,
+      command: [0, 0, 0],
     },
     // Throttled telemetry block (4 Hz), bottom-right OSD
     telemetry: { fps: 0, ctrlHz: 0, speed: 0, odo: 0, peers: 0 },

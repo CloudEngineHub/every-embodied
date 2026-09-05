@@ -9,6 +9,11 @@ The public Pages demo defaults to browser-side ONNX inference. The optional
 RDK provider activates only when a developer explicitly supplies an `rdk`
 query parameter and runs the local bridge described in the Chinese tutorial.
 
+The tutorial overlay also adds a physically modelled goal, a projected goal
+target, ball-behind-goal shot planning, whole-ball goal-line validation, and
+bounded retries for transient static-model downloads. Goal posts, crossbar,
+side nets and back net share one geometry definition across MuJoCo and Three.js.
+
 Upstream project:
 <https://huggingface.co/spaces/pollen-robotics/microduck-simulator>
 

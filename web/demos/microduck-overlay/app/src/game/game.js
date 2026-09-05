@@ -48,7 +48,7 @@ import { GamepadSource } from "./controls/gamepad.js";
 import { haptics } from "./haptics.js";
 import { TouchSource } from "./controls/touch.js";
 import { WaypointSource } from "./controls/waypoint.js";
-import { VisionChaseSource, relativeBallMeasurement } from "./controls/vision-chase.js";
+import { VisionChaseSource, relativeShotMeasurement } from "./controls/vision-chase.js";
 import {
   RdkPolicyProvider,
   RDK_REQUIRED_POLICIES,
@@ -65,6 +65,7 @@ import { createBallActor } from "./ball-actor.js";
 import { initGhosts } from "./ghosts.js";
 import { makeInfiniteGrid, makeArenaWalls } from "./arena.js";
 import { createBallVisual } from "./ball-visual.js";
+import { GOAL, appendGoalPhysics, createGoalVisual, goalCrossing } from "./goal.js";
 import { useGame, gameApi, bootLine, bootNote, bootHalt } from "../store.js";
 
 // Physics + inference runtimes are vendored npm dependencies (no CDN):
@@ -208,6 +209,7 @@ async function boot({ scene, camera, renderer }) {
         el("geom", { name: w.name, type: "box", pos: w.pos, size: w.size }),
       );
     }
+    appendGoalPhysics({ doc, worldbody: doc.querySelector("worldbody"), el });
     // Prop library colliders: one static box per enabled prop
     // (declared in props.js next to the visual placement, optionally
     // yawed via euler to match off-axis staging) so the duck and ball
@@ -343,11 +345,20 @@ async function boot({ scene, camera, renderer }) {
       donePolicies(`RDK X5 ${RDK_REQUIRED_POLICIES.length}/${RDK_REQUIRED_POLICIES.length}`);
     } else {
       let policiesLoaded = 0;
-      const bootPolicy = (url) =>
-        ort.InferenceSession.create(signed(url), sessionOpts).then((s) => {
-          donePolicies.progress(`${++policiesLoaded}/7`);
-          return s;
-        });
+      const bootPolicy = async (url) => {
+        let lastError;
+        for (let attempt = 1; attempt <= 3; attempt++) {
+          try {
+            const session = await ort.InferenceSession.create(signed(url), sessionOpts);
+            donePolicies.progress(`${++policiesLoaded}/7`);
+            return session;
+          } catch (error) {
+            lastError = error;
+            if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, 500 * attempt));
+          }
+        }
+        throw lastError;
+      };
       [sessions.walk, sessions.sitstand, sessions.roll, sessions.kickL, sessions.kickR,
        sessions.groundpick, sessions.stand] =
         await Promise.all([
@@ -482,6 +493,9 @@ async function boot({ scene, camera, renderer }) {
   // Local-only kickable ball: false while parked at the keyframe spot
   // (mesh hidden), true once popped in front of the duck.
   let ballActive = false;
+  let goalScore = 0;
+  let goalScored = false;
+  let previousBallX = -Infinity;
 
   // The twist the policy actually receives. Mid-roll every movement input
   // is ignored (zero twist) until the roll hands back to walk on its own.
@@ -611,6 +625,9 @@ async function boot({ scene, camera, renderer }) {
     // cancelled: a reset means no ball.
     ball?.despawn({ cancelQueued: true, parkPhysics: parkBallPhysics });
     ballActive = false;
+    goalScore = 0;
+    goalScored = false;
+    previousBallX = -Infinity;
     syncButtons();
     ceremony?.playRespawn();
   }
@@ -647,8 +664,13 @@ async function boot({ scene, camera, renderer }) {
       2 * (qpos[3] * qpos[6] + qpos[4] * qpos[5]),
       1 - 2 * (qpos[5] * qpos[5] + qpos[6] * qpos[6]),
     );
-    const heading = yaw + (Math.random() - 0.5) * 0.7;
-    const dist = 0.35 + (Math.random() - 0.5) * 0.1;
+    // The automatic entrance starts with a reproducible shot lane. Manual
+    // respawns keep their jitter so users can challenge the planner from
+    // off-axis positions without every page load being a lucky demo.
+    const heading = opts.fromQueue
+      ? Math.atan2(GOAL.targetY - qpos[1], GOAL.lineX - qpos[0])
+      : yaw + (Math.random() - 0.5) * 0.7;
+    const dist = opts.fromQueue ? 0.46 : 0.35 + (Math.random() - 0.5) * 0.1;
     const lim = ARENA_HALF - BALL_RADIUS - 0.05;
     const clamp = (v) => Math.min(lim, Math.max(-lim, v));
     qpos[ballQposAdr] = clamp(qpos[0] + Math.cos(heading) * dist);
@@ -661,6 +683,8 @@ async function boot({ scene, camera, renderer }) {
     for (let i = 0; i < 6; i++) qvel[ballDofAdr + i] = 0;
     mujoco.mj_forward(model, data);
     ballActive = true;
+    goalScored = false;
+    previousBallX = qpos[ballQposAdr];
     // Snap the mesh to the new pose BEFORE the scan starts: the FX
     // recomputes its bbox from the live mesh.
     ball.poseFromQpos(qpos, ballQposAdr);
@@ -671,9 +695,11 @@ async function boot({ scene, camera, renderer }) {
   function getVisionMeasurement() {
     if (!ballActive) return { active: false, visible: false };
     const qpos = data.qpos;
-    return relativeBallMeasurement(
+    return relativeShotMeasurement(
       [qpos[0], qpos[1], duckYaw(qpos)],
       [qpos[ballQposAdr], qpos[ballQposAdr + 1]],
+      [GOAL.lineX, GOAL.targetY],
+      { scored: goalScored },
     );
   }
 
@@ -987,6 +1013,14 @@ async function boot({ scene, camera, renderer }) {
     // through a solver glitch", bring it back near the duck.
     if (ballActive) {
       const q = data.qpos;
+      if (!goalScored && goalCrossing(previousBallX,
+        [q[ballQposAdr], q[ballQposAdr + 1], q[ballQposAdr + 2]], BALL_RADIUS)) {
+        goalScored = true;
+        goalScore++;
+        visionSource.markGoal();
+        haptics.pulse("land");
+      }
+      previousBallX = q[ballQposAdr];
       const escaped =
         Math.abs(q[ballQposAdr]) > ARENA_HALF + 0.1 ||
         Math.abs(q[ballQposAdr + 1]) > ARENA_HALF + 0.1;
@@ -1299,6 +1333,8 @@ async function boot({ scene, camera, renderer }) {
   ball = createBallActor({
     THREE, scene, camera, renderer, fxModule: fx, mesh: ballMesh, group: ballGroup,
   });
+  const { group: goalGroup } = createGoalVisual();
+  scene.add(goalGroup);
 
   // ── Prop library (wall/corner dressing + entrance FX) ────────────────
   // Every enabled def in props.js: loaded, real-size scaled, floor
@@ -1419,6 +1455,7 @@ async function boot({ scene, camera, renderer }) {
   const _visionEye = new THREE.Vector3();
   const _visionLook = new THREE.Vector3();
   const _visionBall = new THREE.Vector3();
+  const _visionGoal = new THREE.Vector3();
   const _visionNdc = new THREE.Vector3();
   const _visionCam = new THREE.Vector3();
   const _autoTarget = new THREE.Vector3();
@@ -1541,6 +1578,19 @@ async function boot({ scene, camera, renderer }) {
     };
   }
 
+  function projectedGoalTarget() {
+    if (!autoCameraActive) return null;
+    _visionGoal.set(GOAL.lineX, GOAL.targetZ, -GOAL.targetY);
+    _visionCam.copy(_visionGoal).applyMatrix4(camera.matrixWorldInverse);
+    if (-_visionCam.z <= 0.02) return null;
+    _visionNdc.copy(_visionGoal).project(camera);
+    if (Math.abs(_visionNdc.x) > 1.08 || Math.abs(_visionNdc.y) > 1.08) return null;
+    return {
+      x: (_visionNdc.x + 1) / 2,
+      y: (1 - _visionNdc.y) / 2,
+    };
+  }
+
   function pushVisionState(force = false) {
     const now = performance.now();
     if (!force && now - visionLastPush < 80) return;
@@ -1548,6 +1598,7 @@ async function boot({ scene, camera, renderer }) {
     const status = visionSource.status;
     const m = status.measurement ?? getVisionMeasurement();
     const bbox = projectedBallBox(m);
+    const goalTarget = projectedGoalTarget();
     setStore({
       vision: {
         enabled: status.enabled,
@@ -1558,6 +1609,12 @@ async function boot({ scene, camera, renderer }) {
         distance: m.distance ?? 0,
         bearing: m.bearing ?? 0,
         foot: status.foot,
+        command: status.command,
+        goalTarget,
+        goalDistance: m.goalDistance ?? 0,
+        shotError: m.shotPlan?.yawError ?? 0,
+        score: goalScore,
+        scored: goalScored,
       },
     });
   }
@@ -2019,6 +2076,8 @@ async function boot({ scene, camera, renderer }) {
       const q = data.qpos;
       ballEmitter.setPosition(q[ballQposAdr], q[ballQposAdr + 2], -q[ballQposAdr + 1]);
     }
+    const targetPulse = 1 + 0.08 * Math.sin(performance.now() * 0.005);
+    goalGroup.children.at(-1)?.scale.setScalar(targetPulse);
     controls.update();
     updateChaseCam();
     updateVisionCamera();
@@ -2300,6 +2359,7 @@ async function boot({ scene, camera, renderer }) {
     get chaseCam() { return chaseCam; },
     set chaseCam(v) { chaseCam = !!v; },
     get vision() { return visionSource.status; },
+    get goal() { return { ...GOAL, score: goalScore, scored: goalScored }; },
     setVisionAuto,
     setVisionCamera,
     setVisionCameraMode,

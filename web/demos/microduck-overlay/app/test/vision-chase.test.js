@@ -5,13 +5,49 @@ import {
   VISION_KICK_TARGET,
   VisionChaseSource,
   relativeBallMeasurement,
+  relativeShotMeasurement,
 } from "../src/game/controls/vision-chase.js";
+import { GOAL, goalCrossing } from "../src/game/goal.js";
 
 test("transforms a world-space ball into the duck frame", () => {
   const m = relativeBallMeasurement([1, 2, Math.PI / 2], [1, 3]);
   assert.ok(Math.abs(m.localX - 1) < 1e-9);
   assert.ok(Math.abs(m.localY) < 1e-9);
   assert.equal(m.visible, true);
+});
+
+test("plans a staging pose behind the ball on the goal ray", () => {
+  const m = relativeShotMeasurement([-0.27, 0, 0], [0, 0], [1.18, 0]);
+  assert.equal(m.shotPlan.behindBall, true);
+  assert.equal(m.shotPlan.ready, true);
+  assert.ok(Math.abs(m.shotPlan.stagingPoint[0] + 0.27) < 1e-9);
+  assert.ok(Math.abs(m.shotPlan.yawError) < 1e-9);
+
+  const wrongSide = relativeShotMeasurement([0.2, 0.1, Math.PI], [0, 0], [1.18, 0]);
+  assert.equal(wrongSide.shotPlan.behindBall, false);
+  assert.equal(wrongSide.shotPlan.ready, false);
+});
+
+test("counts only a whole ball crossing between the physical posts", () => {
+  assert.equal(goalCrossing(GOAL.lineX - 0.02,
+    [GOAL.lineX + 0.051, 0, 0.05], 0.05), true);
+  assert.equal(goalCrossing(GOAL.lineX - 0.02,
+    [GOAL.lineX + 0.051, GOAL.halfWidth - 0.02, 0.05], 0.05), false);
+  assert.equal(goalCrossing(GOAL.lineX - 0.02,
+    [GOAL.lineX + 0.03, 0, 0.05], 0.05), false);
+});
+
+test("goal latch stops the controller", () => {
+  const source = new VisionChaseSource({
+    getMeasurement: () => ({ active: true, scored: true }),
+    getVelocityLimits: () => [0.25, -0.2, 1],
+    getBusyState: () => "walk",
+    getManualOverride: () => false,
+  });
+  source.setEnabled(true);
+  source.poll();
+  assert.equal(source.status.state, "goal");
+  assert.deepEqual([...source.command], [0, 0, 0]);
 });
 
 test("selects the visible-side foot, aligns and dispatches one kick", () => {
