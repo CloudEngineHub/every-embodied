@@ -30,14 +30,18 @@
       "recovering",
       "complete"
     ],
-    "ball_displacement_m": 0.30903581417822773,
+    "camera_sequence": ["first", "second", "third"],
+    "default_camera": "third",
+    "single_player_by_default": true,
+    "multiplayer_opt_in_query": "?multiplayer=1",
+    "ball_displacement_m": 0.4983405919784501,
     "recovery_result": "walk",
     "video": {
       "codec": "H.264",
       "resolution": "1440x900",
       "fps": 25,
-      "duration_s": 10.48,
-      "sha256": "c1533cf61174608fe9b1bfd19bd470ba2fd7d5047f300ed970533bb183c81f6c"
+      "duration_s": 9.72,
+      "sha256": "ada2ad6b234cdf6f7f6d7a5a16e3c8ca8c20d8a191c3190b2fc5d4c09b7dd18c"
     }
   },
   "contact_sweep": {
@@ -47,5 +51,5 @@
     "best_right": {"x_m": 0.08, "y_m": -0.08, "displacement_m": 0.93},
     "controller_target": {"x_m": 0.095, "left_y_m": 0.043, "right_y_m": -0.043}
   },
-  "detector_note": "The browser bounding box is obtained by projecting MuJoCo ground truth through the first-person camera. It validates the detector/controller interface and closed-loop state machine, but it is not a learned detector benchmark."
+  "detector_note": "The browser bounding box is obtained by projecting MuJoCo ground truth through the first- and second-person debug cameras. The third-person presentation camera suppresses the box when the ball may be occluded by the robot. This validates the detector/controller interface and closed-loop state machine, but it is not a learned detector benchmark."
 }
