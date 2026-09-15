@@ -1,3 +1,15 @@
+---
+pretty_name: FCloud OmniBot 2026 Reproducibility Archive
+tags:
+- robotics
+- embodied-ai
+- isaac-sim
+- robot-learning
+language:
+- zh
+license: cc-by-4.0
+---
+
 # FCloud OmniBot 2026 Reproducibility Archive
 
 这是 Datawhale［数据鲸］组织发布的 FCloud OmniBot 2026 赛后公开归档。内容包括教程对应的轻量代码、脱敏实验记录、代表性视频和文件校验清单。
@@ -26,4 +38,3 @@ evidence/simple/                # SIMPLE G1 多视角成功视频和摘要
 ## 许可与引用
 
 教程和原创轻量代码遵循 `datawhalechina/every-embodied` 的许可证；第三方项目、机器人资产、模型和数据集继续遵循各自上游许可证。复用时请同时引用比赛官网、SIMPLE、Unitree、CAPX/B1K 和 MuJoCo 水果样例的上游项目。
-
