@@ -1,5 +1,7 @@
 # HIMLoco 四足机器人运动控制：从论文理解到 Isaac Lab 新栈复现
 
+延伸阅读：[从 Isaac Gym 到 Isaac Sim / Isaac Lab：迁移经验分享](02迁移经验分享.md)，介绍版本排障、任务映射、观测时序、终止样本处理和视频验收。
+
 这一章带大家完成一次 HIMLoco 的工程化学习：先理解 ICLR 2024 论文 **Hybrid Internal Model: Learning Agile Legged Locomotion with Simulated Robot Response** 到底想解决什么，再顺着开源仓库看清楚观测、内部模型、PPO 训练和 Sim2Real 设计，最后把原本依赖 Isaac Gym Preview 4 的训练链路迁移到 Isaac Sim / Isaac Lab 新栈，并在 Blackwell GPU 上跑通 smoke test。
 
 本章的目标不是训练出论文级最终策略，而是让大家先把最关键的工程链路摸清楚：

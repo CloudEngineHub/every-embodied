@@ -4,8 +4,10 @@
 
 ## 当前项目
 
+- [VLNVerse 导航比赛经验：基线、双系统迁移与协作训练](./VLNVerse/README.md)
 - [LeHome 挑战赛镜像、训练与评测教程](./LeHome/README.md)
 - [ATEC2026 线上赛复现与冲榜教程](./ATEC2026/README.md)
+- [FCloud OmniBot 2026 赛后复盘与公开归档](./FCloud_OmniBot_2026/README.md)
 - [TRONCamp Mani / RoboTwin ACT 赛后复盘](./TRONCamp-Mani/README.md)
 - [AgiBot World Model 比赛复现与改进教程](./AgiBot_World_Model/AgiBot_World_Model比赛复现与改进教程.md)
 
