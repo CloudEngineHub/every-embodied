@@ -257,16 +257,7 @@ flowchart LR
 
 PPO 的直观过程是：让旧策略采样许多轨迹，计算每个动作相对于预期的优势 $A_t$，再用裁剪后的概率比更新策略：
 
-$$
-L^{\mathrm{CLIP}}(\theta)
-=
-\mathbb{E}_t\left[
-\min\left(
-r_t(\theta)A_t,\,
-\operatorname{clip}(r_t(\theta),1-\epsilon,1+\epsilon)A_t
-\right)
-\right]
-$$
+$$L^{\mathrm{CLIP}}(\theta)=\mathbb{E}_t\left[\min\left(r_t(\theta)A_t,\operatorname{clip}\left(r_t(\theta),1-\epsilon,1+\epsilon\right)A_t\right)\right]$$
 
 裁剪的意义是限制单次更新幅度，避免策略因为一批偶然的成功或失败突然改变太多。对高跷这种接触敏感任务来说，稳定的小步更新比激进地改策略更重要。
 

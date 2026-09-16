@@ -8,7 +8,7 @@
 
 ![视频参考抽帧：MicroDuck 沿斜梯攀爬到桌面](./assets/reference_ladder_climb_contact.png)
 
-**图 1：** 参考视频的 12 帧抽样。来源：[用户提供的微信视频号链接](https://weixin.qq.com/sph/AE3UDs4BhR)。
+**图 1：** 参考视频的 12 帧抽样。
 
 ![原始梯面攀爬参考片段关键帧](./assets/reference_microduck_ladder_climb_keyframes.jpg)
 
