@@ -18,7 +18,7 @@
 | `04_摆动旋转_ONNX_BPU_MuJoCo.ipynb` | 摆动任务和仓库内置 ONNX 示例 |
 | `05_球平衡_FastSAC_ONNX_BPU.ipynb` | FastSAC 与另一套任务接口的对照 |
 | `06_梯面攀爬_接触与部署模板.ipynb` | 接触、落脚目标、课程和未完成项边界 |
-| `07_RDK网页与多策略_BPU验收.ipynb` | RDK TCP、多策略切换、BPU 验收 |
+| `07_RDK网页与多策略_BPU验收.ipynb` | 导航直接接入、RDK TCP、多策略切换、BPU 验收 |
 
 ## 启动
 
@@ -61,7 +61,9 @@ MICRODUCK_TRAIN_ENVS = "64"
 MICRODUCK_TRAIN_ITERATIONS = "10"
 ```
 
-每次运行会继续训练 10 个 PPO iteration，并覆盖 Notebook 目录下的 `outputs/microduck_demo_latest.pt` 与 `outputs/microduck_demo_latest.onnx`。原始 checkpoint 不会覆盖；训练日志仍按时间写入 `logs/rsl_rl/velocity/`，便于回查。10 个 iteration 只用于验证训练链路，不代表策略能力已经重新收敛。
+除 `07_RDK网页与多策略_BPU验收.ipynb` 外，每次运行会继续训练 10 个 PPO iteration，并覆盖 Notebook 目录下的 `outputs/microduck_demo_latest.pt` 与 `outputs/microduck_demo_latest.onnx`。原始 checkpoint 不会覆盖；训练日志仍按时间写入 `logs/rsl_rl/velocity/`，便于回查。10 个 iteration 只用于验证训练链路，不代表策略能力已经重新收敛。
+
+`07_RDK网页与多策略_BPU验收.ipynb` 作为导航/部署入口，不启动训练，直接读取 `outputs/microduck_demo_latest.onnx`；也可以设置 `MICRODUCK_NAV_ONNX` 接入指定导航策略。
 
 当前已确认的开发板是 `sunrise@192.168.8.128`：Ubuntu 22.04.5、aarch64、BPU Platform 1.3.6、HBRT 3.15.55.0，板端有 `hrt_model_exec`、`hrt_bin_dump`、`hobot_dnn` 和 `/dev/bpu`。板端没有 `hb_mapper`，普通 `.onnx` 不能直接交给 BPU；ONNX 到 HBM 的编译需要另行准备与 X5 SDK 匹配的编译环境。未设置 `RDK_BPU_HBM` 时，Notebook 会运行板端已验证的 X5 MobileNet BPU 样例；设置后再上传 `[1,61]` 的 float32 零观测并调用 `hrt_model_exec infer`，只有退出码为 0 才标记 `PASS-rdk-bpu`。
 

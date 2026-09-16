@@ -53,78 +53,35 @@ print("RDK 地址:", os.getenv("RDK_HOST", "192.168.8.128"), "用户: sunrise")
 '''
 
 
-def task_cells(model_hint: str | None, task_id: str | None, sim_command: str):
+def task_cells(model_hint: str | None, task_id: str | None, sim_command: str, direct_connect: bool = False):
     hint = repr(model_hint) if model_hint else "None"
     task = repr(task_id) if task_id else "None"
-    return [
-        md("""
-## 1. 模型契约与本地检查
+    if direct_connect:
+        stage3_md = md("""
+## 3. 导航策略：直接接入已有模型
 
-目标契约是 actor `obs[1, 61] -> action[1, 14]`。如果本任务没有随专题提交 checkpoint/ONNX，Notebook 会明确显示“模型未提供”，不会用别的任务模型冒充当前任务结果。
-"""),
-        code(f'''
-TASK_ID = {task}
-MODEL_HINT = {hint}
-MODEL_PATH = Path(os.getenv("MICRODUCK_ONNX", "")) if os.getenv("MICRODUCK_ONNX") else None
-if MODEL_PATH is None and MODEL_HINT:
-    candidate = TOPIC_ROOT / MODEL_HINT
-    if candidate.exists():
-        MODEL_PATH = candidate
-if MODEL_PATH is None and not MODEL_HINT and not TASK_ID:
-    candidates = sorted(TOPIC_ROOT.glob("01-任务资料/**/*.onnx"))
-    MODEL_PATH = candidates[0] if candidates else None
-print("任务:", TASK_ID or "接口/网页演示")
-print("ONNX:", MODEL_PATH if MODEL_PATH else "未提供")
-if TASK_ID and MODEL_PATH is None:
-    print("该任务尚未随专题提交任务专属 ONNX；请设置 MICRODUCK_ONNX 后再运行模型检查。")
-'''),
-        code(r'''
-def inspect_onnx(path):
-    try:
-        import onnx
-    except ImportError:
-        print("缺少 onnx：请在 microduck-playground 环境中启动 Jupyter。")
-        return None
-    model = onnx.load(str(path))
-    onnx.checker.check_model(model)
-    def shape(value):
-        return [d.dim_value if d.dim_value else (d.dim_param or "?") for d in value.type.tensor_type.shape.dim]
-    result = {
-        "inputs": [(item.name, shape(item)) for item in model.graph.input],
-        "outputs": [(item.name, shape(item)) for item in model.graph.output],
-        "nodes": len(model.graph.node),
-        "metadata": {item.key: item.value for item in model.metadata_props},
-    }
-    print(json.dumps(result, ensure_ascii=False, indent=2))
-    return result
-
-contract = inspect_onnx(MODEL_PATH) if MODEL_PATH else None
-'''),
-        md(f"""
-## 2. ONNX 导出入口
-
-训练得到的是 RSL-RL checkpoint；导出时要把 actor 和观测归一化一起固化到 ONNX。下面是本任务命令模板。`--video` 会在本机录制 MuJoCo 回放，完整视频写入 `outputs/`，不提交到 Git。
-
-```bash
-uv run python scripts/export.py {task_id or '<TASK_ID>'} \\
-  --checkpoint-file <CHECKPOINT.pt> \\
-  --onnx-file outputs/policy.onnx \\
-  --num-envs 1 --video --video-length 250
-```
-"""),
-        code(r'''
-EXPORT_COMMAND = "uv run python scripts/export.py " + (TASK_ID or "<TASK_ID>") + " --checkpoint-file <CHECKPOINT.pt> --onnx-file outputs/policy.onnx --num-envs 1 --video --video-length 250"
-print(EXPORT_COMMAND)
-print("导出前后检查：观测维度、动作顺序、归一化和 action clip。")
-'''),
-        md("""
+导航/部署入口不重复训练，直接使用已有 ONNX。默认读取本 Notebook 目录下的 `outputs/microduck_demo_latest.onnx`；也可以通过 `MICRODUCK_NAV_ONNX` 指定其他已经训练好的导航策略。
+""")
+        stage3_code = code(r'''
+NAV_ONNX = os.getenv("MICRODUCK_NAV_ONNX", "")
+default_nav_onnx = OUTPUT_ROOT / "microduck_demo_latest.onnx"
+if NAV_ONNX:
+    MODEL_PATH = Path(NAV_ONNX).expanduser().resolve()
+elif default_nav_onnx.exists():
+    MODEL_PATH = default_nav_onnx
+print("导航策略直接接入:", MODEL_PATH if MODEL_PATH and MODEL_PATH.exists() else "未找到")
+if MODEL_PATH is None or not MODEL_PATH.exists():
+    print("请设置 MICRODUCK_NAV_ONNX=/path/to/navigation.onnx 后重新运行本单元。")
+''')
+    else:
+        stage3_md = md("""
 ## 3. 固定演示模型：恢复并 smoke 训练 10 个 iteration
 
 为了让直播每次都得到同一份可追踪产物，本单元默认从已验证的行走 checkpoint 恢复，在 GPU 上用 64 个并行环境继续训练 10 个 PPO iteration，然后覆盖 `outputs/microduck_demo_latest.pt` 和 `outputs/microduck_demo_latest.onnx`。原始 `model_5999.pt` 不会被修改。
 
 10 个 iteration 不是“重新训练出一个新能力”，而是验证 `checkpoint -> MuJoCo/Warp -> PPO 更新 -> checkpoint -> ONNX` 全链路。每个 iteration 默认采集 `64 × 24 = 1536` 条环境步，所以本次约更新 15360 条 transition。
-"""),
-        code(r'''
+""")
+        stage3_code = code(r'''
 import shutil
 import sys
 
@@ -200,7 +157,70 @@ else:
             MODEL_PATH = DEMO_ONNX
             print("PASS-demo-model:", MODEL_PATH)
             print("本次实际使用 checkpoint:", latest_checkpoint)
+''')
+    return [
+        md("""
+## 1. 模型契约与本地检查
+
+目标契约是 actor `obs[1, 61] -> action[1, 14]`。如果本任务没有随专题提交 checkpoint/ONNX，Notebook 会明确显示“模型未提供”，不会用别的任务模型冒充当前任务结果。
+"""),
+        code(f'''
+TASK_ID = {task}
+MODEL_HINT = {hint}
+MODEL_PATH = Path(os.getenv("MICRODUCK_ONNX", "")) if os.getenv("MICRODUCK_ONNX") else None
+if MODEL_PATH is None and MODEL_HINT:
+    candidate = TOPIC_ROOT / MODEL_HINT
+    if candidate.exists():
+        MODEL_PATH = candidate
+if MODEL_PATH is None and not MODEL_HINT and not TASK_ID:
+    candidates = sorted(TOPIC_ROOT.glob("01-任务资料/**/*.onnx"))
+    MODEL_PATH = candidates[0] if candidates else None
+print("任务:", TASK_ID or "接口/网页演示")
+print("ONNX:", MODEL_PATH if MODEL_PATH else "未提供")
+if TASK_ID and MODEL_PATH is None:
+    print("该任务尚未随专题提交任务专属 ONNX；请设置 MICRODUCK_ONNX 后再运行模型检查。")
 '''),
+        code(r'''
+def inspect_onnx(path):
+    try:
+        import onnx
+    except ImportError:
+        print("缺少 onnx：请在 microduck-playground 环境中启动 Jupyter。")
+        return None
+    model = onnx.load(str(path))
+    onnx.checker.check_model(model)
+    def shape(value):
+        return [d.dim_value if d.dim_value else (d.dim_param or "?") for d in value.type.tensor_type.shape.dim]
+    result = {
+        "inputs": [(item.name, shape(item)) for item in model.graph.input],
+        "outputs": [(item.name, shape(item)) for item in model.graph.output],
+        "nodes": len(model.graph.node),
+        "metadata": {item.key: item.value for item in model.metadata_props},
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return result
+
+contract = inspect_onnx(MODEL_PATH) if MODEL_PATH else None
+'''),
+        md(f"""
+## 2. ONNX 导出入口
+
+训练得到的是 RSL-RL checkpoint；导出时要把 actor 和观测归一化一起固化到 ONNX。下面是本任务命令模板。`--video` 会在本机录制 MuJoCo 回放，完整视频写入 `outputs/`，不提交到 Git。
+
+```bash
+uv run python scripts/export.py {task_id or '<TASK_ID>'} \\
+  --checkpoint-file <CHECKPOINT.pt> \\
+  --onnx-file outputs/policy.onnx \\
+  --num-envs 1 --video --video-length 250
+```
+"""),
+        code(r'''
+EXPORT_COMMAND = "uv run python scripts/export.py " + (TASK_ID or "<TASK_ID>") + " --checkpoint-file <CHECKPOINT.pt> --onnx-file outputs/policy.onnx --num-envs 1 --video --video-length 250"
+print(EXPORT_COMMAND)
+print("导出前后检查：观测维度、动作顺序、归一化和 action clip。")
+'''),
+        stage3_md,
+        stage3_code,
         md("""
 ## 4. 本地 ONNX 基准推理
 
@@ -350,24 +370,24 @@ else:
 
 
 TASKS = [
-    ("01_篮球平衡_PPO_ONNX_BPU_MuJoCo.ipynb", "篮球平衡 / PPO", "Mjlab-Basketball-MicroDuck", None, ""),
-    ("02_浏览器物理扰动_回放与接口.ipynb", "浏览器物理扰动 / MuJoCo Web", None, None, "python 任务资料/02 的 serve_mjswan.py"),
-    ("03_高跷行走_课程与ONNX_BPU.ipynb", "高跷行走 / 形态课程", "Mjlab-Stilt-Flat-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <STILT.onnx> --new-cmd-obs"),
-    ("04_摆动旋转_ONNX_BPU_MuJoCo.ipynb", "摆动旋转 / 自激摆动", "Mjlab-SwingPump-MicroDuck", "01-任务资料/04-MicroDuck摆动旋转强化学习复现/assets/microduck_swing_alpha050.onnx", "uv run python scripts/infer_policy.py --walking outputs/policy.onnx"),
-    ("05_球平衡_FastSAC_ONNX_BPU.ipynb", "球平衡 / FastSAC", "microduck-ball-balance", None, "uv run python scripts/infer_policy.py --walking <BALL_BALANCE.onnx> --new-cmd-obs"),
-    ("06_梯面攀爬_接触与部署模板.ipynb", "梯面攀爬 / 接触课程", "Mjlab-Video-Ladder-Footstep-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <LADDER.onnx> --new-cmd-obs"),
-    ("07_RDK网页与多策略_BPU验收.ipynb", "RDK / 网页 / 多策略部署", "Mjlab-Velocity-Flat-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <WALKING.onnx> --new-cmd-obs"),
+    ("01_篮球平衡_PPO_ONNX_BPU_MuJoCo.ipynb", "篮球平衡 / PPO", "Mjlab-Basketball-MicroDuck", None, "", False),
+    ("02_浏览器物理扰动_回放与接口.ipynb", "浏览器物理扰动 / MuJoCo Web", None, None, "python 任务资料/02 的 serve_mjswan.py", False),
+    ("03_高跷行走_课程与ONNX_BPU.ipynb", "高跷行走 / 形态课程", "Mjlab-Stilt-Flat-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <STILT.onnx> --new-cmd-obs", False),
+    ("04_摆动旋转_ONNX_BPU_MuJoCo.ipynb", "摆动旋转 / 自激摆动", "Mjlab-SwingPump-MicroDuck", "01-任务资料/04-MicroDuck摆动旋转强化学习复现/assets/microduck_swing_alpha050.onnx", "uv run python scripts/infer_policy.py --walking outputs/policy.onnx", False),
+    ("05_球平衡_FastSAC_ONNX_BPU.ipynb", "球平衡 / FastSAC", "microduck-ball-balance", None, "uv run python scripts/infer_policy.py --walking <BALL_BALANCE.onnx> --new-cmd-obs", False),
+    ("06_梯面攀爬_接触与部署模板.ipynb", "梯面攀爬 / 接触课程", "Mjlab-Video-Ladder-Footstep-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <LADDER.onnx> --new-cmd-obs", False),
+    ("07_RDK网页与多策略_BPU验收.ipynb", "导航 / RDK网页 / 多策略部署", "Mjlab-Velocity-Flat-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <WALKING.onnx> --new-cmd-obs", True),
 ]
 
 
-def build(filename: str, title: str, task_id: str | None, model_hint: str | None, sim_command: str):
+def build(filename: str, title: str, task_id: str | None, model_hint: str | None, sim_command: str, direct_connect: bool):
     notebook = nbf.v4.new_notebook()
     notebook.metadata = {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}, "language_info": {"name": "python", "version": "3.12"}}
     notebook.cells = [
         md(f"# MicroDuck 直播 Notebook：{title}\n\n把任务、策略、ONNX、MuJoCo 和 RDK X5/BPU 验收串成一条可复用流程。"),
         md("## 0. 运行说明\n\n建议在 `02-可运行代码/microduck-playground-stilts` 的 Python 环境中启动 Jupyter。训练模型和板端 HBM 不随 Git 提交；通过 `MICRODUCK_ONNX`、`RDK_BPU_HBM` 和 `RDK_HOST` 注入。"),
         code(SETUP),
-    ] + task_cells(model_hint, task_id, sim_command)
+    ] + task_cells(model_hint, task_id, sim_command, direct_connect=direct_connect)
     nbf.write(notebook, ROOT / filename)
 
 
