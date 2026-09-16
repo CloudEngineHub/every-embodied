@@ -1851,7 +1851,7 @@
     },
     "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/03-Notebook/README.md": {
       "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/03-Notebook/README.md",
-      "sourceHash": "c7b8d8151d8321691466326cfa6906c0c8a8c9c442e129c967358593e3e62720",
+      "sourceHash": "0989bd5b674c0962bac7785014a42985497725ffb2b919ce0f0f00de789ec12a",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
