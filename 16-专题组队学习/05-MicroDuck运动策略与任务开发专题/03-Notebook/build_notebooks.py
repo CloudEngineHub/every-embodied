@@ -118,7 +118,91 @@ print(EXPORT_COMMAND)
 print("导出前后检查：观测维度、动作顺序、归一化和 action clip。")
 '''),
         md("""
-## 3. 本地 ONNX 基准推理
+## 3. 固定演示模型：恢复并 smoke 训练 10 个 iteration
+
+为了让直播每次都得到同一份可追踪产物，本单元默认从已验证的行走 checkpoint 恢复，在 GPU 上用 64 个并行环境继续训练 10 个 PPO iteration，然后覆盖 `outputs/microduck_demo_latest.pt` 和 `outputs/microduck_demo_latest.onnx`。原始 `model_5999.pt` 不会被修改。
+
+10 个 iteration 不是“重新训练出一个新能力”，而是验证 `checkpoint -> MuJoCo/Warp -> PPO 更新 -> checkpoint -> ONNX` 全链路。每个 iteration 默认采集 `64 × 24 = 1536` 条环境步，所以本次约更新 15360 条 transition。
+"""),
+        code(r'''
+import shutil
+import sys
+
+TRAIN_ROOT = Path(os.getenv("MICRODUCK_WORKSPACE", "/home/ubuntu/workspaces/microduck_rl"))
+TRAIN_TASK = os.getenv("MICRODUCK_TRAIN_TASK", "Mjlab-Velocity-Flat-MicroDuck")
+TRAIN_SOURCE_RUN = os.getenv(
+    "MICRODUCK_TRAIN_RUN",
+    "2026-09-03_20-05-56_every-embodied-4096x6000",
+)
+TRAIN_SOURCE_CHECKPOINT = os.getenv("MICRODUCK_TRAIN_CHECKPOINT", "model_5999.pt")
+TRAIN_ENVS = int(os.getenv("MICRODUCK_TRAIN_ENVS", "64"))
+TRAIN_ITERATIONS = int(os.getenv("MICRODUCK_TRAIN_ITERATIONS", "10"))
+RUN_TRAIN_SMOKE = os.getenv("MICRODUCK_RUN_TRAIN_SMOKE", "1") == "1"
+DEMO_PT = OUTPUT_ROOT / "microduck_demo_latest.pt"
+DEMO_ONNX = OUTPUT_ROOT / "microduck_demo_latest.onnx"
+
+source_path = TRAIN_ROOT / "logs" / "rsl_rl" / "velocity" / TRAIN_SOURCE_RUN / TRAIN_SOURCE_CHECKPOINT
+print("训练工作区:", TRAIN_ROOT)
+print("恢复 checkpoint:", source_path)
+print("固定输出:", DEMO_PT, DEMO_ONNX)
+
+if not RUN_TRAIN_SMOKE:
+    print("已跳过 smoke 训练：设置 MICRODUCK_RUN_TRAIN_SMOKE=1 后重新运行本单元。")
+elif not TRAIN_ROOT.is_dir():
+    print("找不到 Ubuntu 训练工作区；请在 Ubuntu Jupyter 中运行，或设置 MICRODUCK_WORKSPACE。")
+elif not source_path.is_file():
+    print("找不到恢复 checkpoint；请设置 MICRODUCK_TRAIN_RUN / MICRODUCK_TRAIN_CHECKPOINT。")
+else:
+    train_cmd = [
+        sys.executable, "-m", "mjlab.scripts.train", TRAIN_TASK,
+        "--env.scene.num-envs", str(TRAIN_ENVS),
+        "--agent.max-iterations", str(TRAIN_ITERATIONS),
+        "--agent.resume", "True",
+        "--agent.load-run", TRAIN_SOURCE_RUN,
+        "--agent.load-checkpoint", TRAIN_SOURCE_CHECKPOINT,
+        "--agent.experiment-name", "velocity",
+        "--agent.run-name", "demo-latest-10-step",
+        "--agent.save-interval", str(TRAIN_ITERATIONS),
+        "--video", "False",
+    ]
+    train_env = os.environ.copy()
+    train_env["WANDB_MODE"] = "offline"
+    print("开始 GPU smoke 训练:", " ".join(shlex.quote(x) for x in train_cmd))
+    train_result = subprocess.run(train_cmd, cwd=TRAIN_ROOT, env=train_env, text=True)
+    if train_result.returncode != 0:
+        print("训练失败，未覆盖固定演示模型。returncode:", train_result.returncode)
+    else:
+        demo_runs = sorted(
+            (TRAIN_ROOT / "logs" / "rsl_rl" / "velocity").glob("*_demo-latest-10-step"),
+            key=lambda p: p.stat().st_mtime,
+        )
+        if not demo_runs:
+            raise FileNotFoundError("训练成功但没有找到 demo-latest-10-step 输出目录。")
+        demo_run = demo_runs[-1]
+        checkpoints = sorted(
+            demo_run.glob("model_*.pt"),
+            key=lambda p: int(p.stem.split("_")[-1]),
+        )
+        if not checkpoints:
+            raise FileNotFoundError(f"训练输出目录没有 checkpoint: {demo_run}")
+        latest_checkpoint = checkpoints[-1]
+        shutil.copy2(latest_checkpoint, DEMO_PT)
+        export_cmd = [
+            sys.executable, "scripts/export.py", TRAIN_TASK,
+            "--checkpoint-file", str(latest_checkpoint),
+            "--onnx-file", str(DEMO_ONNX),
+        ]
+        print("导出固定 ONNX:", " ".join(shlex.quote(x) for x in export_cmd))
+        export_result = subprocess.run(export_cmd, cwd=TRAIN_ROOT, env=train_env, text=True)
+        if export_result.returncode != 0:
+            print("ONNX 导出失败，保留 checkpoint，returncode:", export_result.returncode)
+        else:
+            MODEL_PATH = DEMO_ONNX
+            print("PASS-demo-model:", MODEL_PATH)
+            print("本次实际使用 checkpoint:", latest_checkpoint)
+'''),
+        md("""
+## 4. 本地 ONNX 基准推理
 
 这一步只验证 ONNX 图能在本机运行，以及输出形状和数值是否有限；它不是训练效果评测，也不是 BPU 验收。
 """),
@@ -146,7 +230,7 @@ else:
     print("跳过：尚未提供该任务 ONNX。")
 '''),
         md("""
-## 4. MuJoCo 展示
+## 5. MuJoCo 展示
 
 直播默认展示短视频或关键帧，避免网页 WebAssembly、浏览器 GPU 或 OpenGL 窗口打断讲解。需要交互时，再启动专题中的网页服务；需要连续闭环时，使用任务自己的回放脚本。
 """),
@@ -171,7 +255,7 @@ SIM_COMMAND = {sim_command!r}
 print("MuJoCo 回放命令模板:", SIM_COMMAND)
 '''),
         md("""
-## 5. RDK X5 / BPU 探测与验收
+## 6. RDK X5 / BPU 探测与验收
 
 当前仓库已有的 RDK 服务器默认是 `CPUExecutionProvider`。本单元只在板端真实连通并且存在 BPU 工具时继续；不会把 CPU 推理结果写成 BPU 成功。真实验收需要板端 HBM 模型和与 SDK 版本匹配的命令。
 """),
@@ -253,7 +337,7 @@ else:
                 print("未通过：请确认 HBM 输入是否确实为 [1, 61] float32，以及模型是否为单输入模型。")
 '''),
         md("""
-## 6. 直播结论
+## 7. 直播结论
 
 - `PASS-local-onnx`：ONNX checker 和本地 ONNX Runtime 通过。
 - `PASS-mujoco`：使用相同观测/动作契约完成 MuJoCo 回放。

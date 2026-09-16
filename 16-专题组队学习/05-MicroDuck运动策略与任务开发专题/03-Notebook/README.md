@@ -49,6 +49,20 @@ RDK_BPU_SMOKE_INPUT_BYTES = 75264
 
 这里的 MobileNet 只用于验证“工作站能通过 SSH 调到开发板、开发板能调用 BPU”；它不是 MicroDuck 策略模型。真正运行策略时，才填写与 `[1, 61] float32 -> [1, 14]` 接口匹配的 X5 `.hbm` 文件，例如 `RDK_BPU_HBM = "/home/sunrise/models/microduck_policy.hbm"`。不能把上面的 MobileNet `.bin` 路径填进 `RDK_BPU_HBM`，因为两者输入格式不同。
 
+## 固定演示模型
+
+Notebook 在 Ubuntu 工作站上默认从已验证的行走策略恢复：
+
+```python
+MICRODUCK_WORKSPACE = "/home/ubuntu/workspaces/microduck_rl"
+MICRODUCK_TRAIN_RUN = "2026-09-03_20-05-56_every-embodied-4096x6000"
+MICRODUCK_TRAIN_CHECKPOINT = "model_5999.pt"
+MICRODUCK_TRAIN_ENVS = "64"
+MICRODUCK_TRAIN_ITERATIONS = "10"
+```
+
+每次运行会继续训练 10 个 PPO iteration，并覆盖 Notebook 目录下的 `outputs/microduck_demo_latest.pt` 与 `outputs/microduck_demo_latest.onnx`。原始 checkpoint 不会覆盖；训练日志仍按时间写入 `logs/rsl_rl/velocity/`，便于回查。10 个 iteration 只用于验证训练链路，不代表策略能力已经重新收敛。
+
 当前已确认的开发板是 `sunrise@192.168.8.128`：Ubuntu 22.04.5、aarch64、BPU Platform 1.3.6、HBRT 3.15.55.0，板端有 `hrt_model_exec`、`hrt_bin_dump`、`hobot_dnn` 和 `/dev/bpu`。板端没有 `hb_mapper`，普通 `.onnx` 不能直接交给 BPU；ONNX 到 HBM 的编译需要另行准备与 X5 SDK 匹配的编译环境。未设置 `RDK_BPU_HBM` 时，Notebook 会运行板端已验证的 X5 MobileNet BPU 样例；设置后再上传 `[1,61]` 的 float32 零观测并调用 `hrt_model_exec infer`，只有退出码为 0 才标记 `PASS-rdk-bpu`。
 
 当前仓库原有 RDK 服务器使用 `CPUExecutionProvider`，因此 Notebook 会把 CPU 结果和 BPU 结果分开标记。不要把板端已有的 `.onnx` 文件直接改名成 `.hbm`；必须实际生成 HBM，并核对量化、输入布局、输出形状和动作后处理。
