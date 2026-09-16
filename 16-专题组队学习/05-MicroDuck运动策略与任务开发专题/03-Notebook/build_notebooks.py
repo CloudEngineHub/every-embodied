@@ -53,7 +53,7 @@ print("RDK 地址:", os.getenv("RDK_HOST", "192.168.8.128"), "用户: sunrise")
 '''
 
 
-def task_cells(model_hint: str | None, task_id: str | None, sim_command: str, direct_connect: bool = False):
+def task_cells(model_hint: str | None, task_id: str | None, sim_command: str, direct_connect: bool = False, video_hint: str | None = None, keyframe_hint: str | None = None):
     hint = repr(model_hint) if model_hint else "None"
     task = repr(task_id) if task_id else "None"
     if direct_connect:
@@ -256,22 +256,31 @@ else:
 """),
         code(f'''
 VIDEO_OVERRIDE = os.getenv("MICRODUCK_VIDEO")
-generated_video = OUTPUT_ROOT / "microduck_demo_latest.mp4"
 video_candidates = [Path(VIDEO_OVERRIDE)] if VIDEO_OVERRIDE else []
-if not VIDEO_OVERRIDE and generated_video.exists():
-    video_candidates.append(generated_video)
-video_candidates += sorted((TOPIC_ROOT / "01-任务资料").glob("**/*.mp4"))
-keyframes = sorted((TOPIC_ROOT / "01-任务资料").glob("**/*keyframes.jpg"))
+VIDEO_HINT = {video_hint!r}
+KEYFRAME_HINT = {keyframe_hint!r}
+if not VIDEO_OVERRIDE and VIDEO_HINT:
+    candidate = TOPIC_ROOT / VIDEO_HINT
+    if candidate.exists():
+        video_candidates.append(candidate)
+keyframes = []
+if KEYFRAME_HINT:
+    candidate = TOPIC_ROOT / KEYFRAME_HINT
+    if candidate.exists():
+        keyframes.append(candidate)
 try:
     from IPython.display import Image, Video, display
     if video_candidates and video_candidates[0].exists():
-        display(Video(str(video_candidates[0]), embed=True))
-        print("展示视频:", video_candidates[0])
+        if video_candidates[0].suffix.lower() == ".gif":
+            display(Image(filename=str(video_candidates[0])))
+        else:
+            display(Video(str(video_candidates[0]), embed=True))
+        print("展示任务视频:", video_candidates[0])
     elif keyframes:
         display(Image(filename=str(keyframes[0])))
-        print("展示关键帧:", keyframes[0])
+        print("该任务暂无视频，展示任务关键帧:", keyframes[0])
     else:
-        print("尚无视频或关键帧；设置 MICRODUCK_VIDEO，或先运行回放脚本。")
+        print("该任务暂无视频；请设置 MICRODUCK_VIDEO，或先运行该任务自己的回放脚本。")
 except Exception as exc:
     print("展示失败:", exc)
 SIM_COMMAND = {sim_command!r}
@@ -373,24 +382,24 @@ else:
 
 
 TASKS = [
-    ("01_篮球平衡_PPO_ONNX_BPU_MuJoCo.ipynb", "篮球平衡 / PPO", "Mjlab-Basketball-MicroDuck", None, "", False),
-    ("02_浏览器物理扰动_回放与接口.ipynb", "浏览器物理扰动 / MuJoCo Web", None, None, "python 任务资料/02 的 serve_mjswan.py", False),
-    ("03_高跷行走_课程与ONNX_BPU.ipynb", "高跷行走 / 形态课程", "Mjlab-Stilt-Flat-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <STILT.onnx> --new-cmd-obs", False),
-    ("04_摆动旋转_ONNX_BPU_MuJoCo.ipynb", "摆动旋转 / 自激摆动", "Mjlab-SwingPump-MicroDuck", "01-任务资料/04-MicroDuck摆动旋转强化学习复现/assets/microduck_swing_alpha050.onnx", "uv run python scripts/infer_policy.py --walking outputs/policy.onnx", False),
-    ("05_球平衡_FastSAC_ONNX_BPU.ipynb", "球平衡 / FastSAC", "microduck-ball-balance", None, "uv run python scripts/infer_policy.py --walking <BALL_BALANCE.onnx> --new-cmd-obs", False),
-    ("06_梯面攀爬_接触与部署模板.ipynb", "梯面攀爬 / 接触课程", "Mjlab-Video-Ladder-Footstep-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <LADDER.onnx> --new-cmd-obs", False),
-    ("07_RDK网页与多策略_BPU验收.ipynb", "导航 / RDK网页 / 多策略部署", "Mjlab-Velocity-Flat-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <WALKING.onnx> --new-cmd-obs", True),
+    ("01_篮球平衡_PPO_ONNX_BPU_MuJoCo.ipynb", "篮球平衡 / PPO", "Mjlab-Basketball-MicroDuck", None, "", False, "01-任务资料/01-MicroDuck篮球平衡强化学习/assets/preview.gif", None),
+    ("02_浏览器物理扰动_回放与接口.ipynb", "浏览器物理扰动 / MuJoCo Web", None, None, "python 任务资料/02 的 serve_mjswan.py", False, "01-任务资料/02-mjswan-MicroDuck浏览器物理扰动/assets/microduck_official.gif", "01-任务资料/02-mjswan-MicroDuck浏览器物理扰动/assets/mjswan_microduck_manual_drag_demo_keyframes.jpg"),
+    ("03_高跷行走_课程与ONNX_BPU.ipynb", "高跷行走 / 形态课程", "Mjlab-Stilt-Flat-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <STILT.onnx> --new-cmd-obs", False, None, "01-任务资料/03-MicroDuck高跷行走强化学习复现/assets/microduck_stilts_25cm_reproduced_keyframes.jpg"),
+    ("04_摆动旋转_ONNX_BPU_MuJoCo.ipynb", "摆动旋转 / 自激摆动", "Mjlab-SwingPump-MicroDuck", "01-任务资料/04-MicroDuck摆动旋转强化学习复现/assets/microduck_swing_alpha050.onnx", "uv run python scripts/infer_policy.py --walking outputs/policy.onnx", False, None, "01-任务资料/04-MicroDuck摆动旋转强化学习复现/assets/microduck_swing_alpha050_local_keyframes.jpg"),
+    ("05_球平衡_FastSAC_ONNX_BPU.ipynb", "球平衡 / FastSAC", "microduck-ball-balance", None, "uv run python scripts/infer_policy.py --walking <BALL_BALANCE.onnx> --new-cmd-obs", False, None, "01-任务资料/05-MotrixLab-MicroDuck球平衡与FastSAC/assets/motrix_microduck_ball_balance_local_5000iter_keyframes.jpg"),
+    ("06_梯面攀爬_接触与部署模板.ipynb", "梯面攀爬 / 接触课程", "Mjlab-Video-Ladder-Footstep-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <LADDER.onnx> --new-cmd-obs", False, None, "01-任务资料/06-MicroDuck梯面攀爬强化学习导读/assets/microduck_ladder_v2_bootstrap_preview_keyframes.jpg"),
+    ("07_RDK网页与多策略_BPU验收.ipynb", "导航 / RDK网页 / 多策略部署", "Mjlab-Velocity-Flat-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <WALKING.onnx> --new-cmd-obs", True, "01-任务资料/07-RDK端侧与网页部署/assets/local_videos/microduck_4096env_6000iter_walk.gif", "01-任务资料/07-RDK端侧与网页部署/assets/local_videos/microduck_4096env_6000iter_walk_keyframes.jpg"),
 ]
 
 
-def build(filename: str, title: str, task_id: str | None, model_hint: str | None, sim_command: str, direct_connect: bool):
+def build(filename: str, title: str, task_id: str | None, model_hint: str | None, sim_command: str, direct_connect: bool, video_hint: str | None, keyframe_hint: str | None):
     notebook = nbf.v4.new_notebook()
     notebook.metadata = {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}, "language_info": {"name": "python", "version": "3.12"}}
     notebook.cells = [
         md(f"# MicroDuck 直播 Notebook：{title}\n\n把任务、策略、ONNX、MuJoCo 和 RDK X5/BPU 验收串成一条可复用流程。"),
         md("## 0. 运行说明\n\n建议在 `02-可运行代码/microduck-playground-stilts` 的 Python 环境中启动 Jupyter。训练模型和板端 HBM 不随 Git 提交；通过 `MICRODUCK_ONNX`、`RDK_BPU_HBM` 和 `RDK_HOST` 注入。"),
         code(SETUP),
-    ] + task_cells(model_hint, task_id, sim_command, direct_connect=direct_connect)
+    ] + task_cells(model_hint, task_id, sim_command, direct_connect=direct_connect, video_hint=video_hint, keyframe_hint=keyframe_hint)
     nbf.write(notebook, ROOT / filename)
 
 
