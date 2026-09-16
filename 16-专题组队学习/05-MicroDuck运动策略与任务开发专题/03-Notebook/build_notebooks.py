@@ -256,13 +256,16 @@ else:
 """),
         code(f'''
 VIDEO_OVERRIDE = os.getenv("MICRODUCK_VIDEO")
+generated_video = OUTPUT_ROOT / "microduck_demo_latest.mp4"
 video_candidates = [Path(VIDEO_OVERRIDE)] if VIDEO_OVERRIDE else []
+if not VIDEO_OVERRIDE and generated_video.exists():
+    video_candidates.append(generated_video)
 video_candidates += sorted((TOPIC_ROOT / "01-任务资料").glob("**/*.mp4"))
 keyframes = sorted((TOPIC_ROOT / "01-任务资料").glob("**/*keyframes.jpg"))
 try:
     from IPython.display import Image, Video, display
     if video_candidates and video_candidates[0].exists():
-        display(Video(str(video_candidates[0]), embed=False))
+        display(Video(str(video_candidates[0]), embed=True))
         print("展示视频:", video_candidates[0])
     elif keyframes:
         display(Image(filename=str(keyframes[0])))
