@@ -256,6 +256,7 @@ else:
 """),
         code(f'''
 VIDEO_OVERRIDE = os.getenv("MICRODUCK_VIDEO")
+generated_video = OUTPUT_ROOT / "microduck_demo_latest.mp4"
 video_candidates = [Path(VIDEO_OVERRIDE)] if VIDEO_OVERRIDE else []
 VIDEO_HINT = {video_hint!r}
 KEYFRAME_HINT = {keyframe_hint!r}
@@ -263,6 +264,8 @@ if not VIDEO_OVERRIDE and VIDEO_HINT:
     candidate = TOPIC_ROOT / VIDEO_HINT
     if candidate.exists():
         video_candidates.append(candidate)
+if direct_connect and not VIDEO_OVERRIDE and not video_candidates and generated_video.exists():
+    video_candidates.append(generated_video)
 keyframes = []
 if KEYFRAME_HINT:
     candidate = TOPIC_ROOT / KEYFRAME_HINT
@@ -388,7 +391,7 @@ TASKS = [
     ("04_摆动旋转_ONNX_BPU_MuJoCo.ipynb", "摆动旋转 / 自激摆动", "Mjlab-SwingPump-MicroDuck", "01-任务资料/04-MicroDuck摆动旋转强化学习复现/assets/microduck_swing_alpha050.onnx", "uv run python scripts/infer_policy.py --walking outputs/policy.onnx", False, None, "01-任务资料/04-MicroDuck摆动旋转强化学习复现/assets/microduck_swing_alpha050_local_keyframes.jpg"),
     ("05_球平衡_FastSAC_ONNX_BPU.ipynb", "球平衡 / FastSAC", "microduck-ball-balance", None, "uv run python scripts/infer_policy.py --walking <BALL_BALANCE.onnx> --new-cmd-obs", False, None, "01-任务资料/05-MotrixLab-MicroDuck球平衡与FastSAC/assets/motrix_microduck_ball_balance_local_5000iter_keyframes.jpg"),
     ("06_梯面攀爬_接触与部署模板.ipynb", "梯面攀爬 / 接触课程", "Mjlab-Video-Ladder-Footstep-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <LADDER.onnx> --new-cmd-obs", False, None, "01-任务资料/06-MicroDuck梯面攀爬强化学习导读/assets/microduck_ladder_v2_bootstrap_preview_keyframes.jpg"),
-    ("07_RDK网页与多策略_BPU验收.ipynb", "导航 / RDK网页 / 多策略部署", "Mjlab-Velocity-Flat-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <WALKING.onnx> --new-cmd-obs", True, "01-任务资料/07-RDK端侧与网页部署/assets/local_videos/microduck_4096env_6000iter_walk.gif", "01-任务资料/07-RDK端侧与网页部署/assets/local_videos/microduck_4096env_6000iter_walk_keyframes.jpg"),
+    ("07_RDK网页与多策略_BPU验收.ipynb", "导航 / RDK网页 / 多策略部署", "Mjlab-Velocity-Flat-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <WALKING.onnx> --new-cmd-obs", True, None, "01-任务资料/07-RDK端侧与网页部署/assets/local_videos/microduck_4096env_6000iter_walk_keyframes.jpg"),
 ]
 
 
