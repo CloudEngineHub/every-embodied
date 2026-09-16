@@ -1,0 +1,5 @@
+# Runtime caches and local training outputs are not course materials.
+**/__pycache__/
+**/*.pyc
+**/*.log
+**/*.pt

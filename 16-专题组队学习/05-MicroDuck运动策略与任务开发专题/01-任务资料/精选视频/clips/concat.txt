@@ -1,0 +1,7 @@
+file 'C:/Users/kewei/Documents/2025/04资料整理/03具身教程编写/every-embodied/07-机器人操作、运动控制/Locomotion/精选视频/clips/00_title.mp4'
+file 'C:/Users/kewei/Documents/2025/04资料整理/03具身教程编写/every-embodied/07-机器人操作、运动控制/Locomotion/精选视频/clips/01_obstacle_walk.mp4'
+file 'C:/Users/kewei/Documents/2025/04资料整理/03具身教程编写/every-embodied/07-机器人操作、运动控制/Locomotion/精选视频/clips/02_physical_perturbation.mp4'
+file 'C:/Users/kewei/Documents/2025/04资料整理/03具身教程编写/every-embodied/07-机器人操作、运动控制/Locomotion/精选视频/clips/03_ball_balance.mp4'
+file 'C:/Users/kewei/Documents/2025/04资料整理/03具身教程编写/every-embodied/07-机器人操作、运动控制/Locomotion/精选视频/clips/04_swing_contact.mp4'
+file 'C:/Users/kewei/Documents/2025/04资料整理/03具身教程编写/every-embodied/07-机器人操作、运动控制/Locomotion/精选视频/clips/05_ladder_contact.mp4'
+file 'C:/Users/kewei/Documents/2025/04资料整理/03具身教程编写/every-embodied/07-机器人操作、运动控制/Locomotion/精选视频/clips/06_end_card.mp4'

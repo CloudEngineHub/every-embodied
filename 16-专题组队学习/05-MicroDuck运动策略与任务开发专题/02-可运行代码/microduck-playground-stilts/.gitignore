@@ -1,0 +1,9 @@
+# Keep the code snapshot lightweight and reproducible.
+__pycache__/
+*.pyc
+*.log
+*.pt
+*.onnx
+artifacts/
+logs/
+.venv/
