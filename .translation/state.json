@@ -1848,6 +1848,18 @@
       "sourceHash": "7f8a8df6ad0ac70499911414e1edc4c9de2c8b280afc7fe930699f2a25fdbece",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/03-Notebook/README.md": {
+      "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/03-Notebook/README.md",
+      "sourceHash": "c7b8d8151d8321691466326cfa6906c0c8a8c9c442e129c967358593e3e62720",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/README.md": {
+      "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/README.md",
+      "sourceHash": "ec1f138036006cefab5789cb4729285c9771efa58e151b04e54a0a929b8df1fa",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
   }
 }
