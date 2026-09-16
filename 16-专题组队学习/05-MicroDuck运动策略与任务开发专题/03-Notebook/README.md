@@ -40,6 +40,15 @@ $env:RDK_HOST = "192.168.8.128"
 $env:RDK_BPU_HBM = "/home/sunrise/models/microduck_policy.hbm"
 ```
 
+如果只是想先直接运行 Notebook，保持 `RDK_BPU_HBM` 为空即可。Notebook 会使用这个已经在 X5 上验证过的默认 BPU 样例：
+
+```python
+RDK_BPU_SMOKE_MODEL = "/opt/tros/humble/lib/dnn_benchmark_example/config/X5/mobilenetv1_224x224_nv12.bin"
+RDK_BPU_SMOKE_INPUT_BYTES = 75264
+```
+
+这里的 MobileNet 只用于验证“工作站能通过 SSH 调到开发板、开发板能调用 BPU”；它不是 MicroDuck 策略模型。真正运行策略时，才填写与 `[1, 61] float32 -> [1, 14]` 接口匹配的 X5 `.hbm` 文件，例如 `RDK_BPU_HBM = "/home/sunrise/models/microduck_policy.hbm"`。不能把上面的 MobileNet `.bin` 路径填进 `RDK_BPU_HBM`，因为两者输入格式不同。
+
 当前已确认的开发板是 `sunrise@192.168.8.128`：Ubuntu 22.04.5、aarch64、BPU Platform 1.3.6、HBRT 3.15.55.0，板端有 `hrt_model_exec`、`hrt_bin_dump`、`hobot_dnn` 和 `/dev/bpu`。板端没有 `hb_mapper`，普通 `.onnx` 不能直接交给 BPU；ONNX 到 HBM 的编译需要另行准备与 X5 SDK 匹配的编译环境。未设置 `RDK_BPU_HBM` 时，Notebook 会运行板端已验证的 X5 MobileNet BPU 样例；设置后再上传 `[1,61]` 的 float32 零观测并调用 `hrt_model_exec infer`，只有退出码为 0 才标记 `PASS-rdk-bpu`。
 
 当前仓库原有 RDK 服务器使用 `CPUExecutionProvider`，因此 Notebook 会把 CPU 结果和 BPU 结果分开标记。不要把板端已有的 `.onnx` 文件直接改名成 `.hbm`；必须实际生成 HBM，并核对量化、输入布局、输出形状和动作后处理。

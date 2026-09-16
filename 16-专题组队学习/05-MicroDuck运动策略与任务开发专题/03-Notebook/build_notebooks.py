@@ -179,7 +179,15 @@ print("MuJoCo 回放命令模板:", SIM_COMMAND)
 import time
 
 RDK_HOST = os.getenv("RDK_HOST", "192.168.8.128")
+BPU_SMOKE_MODEL = os.getenv(
+    "RDK_BPU_SMOKE_MODEL",
+    "/opt/tros/humble/lib/dnn_benchmark_example/config/X5/mobilenetv1_224x224_nv12.bin",
+)
+BPU_SMOKE_INPUT_BYTES = int(os.getenv("RDK_BPU_SMOKE_INPUT_BYTES", "75264"))
 BPU_HBM = os.getenv("RDK_BPU_HBM", "")
+print("默认 BPU 样例模型:", BPU_SMOKE_MODEL)
+print("默认 BPU 样例输入:", BPU_SMOKE_INPUT_BYTES, "bytes uint8")
+print("MicroDuck 策略 HBM:", BPU_HBM or "未提供（先运行默认 BPU 样例）")
 probe_script = "for x in hrt_model_exec hb_mapper hrt_bin_dump hrt_bin_info python3; do if command -v $x >/dev/null 2>&1; then echo $x=$(command -v $x); else echo $x=MISSING; fi; done"
 remote = "sunrise@" + RDK_HOST
 probe = subprocess.run(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5", remote, "bash -lc " + shlex.quote(probe_script)], capture_output=True, text=True)
@@ -189,12 +197,9 @@ else:
     print("RDK 已连通:", RDK_HOST)
     print(probe.stdout)
     if not BPU_HBM:
-        print("尚未设置 RDK_BPU_HBM；先运行板端已安装的 X5 BPU MobileNet 样例，验证运行时链路。")
-        smoke_model = os.getenv(
-            "RDK_BPU_SMOKE_MODEL",
-            "/opt/tros/humble/lib/dnn_benchmark_example/config/X5/mobilenetv1_224x224_nv12.bin",
-        )
-        smoke_bytes = int(os.getenv("RDK_BPU_SMOKE_INPUT_BYTES", "75264"))
+        print("未提供策略 HBM；使用上面的默认 BPU 样例验证板端运行时链路。")
+        smoke_model = BPU_SMOKE_MODEL
+        smoke_bytes = BPU_SMOKE_INPUT_BYTES
         smoke_info_cmd = "hrt_model_exec model_info --model_file " + shlex.quote(smoke_model)
         smoke_info = subprocess.run(["ssh", remote, "bash -lc " + shlex.quote(smoke_info_cmd)], capture_output=True, text=True)
         print("BPU 样例 model_info exit:", smoke_info.returncode)
