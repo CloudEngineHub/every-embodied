@@ -264,7 +264,7 @@ if not VIDEO_OVERRIDE and VIDEO_HINT:
     candidate = TOPIC_ROOT / VIDEO_HINT
     if candidate.exists():
         video_candidates.append(candidate)
-if direct_connect and not VIDEO_OVERRIDE and not video_candidates and generated_video.exists():
+if {direct_connect!r} and not VIDEO_OVERRIDE and not video_candidates and generated_video.exists():
     video_candidates.append(generated_video)
 keyframes = []
 if KEYFRAME_HINT:
