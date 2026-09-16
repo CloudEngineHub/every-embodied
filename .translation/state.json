@@ -1836,6 +1836,18 @@
       "sourceHash": "4524385bdd24f28e26e2598d582dbd07c783f1fcc901906617a70229b4a6b02a",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/01-任务资料/03-MicroDuck高跷行走强化学习复现/README.md": {
+      "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/01-task-information/03-microduck-stilt-walker-reinforcement-learning-reproduction/README.md",
+      "sourceHash": "fbab93fa5d706645a401a3a0ca91c8d4a4c15804fdabe505066d61602b977cea",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/01-任务资料/06-MicroDuck梯面攀爬强化学习导读/README.md": {
+      "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/01-task-information/06-microduck-tread-climbing-reinforcement-learning-guide/README.md",
+      "sourceHash": "7f8a8df6ad0ac70499911414e1edc4c9de2c8b280afc7fe930699f2a25fdbece",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
   }
 }
