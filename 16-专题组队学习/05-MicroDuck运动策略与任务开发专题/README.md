@@ -11,6 +11,7 @@
 5. 最后进入 [梯面攀爬](./01-任务资料/06-MicroDuck梯面攀爬强化学习导读/README.md)，按支撑课程、真实横档接触、落脚状态机逐级排查。
 6. 需要运行或修改代码时，进入 [可运行代码包](./02-可运行代码/microduck-playground-stilts/README.md)。
 7. 需要查看 RDK X5、网页演示和多策略调度时，进入 [端侧与网页部署](./01-任务资料/07-RDK端侧与网页部署/README.md)。
+8. 需要按直播顺序运行检查时，打开 [Notebook 学习入口](./03-Notebook/README.md)。
 
 ## 目录结构
 
@@ -26,14 +27,21 @@
 │   ├── 06-MicroDuck梯面攀爬强化学习导读/
 │   ├── 07-RDK端侧与网页部署/
 │   └── 精选视频/
-└── 02-可运行代码/
+├── 02-可运行代码/
     └── microduck-playground-stilts/
         ├── src/          # 机器人、执行器、任务和奖励
         ├── scripts/      # 训练、评测、导出和回放脚本
         ├── tests/        # 配置和物理不变量测试
         ├── hardware/     # 高跷参数化生成器
         └── docs/         # 训练计划和策略说明
+└── 03-Notebook/          # 本机/Ubuntu Jupyter、MuJoCo 与 RDK X5/BPU 验收
 ```
+
+## Notebook 学习线
+
+Notebook 推荐运行在 Ubuntu 工作站上，Windows 本机只通过浏览器访问 Jupyter。这样 MuJoCo、训练代码和 Python 依赖都在同一环境中；Notebook 再通过 SSH 连接 sunrise@192.168.8.128，把 RDK X5 作为独立的 BPU 推理端。Notebook 内置工作站信息、SSH 探测、ONNX 契约检查和 HBM/BPU 验收，不需要额外维护一层“Windows Notebook -> Ubuntu -> RDK”的跳转。
+
+板端普通 ONNX 不能直接作为 BPU 模型运行，需要先用与 RDK X5 SDK 匹配的编译器生成 HBM。当前板端已验证 hrt_model_exec、hobot_dnn 和 /dev/bpu，但尚未安装 hb_mapper；因此 Notebook 现在可以完成板端连通性和 BPU 运行门禁，实际 MicroDuck 策略的 BPU 推理还需要提供对应 HBM 文件。
 
 ## 当前状态
 
