@@ -53,9 +53,11 @@ print("RDK 地址:", os.getenv("RDK_HOST", "192.168.8.128"), "用户: sunrise")
 '''
 
 
-def task_cells(model_hint: str | None, task_id: str | None, sim_command: str, direct_connect: bool = False, video_hint: str | None = None, keyframe_hint: str | None = None):
+def task_cells(model_hint: str | None, task_id: str | None, sim_command: str, direct_connect: bool = False, video_hint: str | None = None, keyframe_hint: str | None = None, bpu_task: str | None = None):
     hint = repr(model_hint) if model_hint else "None"
     task = repr(task_id) if task_id else "None"
+    is_fastsac = bpu_task == "ball_balance"
+    obs_dim = 54 if is_fastsac else 61
     if direct_connect:
         stage3_md = md("""
 ## 3. 导航策略：直接接入已有模型
@@ -72,6 +74,67 @@ elif default_nav_onnx.exists():
 print("导航策略直接接入:", MODEL_PATH if MODEL_PATH and MODEL_PATH.exists() else "未找到")
 if MODEL_PATH is None or not MODEL_PATH.exists():
     print("请设置 MICRODUCK_NAV_ONNX=/path/to/navigation.onnx 后重新运行本单元。")
+''')
+    elif is_fastsac:
+        stage3_md = md("""
+## 3. FastSAC smoke 训练与 ONNX 导出
+
+球平衡使用 MotrixLab 的 FastSAC，不复用 PPO/LSTM。默认在 Ubuntu 的 MotrixLab `.venv` 中用 64 个并行环境做 5 个 smoke iteration，并把本次 run 导出为 `outputs/motrix_ball_balance_latest.onnx`。若重新训练后要生成新的板端视频，需要同步重新执行 X5 HBM 编译单元，不能继续使用旧 HBM。
+""")
+        stage3_code = code(r'''
+import shutil
+import sys
+
+MOTRIX_ROOT = Path(os.getenv("MOTRIX_ROOT", "/home/ubuntu/workspaces/MotrixLab")).expanduser()
+MOTRIX_PYTHON = Path(os.getenv("MOTRIX_PYTHON", str(MOTRIX_ROOT / ".venv/bin/python"))).expanduser()
+MOTRIX_RUNNER = PLAYGROUND_ROOT / "scripts" / "motrix_runner.py"
+FASTSAC_ENVS = int(os.getenv("MICRODUCK_FASTSAC_ENVS", "64"))
+FASTSAC_ITERATIONS = int(os.getenv("MICRODUCK_FASTSAC_ITERATIONS", "5"))
+RUN_FASTSAC_SMOKE = os.getenv("MICRODUCK_RUN_FASTSAC_SMOKE", "1") == "1"
+FASTSAC_ONNX = OUTPUT_ROOT / "motrix_ball_balance_latest.onnx"
+print("MotrixLab:", MOTRIX_ROOT)
+print("FastSAC Python:", MOTRIX_PYTHON)
+print("固定输出:", FASTSAC_ONNX)
+
+if not RUN_FASTSAC_SMOKE:
+    print("已跳过 FastSAC smoke 训练：设置 MICRODUCK_RUN_FASTSAC_SMOKE=1 后重新运行。")
+elif not MOTRIX_ROOT.is_dir() or not MOTRIX_PYTHON.is_file():
+    print("找不到 MotrixLab 或其 Python 环境；请先在 Ubuntu 完成 MotrixLab 环境安装。")
+else:
+    train_cmd = [
+        str(MOTRIX_PYTHON), str(MOTRIX_RUNNER), "train", str(MOTRIX_ROOT / "scripts/train.py"),
+        "task=microduck-ball-balance/motrix.fastsac",
+        f"num_envs={FASTSAC_ENVS}",
+        "play=false", "render=false", "algo.asynchronous=false",
+        "algo.device=cuda", "algo.agent.compile=false", "algo.agent.amp=false",
+        # Keep the default run genuinely smoke-sized. The replay buffer must
+        # be populated before FastSAC can take its first update.
+        "algo.agent.learning_starts=0", "algo.agent.buffer_size=8", "algo.agent.batch_size=64",
+        "algo.agent.num_updates=1", f"algo.trainer.num_learning_iterations={FASTSAC_ITERATIONS}",
+    ]
+    print("开始 FastSAC smoke 训练:", " ".join(shlex.quote(x) for x in train_cmd))
+    train_result = subprocess.run(train_cmd, cwd=MOTRIX_ROOT, text=True)
+    if train_result.returncode != 0:
+        raise RuntimeError(f"FastSAC smoke 训练失败，returncode={train_result.returncode}")
+    run_root = MOTRIX_ROOT / "runs" / "microduck-ball-balance" / "motrix" / "torch" / "fastsac"
+    run_dirs = sorted((p for p in run_root.iterdir() if p.is_dir()), key=lambda p: p.stat().st_mtime)
+    if not run_dirs:
+        raise FileNotFoundError(f"训练成功但没有找到 FastSAC run: {run_root}")
+    run_dir = run_dirs[-1]
+    motrix_export = Path("outputs") / "motrix_ball_balance_latest.onnx"
+    export_cmd = [
+        str(MOTRIX_PYTHON), str(MOTRIX_RUNNER), "export", str(MOTRIX_ROOT / "scripts/export_onnx.py"),
+        f"run_dir={run_dir}", f"output={motrix_export.as_posix()}", "opset=11",
+    ]
+    print("导出 FastSAC ONNX:", " ".join(shlex.quote(x) for x in export_cmd))
+    export_result = subprocess.run(export_cmd, cwd=MOTRIX_ROOT, text=True)
+    exported_onnx = MOTRIX_ROOT / motrix_export
+    if export_result.returncode != 0 or not exported_onnx.is_file():
+        raise RuntimeError("FastSAC ONNX 导出失败。")
+    shutil.copy2(exported_onnx, FASTSAC_ONNX)
+    MODEL_PATH = FASTSAC_ONNX
+    print("PASS-fastsac-model:", MODEL_PATH)
+    print("实际训练 run:", run_dir)
 ''')
     else:
         stage3_md = md("""
@@ -158,11 +221,118 @@ else:
             print("PASS-demo-model:", MODEL_PATH)
             print("本次实际使用 checkpoint:", latest_checkpoint)
 ''')
+    if is_fastsac:
+        hbm_stage = [
+            md("""
+## 3b. X5 HBM 编译
+
+训练后的 ONNX 不能直接交给 RDK X5。下面固定输入输出 batch 为 1，并通过 Ubuntu 上的官方 X5 CPU Docker 工具链运行 `hb_mapper makertbin --model-type onnx`。生成的 `ball_balance.opset11.bin` 会覆盖编译目录，下一节视频使用的就是这份新 HBM。
+"""),
+            code(r'''
+import shutil
+
+BPU_MODEL_ROOT = Path(os.getenv("MICRODUCK_BPU_MODEL_ROOT", "/home/ubuntu/workspaces/microduck_bpu_models")).expanduser()
+BPU_CONVERTED = BPU_MODEL_ROOT / "converted"
+BPU_COMPILED = BPU_MODEL_ROOT / "compiled" / "ball_balance"
+BPU_STATIC_ONNX = BPU_CONVERTED / "motrix_ball_balance.static.opset11.onnx"
+BPU_CONFIG = BPU_COMPILED / ".fast_perf" / "ball_balance.opset11_config.yaml"
+BPU_OUTPUT = BPU_COMPILED / "model_output" / "ball_balance.opset11.bin"
+BPU_DOCKER_IMAGE = os.getenv("MICRODUCK_BPU_DOCKER_IMAGE", "openexplorer/ai_toolchain_ubuntu_20_x5_cpu:v1.2.8")
+
+def workspace_container_path(path):
+    workspace = Path("/home/ubuntu/workspaces")
+    try:
+        return Path("/work") / path.resolve().relative_to(workspace)
+    except ValueError as exc:
+        raise RuntimeError(f"HBM 文件必须位于 {workspace}: {path}") from exc
+
+if not FASTSAC_ONNX.is_file():
+    print("跳过 HBM 编译：先成功运行第 3 节 FastSAC 训练与导出。")
+elif shutil.which("docker") is None:
+    print("跳过 HBM 编译：当前 Ubuntu 找不到 docker。")
+else:
+    import onnx
+
+    BPU_CONVERTED.mkdir(parents=True, exist_ok=True)
+    BPU_CONFIG.parent.mkdir(parents=True, exist_ok=True)
+    BPU_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    for stale_file in BPU_OUTPUT.parent.iterdir():
+        if stale_file.is_file():
+            stale_file.unlink()
+    static_model = onnx.load(str(FASTSAC_ONNX))
+    for value in list(static_model.graph.input) + list(static_model.graph.output):
+        value.type.tensor_type.shape.dim[0].dim_value = 1
+        value.type.tensor_type.shape.dim[0].ClearField("dim_param")
+    onnx.checker.check_model(static_model)
+    onnx.save(static_model, str(BPU_STATIC_ONNX))
+    BPU_CONFIG.write_text(
+        """calibration_parameters:
+  cal_data_type: ''
+  calibration_type: skip
+  optimization: run_fast
+  per_channel: false
+  preprocess_on: false
+  run_on_bpu: ''
+  run_on_cpu: ''
+compiler_parameters:
+  compile_mode: latency
+  core_num: 1
+  debug: true
+  jobs: 0
+  max_time_per_fc: 0
+  optimize_level: O3
+input_parameters:
+  input_layout_rt: NCHW
+  input_layout_train: NCHW
+  input_name: obs
+  input_shape: 1x54
+  input_space_and_range: ''
+  input_type_rt: featuremap
+  input_type_train: featuremap
+  norm_type: no_preprocess
+model_parameters:
+  layer_out_dump: false
+  march: bayes-e
+  onnx_model: /work/microduck_bpu_models/converted/motrix_ball_balance.static.opset11.onnx
+  output_model_file_prefix: ball_balance.opset11
+  remove_node_type: Quantize;Transpose;Dequantize;Cast;Reshape;Softmax;DequantizeFilter
+  set_node_data_type: {}
+  working_dir: /work/microduck_bpu_models/compiled/ball_balance/model_output
+""",
+        encoding="utf-8",
+    )
+    docker_cmd = [
+        "docker", "run", "--rm", "-v", "/home/ubuntu/workspaces:/work",
+        BPU_DOCKER_IMAGE, "sh", "-lc",
+        "hb_mapper makertbin --config "
+        + shlex.quote(str(workspace_container_path(BPU_CONFIG)))
+        + " --model-type onnx",
+    ]
+    print("开始 X5 HBM 编译:", " ".join(shlex.quote(x) for x in docker_cmd))
+    compile_result = subprocess.run(docker_cmd, text=True)
+    if compile_result.returncode != 0 or not BPU_OUTPUT.is_file():
+        raise RuntimeError("X5 HBM 编译失败。")
+    os.environ["MICRODUCK_BPU_HBM"] = str(BPU_OUTPUT)
+    print("PASS-X5-HBM:", BPU_OUTPUT)
+'''),
+        ]
+    else:
+        hbm_stage = []
+
+    if is_fastsac:
+        export_template = "python scripts/export_onnx.py run_dir=<FASTSAC_RUN_DIR> output=outputs/motrix_ball_balance_latest.onnx opset=11"
+    else:
+        export_template = (
+            "uv run python scripts/export.py "
+            + (task_id or "<TASK_ID>")
+            + "\\\n  --checkpoint-file <CHECKPOINT.pt>\\\n  --onnx-file outputs/policy.onnx\\\n  --num-envs 1 --video --video-length 250"
+        )
+
     return [
-        md("""
+        md(f"""
 ## 1. 模型契约与本地检查
 
-目标契约是 actor `obs[1, 61] -> action[1, 14]`。如果本任务没有随专题提交 checkpoint/ONNX，Notebook 会明确显示“模型未提供”，不会用别的任务模型冒充当前任务结果。
+目标契约是 actor `obs[1, {obs_dim}] -> action[1, 14]`。如果本任务没有随专题提交 checkpoint/ONNX，Notebook 会明确显示“模型未提供”，不会用别的任务模型冒充当前任务结果。
 """),
         code(f'''
 TASK_ID = {task}
@@ -205,22 +375,20 @@ contract = inspect_onnx(MODEL_PATH) if MODEL_PATH else None
         md(f"""
 ## 2. ONNX 导出入口
 
-训练得到的是 RSL-RL checkpoint；导出时要把 actor 和观测归一化一起固化到 ONNX。下面是本任务命令模板。`--video` 会在本机录制 MuJoCo 回放，完整视频写入 `outputs/`，不提交到 Git。
+训练得到的是策略 checkpoint；导出时要把 actor 和观测归一化一起固化到 ONNX。下面是本任务命令模板。`--video` 会在本机录制仿真回放，完整视频写入 `outputs/`，不提交到 Git。
 
 ```bash
-uv run python scripts/export.py {task_id or '<TASK_ID>'} \\
-  --checkpoint-file <CHECKPOINT.pt> \\
-  --onnx-file outputs/policy.onnx \\
-  --num-envs 1 --video --video-length 250
+{export_template}
 ```
 """),
         code(r'''
-EXPORT_COMMAND = "uv run python scripts/export.py " + (TASK_ID or "<TASK_ID>") + " --checkpoint-file <CHECKPOINT.pt> --onnx-file outputs/policy.onnx --num-envs 1 --video --video-length 250"
+EXPORT_COMMAND = "python scripts/export_onnx.py run_dir=<FASTSAC_RUN_DIR> output=outputs/motrix_ball_balance_latest.onnx opset=11" if TASK_ID == "microduck-ball-balance" else ("uv run python scripts/export.py " + (TASK_ID or "<TASK_ID>") + " --checkpoint-file <CHECKPOINT.pt> --onnx-file outputs/policy.onnx --num-envs 1 --video --video-length 250")
 print(EXPORT_COMMAND)
 print("导出前后检查：观测维度、动作顺序、归一化和 action clip。")
 '''),
         stage3_md,
         stage3_code,
+        *hbm_stage,
         md("""
 ## 4. 本地 ONNX 基准推理
 
@@ -250,49 +418,143 @@ else:
     print("跳过：尚未提供该任务 ONNX。")
 '''),
         md("""
-## 5. MuJoCo 展示
+## 5. RDK X5 BPU-in-the-loop 视频
 
-直播默认展示短视频或关键帧，避免网页 WebAssembly、浏览器 GPU 或 OpenGL 窗口打断讲解。需要交互时，再启动专题中的网页服务；需要连续闭环时，使用任务自己的回放脚本。
+本单元只展示新生成的板端闭环 MP4，不读取参考 GIF 或关键帧。Ubuntu 运行 MuJoCo 物理和 EGL 渲染；每一个控制步把任务观测发送到 RDK，RDK 用当前任务对应的 HBM 在 BPU 上计算 14 维动作，再返回给 Ubuntu。视频因此是“板端 BPU 产生动作、Ubuntu 负责仿真画面”的真实闭环。
+
+运行前会自动重启 RDK 上的任务策略服务。切换 Notebook 时必须重新运行本单元，让板端 HBM 与当前任务匹配。
 """),
-        code(f'''
-VIDEO_OVERRIDE = os.getenv("MICRODUCK_VIDEO")
-generated_video = OUTPUT_ROOT / "microduck_demo_latest.mp4"
-video_candidates = [Path(VIDEO_OVERRIDE)] if VIDEO_OVERRIDE else []
-VIDEO_HINT = {video_hint!r}
-KEYFRAME_HINT = {keyframe_hint!r}
-if not VIDEO_OVERRIDE and VIDEO_HINT:
-    candidate = TOPIC_ROOT / VIDEO_HINT
-    if candidate.exists():
-        video_candidates.append(candidate)
-if {direct_connect!r} and not VIDEO_OVERRIDE and not video_candidates and generated_video.exists():
-    video_candidates.append(generated_video)
-keyframes = []
-if KEYFRAME_HINT:
-    candidate = TOPIC_ROOT / KEYFRAME_HINT
-    if candidate.exists():
-        keyframes.append(candidate)
-try:
-    from IPython.display import Image, Video, display
-    if video_candidates and video_candidates[0].exists():
-        if video_candidates[0].suffix.lower() == ".gif":
-            display(Image(filename=str(video_candidates[0])))
+code(f'''
+import hashlib
+import sys
+
+BPU_TASK = {bpu_task!r}
+BPU_VIDEO_STEPS = int(os.getenv("MICRODUCK_BPU_VIDEO_STEPS", "250"))
+BPU_VIDEO_WIDTH = int(os.getenv("MICRODUCK_BPU_VIDEO_WIDTH", "640"))
+BPU_VIDEO_HEIGHT = int(os.getenv("MICRODUCK_BPU_VIDEO_HEIGHT", "480"))
+BPU_PORT = int(os.getenv("MICRODUCK_BPU_PORT", "8765"))
+RDK_CONTROL_PORT = int(os.getenv("MICRODUCK_BPU_CONTROL_PORT", "8766"))
+RDK_HOST = os.getenv("RDK_HOST", "192.168.8.128")
+BPU_HBM_DEFAULTS = {{
+    "ball_balance": "/home/ubuntu/workspaces/microduck_bpu_models/compiled/ball_balance/model_output/ball_balance.opset11.bin",
+    "basketball": "/home/ubuntu/workspaces/microduck_bpu_models/compiled/basketball/model_output/basketball.opset11.bin",
+    "walking": "/home/ubuntu/workspaces/microduck_bpu_models/compiled/walking/model_output/walking.opset11.bin",
+    "perturbation": "/home/ubuntu/workspaces/microduck_bpu_models/compiled/walking/model_output/walking.opset11.bin",
+    "stilt": "/home/ubuntu/workspaces/microduck_bpu_models/compiled/stilts25/model_output/stilts25.opset11.bin",
+    "swing": "/home/ubuntu/workspaces/microduck_bpu_models/compiled/swing/model_output/swing.opset11.bin",
+    "ladder": "/home/ubuntu/workspaces/microduck_bpu_models/compiled/ladder/model_output/ladder.opset11.bin",
+}}
+RDK_HBM_DEFAULTS = {{
+    "ball_balance": "/home/sunrise/microduck_policy/hbm/ball_balance.bin",
+    "basketball": "/home/sunrise/microduck_policy/hbm/basketball.bin",
+    "walking": "/home/sunrise/microduck_policy/hbm/walking.bin",
+    "perturbation": "/home/sunrise/microduck_policy/hbm/walking.bin",
+    "stilt": "/home/sunrise/microduck_policy/hbm/stilts25.bin",
+    "swing": "/home/sunrise/microduck_policy/hbm/swing.bin",
+    "ladder": "/home/sunrise/microduck_policy/hbm/ladder.bin",
+}}
+BPU_HBM = Path(os.getenv("MICRODUCK_BPU_HBM", BPU_HBM_DEFAULTS.get(BPU_TASK, ""))) if BPU_TASK else None
+RDK_HBM = RDK_HBM_DEFAULTS.get(BPU_TASK, "") if BPU_TASK else ""
+RDK_SERVER_SCRIPT = os.getenv("RDK_BPU_SERVER_SCRIPT", "/home/sunrise/microduck_policy/rdk_bpu_policy_server.py")
+MOTRIX_ROOT = Path(os.getenv("MOTRIX_ROOT", "/home/ubuntu/workspaces/MotrixLab")).expanduser() if BPU_TASK == "ball_balance" else None
+MOTRIX_PYTHON = Path(os.getenv("MOTRIX_PYTHON", str(MOTRIX_ROOT / ".venv/bin/python"))).expanduser() if MOTRIX_ROOT else None
+MOTRIX_RUNNER = PLAYGROUND_ROOT / "scripts" / "motrix_runner.py" if BPU_TASK == "ball_balance" else None
+BPU_VIDEO_SCRIPT = PLAYGROUND_ROOT / "scripts" / ("motrix_bpu_inloop_video.py" if BPU_TASK == "ball_balance" else "bpu_inloop_video.py")
+BPU_VIDEO_OUTPUT = OUTPUT_ROOT / "bpu_videos" / f"{{BPU_TASK}}_bpu_latest.mp4" if BPU_TASK else None
+
+def restart_rdk_policy_server():
+    if not BPU_TASK or not RDK_HBM:
+        return False
+    try:
+        if BPU_HBM is not None and BPU_HBM.is_file():
+            payload = BPU_HBM.read_bytes()
+            request = {{
+                "op": "upload_and_switch",
+                "task": BPU_TASK,
+                "size": len(payload),
+                "sha256": hashlib.sha256(payload).hexdigest(),
+            }}
         else:
-            display(Video(str(video_candidates[0]), embed=True))
-        print("展示任务视频:", video_candidates[0])
-    elif keyframes:
-        display(Image(filename=str(keyframes[0])))
-        print("该任务暂无视频，展示任务关键帧:", keyframes[0])
+            payload = b""
+            request = {{"op": "switch", "task": BPU_TASK}}
+        with socket.create_connection((RDK_HOST, RDK_CONTROL_PORT), timeout=8) as control:
+            control.sendall((json.dumps(request) + "\\n").encode("utf-8"))
+            if payload:
+                for offset in range(0, len(payload), 1024 * 1024):
+                    control.sendall(payload[offset:offset + 1024 * 1024])
+            response = json.loads(control.makefile("rb").readline().decode("utf-8"))
+        if response.get("ok"):
+            action = "已上传并切换" if payload else "已切换"
+            print("RDK 任务策略服务" + action + ":", BPU_TASK, "->", response.get("model"), "pid=", response.get("pid"))
+            return True
+        print("RDK BPU 控制服务拒绝切换:", response)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        print("RDK BPU 控制服务不可用，尝试 SSH:", exc)
+    remote = "sunrise@" + RDK_HOST
+    command = (
+        "pkill -f '^python3 .*rdk_bpu_policy_server.py' >/dev/null 2>&1 || true; "
+        "sleep 1; "
+        "nohup python3 " + shlex.quote(RDK_SERVER_SCRIPT) +
+        " --model " + shlex.quote(RDK_HBM) +
+        " --port " + str(BPU_PORT) +
+        " >/tmp/microduck_bpu_server.log 2>&1 </dev/null &"
+    )
+    result = subprocess.run(
+        ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=8", remote, "bash -lc " + shlex.quote(command)],
+        capture_output=True, text=True,
+    )
+    if result.returncode:
+        print("RDK 策略服务启动失败:", result.stderr.strip() or result.stdout.strip())
+        return False
+    print("RDK 任务策略服务已切换:", BPU_TASK, "->", RDK_HBM)
+    return True
+
+if not BPU_TASK:
+    print("该任务目前没有可验证的任务专属 HBM；不会用其他任务视频替代。")
+elif BPU_HBM is None or not BPU_HBM.is_file():
+    print("Ubuntu 端 HBM 不存在:", BPU_HBM)
+elif not BPU_VIDEO_SCRIPT.is_file():
+    print("找不到板端闭环录制器:", BPU_VIDEO_SCRIPT)
+elif BPU_TASK == "ball_balance" and (MOTRIX_PYTHON is None or not MOTRIX_PYTHON.is_file()):
+    print("找不到 MotrixLab Python 环境:", MOTRIX_PYTHON)
+elif BPU_TASK == "ball_balance" and (MOTRIX_RUNNER is None or not MOTRIX_RUNNER.is_file()):
+    print("找不到 MotrixLab 启动器:", MOTRIX_RUNNER)
+elif restart_rdk_policy_server():
+    BPU_VIDEO_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    if BPU_TASK == "ball_balance":
+        video_cmd = [str(MOTRIX_PYTHON), str(MOTRIX_RUNNER), "video", str(BPU_VIDEO_SCRIPT)]
     else:
-        print("该任务暂无视频；请设置 MICRODUCK_VIDEO，或先运行该任务自己的回放脚本。")
-except Exception as exc:
-    print("展示失败:", exc)
+        video_cmd = [sys.executable, str(BPU_VIDEO_SCRIPT)]
+    if BPU_TASK != "ball_balance":
+        video_cmd += ["--task", BPU_TASK]
+    video_cmd += [
+        "--bpu-host", RDK_HOST, "--bpu-port", str(BPU_PORT),
+        "--hbm", str(BPU_HBM), "--output", str(BPU_VIDEO_OUTPUT),
+        "--steps", str(BPU_VIDEO_STEPS), "--width", str(BPU_VIDEO_WIDTH),
+        "--height", str(BPU_VIDEO_HEIGHT),
+    ]
+    print("开始生成板端闭环视频:", " ".join(shlex.quote(x) for x in video_cmd))
+    video_result = subprocess.run(
+        video_cmd, cwd=PLAYGROUND_ROOT, env=os.environ.copy(),
+        capture_output=True, text=True,
+    )
+    print("\\n".join((video_result.stdout + "\\n" + video_result.stderr).splitlines()[-35:]))
+    if video_result.returncode != 0 or not BPU_VIDEO_OUTPUT.is_file():
+        raise RuntimeError("BPU-in-the-loop 视频生成失败，请先查看上面最后 35 行日志。")
+    BPU_REPORT = BPU_VIDEO_OUTPUT.with_suffix(".json")
+    print("PASS-BPU-VIDEO:", BPU_VIDEO_OUTPUT)
+    if BPU_REPORT.is_file():
+        print(json.loads(BPU_REPORT.read_text(encoding="utf-8")))
+    from IPython.display import Video, display
+    display(Video(str(BPU_VIDEO_OUTPUT), embed=True))
+
 SIM_COMMAND = {sim_command!r}
 print("MuJoCo 回放命令模板:", SIM_COMMAND)
 '''),
         md("""
-## 6. RDK X5 / BPU 探测与验收
+## 6. RDK X5 / BPU 审计
 
-当前仓库已有的 RDK 服务器默认是 `CPUExecutionProvider`。本单元只在板端真实连通并且存在 BPU 工具时继续；不会把 CPU 推理结果写成 BPU 成功。真实验收需要板端 HBM 模型和与 SDK 版本匹配的命令。
+上一单元已经生成任务专属闭环视频。本单元只检查板端连通、HBM 元数据和服务日志；通用 MobileNet 样例只能证明系统运行时存在，不能代替任务视频。
 """),
         code(r'''
 import time
@@ -306,7 +568,7 @@ BPU_SMOKE_INPUT_BYTES = int(os.getenv("RDK_BPU_SMOKE_INPUT_BYTES", "75264"))
 BPU_HBM = os.getenv("RDK_BPU_HBM", "")
 print("默认 BPU 样例模型:", BPU_SMOKE_MODEL)
 print("默认 BPU 样例输入:", BPU_SMOKE_INPUT_BYTES, "bytes uint8")
-print("MicroDuck 策略 HBM:", BPU_HBM or "未提供（先运行默认 BPU 样例）")
+print("MicroDuck 策略 HBM:", BPU_HBM or "该任务尚未提供")
 probe_script = "for x in hrt_model_exec hb_mapper hrt_bin_dump hrt_bin_info python3; do if command -v $x >/dev/null 2>&1; then echo $x=$(command -v $x); else echo $x=MISSING; fi; done"
 remote = "sunrise@" + RDK_HOST
 probe = subprocess.run(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5", remote, "bash -lc " + shlex.quote(probe_script)], capture_output=True, text=True)
@@ -316,7 +578,7 @@ else:
     print("RDK 已连通:", RDK_HOST)
     print(probe.stdout)
     if not BPU_HBM:
-        print("未提供策略 HBM；使用上面的默认 BPU 样例验证板端运行时链路。")
+        print("没有任务 HBM：不执行通用样例冒充任务推理。")
         smoke_model = BPU_SMOKE_MODEL
         smoke_bytes = BPU_SMOKE_INPUT_BYTES
         smoke_info_cmd = "hrt_model_exec model_info --model_file " + shlex.quote(smoke_model)
@@ -349,8 +611,8 @@ else:
         print(info.stdout[-6000:])
         print(info.stderr[-2000:])
         if info.returncode == 0:
-            # hrt_model_exec consumes binary tensors; this zero observation is only
-            # a transport/BPU smoke input, not a task-quality evaluation.
+            # hrt_model_exec consumes binary tensors; this zero observation is
+            # only a transport/BPU smoke input, not a task-quality evaluation.
             import numpy as np
             local_input = OUTPUT_ROOT / "zero_obs_61_f32.bin"
             np.zeros((1, 61), dtype=np.float32).tofile(local_input)
@@ -369,40 +631,40 @@ else:
             if infer.returncode == 0:
                 print("PASS-rdk-bpu: hrt_model_exec infer 已返回 0。")
             else:
-                print("未通过：请确认 HBM 输入是否确实为 [1, 61] float32，以及模型是否为单输入模型。")
+                print("未通过：优先以第 5 节 BPU-in-the-loop 报告为准。")
 '''),
         md("""
 ## 7. 直播结论
 
 - `PASS-local-onnx`：ONNX checker 和本地 ONNX Runtime 通过。
-- `PASS-mujoco`：使用相同观测/动作契约完成 MuJoCo 回放。
+- `PASS-BPU-VIDEO`：Ubuntu MuJoCo 视频中的每一个动作都由 RDK X5 对应 HBM 产生。
 - `PASS-rdk-bpu-runtime-sample`：板端已安装的 X5 BPU 样例推理退出码为 0。
 - `PASS-rdk-bpu`：SSH 连通、板端明确选择 BPU、MicroDuck HBM 推理命令退出码为 0，并记录输入输出形状与延迟。
 
-在 `PASS-rdk-bpu` 之前，不能把 RDK 的 CPUExecutionProvider 或“模型文件能复制到板子”称为 BPU 部署。
+没有 `PASS-BPU-VIDEO` 的任务，只能算“已有素材/接口说明”，不能算板端视频已完成。
 """),
     ]
 
 
 TASKS = [
-    ("01_篮球平衡_PPO_ONNX_BPU_MuJoCo.ipynb", "篮球平衡 / PPO", "Mjlab-Basketball-MicroDuck", None, "", False, "01-任务资料/01-MicroDuck篮球平衡强化学习/assets/preview.gif", None),
-    ("02_浏览器物理扰动_回放与接口.ipynb", "浏览器物理扰动 / MuJoCo Web", None, None, "python 任务资料/02 的 serve_mjswan.py", False, "01-任务资料/02-mjswan-MicroDuck浏览器物理扰动/assets/microduck_official.gif", "01-任务资料/02-mjswan-MicroDuck浏览器物理扰动/assets/mjswan_microduck_manual_drag_demo_keyframes.jpg"),
-    ("03_高跷行走_课程与ONNX_BPU.ipynb", "高跷行走 / 形态课程", "Mjlab-Stilt-Flat-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <STILT.onnx> --new-cmd-obs", False, None, "01-任务资料/03-MicroDuck高跷行走强化学习复现/assets/microduck_stilts_25cm_reproduced_keyframes.jpg"),
-    ("04_摆动旋转_ONNX_BPU_MuJoCo.ipynb", "摆动旋转 / 自激摆动", "Mjlab-SwingPump-MicroDuck", "01-任务资料/04-MicroDuck摆动旋转强化学习复现/assets/microduck_swing_alpha050.onnx", "uv run python scripts/infer_policy.py --walking outputs/policy.onnx", False, None, "01-任务资料/04-MicroDuck摆动旋转强化学习复现/assets/microduck_swing_alpha050_local_keyframes.jpg"),
-    ("05_球平衡_FastSAC_ONNX_BPU.ipynb", "球平衡 / FastSAC", "microduck-ball-balance", None, "uv run python scripts/infer_policy.py --walking <BALL_BALANCE.onnx> --new-cmd-obs", False, None, "01-任务资料/05-MotrixLab-MicroDuck球平衡与FastSAC/assets/motrix_microduck_ball_balance_local_5000iter_keyframes.jpg"),
-    ("06_梯面攀爬_接触与部署模板.ipynb", "梯面攀爬 / 接触课程", "Mjlab-Video-Ladder-Footstep-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <LADDER.onnx> --new-cmd-obs", False, None, "01-任务资料/06-MicroDuck梯面攀爬强化学习导读/assets/microduck_ladder_v2_bootstrap_preview_keyframes.jpg"),
-    ("07_RDK网页与多策略_BPU验收.ipynb", "导航 / RDK网页 / 多策略部署", "Mjlab-Velocity-Flat-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <WALKING.onnx> --new-cmd-obs", True, None, "01-任务资料/07-RDK端侧与网页部署/assets/local_videos/microduck_4096env_6000iter_walk_keyframes.jpg"),
+    ("01_篮球平衡_PPO_ONNX_BPU_MuJoCo.ipynb", "篮球平衡 / PPO", "Mjlab-Basketball-MicroDuck", None, "", False, None, None, "basketball"),
+    ("02_浏览器物理扰动_回放与接口.ipynb", "浏览器物理扰动 / MuJoCo Web", None, None, "python 任务资料/02 的 serve_mjswan.py", False, None, None, "perturbation"),
+    ("03_高跷行走_课程与ONNX_BPU.ipynb", "高跷行走 / 形态课程", "Mjlab-Stilt-Flat-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <STILT.onnx> --new-cmd-obs", False, None, None, "stilt"),
+    ("04_摆动旋转_ONNX_BPU_MuJoCo.ipynb", "摆动旋转 / 自激摆动", "Mjlab-SwingPump-MicroDuck", "01-任务资料/04-MicroDuck摆动旋转强化学习复现/assets/microduck_swing_alpha050.onnx", "uv run python scripts/infer_policy.py --walking outputs/policy.onnx", False, None, None, "swing"),
+    ("05_球平衡_FastSAC_ONNX_BPU.ipynb", "球平衡 / FastSAC", "microduck-ball-balance", None, "python scripts/export_onnx.py run_dir=<FASTSAC_RUN_DIR> output=outputs/motrix_ball_balance_latest.onnx opset=11", False, None, None, "ball_balance"),
+    ("06_梯面攀爬_接触与部署模板.ipynb", "梯面攀爬 / 接触课程", "Mjlab-Video-Ladder-Footstep-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <LADDER.onnx> --new-cmd-obs", False, None, None, "ladder"),
+    ("07_RDK网页与多策略_BPU验收.ipynb", "导航 / RDK网页 / 多策略部署", "Mjlab-Velocity-Flat-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <WALKING.onnx> --new-cmd-obs", True, None, None, "walking"),
 ]
 
 
-def build(filename: str, title: str, task_id: str | None, model_hint: str | None, sim_command: str, direct_connect: bool, video_hint: str | None, keyframe_hint: str | None):
+def build(filename: str, title: str, task_id: str | None, model_hint: str | None, sim_command: str, direct_connect: bool, video_hint: str | None, keyframe_hint: str | None, bpu_task: str | None):
     notebook = nbf.v4.new_notebook()
     notebook.metadata = {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}, "language_info": {"name": "python", "version": "3.12"}}
     notebook.cells = [
         md(f"# MicroDuck 直播 Notebook：{title}\n\n把任务、策略、ONNX、MuJoCo 和 RDK X5/BPU 验收串成一条可复用流程。"),
         md("## 0. 运行说明\n\n建议在 `02-可运行代码/microduck-playground-stilts` 的 Python 环境中启动 Jupyter。训练模型和板端 HBM 不随 Git 提交；通过 `MICRODUCK_ONNX`、`RDK_BPU_HBM` 和 `RDK_HOST` 注入。"),
         code(SETUP),
-    ] + task_cells(model_hint, task_id, sim_command, direct_connect=direct_connect, video_hint=video_hint, keyframe_hint=keyframe_hint)
+    ] + task_cells(model_hint, task_id, sim_command, direct_connect=direct_connect, video_hint=video_hint, keyframe_hint=keyframe_hint, bpu_task=bpu_task)
     nbf.write(notebook, ROOT / filename)
 
 
