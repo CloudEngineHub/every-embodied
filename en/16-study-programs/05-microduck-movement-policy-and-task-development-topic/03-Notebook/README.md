@@ -6,22 +6,22 @@ Review machine-translated technical claims before relying on them.
 -->
 # MicroDuck Live Stream Notebook Learning Line
 
-Here, the topic is divided into 7 notebooks, each following a same path that can be explained and reviewed:
+Here, the topic is divided into 7 notebooks, each following a same path that can be explained and evaluated:
 
 1. Understand the task and actor input-output contracts;
 2. Use the training/export interfaces for the corresponding tasks, and check observation normalization, action order, and action clip;
 3. Perform numerical smoke tests using ONNX Runtime locally;
 4. Compile the policy ONNX into X5 HBM;
-5. Have the RDK X5 BPU generate actions step by step, render them with Ubuntu MuJoCo, and produce the task-specific MP4;
+5. Have the RDK X5 BPU generate actions gradually, render them with Ubuntu MuJoCo, and produce the task-specific MP4;
 6. Check the board-side model shape, service logs, and inference return codes via SSH.
 
 ## Notebook List
 
-| Notebook | Main Lines |
+| Notebook | Main Line |
 | :-- | :-- |
 | `01_篮球平衡_PPO_ONNX_BPU_MuJoCo.ipynb` | Speed command, ball scene, PPO, policy export |
 | `02_浏览器物理扰动_回放与接口.ipynb` | MuJoCo status, external force perturbation, web playback |
-| `03_高跷行走_课程与ONNX_BPU.ipynb` | BAM, morphology course, motion smoothing, deployment contract |
+| `03_高跷行走_课程与ONNX_BPU.ipynb` | BAM, shape course, motion smoothing, deployment contract |
 | `04_摆动旋转_ONNX_BPU_MuJoCo.ipynb` | Swing task and built-in ONNX examples for the warehouse |
 | `05_球平衡_FastSAC_ONNX_BPU.ipynb` | Comparison between FastSAC and another set of task interfaces |
 | `06_梯面攀爬_接触与部署模板.ipynb` | Contact, landing target, course, and unfinished item boundaries |
@@ -35,9 +35,9 @@ uv sync
 uv run --with jupyter jupyter lab ..\..\03-Notebook
 ```
 
-Start Jupyter on the Ubuntu workstation. Notebook will automatically search for `02-可运行代码`; if the working directory is not a specific catalog, set `MICRODUCK_TOPIC_ROOT`.
+Start Jupyter on the Ubuntu workstation. Notebook will automatically search for `02-可运行代码`; if the working directory is not a specific list, set `MICRODUCK_TOPIC_ROOT`.
 
-## Board-side Video
+## Board-end Video
 
 The video has been generated in `03-Notebook/outputs/bpu_videos/` on Ubuntu, and each MP4 file contains a JSON report with the same name:
 
@@ -46,12 +46,12 @@ The video has been generated in `03-Notebook/outputs/bpu_videos/` on Ubuntu, and
 | `walking_bpu_latest.mp4` | Navigation/Walking |
 | `perturbation_bpu_latest.mp4` | Browser Physical Disturbance |
 | `stilt_bpu_latest.mp4` | Stilt Walking |
-| `swing_bpu_latest.mp4` | Swaying Rotation |
+| `swing_bpu_latest.mp4` | Swinging Rotation |
 | `ladder_bpu_latest.mp4` | Ladder Climbing |
 | `basketball_bpu_latest.mp4` | Basketball Balance |
 | `ball_balance_bpu_latest.mp4` | Motrix FastSAC Ball Balance |
 
-These are not reference GIFs or CPU replays: Ubuntu performs physical simulation and video encoding, and RDK X5 returns actions for each control step via `hbm_runtime`. Re-running the BPU video unit of a Notebook overwrites the corresponding `*_bpu_latest.mp4` and JSON, but no new file is created.
+These are not reference GIFs or CPU replays: Ubuntu performs physical simulation and video encoding, and RDK X5 returns actions for each control step via `hbm_runtime`. Running the BPU video unit of a Notebook again overwrites the corresponding `*_bpu_latest.mp4` and JSON, but no new file is created.
 
 ## Model and BPU Injection
 
@@ -70,9 +70,9 @@ RDK_BPU_SMOKE_MODEL = "/opt/tros/humble/lib/dnn_benchmark_example/config/X5/mobi
 RDK_BPU_SMOKE_INPUT_BYTES = 75264
 ```
 
-Here, MobileNet is only used to verify that the "workstation can connect to the development board and the development board can call the BPU"; it is not part of the MicroDuck policy model. When the task is actually executed, the Notebook will select the appropriate HBM based on the task, and control the service switch between `8765` policy services through the `8766` registered on RDK, without relying on the SSH keys from Ubuntu to RDK. The above MobileNet `.bin` cannot be regarded as the task policy HBM.
+Here, MobileNet is only used to verify that the "workstation can connect to the development board and the development board can call the BPU"; it is not part of the MicroDuck policy model. When tasks are actually executed, Notebook will select the appropriate HBM based on the task, and control the service switch between `8765` policy services through the `8766` registered on RDK, without relying on the SSH keys from Ubuntu to RDK. The above MobileNet `.bin` cannot be regarded as the task policy HBM.
 
-The RDK control service script is `02-可运行代码/microduck-playground-stilts/scripts/rdk_bpu_policy_supervisor.py`. Only the 7 task models registered in this topic can be switched; each time the BPU video unit is run in Notebook, the corresponding `*_bpu_latest.mp4` and JSON report are overwritten.
+The RDK control service script is `02-可运行代码/microduck-playground-stilts/scripts/rdk_bpu_policy_supervisor.py`. Only the 7 task models registered in this topic can be switched. Each time the BPU video unit is run in the Notebook, the corresponding `*_bpu_latest.mp4` and JSON report are overwritten.
 
 ## Fixed Demo Model
 
@@ -80,10 +80,10 @@ Non-navigation Notebook retains the training smoke entry: For the motion task, t
 
 `07_RDK网页与多策略_BPU验收.ipynb` does not start training as required, and directly connects to the existing navigation ONNX and `walking.bin`.
 
-The currently confirmed development board is `sunrise@192.168.8.128`: Ubuntu 22.04.5, aarch64, BPU Platform 1.3.6, HBRT 3.15.55.0. There are `hrt_model_exec`, `hrt_bin_dump`, `hobot_dnn`, and `/dev/bpu` on the board. There is no `hb_mapper` on the board, and the ordinary `.onnx` cannot be directly handed over to BPU. The ONNX to HBM compilation is performed by the X5 toolchain in Ubuntu Docker.
+The currently confirmed development board is `sunrise@192.168.8.128`: Ubuntu 22.04.5, aarch64, BPU Platform 1.3.6, HBRT 3.15.55.0. There are `hrt_model_exec`, `hrt_bin_dump`, `hobot_dnn`, and `/dev/bpu` on the board. There is no `hb_mapper` on the board, and the regular `.onnx` cannot be directly fed into BPU; the ONNX to HBM compilation is performed by the X5 toolchain in Ubuntu Docker.
 
 The task video uses the RDK BPU service in the special topic and `hbm_runtime`, but does not use `CPUExecutionProvider` to generate actions. Do not directly rename ONNX to HBM; it must be compiled in practice, and the quantization, input layout, output shape, and post-processing should be checked.
 
 ## Display Policy
 
-The live broadcast defaults to directly displaying the real MP4 file of `outputs/bpu_videos/` in the Notebook. The web interaction can still run the web service in the task data directory separately; the video display does not rely on Browser WebAssembly or native GPU. `outputs/` has been ignored, and the video will not be resubmitted to the repository.
+The live broadcast defaults to directly displaying the real MP4 file of `outputs/bpu_videos/` in the Notebook. The web interaction can still run the web services in the task data directory separately; the video display does not rely on Browser WebAssembly or native GPU. `outputs/` has been ignored, and the video will not be re-submitted to the repository.
