@@ -1851,19 +1851,25 @@
     },
     "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/03-Notebook/README.md": {
       "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/03-Notebook/README.md",
-      "sourceHash": "a22104d381ea32f0a550fa3cde5598a7d49eb4ed84c1a069ec29dc29d293de6e",
+      "sourceHash": "fe82bd9dd08a7328ad0c0bc73e32cd8c4c8bc8761c38b3fbb4b85f9b8299081c",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
     "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/README.md": {
       "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/README.md",
-      "sourceHash": "ec1f138036006cefab5789cb4729285c9771efa58e151b04e54a0a929b8df1fa",
+      "sourceHash": "bdc0b3507d06e416b56e8101b0d51cf2c0bde1d09e9116ea674530aeafa6ff32",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
     "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/09具身智能推理与部署框架/README.md": {
       "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/09-embodied-ai-reasoning-and-deployment-framework/README.md",
       "sourceHash": "299286093328604081b0f65430cc2b6e65c920e35e2e85c020b6e8cd53afdab4",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/01-任务资料/精选视频/README.md": {
+      "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/01-task-information/selected-videos/README.md",
+      "sourceHash": "d8f9f7f87f3467bd54494084ad7ca126e1fc4cb02d794d8caa8ccf4408a002ad",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
