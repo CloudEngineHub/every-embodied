@@ -1,13 +1,8 @@
 # MicroDuck 直播 Notebook 学习线
 
-这里把专题拆成 7 本 Notebook，每本都沿着同一条可讲解、可验收的路径：
+本专题有 7 本按任务区分的 Notebook。视频顺序是 GPU 推理在前、RDK X5 BPU 推理在后；每本都有独立任务标签和独立回放，不会用同一段视频冒充不同任务。
 
-1. 认识任务和 actor 的输入输出契约；
-2. 使用对应任务的训练/导出入口，并检查观测归一化、动作顺序和 action clip；
-3. 在本地用 ONNX Runtime 做数值 smoke test；
-4. 把策略 ONNX 编译成 X5 HBM；
-5. 让 RDK X5 BPU 逐步产生动作，由 Ubuntu MuJoCo 渲染并生成任务专属 MP4；
-6. 通过 SSH 检查板端模型形状、服务日志和推理返回码。
+Notebook 保存的是已执行结果快照，适合在 GitHub 上先阅读输出，再在 Ubuntu/Jupyter 环境按需重跑。发布时检查了 64 个代码单元：全部有执行计数和输出，没有存档的 Python 异常。该检查不等于在读者机器上重新执行，也不代表每个训练单元都实际启动了新训练。
 
 ## Notebook 清单
 
@@ -21,6 +16,8 @@
 | `06_梯面攀爬_接触与部署模板.ipynb` | 接触、落脚目标、课程和未完成项边界 |
 | `07_RDK网页与多策略_BPU验收.ipynb` | 导航直接接入、RDK TCP、多策略切换、BPU 验收 |
 
+每本 Notebook 的 GPU 预览和历史 BPU 预览见[按任务划分的演示总览](../01-任务资料/精选视频/README.md)。行走/导航按要求直接接入已有策略，不训练；扰动 Notebook 是物理回放与接口验证；梯面 Notebook 当前用于接触任务检查，不能据此宣称已稳定爬梯。其它 Notebook 提供对应算法的训练/续训入口，但烟雾训练、可选训练是否实际运行，以该 Notebook 保存的单元输出为准。
+
 ## 启动
 
 ```powershell
@@ -31,21 +28,11 @@ uv run --with jupyter jupyter lab ..\..\03-Notebook
 
 在 Ubuntu 工作站上启动 Jupyter。Notebook 会自动向上查找 `02-可运行代码`；如果工作目录不是专题目录，设置 `MICRODUCK_TOPIC_ROOT`。
 
-## 板端视频
+## GPU 与 BPU 视频
 
-视频已经生成在 Ubuntu 的 `03-Notebook/outputs/bpu_videos/`，每个 MP4 都有同名 JSON 报告：
+每本 Notebook 都先输出对应任务的 GPU 回放，再输出此前保存的 BPU-in-the-loop 回放。BPU 动作由 X5 HBM 推理产生，工作站负责 MuJoCo 物理仿真和编码；但仓库中的 GIF 是先前运行保存的缓存结果，不表示打开 GitHub 时板端正在线运行。重新执行 BPU 单元会在工作站 `03-Notebook/outputs/bpu_videos/` 生成该任务 MP4 和 JSON 报告，并覆盖该任务的 `*_bpu_latest` 文件。
 
-| 文件 | 对应任务 |
-| :-- | :-- |
-| `walking_bpu_latest.mp4` | 导航/行走 |
-| `perturbation_bpu_latest.mp4` | 浏览器物理扰动 |
-| `stilt_bpu_latest.mp4` | 高跷行走 |
-| `swing_bpu_latest.mp4` | 摆动旋转 |
-| `ladder_bpu_latest.mp4` | 梯面攀爬 |
-| `basketball_bpu_latest.mp4` | 篮球平衡 |
-| `ball_balance_bpu_latest.mp4` | Motrix FastSAC 球平衡 |
-
-这些不是参考 GIF 或 CPU 回放：Ubuntu 执行物理仿真和视频编码，RDK X5 通过 `hbm_runtime` 为每个控制步返回动作。重新运行某本 Notebook 的 BPU 视频单元会覆盖对应的 `*_bpu_latest.mp4` 和 JSON，不会创建新文件。
+为了控制仓库体积，Notebook 内的视频输出改成 GIF 相对链接，原始 MP4 不嵌入 ipynb，也不提交。7 项任务的 GPU/BPU GIF 都在演示总览页；Notebook 其余代码与文本结果快照仍保留。
 
 ## 模型与 BPU 注入
 
@@ -68,16 +55,16 @@ RDK_BPU_SMOKE_INPUT_BYTES = 75264
 
 RDK 控制服务脚本为 `02-可运行代码/microduck-playground-stilts/scripts/rdk_bpu_policy_supervisor.py`，只允许切换本专题登记的 7 个任务模型；每次 Notebook 运行 BPU 视频单元都会覆盖对应的 `*_bpu_latest.mp4` 和 JSON 报告。
 
-## 固定演示模型
+## 训练与部署边界
 
-非导航 Notebook 保留训练 smoke 入口：既有运动任务使用 PPO/RSL-RL 训练入口，球平衡使用 MotrixLab FastSAC。球平衡默认使用 64 个并行环境和小 replay buffer 做 5 个 smoke iteration；训练后导出最新 ONNX，再用 Ubuntu Docker 中的 `hb_mapper makertbin --model-type onnx` 编译最新 HBM。smoke 只验证链路，不代表重新训练后已经达到完整训练效果。
+PPO/FastSAC 的训练在工作站进行，BPU 只负责推理。部分 Notebook 的训练单元由环境变量控制，默认可跳过；保存了输出不等于训练必然执行。烟雾训练只验证采样、更新和导出链路，不代表策略已收敛。`07_RDK网页与多策略_BPU验收.ipynb` 按要求不启动训练，直接接入已有行走/导航策略；浏览器扰动是回放任务，不训练新的恢复策略。
 
-`07_RDK网页与多策略_BPU验收.ipynb` 按要求不启动训练，直接接入已有导航 ONNX 和 `walking.bin`。
+球平衡 Notebook 提供 FastSAC smoke 入口；如启用，默认小规模运行后可导出 ONNX，再用 Ubuntu Docker 中的 `hb_mapper makertbin --model-type onnx` 编译 HBM。X5 上不需要安装 `hb_mapper`；普通 ONNX 也不能直接当 HBM 执行。
 
-当前已确认的开发板是 `sunrise@192.168.8.128`：Ubuntu 22.04.5、aarch64、BPU Platform 1.3.6、HBRT 3.15.55.0，板端有 `hrt_model_exec`、`hrt_bin_dump`、`hobot_dnn` 和 `/dev/bpu`。板端没有 `hb_mapper`，普通 `.onnx` 不能直接交给 BPU；ONNX 到 HBM 的编译由 Ubuntu Docker 中的 X5 工具链完成。
+开发板侧需要匹配版本的 HBRT/BPU runtime 和对应任务 HBM；ONNX 到 HBM 的编译在配套的 Ubuntu Docker 工具链中完成，不要求板端安装编译器。真实重跑时还需要启动 RDK 服务并检查 HBM 与 ONNX 的观测维度、归一化、输入布局和动作后处理一致。
 
 任务视频使用专题中的 RDK BPU 服务和 `hbm_runtime`，不使用 `CPUExecutionProvider` 产生动作。不要把 ONNX 直接改名成 HBM；必须实际编译，并核对量化、输入布局、输出形状和动作后处理。
 
 ## 展示策略
 
-直播默认在 Notebook 中直接展示 `outputs/bpu_videos/` 的真实 MP4。网页交互仍可单独运行任务资料目录里的网页服务；视频展示本身不依赖浏览器 WebAssembly 或本机 GPU。`outputs/` 已被忽略，不会把视频重新提交进仓库。
+Notebook 中保存的 GIF 用于网页和 GitHub 预览；重跑生成的 MP4/JSON 留在 Ubuntu `outputs/`，不提交进仓库。网页物理交互仍可单独运行任务资料目录中的网页服务。
