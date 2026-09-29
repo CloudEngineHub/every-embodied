@@ -1,8 +1,8 @@
 # MicroDuck 任务演示总览
 
-这里按任务拆分演示，避免把不同策略、算法或物理交互剪成一个结果。每本 Notebook 的 GPU 与 BPU 视频各自对应同一任务；展开条目可以看完整任务列表和额外版本。
+这里按任务拆分演示，每本 Notebook 的 GPU 与 BPU 视频各自对应同一任务；展开条目可以看完整任务列表和额外版本。
 
-> **视频口径：** GPU GIF 是已保存的 Notebook 推理回放；BPU GIF 是 Notebook 先前运行留下的板端闭环视频缓存，不表示读者打开 GitHub 时正在实时调用 RDK。重新运行 BPU 单元需要对应任务 HBM、RDK 服务和仿真工作站。浏览器物理扰动是人工拖拽/外力交互，不是训练出的抗扰恢复策略。梯面目前只有阶段性接触结果，不是连续爬梯或登顶。
+**视频说明：** GPU GIF 展示 Notebook 中保存的策略推理回放；BPU GIF 展示 RDK X5 执行策略推理、Ubuntu 运行仿真的板端闭环记录。生成新 BPU 视频时，运行对应单元并连接任务 HBM、RDK 服务和仿真工作站。浏览器扰动演示通过鼠标拖动施加外力；梯面 Notebook 展示横档接触阶段，逐级攀爬演示见下方社区复现。
 
 ## Notebook：每项任务一组
 
@@ -18,9 +18,21 @@
 
 上述 7 本 Notebook 共保存了 64 个代码单元的执行计数与输出。完整执行快照在 Notebook 中；为避免重复存储大段 MP4，视频输出改为链接到本目录的压缩 GIF。运行状态和可选步骤见 [Notebook 说明](../../03-Notebook/README.md)。
 
+## 梯面攀爬：逐级踩横档
+
+社区复现视频展示小鸭子逐级踩上梯子横档：[播放 11.77 秒攀爬视频](https://huggingface.co/HannesVonEssen/microduck-climb/resolve/main/media/preview.mp4)。同一项目提供攀爬与起身策略、ONNX、PPO 检查点、环境代码和梯子模型：[模型与演示页](https://huggingface.co/HannesVonEssen/microduck-climb) · [训练与复现代码](https://github.com/Vottivott/microduck-playground/tree/main/experiments/desk-climb)。本专题的本地横档接触阶段回放见下方“梯面攀爬”条目。
+
+## 高跷行走：25 cm 与 200 cm
+
+![25 cm 高跷行走](./assets/task-demos/stilts-25cm.gif)
+
+![200 cm 高跷行走](./assets/task-demos/stilts-200cm.gif)
+
+社区还发布了 10 cm 至 2 m 的八档高跷策略，每档包含独立视频、ONNX 和训练检查点：[高跷策略与视频合集](https://huggingface.co/HannesVonEssen/microduck-stilts)。其中 [200 cm 仿真视频](https://huggingface.co/HannesVonEssen/microduck-stilts/resolve/main/200cm/preview.mp4)展示了交替支撑行走。
+
 ## 其它任务版本
 
-以下是 Notebook 双视频之外的公开策略、本地回放和阶段性实验。每段都保留自己的来源与结果边界。
+以下收录 Notebook 双视频之外的任务策略、本地回放和阶段性实验。
 
 <details>
 <summary>行走、绕障与命令编舞</summary>
@@ -39,49 +51,43 @@ MuJoCo 障碍几何中的行走回放：
 <details>
 <summary>篮球平衡</summary>
 
-![公开策略篮球平衡预览](../01-MicroDuck篮球平衡强化学习/assets/preview.gif)
+![篮球平衡策略预览](../01-MicroDuck篮球平衡强化学习/assets/preview.gif)
 </details>
 
 <details>
 <summary>浏览器物理扰动</summary>
 
-![浏览器物理扰动官方演示](../02-mjswan-MicroDuck浏览器物理扰动/assets/microduck_official.gif)
+![浏览器物理扰动演示](../02-mjswan-MicroDuck浏览器物理扰动/assets/microduck_official.gif)
 
 ![94 秒人工拖拽演示压缩版](./assets/task-demos/browser-manual-drag-full.gif)
 
-拖拽是人为施加的外力；不要据此声称策略已经学会了恢复动作。
+通过鼠标拖动小鸭子施加外力，观察仿真中的受力与运动变化。
 </details>
 
 <details>
-<summary>高跷行走：25 cm 与 200 cm</summary>
+<summary>摆动旋转策略与本地回放</summary>
 
-![25 cm 高跷仿真回放](./assets/task-demos/stilts-25cm.gif)
-
-![200 cm 高跷仿真回放](./assets/task-demos/stilts-200cm.gif)
-</details>
-
-<details>
-<summary>摆动旋转：公开版本与本地回放</summary>
-
-![公开策略 alpha050 摆动回放](./assets/task-demos/swing-public-alpha050.gif)
+![alpha050 摆动策略回放](./assets/task-demos/swing-public-alpha050.gif)
 
 ![本地策略 alpha050 摆动回放](./assets/task-demos/swing-local-alpha050.gif)
 
-alpha050 回放不代表连续完成完整 360 度旋转。
+查看 alpha050 策略的摆动与旋转动作回放。
 </details>
 
 <details>
-<summary>球平衡：公开版本与本地 5000 iteration</summary>
+<summary>球平衡：MotrixLab 策略与本地 FastSAC</summary>
 
-![MotrixLab 公开球平衡回放](./assets/task-demos/ball-balance-official.gif)
+![MotrixLab 球平衡回放](./assets/task-demos/ball-balance-official.gif)
 
 ![本地 FastSAC 5000 iteration 回放](./assets/task-demos/ball-balance-local-5000iter.gif)
 
-本地 5000 iteration 是短训演示，不代表训练已收敛或超过公开策略。
+本地 FastSAC 5000 iteration 短训策略回放。
 </details>
 
 <details>
-<summary>梯面攀爬：参考、V1/V2 与 V3 阶段审计</summary>
+<summary>梯面攀爬：社区逐级攀爬与本地接触阶段</summary>
+
+社区复现提供攀爬策略、起身策略、PPO 检查点、训练代码和梯子模型。演示中小鸭逐级踩上横档：[观看 11.77 秒攀爬视频](https://huggingface.co/HannesVonEssen/microduck-climb)；[直接打开 MP4](https://huggingface.co/HannesVonEssen/microduck-climb/blob/main/media/preview.mp4)；[训练与复现代码](https://github.com/Vottivott/microduck-playground/tree/main/experiments/desk-climb)。
 
 ![参考视频：MicroDuck 梯面攀爬](./assets/task-demos/ladder-reference.gif)
 
@@ -95,7 +101,7 @@ alpha050 回放不代表连续完成完整 360 度旋转。
 
 ![组合片中的横档接触阶段](./assets/task-demos/ladder-stage-contact-suite.gif)
 
-这些视频覆盖真实横档接触、入口失败和阶段审计；当前不能表述为连续爬完整架梯子或成功登顶。
+本地回放记录横档接触、靠近梯脚和不同训练阶段；社区逐级爬梯视频展示完整攀爬动作。
 </details>
 
 <details>
@@ -103,11 +109,11 @@ alpha050 回放不代表连续完成完整 360 度旋转。
 
 ![MicroDuck 技能串联总览压缩版](./assets/task-demos/microduck-skill-suite-overview.gif)
 
-这是多任务剪辑总览，不是一个统一策略，也不能代替上面每个任务的独立回放。
+这是多任务剪辑总览；各任务的独立回放见上方对应条目。
 </details>
 
 ## 素材与复现
 
 - 所有提交的视频预览均为 GIF；Notebook 输出中的 MP4 已替换为 GIF 相对链接。
 - 原始 MP4 不进入主仓库，减小克隆和浏览开销。各任务的环境、模型、指标和完整回放说明见对应任务 README。
-- RDK X5 的板端任务视频属于每任务独立推理；Ubuntu 负责物理仿真和编码，BPU 负责动作推理。当前页面中标注“缓存”的视频来自此前保存的执行输出。
+- RDK X5 的板端任务视频属于每任务独立推理；Ubuntu 负责物理仿真和编码，BPU 负责动作推理。标注为“已保存”的视频可直接预览；运行 Notebook 的 BPU 单元可生成新的板端闭环视频。

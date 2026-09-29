@@ -1,8 +1,10 @@
 # MicroDuck 梯面攀爬：从视频现象到可复刻的强化学习任务
 
-## 这一节先把边界说清楚
+## 任务演示与实验进度
 
-> **截至 2026-09-15 的进度：** 公开资料里已经找到 MicroDuck 的单台阶仿真策略，但还没有找到与本视频完全一致的“14 根斜梯横档 + 顶部翻台”训练代码和 checkpoint。V3 的独立评测已经在 `active_rungs=3`、关闭双支撑桥接后观察到一次真实物理横档完成：`TARGET_STEPS=[28, 76, 77]`、`MAX_PHYSICAL_RUNG_TARGET=1`、`SUCCESS_COUNT=1`。这证明接触状态机和首档落脚链路确实能工作，但不代表已经连续爬梯或登顶；训练已转入 `active_rungs=5` 的单脚交替阶段，继续验证第二、第三根横档和顶部落台。
+> **社区梯面爬梯复现：** [播放 11.77 秒逐级踩横档视频](https://huggingface.co/HannesVonEssen/microduck-climb/resolve/main/media/preview.mp4) · [策略与模型](https://huggingface.co/HannesVonEssen/microduck-climb) · [训练代码](https://github.com/Vottivott/microduck-playground/tree/main/experiments/desk-climb)。项目包含攀爬与起身两个策略、ONNX、完整 PPO 检查点、训练环境代码和梯子模型，软件使用 Apache-2.0。动作切换使用仿真中的脚部/桌面接触与根部位置；实体机器人部署还需配置传感器检测和控制切换。
+
+> **本地梯面实验记录：** 一次 V3 训练回放记录到横档落脚：`TARGET_STEPS=[28, 76, 77]`、`MAX_PHYSICAL_RUNG_TARGET=1`、`SUCCESS_COUNT=1`。另一次阶段 C 独立评测在 `active_rungs=3` 得到 `MAX_PHYSICAL_RUNG_TARGET=0`、`SUCCESS_COUNT=0`。这两条记录对应不同训练/评测阶段；本地课程继续推进单脚交替和连续横档目标。
 
 用户提供的视频展示了一只 MicroDuck 从地面沿着带横档的斜梯向上攀爬，最后把身体翻到桌面上。我们把视频保存成了本节的抽帧参考：
 
@@ -12,19 +14,19 @@
 
 ![原始梯面攀爬参考片段关键帧](./assets/reference_microduck_ladder_climb_keyframes.jpg)
 
-**视频 1：** 本节整理的原始参考片段。它用于分析任务阶段和接触关系，不代表视频同款训练代码已经公开。
+**视频 1：** 本节整理的原始参考片段，用于分析任务阶段和接触关系。
 
 ### 技能串联阶段演示
 
-为了把目前已经跑通的绕障、物理扰动、球面平衡和梯面接触放在同一条叙事里，另有一版统一画幅的阶段组合视频：
+绕障、物理扰动、球面平衡和梯面接触的阶段组合视频：
 
 ![MicroDuck 技能串联关键帧](../精选视频/microduck_skill_suite_v0_keyframes.jpg)
 
-这是一版“当前进展串联”，不是完整任务成功视频。片尾把已经验证的技能和仍在训练的 `GroundPick`、连续换档、顶部落台分开标注；最新 V3 checkpoint 的独立评测结果仍以本节的数值和日志为准。
+片尾分别标注已完成演示和训练中的 `GroundPick`、连续换档、顶部落台；V3 checkpoint 的评测结果见本节数值和日志。
 
 ## 现在已经跑通到哪一步
 
-原视频对应的完整“梯子 MJCF + 训练配置 + checkpoint + 评测脚本”仍没有在可核验的公开仓库中找到。但我们已经在公开的 MuJoCo/MicroDuck 训练栈上补出了一个 **本地 V1 实验任务**：
+本地 V1 实验任务基于 MuJoCo/MicroDuck 训练栈，已补充以下组件：
 
 - 注册任务：`Mjlab-Ladder-Climb-MicroDuck`；
 - 使用真实 MuJoCo 碰撞几何：两根斜梁、7 根横档、顶部平台和停止挡板；
@@ -33,7 +35,7 @@
 - 成功条件要求到达顶部平台且姿态仍然稳定；
 - 用公开的 MicroDuck 行走 checkpoint 扩展第一层输入，先做 warm start，再训练梯面策略。
 
-这一版已经在 GPU 上完成了 256 环境、150 次迭代的训练，并导出了 12 秒 H.264 回放。回放中鸭子会走到梯面、与横档发生物理接触并爬到中段，但本轮 `ladder_success=0`，还没有稳定翻上顶部平台。因此它是“物理链路和任务实现已跑通、策略仍需继续训练”的 V1，不是原视频的完整复刻。
+这一版已完成 GPU 256 环境、150 次迭代训练，并导出 12 秒 H.264 回放。小鸭走到梯面、与横档发生物理接触并爬到中段；本轮 `ladder_success=0`，顶部稳定落台仍是后续训练目标。
 
 ![本地 V1 回放抽帧：鸭子走到梯面并与横档接触](./assets/microduck_ladder_v1_contact.jpg)
 
@@ -41,7 +43,7 @@
 
 ![本地 MuJoCo V1 回放关键帧](./assets/microduck_ladder_v1_local_keyframes.jpg)
 
-**视频 2：** 本地 MuJoCo V1 回放。视频用于证明环境和策略确实运行过；当前结果仍应标注为“部分攀爬”，不能写成“已登顶”。
+**视频 2：** 本地 MuJoCo V1 部分攀爬回放；顶部稳定落台作为后续验收目标。
 
 ## 2.1 按原视频重做的 V2 梯子几何
 
@@ -49,13 +51,13 @@ V1 的主要问题不是“把斜坡换了颜色”，而是梯子结构与参�
 
 ![V2 单场景几何预览：双梯梁、连续横档、桌面和梯脚](./assets/microduck_ladder_v2_geometry_contact.png)
 
-**图 3：** V2 的单鸭场景预览。这里展示的是几何和碰撞场景，不代表策略已经登顶。
+**图 3：** V2 单鸭场景的梯子几何与碰撞预览。
 
 ![V2 warm-start 预览关键帧](./assets/microduck_ladder_v2_bootstrap_preview_keyframes.jpg)
 
-**视频 3：** V2 无支撑板场景的 warm-start 预览。它用于检查“鸭子从梯脚前接近真实梯子”的场景是否正确；当前 checkpoint 仍会在梯脚附近失败，`ladder_success=0`，不能把这段回放写成完整复刻。
+**视频 3：** V2 无支撑板场景的 warm-start 预览。本轮 checkpoint 从梯脚前接近并在入口阶段停止，`ladder_success=0`。
 
-为解决从平地行走直接跳到窄横档导致的探索困难，代码另外提供了一个**只用于训练课程**的支撑阶段：它在相同梯梁、横档和桌面下增加一块可碰撞的连续斜面，先让策略学会沿斜面抬脚和保持身体，再迁移到无支撑板的最终任务。支撑板不是最终展示场景，也不是隐藏的成功捷径。
+为改善平地行走到窄横档的探索，代码提供一个**训练课程支撑阶段**：在相同梯梁、横档和桌面下增加可碰撞连续斜面，先练习沿斜面抬脚和身体稳定，再迁移到没有支撑板的最终任务场景。
 
 新增代码：
 
@@ -242,7 +244,7 @@ Windows CUDA 环境中使用已经安装好 MuJoCo Warp 和 GPU PyTorch 的 `.ve
 - [`registration_snippet.py`](./code/registration_snippet.py)：把新任务挂到 `list-envs` 注册表的最小片段；
 - [`prepare_ladder_bootstrap.py`](./code/prepare_ladder_bootstrap.py)：把公开行走策略的 61/61 维输入扩展到梯面任务的 196/211 维，并对新增观测列做零权重初始化。
 
-这些文件是教程配套的实验补丁，不冒充 MicroDuck 官方发布物。真正复现实验时，还需要把奖励函数和任务注册代码合入 `microduck_rl` 的对应模块。
+这些文件是教程配套的本地实验补丁。复现实验时，将奖励函数和任务注册代码合入 `microduck_rl` 的对应模块。
 
 ## 1. 为什么这不是普通的 rough-terrain walking
 
@@ -256,19 +258,20 @@ Windows CUDA 环境中使用已经安装好 MuJoCo Warp 和 GPU PyTorch 的 `.ve
 
 所以要复刻的是一个 **contact-rich locomotion / climbing** 任务，而不是给 walking 视频换一个斜坡背景。
 
-## 2. 已经可以直接借鉴的开源项目
+## 2. 策略与工程参考
 
-| 项目 | 能直接复用什么 | 不能直接证明什么 |
+| 项目 | 可用材料 | 在本专题中的用途 |
 |---|---|---|
-| [pollen-robotics/microduck](https://github.com/pollen-robotics/microduck) | 机器人本体软件、模型背景和运行时接口 | 没有提供这段梯面攀爬训练任务 |
-| [pollen-robotics/microduck_rl](https://github.com/pollen-robotics/microduck_rl) | MuJoCo/MuJoCo Warp、BAM 执行器、14 动作/本体感觉接口、平地/粗糙地形训练 | 当前公开任务列表里没有视频同款梯子环境 |
-| [Motphys/MotrixLab](https://github.com/Motphys/MotrixLab) | MotrixSim 场景、manager-based 任务、FastSAC 和并行训练工程 | `microduck-ball-balance` 是篮球平衡，不是梯面攀爬 |
-| [bihaokun/microduck-step-up-policy](https://github.com/bihaokun/microduck-step-up-policy) | 25 mm 单台阶的 `step_up_walk`、头部刹车/站立恢复策略、ONNX/checkpoint、仿真评测和完整源代码快照 | 只验证了单台阶；策略不自动识别台阶，也没有连续斜梯或真机验证 |
-| [craigm26/duckbench](https://github.com/craigm26/duckbench) | MuJoCo 物理基准、MicroDuck 策略服务，以及 stairs/ball challenge 的评分和审计框架 | 是评测和基准工具，不是可直接加载的完整爬梯策略 |
-| [microduck-stairs-challenge](https://huggingface.co/datasets/craigm26/microduck-stairs-challenge) | 可量化的 MicroDuck 楼梯挑战、稳定落台和评分思路 | 它不是视频同款的斜梯攀爬 checkpoint |
-| [open-microduck](https://github.com/SaberOnGo/open-microduck) | 独立社区对仿真、sim-to-real 参数和粗糙地形的整理 | 不是 Pollen 官方仓库，不能替代上游实现 |
+| [HannesVonEssen/microduck-climb](https://huggingface.co/HannesVonEssen/microduck-climb) | 逐级攀爬视频、climber/get-up 策略、ONNX、PPO 检查点、训练代码和梯子模型 | 梯面攀爬动作与端到端实现参考 |
+| [pollen-robotics/microduck](https://github.com/pollen-robotics/microduck) | 机器人模型、运行时接口 | 理解 MicroDuck 本体和部署接口 |
+| [pollen-robotics/microduck_rl](https://github.com/pollen-robotics/microduck_rl) | MuJoCo/MuJoCo Warp、BAM 执行器、14 动作/本体感觉接口、平地/粗糙地形训练 | 作为本地任务环境和运动策略的基线 |
+| [Motphys/MotrixLab](https://github.com/Motphys/MotrixLab) | MotrixSim 场景、manager-based 任务、FastSAC 和并行训练工程 | 对照球平衡任务并实现梯面任务版本 |
+| [bihaokun/microduck-step-up-policy](https://github.com/bihaokun/microduck-step-up-policy) | 25 mm 单台阶 `step_up_walk`、头部刹车/站立恢复策略、ONNX/checkpoint 和评测代码 | 学习单台阶的抬脚、跨越和恢复动作 |
+| [craigm26/duckbench](https://github.com/craigm26/duckbench) | MuJoCo 物理基准、MicroDuck 策略服务、stairs/ball challenge 评分与审计框架 | 设计接触、稳定落台和任务评分 |
+| [microduck-stairs-challenge](https://huggingface.co/datasets/craigm26/microduck-stairs-challenge) | MicroDuck 楼梯挑战、多测试格和稳定落台指标 | 设计楼梯任务的评测集 |
+| [open-microduck](https://github.com/SaberOnGo/open-microduck) | 仿真、sim-to-real 参数和粗糙地形整理 | 补充机器人训练与部署背景 |
 
-其中最适合拿来做第一版基线的是官方 `microduck_rl` 的 rough-terrain 任务；单台阶项目可以用来校准“抬脚—上台—恢复”的动作先验，楼梯挑战可以用来校准“真正站到踏面上”的评测口径。两者都不能直接替代我们的连续斜梯任务。公开的单台阶项目报告的是 25 mm 台阶、13/14 个确定性测试状态稳定通过，并明确标注为仅仿真验证；楼梯挑战则是仿真评分包，不是训练好的连续楼梯策略。
+复现逐级攀爬时，优先运行 `microduck-climb` 的策略与环境；本地 V1/V2/V3 用来学习任务实现和进一步修改奖励、观测与课程。单台阶策略和楼梯挑战分别用于学习脚步动作先验与设计稳定落台评测。
 
 ## 3. 复刻架构应该怎样拆
 
@@ -388,9 +391,11 @@ MUJOCO_GL=egl python scripts/render_rough_walk_video.py \
 
 `craigm26/microduck-stairs-challenge` 更适合用来学习评测设计：它把“是否真的站到台阶踏面上”从“脚碰到台阶”中区分出来，并用稳定落台和多个测试格评价结果。这个思路可以直接借鉴到我们的梯面任务：成功条件必须包含支撑、姿态和持续时间。
 
+逐级爬梯策略参考：[HannesVonEssen/microduck-climb](https://huggingface.co/HannesVonEssen/microduck-climb)。该项目的视频展示小鸭逐个踩上横档；页面提供攀爬/起身策略、ONNX、PPO 检查点、环境代码和梯子模型。其控制接口为 61 维观测、14 维动作，策略切换根据仿真脚部接触和根部位置判定。
+
 ### 5.3 MotrixLab 路线
 
-MotrixLab 当前已经可以直接跑 `microduck-ball-balance`，但没有公开的梯子任务。要在 MotrixLab 中实现视频同款任务，需要新增：
+MotrixLab 专题当前已接入 `microduck-ball-balance`；逐级爬梯参考实现位于 `Vottivott/microduck-playground`。如果要在 MotrixLab 训练同类任务，需要新增梯面场景和接触任务配置：
 
 ```text
 motrix_envs/src/motrix_envs/locomotion/ladder_climb/
@@ -451,24 +456,27 @@ Windows 上如果 `uv run` 重新解析依赖导致装回 CPU 版 PyTorch，应�
 
 本节 V1 的 150 次迭代只是“环境和物理接触验证”，不足以作为最终训练预算。下一步应按第 4 节做单横档、低坡度、连续横档、完整斜梯和顶部平台的 curriculum，而不是直接把 4000 次整梯训练当成必然成功。
 
-## 6. 这段视频目前能否称为“开源复刻”
+## 6. 社区逐级攀爬复现
 
-目前不能这样写。比较准确的状态是：
+MicroDuck 的逐级梯面攀爬已有可复现实现：
 
-- 视频现象已核实为斜梯/横档攀爬；
-- MicroDuck 本体、MuJoCo 训练栈、粗糙地形基线和楼梯挑战资源是公开的；
-- 视频同款梯子模型、连续斜梯训练脚本、checkpoint 和完整指标尚未在可核验的公开仓库中找到；
-- `microduck-step-up-policy` 是目前最接近、也最适合先复现的公开单台阶参考，但它是“固定 25 mm 台阶 + 外部切换恢复策略”，不能当作视频同款连续爬梯；
-- `duckbench` 和 `microduck-stairs-challenge` 更适合借鉴接触、稳定落台、穿透和多状态评分方法；
-- Every Embodied 现在提供的是原视频分析、粗糙地形公开基线、V3 真实接触实验补丁和继续训练路线。当前工作站训练的入口阶段还没有确认物理横档成功，后续必须先拿到单横档真实接触 checkpoint，再公开视频和完整指标。
+- [11.77 秒逐级踩横档视频](https://huggingface.co/HannesVonEssen/microduck-climb/resolve/main/media/preview.mp4)
+- [策略、模型与演示页](https://huggingface.co/HannesVonEssen/microduck-climb)：`climber.onnx` / `climber.pt` 负责攀爬，`getup.onnx` / `getup.pt` 负责起身；两套均提供训练检查点与模型哈希。
+- [训练和复现说明](https://github.com/Vottivott/microduck-playground/blob/main/experiments/desk-climb/TRAINING.md)：包含环境代码、依赖锁定、续训脚本、训练/评测配置和记录轨迹。
+- [梯子结构与生成文件](https://github.com/Vottivott/microduck-playground/tree/main/hardware)：可查看桌面梯子的模型与打印方案。软件许可证为 Apache-2.0，硬件文件使用单独的 CC-BY-NC-SA-4.0 条款。
 
-这条边界反而很重要：公开教程应该把“已跑通的基线”“借鉴的评测方法”和“待实现的新任务”分开，避免把视觉效果误写成算法复现。
+策略使用标准 61 维观测和 14 维动作。攀爬与起身的切换根据仿真脚部/桌面接触和机器人根部位置进行；实体部署时应将这组条件接到实际传感器和任务状态机。现有视频和评测运行在 MuJoCo 仿真中。
+
+本专题保留两条学习路线：先用社区攀爬策略和视频理解逐档落脚，再用本地 V1/V2/V3 代码练习梯子几何、横档接触奖励、课程训练和评测。两条路线的策略与视频分别标注，方便对照动作效果和实现过程。
 
 ## 7. 参考资料
 
 - [Pollen Robotics MicroDuck](https://github.com/pollen-robotics/microduck)
 - [Pollen Robotics MicroDuck RL](https://github.com/pollen-robotics/microduck_rl)
 - [MotrixLab](https://github.com/Motphys/MotrixLab)
+- [MicroDuck 梯面攀爬策略、演示与模型](https://huggingface.co/HannesVonEssen/microduck-climb)
+- [MicroDuck 梯面攀爬训练代码](https://github.com/Vottivott/microduck-playground/tree/main/experiments/desk-climb)
+- [MicroDuck 高跷策略、模型与演示](https://huggingface.co/HannesVonEssen/microduck-stilts)
 - [MicroDuck Step-Up Policy（25 mm 单台阶）](https://github.com/bihaokun/microduck-step-up-policy)
 - [duckbench：MicroDuck MuJoCo 基准与挑战工具](https://github.com/craigm26/duckbench)
 - [Microduck Stairs Challenge 数据集与评分说明](https://huggingface.co/datasets/craigm26/microduck-stairs-challenge)
