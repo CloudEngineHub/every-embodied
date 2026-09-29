@@ -1845,7 +1845,7 @@
     },
     "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/01-任务资料/06-MicroDuck梯面攀爬强化学习导读/README.md": {
       "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/01-task-information/06-microduck-tread-climbing-reinforcement-learning-guide/README.md",
-      "sourceHash": "7f8a8df6ad0ac70499911414e1edc4c9de2c8b280afc7fe930699f2a25fdbece",
+      "sourceHash": "e93e82dcd4e96353be43e9e3bd4d6dc96968ab7ccc026f2c9d7441eca54273ad",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -1869,7 +1869,13 @@
     },
     "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/01-任务资料/精选视频/README.md": {
       "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/01-task-information/selected-videos/README.md",
-      "sourceHash": "d8f9f7f87f3467bd54494084ad7ca126e1fc4cb02d794d8caa8ccf4408a002ad",
+      "sourceHash": "a2f8549d867f219f7a99ff42977bd4c8791fd11da05765060289591f80a7cea1",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/招募文案.md": {
+      "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/recruitment-copy.md",
+      "sourceHash": "a9523e80d173af1259f5e160a7f61e80381a70891cb849e192694482a169d27e",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
