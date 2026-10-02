@@ -1875,7 +1875,7 @@
     },
     "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/招募文案.md": {
       "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/recruitment-copy.md",
-      "sourceHash": "a9523e80d173af1259f5e160a7f61e80381a70891cb849e192694482a169d27e",
+      "sourceHash": "bf4c28e0939d702b3188903f51dfcdbdd24069d713994233433f13b73bc17a5f",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
