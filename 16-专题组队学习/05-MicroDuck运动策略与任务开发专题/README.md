@@ -2,7 +2,7 @@
 
 本专题集中整理 MicroDuck / OpenDuck Mini V2 相关的强化学习、运动控制、物理仿真、任务编排和端侧部署材料。目录按照“先跑通基线，再理解代码，最后做任务开发”的顺序组织，适合跟着学习逐步补充实验记录。
 
-按 [7 天学习计划](./学习计划.md)每天学习一本 Notebook，查看[任务演示总览](./01-任务资料/精选视频/README.md)，或阅读[领学员招募文案](./招募文案.md)。
+按 [8 天学习计划](./学习计划.md)每天学习一本 Notebook，查看[任务演示总览](./01-任务资料/精选视频/README.md)，或阅读[领学员招募文案](./招募文案.md)。
 
 ## 学习路线
 
@@ -14,6 +14,7 @@
 6. 需要运行或修改代码时，进入 [可运行代码包](./02-可运行代码/microduck-playground-stilts/README.md)。
 7. 需要查看 RDK X5、网页演示和多策略调度时，进入 [端侧与网页部署](./01-任务资料/07-RDK端侧与网页部署/README.md)。
 8. 需要按直播顺序运行检查时，打开 [Notebook 学习入口](./03-Notebook/README.md)。
+9. 第 8 天让小鸭子理解语言指令并在不同房间中导航，运行 [LightNav-0 多场景导航](./03-Notebook/08_LightNav0_视觉语言导航_GPU_多场景.ipynb)。使用 GPU［图形处理器］接入已有模型，不训练导航模型、不连接开发板。
 
 ## 目录结构
 
@@ -32,18 +33,19 @@
 │   ├── 07-RDK端侧与网页部署/
 │   └── 精选视频/
 ├── 02-可运行代码/
-    └── microduck-playground-stilts/
-        ├── src/          # 机器人、执行器、任务和奖励
-        ├── scripts/      # 训练、评测、导出和推理脚本
-        ├── tests/        # 配置和物理不变量测试
-        ├── hardware/     # 高跷参数化生成器
-        └── docs/         # 训练计划和策略说明
-└── 03-Notebook/          # 本机/Ubuntu Jupyter、MuJoCo 与 RDK X5/BPU 验收
+│   ├── microduck-playground-stilts/
+│   │   ├── src/          # 机器人、执行器、任务和奖励
+│   │   ├── scripts/      # 训练、评测、导出和推理脚本
+│   │   ├── tests/        # 配置和物理不变量测试
+│   │   ├── hardware/     # 高跷参数化生成器
+│   │   └── docs/         # 训练计划和策略说明
+│   └── lightnav-learning/ # 导航服务、场景构建与闭环视频
+└── 03-Notebook/          # 8 本任务教程，GPU 导航与 RDK X5/BPU 验收
 ```
 
 ## Notebook 学习线
 
-Notebook 推荐运行在 Ubuntu 工作站上，Windows 本机只通过浏览器访问 Jupyter。这样 MuJoCo、训练代码和 Python 依赖都在同一环境中；Notebook 再连接 RDK X5，把开发板作为独立的 BPU 推理端。Notebook 内置任务契约、ONNX 检查、视频输出和板端验收入口，不需要额外维护一层“Windows Notebook -> Ubuntu -> RDK”的跳转。
+Notebook 推荐运行在 Ubuntu 工作站上，Windows 本机只通过浏览器访问 Jupyter。这样 MuJoCo、训练代码和 Python 依赖都在同一环境中；运动任务可再连接 RDK X5，把开发板作为独立的 BPU 推理端。第 8 本 LightNav-0 导航教程只使用工作站 GPU，不连接开发板。Notebook 内置任务契约、模型检查和视频输出，不需要额外维护一层“Windows Notebook -> Ubuntu -> RDK”的跳转。
 
 ONNX 使用与 RDK X5 SDK 匹配的工具链编译为 HBM，编译在 Ubuntu Docker 中完成。RDK 端运行对应任务 HBM；准备好板端服务和仿真工作站后，可重新生成任务视频。
 
@@ -58,6 +60,7 @@ ONNX 使用与 RDK X5 SDK 匹配的工具链编译为 HBM，编译在 Ubuntu Doc
 | 球平衡与 FastSAC | FastSAC 训练、模型导出与评测 | 球面平衡训练 |
 | 梯面攀爬 | 攀爬与起身双策略、横档接触和课程训练 | GPU 推理完成爬梯、登桌与站稳 |
 | RDK X5 / 网页部署 | HBM 编译、BPU 推理、TCP 和多策略调度 | 板端推理与仿真行走 |
+| LightNav-0 视觉语言导航 | 图像与语言、轨迹预测、MPC 和多场景实验 | 住宅、客厅与走廊导航 |
 
 ## 配套代码
 

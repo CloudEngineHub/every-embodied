@@ -14,9 +14,17 @@ GPU 在工作站计算动作；BPU 在 RDK X5 计算动作，工作站负责仿�
 | `04` 摆动旋转 | ![摆动旋转 GPU 推理](./assets/notebook-replays/swing_gpu.gif) | ![摆动旋转 BPU 推理](./assets/notebook-replays/swing_bpu_cached.gif) |
 | `05` 球平衡 FastSAC | ![球平衡 GPU 推理](./assets/notebook-replays/ball_balance_gpu.gif) | ![球平衡 BPU 推理](./assets/notebook-replays/ball_balance_bpu_cached.gif) |
 | `06` 梯面攀爬 | ![梯面攀爬与登桌 GPU 推理](./assets/notebook-replays/ladder_gpu.gif)<br>逐级爬梯，登桌站稳 | ![梯面接触 BPU 推理](./assets/notebook-replays/ladder_bpu_cached.gif)<br>梯面接触 |
-| `07` 行走/导航接入 | ![行走 GPU 推理](./assets/notebook-replays/walking_gpu.gif) | ![行走 BPU 推理](./assets/notebook-replays/walking_bpu_cached.gif) |
+| `07` 行走策略接入 | ![行走 GPU 推理](./assets/notebook-replays/walking_gpu.gif) | ![行走 BPU 推理](./assets/notebook-replays/walking_bpu_cached.gif) |
 
-上述 7 本 Notebook 共保存了 64 个代码单元的执行计数与输出。完整执行快照在 Notebook 中；为避免重复存储大段 MP4，视频输出改为链接到本目录的压缩 GIF。运行状态和可选步骤见 [Notebook 说明](../../03-Notebook/README.md)。
+上述 7 本 Notebook 保存了 64 个代码单元的执行计数与输出；下方第 8 本导航 Notebook 新增 12 个已执行代码单元，8 本合计保存 76 个代码单元的输出。运行状态和可选步骤见 [Notebook 说明](../../03-Notebook/README.md)。原始 MP4 不提交，页面展示压缩 GIF。
+
+## LightNav-0 多场景导航
+
+[第 8 本 Notebook](../../03-Notebook/08_LightNav0_视觉语言导航_GPU_多场景.ipynb) 在 GPU 上接入预训练导航模型，读取第一视角图像与语言指令。三个场景分别生成视频；运行步骤、控制接口与模型来源见[导航教程](../../02-可运行代码/lightnav-learning/README.md)。
+
+| 官方住宅 | 自建客厅 | 自建走廊 |
+| --- | --- | --- |
+| ![官方住宅语言导航](./assets/lightnav/official-apartment.gif)<br>住宅里寻找左侧桌子 | ![自建客厅语言导航](./assets/lightnav/living-room.gif)<br>客厅里接近扶手椅 | ![自建走廊语言导航](./assets/lightnav/corridor.gif)<br>走廊里寻找盆栽 |
 
 ## 梯面攀爬与登桌
 
@@ -116,6 +124,6 @@ FastSAC 球面平衡训练。
 
 ## 素材与复现
 
-- 所有提交的视频预览均为 GIF；Notebook 输出中的 MP4 已替换为 GIF 相对链接。
+- 所有提交的视频预览均为 GIF；前 7 本 Notebook 用 GIF 相对链接展示视频，第 8 本保留小尺寸图像与轨迹图，运行后在单元内播放导航 MP4。
 - 原始 MP4 留在仿真工作站，减小克隆和浏览开销。各任务的环境、模型、指标与复现步骤见对应任务 README。
 - 运行 Notebook 可生成新的任务 MP4 与评测报告。
