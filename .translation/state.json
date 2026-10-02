@@ -1851,7 +1851,7 @@
     },
     "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/03-Notebook/README.md": {
       "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/03-Notebook/README.md",
-      "sourceHash": "0bee2ae9ffb8d48b1099c8c2cc691f8feb0fc4ea2d33d31b9c8aa26ef5114ff1",
+      "sourceHash": "3ecdfce6a965c29977fb6a13ecb5e4fcb9495dd7c00c2114ab2cc703d7aed574",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -1869,7 +1869,7 @@
     },
     "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/01-任务资料/精选视频/README.md": {
       "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/01-task-information/selected-videos/README.md",
-      "sourceHash": "4f8753c425ce1d1d7884d84f8ac9f831c2be6f59c1c911474f5eaeb0c5e1b6a9",
+      "sourceHash": "4243a09474241ec990899f740ab44ec052285185e7f520d3a06668e39104ba35",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -1894,6 +1894,12 @@
     "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/学习计划.md": {
       "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/learning-plan.md",
       "sourceHash": "e7e9caa502fd08ea6ab31444a79ab3234287eba0faaf8ffdc092021763eb3d12",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/02-可运行代码/lightnav-learning/README.md": {
+      "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/02-executable-code/lightnav-learning/README.md",
+      "sourceHash": "b9dd542b7fcf9cd55e830f094f508cb612721a8a5f5ae50254e31a1063c8e2fb",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
