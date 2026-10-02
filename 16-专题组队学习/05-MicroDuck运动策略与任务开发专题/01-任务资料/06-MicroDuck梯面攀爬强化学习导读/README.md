@@ -1,8 +1,22 @@
 # MicroDuck 梯面攀爬：从视频现象到可复刻的强化学习任务
 
-## 任务演示与实验进度
+## 爬梯与登桌
 
-> **社区梯面爬梯复现：** [播放 11.77 秒逐级踩横档视频](https://huggingface.co/HannesVonEssen/microduck-climb/resolve/main/media/preview.mp4) · [策略与模型](https://huggingface.co/HannesVonEssen/microduck-climb) · [训练代码](https://github.com/Vottivott/microduck-playground/tree/main/experiments/desk-climb)。项目包含攀爬与起身两个策略、ONNX、完整 PPO 检查点、训练环境代码和梯子模型，软件使用 Apache-2.0。动作切换使用仿真中的脚部/桌面接触与根部位置；实体机器人部署还需配置传感器检测和控制切换。
+![MicroDuck 逐级爬梯、登桌与站稳](../精选视频/assets/notebook-replays/ladder_gpu.gif)
+
+MicroDuck 逐级踩上横档，翻上桌面后起身站稳。上图来自 Notebook 06 保存的 24 秒 GPU 推理视频，使用 `climber/getup` 两个 actor；MuJoCo 负责物理仿真和渲染。
+
+| 检查项 | 本次记录 |
+| --- | --- |
+| 输入 / 输出 | 61 维观测 / 14 维动作，13 个命令槽为零 |
+| 策略交接 | 第 575 步，约 11.5 秒 |
+| 登桌站立 | `stable_seconds=11.54` |
+| 完整序列 | `handoff_success=true` |
+| 记录范围 | 单次 GPU 仿真，1200 个控制步 |
+
+## 环境与训练路线
+
+先运行上述攀爬与起身双策略，再用本节 V1/V2/V3 环境学习梯子几何、接触奖励和课程训练。两条路线的任务配置、checkpoint 和评测结果分别保存。双策略的模型来源、运行命令和继续训练步骤见[第 6 节](#6-爬梯与登桌复现步骤)。
 
 > **本地梯面实验记录：** 一次 V3 训练回放记录到横档落脚：`TARGET_STEPS=[28, 76, 77]`、`MAX_PHYSICAL_RUNG_TARGET=1`、`SUCCESS_COUNT=1`。另一次阶段 C 独立评测在 `active_rungs=3` 得到 `MAX_PHYSICAL_RUNG_TARGET=0`、`SUCCESS_COUNT=0`。这两条记录对应不同训练/评测阶段；本地课程继续推进单脚交替和连续横档目标。
 
@@ -24,7 +38,7 @@
 
 片尾分别标注已完成演示和训练中的 `GroundPick`、连续换档、顶部落台；V3 checkpoint 的评测结果见本节数值和日志。
 
-## 现在已经跑通到哪一步
+## 本地 V1：环境与接触链路
 
 本地 V1 实验任务基于 MuJoCo/MicroDuck 训练栈，已补充以下组件：
 
@@ -146,7 +160,7 @@ Mjlab-Video-Ladder-Footstep-MicroDuck
 
 | 能力 | 当前可复现内容 | 还缺什么才算完成 |
 |---|---|---|
-| 梯面攀爬 | `Mjlab-Video-Ladder-Footstep-MicroDuck` 已有真实横档碰撞、落脚目标、相位和接触状态机；短梯评测已完成过首个物理横档 | 连续换档、14 根横档和顶部落台的跨 seed 成功率，以及完整回放视频 |
+| 梯面攀爬 | `climber/getup` 双策略在 GPU 上完成攀爬、登桌与站稳；V3 自建环境已有真实横档碰撞和落脚状态机 | V3 连续换档评测，以及双策略 BPU 登桌交接 |
 | 绕障 | `microduck-rl-lab` 已有 `walk_obstacle_entry → walk_obstacle_detour` 路线，可把行走策略送到障碍前、绕到侧面再继续 | 当前路线使用仿真器真值坐标，不是摄像头/ToF 视觉导航；要做成感知版本，需要加入障碍检测和局部目标估计 |
 | 拾取 | 官方任务 `Mjlab-GroundPick-Flat-MicroDuck` 已注册，64 环境、5 轮 CPU smoke 已完成，奖励中包含下蹲、嘴部接近、回站和接触相关项 | 仍需用完整 checkpoint 做阶段成功率、嘴部接触和回站视频验收，不能把 smoke 当成已学会拾取 |
 
@@ -456,18 +470,70 @@ Windows 上如果 `uv run` 重新解析依赖导致装回 CPU 版 PyTorch，应�
 
 本节 V1 的 150 次迭代只是“环境和物理接触验证”，不足以作为最终训练预算。下一步应按第 4 节做单横档、低坡度、连续横档、完整斜梯和顶部平台的 curriculum，而不是直接把 4000 次整梯训练当成必然成功。
 
-## 6. 社区逐级攀爬复现
+## 6. 爬梯与登桌复现步骤
 
-MicroDuck 的逐级梯面攀爬已有可复现实现：
+### 6.1 获取环境和模型
+
+本节采用 [Vottivott desk-climb 任务](https://github.com/Vottivott/microduck-playground/tree/main/experiments/desk-climb)，对应模型为 [HannesVonEssen/microduck-climb](https://huggingface.co/HannesVonEssen/microduck-climb)。准备以下文件：
 
 - [11.77 秒逐级踩横档视频](https://huggingface.co/HannesVonEssen/microduck-climb/resolve/main/media/preview.mp4)
 - [策略、模型与演示页](https://huggingface.co/HannesVonEssen/microduck-climb)：`climber.onnx` / `climber.pt` 负责攀爬，`getup.onnx` / `getup.pt` 负责起身；两套均提供训练检查点与模型哈希。
 - [训练和复现说明](https://github.com/Vottivott/microduck-playground/blob/main/experiments/desk-climb/TRAINING.md)：包含环境代码、依赖锁定、续训脚本、训练/评测配置和记录轨迹。
-- [梯子结构与生成文件](https://github.com/Vottivott/microduck-playground/tree/main/hardware)：可查看桌面梯子的模型与打印方案。软件许可证为 Apache-2.0，硬件文件使用单独的 CC-BY-NC-SA-4.0 条款。
+- [梯子结构与生成文件](https://github.com/Vottivott/microduck-playground/blob/main/hardware/ladder/README.md)：桌面梯子的模型与打印方案。软件许可证为 Apache-2.0，硬件文件使用单独的 CC-BY-NC-SA-4.0 条款。
 
-策略使用标准 61 维观测和 14 维动作。攀爬与起身的切换根据仿真脚部/桌面接触和机器人根部位置进行；实体部署时应将这组条件接到实际传感器和任务状态机。现有视频和评测运行在 MuJoCo 仿真中。
+在 Ubuntu 获取环境、锁定依赖并下载模型：
 
-本专题保留两条学习路线：先用社区攀爬策略和视频理解逐档落脚，再用本地 V1/V2/V3 代码练习梯子几何、横档接触奖励、课程训练和评测。两条路线的策略与视频分别标注，方便对照动作效果和实现过程。
+```bash
+git clone https://github.com/Vottivott/microduck-playground.git
+cd microduck-playground/experiments/desk-climb/source
+uv sync --frozen
+uv run ../training/download_models.py
+```
+
+### 6.2 对齐动作与切换规则
+
+两个 actor 均为 `61 → 14`，13 个命令槽保持零值，归一化参数包含在 ONNX 中。攀爬阶段由 `climber` 产生关节目标偏移；至少一只脚真实接触桌面、且机器人根部进入桌沿 4 cm 后，监督器切换到 `getup` 起身。
+
+运行参数也必须与训练保持一致：`climber` 不滤波；`getup` 的头部滤波系数为 `0.5`、腿部为 `0.7`，关节增益比例为 `0.8`。观测中的上一动作槽保存上一时刻的原始策略输出；实际关节控制采用对应阶段的后处理动作。切换检测由仿真监督器读取接触和根部位置，actor 本身只读本体观测。
+
+### 6.3 运行 GPU 推理
+
+打开 [Notebook 06](../../03-Notebook/06_梯面攀爬_接触与部署模板.ipynb)，设置爬梯环境目录和两份 ONNX 路径，然后运行 GPU 推理单元。也可以在上述 `source` 环境中运行专题配套脚本：
+
+```bash
+uv run python /path/to/microduck-playground-stilts/scripts/bpu_official_ladder_pair_video.py \
+  --backend gpu \
+  --official-root /path/to/microduck-playground/experiments/desk-climb \
+  --climber-onnx /path/to/climber.onnx \
+  --getup-onnx /path/to/getup.onnx \
+  --num-envs 64 --record-env 17 --seed 123 --seconds 24 \
+  --output /path/to/03-Notebook/outputs/gpu_videos/ladder_gpu_latest.mp4
+```
+
+脚本同时生成 MP4 和同名 JSON。检查 `switch_events`、`handoff_success` 和 `stable_seconds`，分别对应交接时刻、完整序列成功和桌面持续站立。本次保存的结果为第 575 步交接、站立 11.54 秒；录制过程中不在摔倒后重置场景。
+
+### 6.4 继续训练与评测
+
+仍在 `experiments/desk-climb/source` 中，先验证采样、更新和保存，再分别继续训练两个 actor：
+
+```bash
+uv run ../training/run.py climber --envs 64 --iterations 5 --out /tmp/desk-climber-smoke
+uv run ../training/run.py getup --envs 64 --iterations 5 --out /tmp/desk-getup-smoke
+
+uv run ../training/run.py climber --envs 1024 --iterations 250 --seed 233 --out logs/desk-climber
+uv run ../training/run.py getup --envs 1024 --iterations 128 --out logs/desk-getup
+
+uv run ../training/run.py evaluate --envs 64 --seconds 60 --seed 19923 --out logs/desk-eval
+```
+
+这些命令从已发布的 PPO 检查点继续训练，保留对应的 actor、critic 和 Adam 状态。新模型重新导出带归一化的 ONNX，再验证接触、交接与站立时间；V1/V2/V3 自建环境的训练流程见前文。
+
+### 6.5 切换到 RDK X5 BPU
+
+分别把两个 ONNX 编译为 HBM，在 RDK 上启动攀爬和起身推理服务；Ubuntu 保留同一套物理场景和交接监督器。运行脚本时选择 `--backend bpu`，设置 `--climber-hbm`、`--getup-hbm`、`--bpu-host` 和两个服务端口，再按同一组 JSON 指标评测。
+
+当前存档的 BPU 梯面视频记录 `switch_events=[]`、`handoff_success=false`、`stable_seconds=0`，因此在演示总览中标为“梯面接触”；完整登桌视频使用本节的 GPU 结果。实体机器人需要接入等价的接触检测和任务切换。
+
 
 ## 7. 参考资料
 

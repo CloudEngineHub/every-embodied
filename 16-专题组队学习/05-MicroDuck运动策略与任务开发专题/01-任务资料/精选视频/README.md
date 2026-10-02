@@ -1,26 +1,28 @@
 # MicroDuck 任务演示总览
 
-这里按任务拆分演示，每本 Notebook 的 GPU 与 BPU 视频各自对应同一任务；展开条目可以看完整任务列表和额外版本。
+这里按任务展示演示，GPU 推理在前、BPU 推理在后。展开条目可以看更多版本；训练、模型来源和实现步骤见各任务教程。
 
-**视频说明：** GPU GIF 展示 Notebook 中保存的策略推理回放；BPU GIF 展示 RDK X5 执行策略推理、Ubuntu 运行仿真的板端闭环记录。生成新 BPU 视频时，运行对应单元并连接任务 HBM、RDK 服务和仿真工作站。浏览器扰动演示通过鼠标拖动施加外力；梯面 Notebook 展示横档接触阶段，逐级攀爬演示见下方社区复现。
+GPU 在工作站计算动作；BPU 在 RDK X5 计算动作，工作站负责仿真与画面渲染。网页展示的是已保存的任务视频，重跑步骤见 [Notebook 说明](../../03-Notebook/README.md)。
 
 ## Notebook：每项任务一组
 
-| Notebook 与任务 | GPU 推理 | 先前保存的 BPU 闭环回放 |
+| Notebook 与任务 | GPU 推理 | BPU 推理 |
 | --- | --- | --- |
-| `01` 篮球平衡 | ![篮球平衡 GPU 回放](./assets/notebook-replays/basketball_gpu.gif) | ![篮球平衡 BPU 缓存回放](./assets/notebook-replays/basketball_bpu_cached.gif) |
-| `02` 浏览器物理扰动 | ![物理扰动 GPU 回放](./assets/notebook-replays/perturbation_gpu.gif) | ![物理扰动 BPU 缓存回放](./assets/notebook-replays/perturbation_bpu_cached.gif) |
-| `03` 高跷行走 | ![高跷行走 GPU 回放](./assets/notebook-replays/stilt_gpu.gif) | ![高跷行走 BPU 缓存回放](./assets/notebook-replays/stilt_bpu_cached.gif) |
-| `04` 摆动旋转 | ![摆动旋转 GPU 回放](./assets/notebook-replays/swing_gpu.gif) | ![摆动旋转 BPU 缓存回放](./assets/notebook-replays/swing_bpu_cached.gif) |
-| `05` 球平衡 FastSAC | ![球平衡 GPU 回放](./assets/notebook-replays/ball_balance_gpu.gif) | ![球平衡 BPU 缓存回放](./assets/notebook-replays/ball_balance_bpu_cached.gif) |
-| `06` 梯面攀爬 | ![梯面攀爬 GPU 阶段回放](./assets/notebook-replays/ladder_gpu.gif) | ![梯面攀爬 BPU 缓存阶段回放](./assets/notebook-replays/ladder_bpu_cached.gif) |
-| `07` 行走/导航接入 | ![行走 GPU 回放](./assets/notebook-replays/walking_gpu.gif) | ![行走 BPU 缓存回放](./assets/notebook-replays/walking_bpu_cached.gif) |
+| `01` 篮球平衡 | ![篮球平衡 GPU 推理](./assets/notebook-replays/basketball_gpu.gif) | ![篮球平衡 BPU 推理](./assets/notebook-replays/basketball_bpu_cached.gif) |
+| `02` 浏览器物理扰动 | ![物理扰动 GPU 推理](./assets/notebook-replays/perturbation_gpu.gif) | ![物理扰动 BPU 推理](./assets/notebook-replays/perturbation_bpu_cached.gif) |
+| `03` 高跷行走 | ![高跷行走 GPU 推理](./assets/notebook-replays/stilt_gpu.gif) | ![高跷行走 BPU 推理](./assets/notebook-replays/stilt_bpu_cached.gif) |
+| `04` 摆动旋转 | ![摆动旋转 GPU 推理](./assets/notebook-replays/swing_gpu.gif) | ![摆动旋转 BPU 推理](./assets/notebook-replays/swing_bpu_cached.gif) |
+| `05` 球平衡 FastSAC | ![球平衡 GPU 推理](./assets/notebook-replays/ball_balance_gpu.gif) | ![球平衡 BPU 推理](./assets/notebook-replays/ball_balance_bpu_cached.gif) |
+| `06` 梯面攀爬 | ![梯面攀爬与登桌 GPU 推理](./assets/notebook-replays/ladder_gpu.gif)<br>逐级爬梯，登桌站稳 | ![梯面接触 BPU 推理](./assets/notebook-replays/ladder_bpu_cached.gif)<br>梯面接触 |
+| `07` 行走/导航接入 | ![行走 GPU 推理](./assets/notebook-replays/walking_gpu.gif) | ![行走 BPU 推理](./assets/notebook-replays/walking_bpu_cached.gif) |
 
 上述 7 本 Notebook 共保存了 64 个代码单元的执行计数与输出。完整执行快照在 Notebook 中；为避免重复存储大段 MP4，视频输出改为链接到本目录的压缩 GIF。运行状态和可选步骤见 [Notebook 说明](../../03-Notebook/README.md)。
 
-## 梯面攀爬：逐级踩横档
+## 梯面攀爬与登桌
 
-社区复现视频展示小鸭子逐级踩上梯子横档：[播放 11.77 秒攀爬视频](https://huggingface.co/HannesVonEssen/microduck-climb/resolve/main/media/preview.mp4)。同一项目提供攀爬与起身策略、ONNX、PPO 检查点、环境代码和梯子模型：[模型与演示页](https://huggingface.co/HannesVonEssen/microduck-climb) · [训练与复现代码](https://github.com/Vottivott/microduck-playground/tree/main/experiments/desk-climb)。本专题的本地横档接触阶段回放见下方“梯面攀爬”条目。
+![MicroDuck 逐级爬梯、登桌与站稳](./assets/notebook-replays/ladder_gpu.gif)
+
+逐级踩横档，登桌后起身站稳。双策略切换、训练方法和模型来源见[梯面攀爬教程](../06-MicroDuck梯面攀爬强化学习导读/README.md)。
 
 ## 高跷行走：25 cm 与 200 cm
 
@@ -28,30 +30,30 @@
 
 ![200 cm 高跷行走](./assets/task-demos/stilts-200cm.gif)
 
-社区还发布了 10 cm 至 2 m 的八档高跷策略，每档包含独立视频、ONNX 和训练检查点：[高跷策略与视频合集](https://huggingface.co/HannesVonEssen/microduck-stilts)。其中 [200 cm 仿真视频](https://huggingface.co/HannesVonEssen/microduck-stilts/resolve/main/200cm/preview.mp4)展示了交替支撑行走。
+不同高度下交替支撑行走。形态课程、模型来源和尺寸配置见[高跷行走教程](../03-MicroDuck高跷行走强化学习复现/README.md)。
 
 ## 其它任务版本
 
-以下收录 Notebook 双视频之外的任务策略、本地回放和阶段性实验。
+以下收录各任务的更多动作和训练阶段。
 
 <details>
 <summary>行走、绕障与命令编舞</summary>
 
-![4096 环境、6000 次迭代的行走策略回放](../07-RDK端侧与网页部署/assets/local_videos/microduck_4096env_6000iter_walk.gif)
+![平地行走](../07-RDK端侧与网页部署/assets/local_videos/microduck_4096env_6000iter_walk.gif)
 
-训练策略的命令编舞回放：
+速度与朝向命令：
 
 ![同一行走策略的 12 秒命令编舞](../07-RDK端侧与网页部署/assets/local_videos/microduck_command_dance.gif)
 
-MuJoCo 障碍几何中的行走回放：
+障碍场景：
 
-![障碍行走回放](./assets/task-demos/walking-obstacle-policy.gif)
+![绕障行走](./assets/task-demos/walking-obstacle-policy.gif)
 </details>
 
 <details>
 <summary>篮球平衡</summary>
 
-![篮球平衡策略预览](../01-MicroDuck篮球平衡强化学习/assets/preview.gif)
+![篮球平衡](../01-MicroDuck篮球平衡强化学习/assets/preview.gif)
 </details>
 
 <details>
@@ -65,43 +67,43 @@ MuJoCo 障碍几何中的行走回放：
 </details>
 
 <details>
-<summary>摆动旋转策略与本地回放</summary>
+<summary>摆动旋转</summary>
 
-![alpha050 摆动策略回放](./assets/task-demos/swing-public-alpha050.gif)
+![摆动旋转](./assets/task-demos/swing-public-alpha050.gif)
 
-![本地策略 alpha050 摆动回放](./assets/task-demos/swing-local-alpha050.gif)
+![摆动旋转训练演示](./assets/task-demos/swing-local-alpha050.gif)
 
-查看 alpha050 策略的摆动与旋转动作回放。
+摆动与旋转动作。
 </details>
 
 <details>
-<summary>球平衡：MotrixLab 策略与本地 FastSAC</summary>
+<summary>球平衡与 FastSAC 训练</summary>
 
-![MotrixLab 球平衡回放](./assets/task-demos/ball-balance-official.gif)
+![球平衡](./assets/task-demos/ball-balance-official.gif)
 
-![本地 FastSAC 5000 iteration 回放](./assets/task-demos/ball-balance-local-5000iter.gif)
+![FastSAC 球平衡训练](./assets/task-demos/ball-balance-local-5000iter.gif)
 
-本地 FastSAC 5000 iteration 短训策略回放。
+FastSAC 球面平衡训练。
 </details>
 
 <details>
-<summary>梯面攀爬：社区逐级攀爬与本地接触阶段</summary>
+<summary>梯面攀爬：动作分析与训练阶段</summary>
 
-社区复现提供攀爬策略、起身策略、PPO 检查点、训练代码和梯子模型。演示中小鸭逐级踩上横档：[观看 11.77 秒攀爬视频](https://huggingface.co/HannesVonEssen/microduck-climb)；[直接打开 MP4](https://huggingface.co/HannesVonEssen/microduck-climb/blob/main/media/preview.mp4)；[训练与复现代码](https://github.com/Vottivott/microduck-playground/tree/main/experiments/desk-climb)。
+完整爬梯与登桌见上方演示；以下依次记录动作参考和 V1/V2/V3 训练阶段。实现过程见[梯面攀爬教程](../06-MicroDuck梯面攀爬强化学习导读/README.md)。
 
 ![参考视频：MicroDuck 梯面攀爬](./assets/task-demos/ladder-reference.gif)
 
 ![V1 本地部分攀爬](./assets/task-demos/ladder-v1-partial.gif)
 
-![V2 梯脚附近的 warm-start 阶段回放](./assets/task-demos/ladder-v2-bootstrap-preview.gif)
+![V2 梯脚接近](./assets/task-demos/ladder-v2-bootstrap-preview.gif)
 
-![V3 model 1100 阶段回放](./assets/task-demos/ladder-v3-model-1100.gif)
+![V3 横档接触](./assets/task-demos/ladder-v3-model-1100.gif)
 
-![V3 model 1238 重置阶段回放](./assets/task-demos/ladder-v3-model-1238.gif)
+![V3 起始姿态](./assets/task-demos/ladder-v3-model-1238.gif)
 
 ![组合片中的横档接触阶段](./assets/task-demos/ladder-stage-contact-suite.gif)
 
-本地回放记录横档接触、靠近梯脚和不同训练阶段；社区逐级爬梯视频展示完整攀爬动作。
+横档接触、梯脚接近和起始姿态。
 </details>
 
 <details>
@@ -109,11 +111,11 @@ MuJoCo 障碍几何中的行走回放：
 
 ![MicroDuck 技能串联总览压缩版](./assets/task-demos/microduck-skill-suite-overview.gif)
 
-这是多任务剪辑总览；各任务的独立回放见上方对应条目。
+多任务剪辑；各任务的完整演示见上方对应条目。
 </details>
 
 ## 素材与复现
 
 - 所有提交的视频预览均为 GIF；Notebook 输出中的 MP4 已替换为 GIF 相对链接。
-- 原始 MP4 不进入主仓库，减小克隆和浏览开销。各任务的环境、模型、指标和完整回放说明见对应任务 README。
-- RDK X5 的板端任务视频属于每任务独立推理；Ubuntu 负责物理仿真和编码，BPU 负责动作推理。标注为“已保存”的视频可直接预览；运行 Notebook 的 BPU 单元可生成新的板端闭环视频。
+- 原始 MP4 留在仿真工作站，减小克隆和浏览开销。各任务的环境、模型、指标与复现步骤见对应任务 README。
+- 运行 Notebook 可生成新的任务 MP4 与评测报告。

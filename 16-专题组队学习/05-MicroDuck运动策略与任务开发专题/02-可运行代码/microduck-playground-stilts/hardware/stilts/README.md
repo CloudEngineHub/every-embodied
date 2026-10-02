@@ -6,10 +6,10 @@ height cartridges to that carrier.
 
 <table>
   <tr>
-    <td align="center"><img src="renders/stilts_front.png" width="230" alt="Green 10 cm stilts, front view"><br><sub>Front</sub></td>
-    <td align="center"><img src="renders/stilts_three_quarter.png" width="230" alt="Green 10 cm stilts, three-quarter view"><br><sub>Three-quarter</sub></td>
-    <td align="center"><img src="renders/stilts_side.png" width="230" alt="Green 10 cm stilts, side view"><br><sub>Side</sub></td>
-    <td align="center"><img src="renders/printed_stilt.jpg" width="230" alt="Green 3D-printed MicroDuck replacement sole and stilt prototype"><br><sub>3D-printed prototype</sub></td>
+    <td align="center"><img src="https://raw.githubusercontent.com/Vottivott/microduck-playground/main/hardware/stilts/renders/stilts_front.png" width="230" alt="Green 10 cm stilts, front view"><br><sub>Front</sub></td>
+    <td align="center"><img src="https://raw.githubusercontent.com/Vottivott/microduck-playground/main/hardware/stilts/renders/stilts_three_quarter.png" width="230" alt="Green 10 cm stilts, three-quarter view"><br><sub>Three-quarter</sub></td>
+    <td align="center"><img src="https://raw.githubusercontent.com/Vottivott/microduck-playground/main/hardware/stilts/renders/stilts_side.png" width="230" alt="Green 10 cm stilts, side view"><br><sub>Side</sub></td>
+    <td align="center"><img src="https://raw.githubusercontent.com/Vottivott/microduck-playground/main/hardware/stilts/renders/printed_stilt.jpg" width="230" alt="Green 3D-printed MicroDuck replacement sole and stilt prototype"><br><sub>3D-printed prototype</sub></td>
   </tr>
 </table>
 
@@ -51,7 +51,7 @@ The simulation mass law is `12 g + 1 g/cm` per stilt. At 10 cm this is 22 g
 per stilt (44 g per pair), while the prototype slicer estimate is 58 g per
 pair, approximately 29 g per stilt. The released actor passed an initial
 64-environment simulation check at the heavier value; see the
-[`10 cm printed-mass audit`](../../experiments/stilts/README.md#10-cm-printed-mass-audit).
+[`10 cm printed-mass audit`](https://github.com/Vottivott/microduck-playground/blob/main/experiments/stilts/README.md#10-cm-printed-mass-audit).
 That check is not a substitute for mass-randomized training or hardware
 validation.
 
@@ -63,25 +63,25 @@ meshes and a convenience pair file. STL units are millimetres.
 
 | Height | Left | Right | Pair | Policy |
 |---:|---|---|---|---|
-| 10 cm | [STL](generated/release/direct_replacement_left_b0p50_h10p0cm.stl) | [STL](generated/release/direct_replacement_right_b0p50_h10p0cm.stl) | [STL](generated/release/direct_replacement_pair_b0p50_h10p0cm.stl) | [ONNX](https://huggingface.co/HannesVonEssen/microduck-stilts/tree/main/10cm) |
-| 15 cm | [STL](generated/release/direct_replacement_left_b0p50_h15p0cm.stl) | [STL](generated/release/direct_replacement_right_b0p50_h15p0cm.stl) | [STL](generated/release/direct_replacement_pair_b0p50_h15p0cm.stl) | [ONNX](https://huggingface.co/HannesVonEssen/microduck-stilts/tree/main/15cm) |
-| 20 cm | [STL](generated/release/direct_replacement_left_b0p50_h20p0cm.stl) | [STL](generated/release/direct_replacement_right_b0p50_h20p0cm.stl) | [STL](generated/release/direct_replacement_pair_b0p50_h20p0cm.stl) | [ONNX](https://huggingface.co/HannesVonEssen/microduck-stilts/tree/main/20cm) |
-| 25 cm | [STL](generated/release/direct_replacement_left_b0p50_h25p0cm.stl) | [STL](generated/release/direct_replacement_right_b0p50_h25p0cm.stl) | [STL](generated/release/direct_replacement_pair_b0p50_h25p0cm.stl) | [ONNX](https://huggingface.co/HannesVonEssen/microduck-stilts/tree/main/25cm) |
-| 50 cm | [STL](generated/release/direct_replacement_left_b0p50_h50p0cm.stl) | [STL](generated/release/direct_replacement_right_b0p50_h50p0cm.stl) | [STL](generated/release/direct_replacement_pair_b0p50_h50p0cm.stl) | [ONNX](https://huggingface.co/HannesVonEssen/microduck-stilts/tree/main/50cm) |
-| 1.0 m | [STL](generated/release/direct_replacement_left_b0p50_h100p0cm.stl) | [STL](generated/release/direct_replacement_right_b0p50_h100p0cm.stl) | [STL](generated/release/direct_replacement_pair_b0p50_h100p0cm.stl) | [ONNX](https://huggingface.co/HannesVonEssen/microduck-stilts/tree/main/100cm) |
-| 1.4 m | [STL](generated/release/direct_replacement_left_b0p50_h140p0cm.stl) | [STL](generated/release/direct_replacement_right_b0p50_h140p0cm.stl) | [STL](generated/release/direct_replacement_pair_b0p50_h140p0cm.stl) | [ONNX](https://huggingface.co/HannesVonEssen/microduck-stilts/tree/main/140cm) |
-| 2.0 m | [STL](generated/release/direct_replacement_left_b0p50_h200p0cm.stl) | [STL](generated/release/direct_replacement_right_b0p50_h200p0cm.stl) | [STL](generated/release/direct_replacement_pair_b0p50_h200p0cm.stl) | [ONNX](https://huggingface.co/HannesVonEssen/microduck-stilts/tree/main/200cm) |
+| 10 cm | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_left_b0p50_h10p0cm.stl) | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_right_b0p50_h10p0cm.stl) | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_pair_b0p50_h10p0cm.stl) | [ONNX](https://huggingface.co/HannesVonEssen/microduck-stilts/tree/main/10cm) |
+| 15 cm | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_left_b0p50_h15p0cm.stl) | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_right_b0p50_h15p0cm.stl) | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_pair_b0p50_h15p0cm.stl) | [ONNX](https://huggingface.co/HannesVonEssen/microduck-stilts/tree/main/15cm) |
+| 20 cm | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_left_b0p50_h20p0cm.stl) | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_right_b0p50_h20p0cm.stl) | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_pair_b0p50_h20p0cm.stl) | [ONNX](https://huggingface.co/HannesVonEssen/microduck-stilts/tree/main/20cm) |
+| 25 cm | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_left_b0p50_h25p0cm.stl) | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_right_b0p50_h25p0cm.stl) | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_pair_b0p50_h25p0cm.stl) | [ONNX](https://huggingface.co/HannesVonEssen/microduck-stilts/tree/main/25cm) |
+| 50 cm | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_left_b0p50_h50p0cm.stl) | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_right_b0p50_h50p0cm.stl) | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_pair_b0p50_h50p0cm.stl) | [ONNX](https://huggingface.co/HannesVonEssen/microduck-stilts/tree/main/50cm) |
+| 1.0 m | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_left_b0p50_h100p0cm.stl) | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_right_b0p50_h100p0cm.stl) | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_pair_b0p50_h100p0cm.stl) | [ONNX](https://huggingface.co/HannesVonEssen/microduck-stilts/tree/main/100cm) |
+| 1.4 m | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_left_b0p50_h140p0cm.stl) | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_right_b0p50_h140p0cm.stl) | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_pair_b0p50_h140p0cm.stl) | [ONNX](https://huggingface.co/HannesVonEssen/microduck-stilts/tree/main/140cm) |
+| 2.0 m | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_left_b0p50_h200p0cm.stl) | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_right_b0p50_h200p0cm.stl) | [STL](https://github.com/Vottivott/microduck-playground/blob/main/hardware/stilts/generated/release/direct_replacement_pair_b0p50_h200p0cm.stl) | [ONNX](https://huggingface.co/HannesVonEssen/microduck-stilts/tree/main/200cm) |
 
 The 50 cm–2.0 m meshes are simulation/reference geometry, not monolithic
 print recommendations. The 3.0 m demonstration was a zero-shot failure of
 the unchanged 2.0 m policy, so there is intentionally no separate 3.0 m
 policy release.
 
-![Narrow peg progression](generated/peg_preview.png)
+![Narrow peg progression](https://raw.githubusercontent.com/Vottivott/microduck-playground/main/hardware/stilts/generated/peg_preview.png)
 
-![Tallest narrow peg version on the complete robot](generated/robot_peg_preview.png)
+![Tallest narrow peg version on the complete robot](https://raw.githubusercontent.com/Vottivott/microduck-playground/main/hardware/stilts/generated/robot_peg_preview.png)
 
-![Platform-to-peg support progression](generated/transition_preview.png)
+![Platform-to-peg support progression](https://raw.githubusercontent.com/Vottivott/microduck-playground/main/hardware/stilts/generated/transition_preview.png)
 
 ## Parts for one robot
 
