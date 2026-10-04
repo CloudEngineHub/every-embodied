@@ -273,7 +273,7 @@
     },
     "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/README.md": {
       "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/04-mujoco-reproduction-act-pi0-smolvla/README.md",
-      "sourceHash": "32bd7d51bf9edbc78bad49a50efbfc45db9ca891c64f29f73f7ba859fcfbd017",
+      "sourceHash": "c34bb6c4ab30a1d5ecace5f7a54282cb4e4196e9c8b320985da25d889b24a236",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -1900,6 +1900,12 @@
     "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/02-可运行代码/lightnav-learning/README.md": {
       "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/02-executable-code/lightnav-learning/README.md",
       "sourceHash": "b9dd542b7fcf9cd55e830f094f508cb612721a8a5f5ae50254e31a1063c8e2fb",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/pi05_omy_short_check.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/04-mujoco-reproduction-act-pi0-smolvla/pi05_omy_short_check.md",
+      "sourceHash": "2c9545937579df089a3f18318f4b1d9412c6c9aea9299e0d78d13d6647a09dba",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
