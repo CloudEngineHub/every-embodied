@@ -1,0 +1,185 @@
+INFO 2026-10-04 17:42:52 ot_train.py:272 {'batch_size': 1,
+ 'checkpoint_path': None,
+ 'cudnn_deterministic': False,
+ 'dataloader_multiprocessing_context': 'spawn',
+ 'dataset': {'depth_output_unit': 'mm',
+             'episodes': [0, 1],
+             'eval_split': 0.0,
+             'image_transforms': {'enable': False,
+                                  'max_num_transforms': 3,
+                                  'random_order': False,
+                                  'tfs': {'affine': {'kwargs': {'degrees': [-5.0,
+                                                                            5.0],
+                                                                'translate': [0.05,
+                                                                              0.05]},
+                                                     'type': 'RandomAffine',
+                                                     'weight': 1.0},
+                                          'brightness': {'kwargs': {'brightness': [0.8,
+                                                                                   1.2]},
+                                                         'type': 'ColorJitter',
+                                                         'weight': 1.0},
+                                          'contrast': {'kwargs': {'contrast': [0.8,
+                                                                               1.2]},
+                                                       'type': 'ColorJitter',
+                                                       'weight': 1.0},
+                                          'hue': {'kwargs': {'hue': [-0.05,
+                                                                     0.05]},
+                                                  'type': 'ColorJitter',
+                                                  'weight': 1.0},
+                                          'saturation': {'kwargs': {'saturation': [0.5,
+                                                                                   1.5]},
+                                                         'type': 'ColorJitter',
+                                                         'weight': 1.0},
+                                          'sharpness': {'kwargs': {'sharpness': [0.5,
+                                                                                 1.5]},
+                                                        'type': 'SharpnessJitter',
+                                                        'weight': 1.0}}},
+             'repo_id': 'local/omy-short-check-v3',
+             'repo_type': 'dataset',
+             'return_uint8': False,
+             'revision': None,
+             'root': '/data/Data14TB/robotics_shared/experiments/omy-pi05-notebook-20261004/short_finetune_20261004/real_omy_v3',
+             'streaming': False,
+             'use_imagenet_stats': True,
+             'video_backend': 'torchcodec'},
+ 'env': None,
+ 'env_eval_freq': 0,
+ 'eval': {'batch_size': 22,
+          'n_episodes': 50,
+          'recording': False,
+          'recording_private': False,
+          'recording_repo_id': None,
+          'use_async_envs': True},
+ 'eval_steps': 0,
+ 'job': {'detach': False,
+         'image': 'huggingface/lerobot-gpu:latest',
+         'tags': [],
+         'target': None,
+         'timeout': '2d'},
+ 'job_name': 'pi05_omy',
+ 'log_freq': 1,
+ 'max_eval_samples': 0,
+ 'num_workers': 0,
+ 'optimizer': {'betas': [0.9, 0.95],
+               'eps': 1e-08,
+               'grad_clip_norm': 1.0,
+               'lr': 2.5e-05,
+               'type': 'adamw',
+               'weight_decay': 0.01},
+ 'output_dir': '/data/Data14TB/robotics_shared/experiments/omy-pi05-notebook-20261004/short_finetune_20261004/train-5steps',
+ 'peft': None,
+ 'persistent_workers': True,
+ 'policy': {'action_expert_variant': 'gemma_300m',
+            'action_feature_names': None,
+            'chunk_size': 50,
+            'compile_mode': 'max-autotune',
+            'compile_model': False,
+            'device': 'cuda',
+            'dtype': 'bfloat16',
+            'empty_cameras': 0,
+            'freeze_vision_encoder': True,
+            'gradient_checkpointing': True,
+            'image_resolution': [224, 224],
+            'input_features': {},
+            'license': None,
+            'max_action_dim': 32,
+            'max_period': 4.0,
+            'max_state_dim': 32,
+            'min_period': 0.004,
+            'n_action_steps': 5,
+            'n_obs_steps': 1,
+            'normalization_mapping': {'ACTION': <NormalizationMode.QUANTILES: 'QUANTILES'>,
+                                      'STATE': <NormalizationMode.QUANTILES: 'QUANTILES'>,
+                                      'VISUAL': <NormalizationMode.IDENTITY: 'IDENTITY'>},
+            'num_inference_steps': 10,
+            'optimizer_betas': [0.9, 0.95],
+            'optimizer_eps': 1e-08,
+            'optimizer_grad_clip_norm': 1.0,
+            'optimizer_lr': 2.5e-05,
+            'optimizer_weight_decay': 0.01,
+            'output_features': {},
+            'paligemma_variant': 'gemma_2b',
+            'pretrained_path': '/data/Data14TB/robotics_shared/experiments/omy-pi05-notebook-20261004/short_finetune_20261004/pi05_libero_start',
+            'pretrained_revision': None,
+            'private': None,
+            'push_to_hub': False,
+            'relative_exclude_joints': ['gripper'],
+            'repo_id': None,
+            'rtc_config': None,
+            'scheduler_decay_lr': 2.5e-06,
+            'scheduler_decay_steps': 30000,
+            'scheduler_warmup_steps': 1000,
+            'tags': None,
+            'time_sampling_beta_alpha': 1.5,
+            'time_sampling_beta_beta': 1.0,
+            'time_sampling_offset': 0.001,
+            'time_sampling_scale': 0.999,
+            'tokenizer_max_length': 200,
+            'train_expert_only': True,
+            'type': 'pi05',
+            'use_amp': False,
+            'use_peft': False,
+            'use_relative_actions': False},
+ 'prefetch_factor': 4,
+ 'rename_map': {},
+ 'resume': False,
+ 'reward_model': None,
+ 'sample_weighting': None,
+ 'save_checkpoint': True,
+ 'save_checkpoint_to_hub': False,
+ 'save_freq': 5,
+ 'scheduler': {'decay_lr': 2.5e-06,
+               'num_decay_steps': 30000,
+               'num_warmup_steps': 1000,
+               'peak_lr': 2.5e-05,
+               'type': 'cosine_decay_with_warmup'},
+ 'seed': 42,
+ 'steps': 5,
+ 'tolerance_s': 0.0001,
+ 'use_policy_training_preset': True,
+ 'wandb': {'add_tags': True,
+           'disable_artifact': False,
+           'enable': False,
+           'entity': None,
+           'mode': None,
+           'notes': None,
+           'project': 'lerobot',
+           'run_id': None}}
+INFO 2026-10-04 17:42:52 ot_train.py:280 Logs will be saved locally.
+INFO 2026-10-04 17:42:52 ot_train.py:298 Creating dataset
+INFO 2026-10-04 17:42:53 ot_train.py:324 Creating policy
+INFO 2026-10-04 17:44:11 ing_pi05.py:449 Enabled gradient checkpointing for PI05Pytorch model
+WARNING 2026-10-04 17:44:29 ing_pi05.py:912 Vision embedding key might need handling: paligemma_with_expert.paligemma.model.vision_tower.vision_model.embeddings.patch_embedding.bias
+WARNING 2026-10-04 17:44:29 ing_pi05.py:912 Vision embedding key might need handling: paligemma_with_expert.paligemma.model.vision_tower.vision_model.embeddings.patch_embedding.weight
+The PI05 model is a direct port of the OpenPI implementation.
+This implementation follows the original OpenPI structure for compatibility.
+Original implementation: https://github.com/Physical-Intelligence/openpi
+Loading model from: /data/Data14TB/robotics_shared/experiments/omy-pi05-notebook-20261004/short_finetune_20261004/pi05_libero_start
+✓ Loaded state dict from model.safetensors
+Remapped 812 state dict keys
+All keys loaded successfully!
+INFO 2026-10-04 17:44:45 ot_train.py:402 Creating optimizer and scheduler
+INFO 2026-10-04 17:44:45 hedulers.py:155 Auto-scaling LR scheduler: num_training_steps (5) < num_decay_steps (30000). Scaling warmup: 1000 → 0, decay: 30000 → 5 (scale factor: 0.000)
+INFO 2026-10-04 17:44:45 ot_train.py:434 Output dir: /data/Data14TB/robotics_shared/experiments/omy-pi05-notebook-20261004/short_finetune_20261004/train-5steps
+INFO 2026-10-04 17:44:45 ot_train.py:441 cfg.steps=5 (5)
+INFO 2026-10-04 17:44:45 ot_train.py:442 dataset.num_frames=40 (40)
+INFO 2026-10-04 17:44:45 ot_train.py:443 dataset.num_episodes=2
+INFO 2026-10-04 17:44:45 ot_train.py:446 Effective batch size: 1 x 1 = 1
+INFO 2026-10-04 17:44:45 ot_train.py:447 num_learnable_params=693422112 (693M)
+INFO 2026-10-04 17:44:45 ot_train.py:448 num_total_params=4143404816 (4B)
+
+Training:   0%|          | 0/5 [00:00<?, ?step/s]INFO 2026-10-04 17:44:45 ot_train.py:597 Start offline training on a fixed dataset, with effective batch size: 1
+
+Training:  20%|██        | 1/5 [00:04<00:16,  4.20s/step]INFO 2026-10-04 17:44:49 ot_train.py:641 step:1 smpl:1 ep:0 epch:0.03 loss:1.332 grdn:11.550 lr:2.3e-05 updt_s:3.530 data_s:0.668 smp/s:0 mem_gb:12.85
+
+Training:  40%|████      | 2/5 [00:04<00:05,  1.95s/step]INFO 2026-10-04 17:44:49 ot_train.py:641 step:2 smpl:2 ep:0 epch:0.05 loss:1.446 grdn:6.752 lr:1.7e-05 updt_s:0.236 data_s:0.129 smp/s:3 mem_gb:12.85
+
+Training:  60%|██████    | 3/5 [00:04<00:02,  1.23s/step]INFO 2026-10-04 17:44:50 ot_train.py:641 step:3 smpl:3 ep:0 epch:0.07 loss:1.100 grdn:9.364 lr:1.0e-05 updt_s:0.240 data_s:0.131 smp/s:3 mem_gb:12.85
+
+Training:  80%|████████  | 4/5 [00:05<00:00,  1.13step/s]INFO 2026-10-04 17:44:50 ot_train.py:641 step:4 smpl:4 ep:0 epch:0.10 loss:0.979 grdn:3.011 lr:4.6e-06 updt_s:0.236 data_s:0.131 smp/s:3 mem_gb:12.85
+
+Training: 100%|██████████| 5/5 [00:05<00:00,  1.43step/s]INFO 2026-10-04 17:44:51 ot_train.py:641 step:5 smpl:5 ep:0 epch:0.12 loss:0.922 grdn:3.350 lr:2.5e-06 updt_s:0.236 data_s:0.129 smp/s:3 mem_gb:12.85
+INFO 2026-10-04 17:44:51 ot_train.py:687 Checkpoint policy after step 5
+
+Training: 100%|██████████| 5/5 [00:11<00:00,  2.36s/step]
+INFO 2026-10-04 17:44:57 ot_train.py:770 End of training

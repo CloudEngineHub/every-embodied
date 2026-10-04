@@ -1,5 +1,5 @@
 import os
-import pyautogui
+import glfw
 import sys
 import time
 import numpy as np
@@ -7,7 +7,6 @@ import numpy as np
 # import shapely as sp
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import tkinter as tk
 import xml.etree.ElementTree as ET
 from scipy.spatial.distance import cdist
 from PIL import Image
@@ -402,11 +401,16 @@ def depth_to_gray_img(depth,max_val=10.0):
     return img
 
 def get_monitor_size():
-    """ 
-        Get monitor size
-    """
-    w,h = pyautogui.size()
-    return w,h
+    """Get the primary display size through the viewer's GLFW dependency."""
+    if not glfw.init():
+        raise RuntimeError("MuJoCo viewer requires a working display; check DISPLAY")
+    monitor = glfw.get_primary_monitor()
+    if monitor is None:
+        raise RuntimeError("GLFW could not find a display monitor")
+    mode = glfw.get_video_mode(monitor)
+    if mode is None:
+        raise RuntimeError("GLFW could not read the display resolution")
+    return mode.size.width, mode.size.height
     
 def get_xml_string_from_path(xml_path):
     # Parse the XML file
