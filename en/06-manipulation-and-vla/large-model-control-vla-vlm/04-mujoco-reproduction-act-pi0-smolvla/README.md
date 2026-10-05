@@ -10,14 +10,14 @@ This repository provides a minimal working example: it is used to collect teachi
 ## Table of Contents
 - [ Installation ](#安装)
 - [ Update Plan ](#更新计划)
-- [ 1. Collecting teaching data ](#1-采集示教数据)
-- [ 2. Playing back data ](#2-回放数据)
+- [ 1. Collecting Teaching Data ](#1-采集示教数据)
+- [ 2. Playing Back Data ](#2-回放数据)
 - [ 3. Training Action-Chunking-Transformer (ACT) ](#3-训练-action-chunking-transformeract)
-- [ 4. Deploying ACT policy ](#4-部署-act-策略)
-- [ 5-6. Collection and visualization in language condition environment ](#5-6-语言条件环境中的采集与可视化)
-- [ Models and dataset ](#模型与数据集)
-- [ 7. Training and deploying pi_0 ](#7-训练与部署-pi_0)
-- [ 8. Training and deploying SmolVLA ](#8-训练与部署-smolvla)
+- [ 4. Deploying ACT Policy ](#4-部署-act-策略)
+- [ 5-6. Collection and Visualization in Language Condition Environment ](#5-6-语言条件环境中的采集与可视化)
+- [ Models and Dataset ](#模型与数据集)
+- [ 7. Training and Deployment of pi_0 ](#7-训练与部署-pi_0)
+- [ 8. Training and Deployment of SmolVLA ](#8-训练与部署-smolvla)
 - [ 10. Fine-tuning OMY with π0.5 ](#10-用-π05-微调-omy)
 - [ Acknowledgments ](#致谢)
 
@@ -26,7 +26,7 @@ It passed the test on **Python 3.10**.
 
 It is not recommended to use `pip install lerobot` directly, as it may cause errors.
 
-Install MuJoCo dependencies and lerobot:
+Install MuJoCo-related dependencies and lerobot:
 ```bash
 conda create -n py310 python=3.10
 pip install -r requirements.txt
@@ -56,13 +56,13 @@ unzip plate_11.zip
 ## Update Plan
 - [x] Viewer update
 - [x] Add various mugs and plates for different language commands
-- [x] Add pi_0 training and inference
+- [x] Add pi_0 training and reasoning
 - [x] Add SmolVLA
 
-## 1. Collect teaching data
+## 1. Collect Teaching Data
 Run [1.collect_data.ipynb](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/1.collect_data.ipynb)
 
-By default, the **ROBOTIS OMY six-axis robotic arm and gripper MuJoCo simulation model** is used, with the scene file being `asset/example_scene_y.xml`. No physical robotic arm is required. After running the acquisition unit, focus the keyboard on the MuJoCo window before manipulation. The fixed version of this chapter’s `LeRobotDataset` saves data in LeRobot v2.1 format.
+By default, the **ROBOTIS OMY six-axis robotic arm and gripper MuJoCo simulation model** is used, with the scene file being `asset/example_scene_y.xml`. There is no need for a physical robotic arm. After running the acquisition unit, focus the keyboard on the MuJoCo window before manipulation. The fixed version of `LeRobotDataset` in this chapter saves data in LeRobot v2.1 format.
 
 Collects teaching data in the given environment. The task is to pick up the cup and place it on the plate. When the cup is on the plate, the gripper is open, and the end effector is above the cup, the environment determines success.
 
@@ -74,7 +74,7 @@ Key position descriptions:
 - `Q/E`: tilt
 - `方向键`: remaining rotation
 - `空格`: switch gripper state
-- `Z`: reset the environment and discard the current round cache data
+- `Z`: reset the environment and discard current round cache data
 
 Overlaid image descriptions:
 - Top right: Agent's perspective
@@ -114,28 +114,28 @@ features={
 },
 ```
 
-Data is stored in the `./demo_data` directory by default. The historical example [demo_data_example](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/demo_data_example) in the repository can be used to view the directory structure and replay; for training, please use the data collected again after this fix.
+Data is stored in the `./demo_data` directory by default. The historical example [demo_data_example](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/demo_data_example) in the repository can be used to view the directory structure and replay; for training, please use the data collected after this fix.
 
-After starting the manipulation, the code caches images, states, and actions at 20 Hz; an episode is saved upon successful judgment. `Z` discards the current unsaved round. A new round must be recorded by restarting the operation after successful saving or reset. By default, `NUM_DEMO=1` collects only one teaching; the number should be increased and different object positions should be covered during training.
+After starting the manipulation, the code caches images, states, and actions at 20 Hz; an episode is saved upon successful judgment. `Z` discards the current unsaved round. A new round must be recorded by restarting the manipulation after successful saving or reset. By default, `NUM_DEMO=1` collects only one teaching; the number should be increased and different object positions should be covered during training.
 
 **Difference between action and observation**: The `observation.state` at the four keyboard acquisition points is the final pose before issuing the command for this frame, while `action` is the absolute target joint angle obtained via inverse kinematics plus the normalized gripper command (0 indicates open, 1 indicates closed). OMY, Nova5, and xArm6 are 7-dimensional, and xArm7 is 8-dimensional. After calling `PnPEnv.step(action)` to prepare the control command, `PnPEnv.get_commanded_joint_action()` is used to read the action label; the return value of `step()` is still an observation and cannot serve as a target action. When the gripper reaches smooth or contact limits, the label records the actual command issued after passing through these restrictions.
 
-**Old data processing (2026-10-02)**: Older versions of `1.collect_data.ipynb`, `1.collect_data_nova5.ipynb`, `1.collect_data_xarm6.ipynb`, and `1.collect_data_xarm7.ipynb` incorrectly saved the current joint state as an action label. It is recommended to use the corrected code for re-collection and training; simply updating the code cannot fix the labels in the existing data. Please keep the old data backup, switch to the new `ROOT` directory, and modify the training data path accordingly to prevent the inclusion of old data. After updating the environment code, restart the Notebook kernel and run the process from scratch.
+**Old data processing (2026-10-02)**: Older versions of `1.collect_data.ipynb`, `1.collect_data_nova5.ipynb`, `1.collect_data_xarm6.ipynb`, and `1.collect_data_xarm7.ipynb` incorrectly saved the current joint state as an action label. It is recommended to use the corrected code for re-collection and training; simply updating the code cannot fix the labels in the existing data. Please keep the old data backup, switch to the new `ROOT` directory, and modify the training data path accordingly to prevent the mixing of old data. After updating the environment code, restart the Notebook kernel and run the process from scratch.
 
-The language condition collection entry in Section 5 also uses the same target action interface, but `observation.state` is retained as the six robotic arm joint angles of the current system, rather than the end pose; respective state definitions should be used during training and deployment.
+The language condition collection interface in Section 5 also uses the same target action interface, but `observation.state` is retained as the six robotic arm joint angles of the current system, rather than the end pose; corresponding state definitions should be used during training and deployment.
 
-After installing the dependencies of this chapter, you can run `python -m unittest -v test_collection_actions` from the directory of this chapter to check the action tags, gripper commands, round boundaries, and five collection entrances. This check does not require opening a graphical window or running GPU training.
+After installing the dependencies of this chapter, you can run `python -m unittest -v test_collection_actions` from the directory of this chapter to check action labels, gripper commands, round boundaries, and the five collection entrances. This check does not require opening a graphical window or running GPU training.
 
 ## 2. Replay Data
 Select the replay entry using the robot used during collection. The data path and robot model must be consistent:
 
-- [OMY playback](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/2.visualize_data-omy.ipynb)
-- [Nova5 playback](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/2.visualize_data-nova5.ipynb)
-- [xArm7 playback](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/2.visualize_data-xarm7.ipynb)
+- [OMY playback ](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/2.visualize_data-omy.ipynb)
+- [Nova5 playback ](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/2.visualize_data-nova5.ipynb)
+- [xArm7 playback ](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/2.visualize_data-xarm7.ipynb)
 
 <img src="../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/media/data.gif" width="480" height="360"></img>
 
-Visualize your actions in the reconstructed simulation scene. The main window will replay the actions; the images overlaid in the top-right and bottom-right come from a dataset.
+Visualize your actions in the reconstructed simulation scene. The main window will replay the actions; the images overlaid in the top-right and bottom-right come from the dataset.
 
 ## 3. Train Action-Chunking-Transformer (ACT)
 Run [3.train.ipynb](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/3.train.ipynb)
@@ -152,7 +152,8 @@ The policy error can be evaluated by comparing it with the true value action of 
 
 <details>
     <summary>PicklingError: Can't pickle &lt;function &lt;lambda&gt;&gt;...&gt;</summary>
-If a pickling error occurs, set `num_workers` to `0`, for example:
+
+If a pickling error occurs, set `num_workers` to `0`. For example:
 
 ```python
 dataloader = torch.utils.data.DataLoader(
@@ -175,9 +176,9 @@ If there is no GPU available for training, download the checkpoint from Google D
 <img src="../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/media/rollout.gif" width="480" height="360" controls></img>
 
 ## 5-6. Collection and Visualization in Language Condition Environment
-- [5.language_env.ipynb](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/5.language_env.ipynb): Keyboard remote manipulation for data collection (key mapping matches the first environment)
-- Only one piece of data is collected in Task 1, and 20 pieces of data are collected in Task 5. These are two tasks involving the red and blue cups
-- [6.visualize_data.ipynb](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/6.visualize_data.ipynb): Visualize collected data
+- [5.language_env.ipynb](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/5.language_env.ipynb): Keyboard remote manipulation for data collection (key mapping consistent with the first environment)
+- Only one dataset is collected in Task 1, and 20 datasets are collected in Task 5. These are two tasks involving the red and blue cups
+- [6.visualize_data.ipynb](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/6.visualize_data.ipynb): Visualize the collected data
 
 **Data Example**
 
@@ -190,9 +191,9 @@ Pi0 and SmolVLA use the same language condition data. Choose one of the followin
 
 **Method 1: Download the public sample**
 
-[Datawhale Public Sample](https://huggingface.co/datasets/Datawhale/datawhale_eai_pnp_language) is the LeRobot v2.1 dataset for the OMY scenario, containing 20 episodes and 2621 frames, along with two tasks: red cup and blue cup.
+[Datawhale Public Example](https://huggingface.co/datasets/Datawhale/datawhale_eai_pnp_language) is the LeRobot v2.1 dataset for the OMY scenario, containing 20 episodes and 2621 frames, along with two tasks: red cup and blue cup.
 
-First, install Git LFS, then execute:
+First, install Git LFS, and then execute:
 
 ```bash
 git lfs install
@@ -204,7 +205,7 @@ Do not clone or delete the original data if there is already a directory with th
 
 **Method 2: Self-collection**
 
-Run [5.language_env.ipynb](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/5.language_env.ipynb), keep `REPO_NAME = 'datawhale_eai_pnp_language'` and `ROOT = "./demo_data_language"`, collect and save the red and blue cup demonstrations, and then use [6.visualize_data.ipynb](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/6.visualize_data.ipynb) to check the trajectory. This Notebook includes a confirmation step for deleting old data when the directory already exists; if data has been downloaded or demonstrated, you should back up or change the directory first.
+Run [5.language_env.ipynb](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/5.language_env.ipynb), keep `REPO_NAME = 'datawhale_eai_pnp_language'` and `ROOT = "./demo_data_language"`, collect and save the red and blue cup demonstrations, and then use [6.visualize_data.ipynb](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/6.visualize_data.ipynb) to check the trajectory. This Notebook includes a confirmation step for deleting old data when the directory already exists; if data has been downloaded or demonstrations have been performed, you should back up or change the directory first.
 
 Both methods can use `pi0_datawhale_eai.yaml` and `smolvla_datawhale_eai.yaml` from this chapter without changing the configuration:
 
@@ -226,7 +227,7 @@ dataset:
 
 The following commands are executed in the chapter directory. Use `requirements.txt` to fix LeRobot `10b7b3532543b4adfb65760f02a49b4c537afde7`.
 First, execute `python check_training_configs.py` to check two configurations (no training, no weight download).
-In the YAML command, spaces are retained between `--config_path` and file names; the equal sign notation of this version will follow the JSON checkpoint loading branch.
+In the YAML command, spaces are retained between `--config_path` and file names; the equal sign notation in this version will follow the JSON checkpoint loading branch.
 
 - [train_model.py](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/train_model.py): Training script
 - [pi0_datawhale_eai.yaml](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/pi0_datawhale_eai.yaml): Training configuration
@@ -245,7 +246,7 @@ Training log:
 
 <image src="../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/media/wandb.png"  width="480" height="360">
 
-The configuration should follow the YAML format linked in this section. By default, `./demo_data_language` from Section 5 is read, and `dataset.repo_id` corresponds to `datawhale_eai_pnp_language`. When using other data, both items need to be modified simultaneously. W&B is disabled by default; set your own project and account before enabling it. Training requires complete data, model weights, and a CUDA environment. The configuration parsing does not indicate that the full training has been verified.
+The configuration should follow the YAML format linked in this section. By default, `./demo_data_language` in Section 5 is read, and `dataset.repo_id` corresponds to `datawhale_eai_pnp_language`. When using other data, both items need to be modified simultaneously. W&B is disabled by default; set your own project and account before enabling it. Training requires complete data, model weights, and a CUDA environment; the configuration parsing does not indicate that the full training has been verified.
 
 ## 8. Training and Deployment of SmolVLA
 - [train_model.py](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/train_model.py): Training script
@@ -273,15 +274,15 @@ The configuration should follow the YAML format linked in this section. By defau
 
 Run [10.pi05_omy.ipynb](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/10.pi05_omy.ipynb). The process continues from the OMY single-cup grasp-and-release data in Section 1: check the teaching and action labels, convert LeRobot v2.1 into independent v3 data, calculate training percentile values, perform five-step training checks, conduct formal fine-tuning, keep action comparisons, and conduct MuJoCo simulation evaluations.
 
-Use a separate **Python 3.12 / LeRobot 0.6.1** environment and [requirements_pi05.txt](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/requirements_pi05.txt). Do not upgrade the old environment in sections 1–9. Detailed installation, editable parameters, and startup steps are in the notebook; see [pi05_omy_utils.py](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/pi05_omy_utils.py) for auxiliary interfaces. By default, fine-tuning is performed from `lerobot/pi05_base`, and a compatible local pre-trained directory can be specified using `OMY_PI05_PRETRAINED`. The batch size is 1; only the action expert is trained. Five checks are performed first, and complete training and evaluation results are generated during actual operation.
+Use a separate **Python 3.12 / LeRobot 0.6.1** environment and [requirements_pi05.txt](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/requirements_pi05.txt). Do not upgrade the old environment in sections 1–9. Detailed installation, editable parameters, and startup steps are in the notebook; see [pi05_omy_utils.py](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/pi05_omy_utils.py) for auxiliary interfaces. By default, fine-tuning is performed from `lerobot/pi05_base`, and `OMY_PI05_PRETRAINED` can be used to specify a compatible local pre-trained directory. The batch size is 1; only the action expert is trained. Five checks are performed first, and complete training and evaluation results are generated during actual operation.
 
-[pi05_omy_train.py](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/pi05_omy_train.py) Calls the official training entry and requires all pre-trained parameters to be loaded successfully. Training stops when weight reading fails; the same check is performed for inference loading to prevent the random initialization fallback of the fixed version loader from being misdiagnosed as fine-tuning success. For the settings, sources, and results of the remote short-step verification, see [pi05_omy_short_check.md](pi05_omy_short_check.md).
+[pi05_omy_train.py](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/pi05_omy_train.py) Calls the official training interface and requires all pre-trained parameters to be loaded successfully. Training stops when weight reading fails; the same check is performed for inference loading to prevent the random initialization rollback of the fixed version loader from being misdiagnosed as fine-tuning success. For the settings, sources, and results of the remote short-step verification, see [pi05_omy_short_check.md](pi05_omy_short_check.md).
 
-Input consists of two streams of images, a six-dimensional **pose**, and language commands; output is six **absolute joint angles** and normalized gripper commands. The acquisition frequency is maintained at 20 Hz, and relative motion conversion is disabled. The state in Section 5 is in joint angles, and the scene interface is different, so this process cannot be directly applied. Historical error action labels cannot be restored through format migration. Please use the corrected Section 1 for re-acquisition and playback instead.
+Input consists of two images, a six-dimensional **pose**, and language commands; output is six **absolute joint angles** and normalized gripper commands. The collection frequency is maintained at 20 Hz, and relative motion conversion is disabled. The state in Section 5 is in joint angles, and the scene interface is different, so this process cannot be directly applied. Historical error action labels cannot be restored through format migration. Please use the repaired Section 1 for re-collection and playback instead.
 
-The transformation retains the original data, and the target directory must be empty. For more than three rounds, approximately 20% of the evaluation is reserved for each full round, and only the training rounds are used to calculate normalized statistics. One or two demonstrations are suitable for interface inspection, but cannot be used as a basis for generalization success rate. Appropriate CUDA workstations are required for training; the passing of short-step training and the reduction in loss do not indicate that the grasping and releasing operations have been successfully reproduced.
+The transformation preserves the original data, and the target directory must be empty. For more than three rounds, approximately 20% of the evaluation is reserved for each full round, and only the training rounds are used to calculate normalized statistics. One or two demonstrations are suitable for interface inspection, but cannot be used as a basis for generalization success rate. Training requires a suitable CUDA workstation; passing short-step training and reduced loss do not indicate that the grasping and releasing operations have been successfully reproduced.
 
-After installing the independent environment, run `python -m unittest -v test_pi05_omy` in the directory of this chapter to check the new data interface, image and action fidelity, round boundaries, and control timing. The test does not download model weights or initiate full training.
+After installing the independent environment, run `python -m unittest -v test_pi05_omy` in the directory of this chapter to check the new data interface, image and action fidelity, round boundaries, and control timing. The test does not download model weights or start full training.
 
 Later, we will also present additional grasping experiments for data training with ACT and diffusion training. Stay tuned.
 
@@ -291,5 +292,5 @@ Later, we will also present additional grasping experiments for data training wi
 
 - Robotis-OMY robotic arm resources come from [robotis_mujoco_menagerie](https://github.com/ROBOTIS-GIT/robotis_mujoco_menagerie/tree/main)
 - [MuJoco Parser Class](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/mujoco_env/mujoco_parser.py) is derived from [yet-another-mujoco-tutorial-v3](https://github.com/sjchoi86/yet-another-mujoco-tutorial-v3)
-- The tutorial referenced [lerobot examples](https://github.com/huggingface/lerobot/tree/main/examples)
+- The tutorial refers to [lerobot examples](https://github.com/huggingface/lerobot/tree/main/examples)
 - Plate and mug resources come from [Objaverse](https://objaverse.allenai.org/)

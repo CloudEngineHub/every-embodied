@@ -10,9 +10,9 @@ On 2026-10-04, the Ubuntu workstation completed the loading of real pre-training
 
 ## Weight and Environment
 
-- Graphics card: NVIDIA RTX PRO 6000 Blackwell Workstation Edition, 96 GB video memory.
+- GPU: NVIDIA RTX PRO 6000 Blackwell Workstation Edition, 96 GB video memory.
 - Independent environment: `/data/Data14TB/envs/every-embodied-omy-pi05-061`; Python 3.12.3, LeRobot 0.6.1, PyTorch 2.7.1, CUDA［parallel computing platform］12.8, MuJoCo 3.1.6.
-- **The actual starting point is the official OpenPi π0.5 LIBERO pre-training policy stored in the workstation cache**: `/data/Data14TB/robotics_shared/checkpoints/openpi/openpi-assets/checkpoints/pi05_libero_pytorch/model.safetensors`, 7,233,650,408 bytes, 812 tensors.
+- **The actual starting point is the official OpenPi π0.5 LIBERO pre-training policy from the workstation cache**: `/data/Data14TB/robotics_shared/checkpoints/openpi/openpi-assets/checkpoints/pi05_libero_pytorch/model.safetensors`, 7,233,650,408 bytes, 812 tensors.
 - No general `lerobot/pi05_base` weights were used this time. The LIBERO pre-training policy has been fine-tuned for other tasks, and the five-step results only prove that this starting point is compatible with the current OMY training interface.
 
 Experimental root directory:
@@ -21,15 +21,15 @@ Experimental root directory:
 /data/Data14TB/robotics_shared/experiments/omy-pi05-notebook-20261004/short_finetune_20261004
 ```
 
-The `pi05_libero_start` directory uses symbolic links to reference the original weights, and the three LeRobot configuration files are taken from the `b211f3d44c36b6acfcf7ae94a64e8e96f75a64ba` version of `lerobot/pi05_base`. The cached weights match the key name and shape of this model; the official loader maps the OpenPi key name and loads it strictly, and the log clearly shows `All keys loaded successfully!`. The original pre-trained model is retained in the original directory.
+Its `pi05_libero_start` directory uses symbolic links to reference the original weights. The three LeRobot configuration files are taken from the `b211f3d44c36b6acfcf7ae94a64e8e96f75a64ba` version of `lerobot/pi05_base`. The cached weights match the key name and shape of this model; the official loader maps the OpenPi key name and loads it strictly, and the log clearly shows `All keys loaded successfully!`. The original pre-trained model is retained in the original directory.
 
 This chapter adds a success check for the fixed version loader. It will stop if reading fails or parameter matching fails. It covers two failure scenarios: complete loading and the official loader returning a random initialization model.
 
 ## Data and Training Settings
 
-In the real MuJoCo OMY single-cup scenario, three short trajectories were collected, each consisting of 20 frames, totaling 60 frames at a frequency of 20 Hz [20 control operations per second]. The joint targets change slightly around their initial positions, with the gripper opening and closing synchronously; these trajectories do not complete the grasping and releasing tasks and are only used for training link inspection.
+In the real MuJoCo OMY single-cup scenario, three short trajectories were collected, each consisting of 20 frames, for a total of 60 frames at a frequency of 20 Hz. The joint targets undergo slight changes near their initial positions, with the gripper opening and closing synchronously. These trajectories do not complete the grasping or releasing tasks and are only used for training link inspection.
 
-The state is a six-dimensional pose, and the action consists of the six absolute target joint angles and normalized gripper commands actually issued. The two images are 256×256 images from external and wrist cameras. The recording sequence is consistent with the acquisition logic of Section 1 after repair.
+The state is a six-dimensional pose, and the action consists of the six absolute target joint angles and normalized gripper commands actually issued. The two images are 256×256 images from the external and wrist cameras. The recording sequence is consistent with the acquisition logic of Section 1 after repair.
 
 - Original data: `real_omy_v21` in the experiment root directory.
 - Independent conversion data: `real_omy_v3`, with training rounds 0 and 1, totaling 40 frames; reserved round 2, totaling 20 frames.
@@ -47,13 +47,13 @@ The state is a six-dimensional pose, and the action consists of the six absolute
 | 4 | 0.979 | 3.011 | 12.85 |
 | 5 | 0.922 | 3.350 | 12.85 |
 
-The VRAM value comes from the trainer's `torch.cuda.max_memory_allocated()`, indicating the peak allocation of tensors for this process, not the total usage of the entire graphics card. The losses and gradients after five updates are finite values, and the exit code for the training process is 0.
+The memory usage value comes from the trainer's `torch.cuda.max_memory_allocated()`, indicating the peak allocation of tensors for this process, not the total consumption of the entire graphics card. The losses and gradients after five updates are finite values, and the exit code of the training process is 0.
 
-After comparing the saved model with the starting point element by element: there is a change of 32,763/32,768 elements in the action input layer, and a change of 32,768/32,768 elements in the action output layer. The maximum change is approximately `8e-5`. The frozen visual projection layer tested randomly shows no change. The model indeed performed parameter updates.
+After comparing the saved model with the starting point element by element: there is a change of 32,763/32,768 elements in the action input layer, and a change of 32,768/32,768 elements in the action output layer. The maximum change is approximately `8e-5`. The frozen visual projection layer checked randomly shows no change. The model indeed performed parameter updates.
 
 The update step for saving the training state is 5. The saved model was successfully reloaded strictly, and the saved normalization and inverse normalization processors were checked through action iterations; inference was performed on the first frame image and state of the reserved round to obtain actions with finite values for shape `(1, 50, 7)`. The first inference took about 0.86 seconds, and this value cannot be used as a conclusion for real-time deployment performance.
 
-The original model has 812 tensors, and the saved model has 813 tensors. This is due to the shared language embeddings that are expanded during the saving of the additional framework; when reloaded strictly, there are no missing or extra items.
+The original model has 812 tensors, and the saved model has 813 tensors. The extra items are shared language embeddings that are expanded during framework saving; when reloaded strictly, there are no missing or extra items.
 
 Complete result directory:
 
@@ -63,11 +63,11 @@ train-5steps/checkpoints/000005/training_state
 train-5steps/checkpoints/last -> 000005
 ```
 
-Local copies of the training logs, commands, test outputs, and numerical inspection results can be found in [validation/pi05_omy_20261004](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/validation/pi05_omy_20261004), while the remote copies are located in the experiment root directory. All six auxiliary program tests passed.
+Local copies of the training logs, commands, test outputs, and numerical inspection results are available in [validation/pi05_omy_20261004](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA/validation/pi05_omy_20261004), while the remote files are located in the experiment root directory. All six auxiliary program tests passed.
 
 ## Reuse local model
 
-Before running the notebook on this workstation, you can set the following environment variables to reuse the prepared compatibility directory:
+Before running the notebook on this workstation, you can set the following environment variables to reuse the prepared compatible directory:
 
 ```bash
 export OMY_PI05_PRETRAINED=/data/Data14TB/robotics_shared/experiments/omy-pi05-notebook-20261004/short_finetune_20261004/pi05_libero_start
@@ -76,4 +76,4 @@ export HF_HOME=/data/Data14TB/robotics_shared/cache/huggingface
 
 You still need to set the teaching source, conversion directory, and new output directory according to the notebook settings. The simplified configuration in the original OpenPi directory is not a complete LeRobot configuration, and cannot directly replace the adapted directory prepared here.
 
-The current operation is a fine-tuning of the link inspection. **There is no evaluation of the OMY grasping and releasing success rate, nor is the complete training performance verified.** For full reproduction, it is necessary to collect successful demonstrations at different initial positions again, allocate time for evaluation per round, and then conduct formal training and a closed loop grasping and releasing test.
+The current operation is a fine-tuning link check. **There is no evaluation of the OMY grasping and releasing success rate, nor is the full training performance verified.** For complete reproduction, it is necessary to collect successful teachings at different initial positions again, allocate time for evaluation per round, and then conduct formal training and a closed loop grasping and releasing test.
