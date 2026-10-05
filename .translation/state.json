@@ -1851,13 +1851,13 @@
     },
     "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/03-Notebook/README.md": {
       "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/03-Notebook/README.md",
-      "sourceHash": "3ecdfce6a965c29977fb6a13ecb5e4fcb9495dd7c00c2114ab2cc703d7aed574",
+      "sourceHash": "6319034f5f34ec2c418df0c53fd2fad662faab9147448d800dd8e24fd5132cd6",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
     "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/README.md": {
       "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/README.md",
-      "sourceHash": "6e0379d0ecfec0835d84d9e4414a251169ee3c5c7589ea95bc327fd0d0c6fad9",
+      "sourceHash": "42583d112f47f077a4a848ea1023adb21f5bf36f63442b94365ddfc0774b98ab",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -1899,7 +1899,7 @@
     },
     "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/02-可运行代码/lightnav-learning/README.md": {
       "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/02-executable-code/lightnav-learning/README.md",
-      "sourceHash": "b9dd542b7fcf9cd55e830f094f508cb612721a8a5f5ae50254e31a1063c8e2fb",
+      "sourceHash": "61e4730332e29e9dcd0c65d82537077cd602e02744ce1b2cb7701728983fe276",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
