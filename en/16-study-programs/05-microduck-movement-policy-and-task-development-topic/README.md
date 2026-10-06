@@ -8,21 +8,21 @@ Review machine-translated technical claims before relying on them.
 
 This topic compiles materials related to reinforcement learning, motion control, physical simulation, task scheduling, and on-device deployment for MicroDuck / OpenDuck Mini V2. The directory is organized in the order of “first running the baseline, then understanding the code, and finally developing tasks”, making it suitable for following the learning process while gradually adding experimental records.
 
-Follow the [ 8-day learning plan ](learning-plan.md). Study one notebook per day, check [ for a summary of task demonstrations ](01-task-information/selected-videos/README.md), or read [ to see the student recruitment brochure ](recruitment-copy.md).
+Follow the [ 8-day learning plan ](learning-plan.md). Study one notebook per day, check the [ task overview ](01-task-information/selected-videos/README.md), or read the [ student recruitment brochure ](recruitment-copy.md).
 
-There is also a [21-day monthly team learning recruitment notice ](monthly-team-learning-recruitment-copy.md). Each task is scheduled for 2–3 days. Both sets of plans use the same tutorials and Notebooks, and the original 8-day short-term plan remains intact.
+There is also a [ 21-day monthly team learning recruitment notice ](monthly-team-learning-recruitment-copy.md). Each task is scheduled for 2–3 days. Both sets of plans use the same tutorials and Notebooks, and the original 8-day short-term plan remains intact.
 
 ## Learning Path
 
-1. First, examine [ basketball balance ](01-task-information/01-microduck-basketball-balance-reinforcement-learning/README.md), to understand the velocity command, 61-dimensional observation, 14-dimensional action, PPO, and contact rewards.
-2. Then, look at [ browser physical perturbation ](01-task-information/02-mjswan-microduck-browser-physical-disturbance/README.md), to understand the MuJoCo state, perturbations, recording, and visualization interfaces.
+1. First, examine [ basketball balance ](01-task-information/01-microduck-basketball-balance-reinforcement-learning/README.md), to understand the velocity policy, 61-dimensional observation, 14-dimensional action, PPO, and contact rewards.
+2. Then, look at [ browser physical disturbance ](01-task-information/02-mjswan-microduck-browser-physical-disturbance/README.md), to understand the MuJoCo state, disturbance, recording, and visualization interfaces.
 3. Move on to [ stilt walking ](01-task-information/03-microduck-stilt-walker-reinforcement-learning-reproduction/README.md), and learn about actuator parameters, shape curriculum, action smoothing, and sim-to-real constraints.
 4. Study [ swinging rotation ](01-task-information/04-microduck-sway-rotation-reinforcement-learning-reproduction/README.md) and [ ball balance and FastSAC ](01-task-information/05-motrixlab-microduck-ball-balance-and-fastsac/README.md), to compare different tasks and algorithm interfaces.
-5. Finally, proceed to [ ladder climbing ](01-task-information/06-microduck-tread-climbing-reinforcement-learning-guide/README.md). First, run the climbing, table ascent, and standing-up processes, then learn about dual policy switching, rail contact, and curriculum training.
+5. Finally, proceed to [ ladder climbing ](01-task-information/06-microduck-tread-climbing-reinforcement-learning-guide/README.md). First, run the climbing, table climbing, and standing-up processes. Then, learn about dual policy switching, rail contact, and curriculum training.
 6. When running or modifying code is required, enter [ executable code package ](02-executable-code/microduck-playground-stilts/README.md).
-7. When reviewing RDK X5, web demonstrations, and multi-policy scheduling is needed, enter [ side deployment and web deployment ](01-task-information/07-rdk-on-side-and-web-deployment/README.md).
-8. When checking execution according to the live broadcast order is required, open [ Notebook learning interface ](03-Notebook/README.md).
-9. On day 8, let the ducklings understand language commands and navigate in different rooms, running [ LightNav-0 multi-scenario navigation ](../../../16-专题组队学习/05-MicroDuck运动策略与任务开发专题/03-Notebook/08_LightNav0_视觉语言导航_GPU_多场景.ipynb). Use a GPU［graphics processor］ to integrate existing models; no navigation model training is required, and no development board is connected.
+7. When reviewing RDK X5, web demos, and multi-policy scheduling is needed, enter [ side deployment and web deployment ](01-task-information/07-rdk-on-side-and-web-deployment/README.md).
+8. When checking operations according to the live broadcast sequence is required, open [ Notebook learning entry ](03-Notebook/README.md).
+9. On day 8, let the ducklings understand language commands and navigate in different rooms, running [ LightNav-0 multi-scenario navigation ](../../../16-专题组队学习/05-MicroDuck运动策略与任务开发专题/03-Notebook/08_LightNav0_视觉语言导航_GPU_多场景.ipynb). Use a GPU［graphics processor］ to integrate existing models; no navigation model training is required, and no development board connection is needed.
 
 ## Directory Structure
 
@@ -54,27 +54,27 @@ There is also a [21-day monthly team learning recruitment notice ](monthly-team-
 
 ## Notebook Learning Line
 
-The Notebook is recommended to run on an Ubuntu workstation. On Windows, Jupyter can only be accessed via a browser. In this way, MuJoCo, training code, and Python dependencies all exist in the same environment. For motion tasks, the RDK X5 can be connected again, using the development board as an independent BPU inference endpoint. The 8th LightNav-0 navigation tutorial only uses the workstation GPU and does not connect to the development board. The Notebook includes built-in task contracts, model validation, and video output, eliminating the need for an additional layer of “Windows Notebook -> Ubuntu -> RDK” switching.
+The Notebook is recommended to run on an Ubuntu workstation. On Windows, Jupyter can only be accessed via a browser. In this way, MuJoCo, training code, and Python dependencies all exist in the same environment. For motion tasks, the RDK X5 can be connected again, using the development board as an independent BPU inference endpoint. The 8th LightNav-0 navigation tutorial only uses the workstation GPU and does not connect to the development board. The Notebook includes built-in task contracts, model checks, and video outputs, eliminating the need for an additional layer of “Windows Notebook -> Ubuntu -> RDK” switching.
 
-ONNX is compiled into HBM using the toolchain matching the RDK X5 SDK, and the compilation is performed in Ubuntu Docker. The corresponding task HBM is executed on the RDK side; after the board-side services and simulation workstation are ready, the task video can be regenerated.
+ONNX is compiled into HBM using a toolchain compatible with the RDK X5 SDK, and the compilation is performed in Ubuntu Docker. The corresponding task is executed by HBM on the RDK side; after preparing the board-side services and simulation workstation, the task video can be regenerated.
 
 ## Tasks and Learning Content
 
 | Task | Learning Content | Demonstration |
 | --- | --- | --- |
-| Basketball Balance | Observation and movement, PPO, cyclic network, and contact rewards | Maintaining balance in basketball |
+| Basketball Balance | Observation and movement, PPO, cycle network, and contact reward | Maintaining balance in basketball |
 | Browser Physical Disturbance | MuJoCo state, external force interaction, recording, and visualization | Dragging and external force interaction |
 | Stilt Walking | BAM executor, shape curriculum, and motion smoothing | Walking on 25 cm / 200 cm stilts |
-| Swinging Rotation | Task rewards, ONNX export, and deployment interfaces | Swinging and rotation |
-| Ball Balance and FastSAC | FastSAC training, model export, and evaluation | Sphere balance training |
-| Ladder Climbing | Dual climbing and standing strategies, rail contact, and curriculum training | GPU inference for ladder climbing, reaching the table, and steady standing |
+| Swinging Rotation | Task reward, ONNX export, and deployment interface | Swinging and rotation |
+| Ball Balance and FastSAC | FastSAC training, model export, and evaluation | Spherical balance training |
+| Ladder Climbing | Dual climbing and standing strategies, rail contact, and curriculum training | GPU inference for ladder climbing, reaching the table, and standing firmly |
 | RDK X5 / Web Deployment | HBM compilation, BPU inference, TCP, and multi-strategy scheduling | Inference at the board and simulation walking |
 | LightNav-0 Visual Language Navigation | Image and language, trajectory prediction, MPC, and multi-scenario experiments | Navigation in residences, living rooms, and corridors |
 
 ## Supporting Code
 
 `02-可运行代码/microduck-playground-stilts/` It is from the local location.
-`microduck-playground-stilts` The reproduction-ready lightweight snapshot generated from the working directory includes the current task code, as well as the added terrain surface, executor, evaluation, and testing materials. No copies are made `.venv/`Logs, training caches, checkpoints, and generated results; these files are large in size and tied to the local environment, and should not be directly submitted to the main repository.
+`microduck-playground-stilts` The reproduction-ready lightweight snapshot generated from the working directory includes the current task code, as well as the added ramp surface, executor, evaluation, and testing materials. No copies are made `.venv/`Logs, training caches, checkpoints, and generated results; these files are large in size and tied to the local environment, and should not be directly submitted to the main repository.
 
 Each task tutorial explains the model source, training method, and corresponding implementation; the code package retains the upstream license and local experimental instructions.
 

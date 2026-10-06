@@ -1908,6 +1908,12 @@
       "sourceHash": "2c9545937579df089a3f18318f4b1d9412c6c9aea9299e0d78d13d6647a09dba",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/05-MicroDuck运动策略与任务开发专题/月度组队学习招募文案.md": {
+      "target": "en/16-study-programs/05-microduck-movement-policy-and-task-development-topic/monthly-team-learning-recruitment-copy.md",
+      "sourceHash": "5cbb0439fb8da9af6757355f33ca887c77f2085e9e2cdc36dc3ca4d508f24cc0",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
   }
 }

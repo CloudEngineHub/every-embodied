@@ -6,38 +6,38 @@ Review machine-translated technical claims before relying on them.
 -->
 # MicroDuck Live Stream Notebook Learning Line
 
-This topic includes 8 notebooks, corresponding to 8 days of study. For the first 7 notebooks, the sequence of motion task videos is GPU inference first, followed by RDK X5 BPU inference; for the 8th notebook, LightNav-0 multi-scene navigation uses only the workstation GPU without connecting to a development board.
+This topic includes 8 notebooks, corresponding to 8 days of study. For the first 7 notebooks, the order of motion task videos is GPU inference first, followed by RDK X5 BPU inference; for the 8th notebook, LightNav-0 multi-scene navigation uses only the workstation GPU without connecting to the development board.
 
 Team-based learning is carried out according to the [ 8-day study plan ](../learning-plan.md). Each day corresponds to a notebook below, focusing on task learning, experiments, and communication.
 
-The monthly team learning uses the same set of Notebooks. Each task is scheduled for 2–3 days, totaling 21 days. The dates and deadline for assignments can be found in the [ monthly recruitment notice ](../monthly-team-learning-recruitment-copy.md). Both sets of learning arrangements are retained separately.
+For monthly team learning, use the same set of Notebooks. Each task should take 2–3 days, with a total of 21 days. For the dates and deadline of the assignment, see the [ monthly recruitment notice ](../monthly-team-learning-recruitment-copy.md). Both sets of learning arrangements shall be retained separately.
 
-Notebook stores the unit outputs. It is suitable to first read the results on GitHub, and then run them again as needed in an Ubuntu/Jupyter environment. The first 7 notebooks store the execution counts and outputs of 64 code units; the 12 new code units in the 8th notebook have been run from scratch in Ubuntu and their outputs have been saved. In total, there are 76 code units, with no Python exceptions archived. To see whether optional training was executed, refer to the output of the corresponding unit.
+Notebook stores the unit outputs. It is suitable to first read the results on GitHub, and then re-run them as needed in an Ubuntu/Jupyter environment. The first 7 notebooks store the execution counts and outputs of 64 code units; the 12 new code units in the 8th notebook have been run from scratch in Ubuntu and their outputs have been saved, totaling 76 code units, with no Python exceptions archived. To see whether optional training was executed, refer to the outputs of the corresponding units.
 
 ## Notebook List
 
-| Notebook | Main Line |
+| Notebook | Main Lines |
 | :-- | :-- |
 | `01_篮球平衡_PPO_ONNX_BPU_MuJoCo.ipynb` | Speed command, ball scene, PPO, policy export |
 | `02_浏览器物理扰动_回放与接口.ipynb` | MuJoCo status, external force perturbation, web playback |
 | `03_高跷行走_课程与ONNX_BPU.ipynb` | BAM, morphology course, motion smoothing, deployment contract |
 | `04_摆动旋转_ONNX_BPU_MuJoCo.ipynb` | Swing task and built-in ONNX examples for the warehouse |
-| `05_球平衡_FastSAC_ONNX_BPU.ipynb` | Comparison between FastSAC and another task interface |
-| `06_梯面攀爬_接触与部署模板.ipynb` | Climbing stairs, sitting at a table, switching between two standing strategies, and course training |
+| `05_球平衡_FastSAC_ONNX_BPU.ipynb` | FastSAC and counterpart task interfaces |
+| `06_梯面攀爬_接触与部署模板.ipynb` | Ladder climbing, table climbing, dual strategy switching and course training |
 | `07_RDK网页与多策略_BPU验收.ipynb` | Direct integration of walking strategy, RDK TCP, multi-strategy switching, BPU acceptance |
-| `08_LightNav0_视觉语言导航_GPU_多场景.ipynb` | Pre-trained model, image and language, MPC, residential/living room/lobby |
+| `08_LightNav0_视觉语言导航_GPU_多场景.ipynb` | Pre-trained model, image and language, MPC, residence/living room/lobby |
 
 ## Day 8: Navigation via Visual Language
 
-[08_LightNav0_VisualLanguage Navigation_GPU_Multiple Scenarios.ipynb](../../../../16-专题组队学习/05-MicroDuck运动策略与任务开发专题/03-Notebook/08_LightNav0_视觉语言导航_GPU_多场景.ipynb) Use the pre-trained LightNav-0 without training a navigation model.
+[08_LightNav0_Visual Language Navigation_GPU_Multiple Scenarios.ipynb](../../../../16-专题组队学习/05-MicroDuck运动策略与任务开发专题/03-Notebook/08_LightNav0_视觉语言导航_GPU_多场景.ipynb) Use the pre-trained LightNav-0 without training a navigation model.
 Run the navigation model on the GPU［graphics processor］, connect it to the existing MicroDuck walking policy, and experience official residences, self-built living rooms, and self-built corridors respectively.
 Each scenario generates independent videos, model prediction records, and trajectory plots. For environment preparation and default paths, see [ accompanying instructions ](../02-executable-code/lightnav-learning/README.md).
-Run it according to the study plan on day 8, and understand how the navigation model and walking policy work together through videos.
+Run it according to the study plan on day 8, and understand how the navigation model and walking policy work together through the videos.
 
-Navigation Notebook has been executed from scratch on Ubuntu: all 12 code units are retained, including a first-person view of three scenarios, actual predictions, videos, and trajectory plots.
+Navigation Notebook has been executed from scratch on Ubuntu: all 12 code units are retained, including a first-person perspective for three scenarios, actual predictions, videos, and trajectory plots.
 The videos are generated by this model inference and do not contain large files; they play directly within the corresponding unit after execution.
 
-For videos on each Notebook, see the [ demonstration overview ](../01-task-information/selected-videos/README.md). Walking/navigation is directly integrated into existing policies; perturbations are used for physical interaction and interface verification; the GPU video of the escalator has completed step-by-step climbing, boarding, and standing; the BPU video records escalator contact. Other tasks provide entry points for training/continuing training of corresponding algorithms; actual operation results can be seen in the saved unit outputs.
+For videos related to each notebook, see the [ demonstration overview ](../01-task-information/selected-videos/README.md). Walking/navigation is directly integrated into existing policies; perturbations are used for physical interaction and interface verification; the GPU video of the escalator has completed step-by-step climbing, boarding, and standing. The BPU video records escalator contact. Other tasks provide training/continuation entry points for corresponding algorithms; actual operation results can be seen in the saved unit outputs.
 
 ## Startup
 
@@ -47,17 +47,17 @@ uv sync
 uv run --with jupyter jupyter lab ../../03-Notebook
 ```
 
-Start Jupyter on the Ubuntu workstation. Notebook will automatically search for `02-可运行代码`; if the working directory is not a specific file list, set `MICRODUCK_TOPIC_ROOT`.
+Start Jupyter on the Ubuntu workstation. Notebook will automatically search for `02-可运行代码`; if the working directory is not a special topic list, set `MICRODUCK_TOPIC_ROOT`.
 
 ## GPU and BPU Videos
 
-The first 7 notebooks show the GPU inference video, followed by the BPU inference video. The BPU performs calculations, while the workstation is responsible for physical simulation and encoding. Re-running the BPU unit generates an MP4 and JSON report for the task in the workstation `03-Notebook/outputs/bpu_videos/`, as well as the `*_bpu_latest` file for that task. The 8th notebook directly runs the GPU navigation model, and the video for each scenario is stored in `outputs/lightnav_gpu/`.
+The first 7 notebooks show the GPU inference video, followed by the BPU inference video. The BPU performs calculations, while the workstation is responsible for physical simulation and encoding. Re-running the BPU unit generates an MP4 and JSON report for the task in the workstation `03-Notebook/outputs/bpu_videos/`, as well as covering the `*_bpu_latest` file for that task. The 8th notebook directly runs the GPU navigation model, and the video for each scenario is stored in `outputs/lightnav_gpu/`.
 
-To control the warehouse volume, the video outputs in the first 7 Notebooks use relative GIF links, while the original MP4 files are neither embedded in ipynb nor submitted. The GPU/BPU GIFs for the 7 sports tasks and the GIFs for the 3 navigation scenarios are all available on the demo overview page; the remaining code, text, and image outputs of the Notebooks remain intact. After rerunning the navigation Notebook, the newly generated MP4 files can be played within the unit.
+To control the warehouse size, the video outputs in the first 7 Notebooks use relative GIF links, and the original MP4 files are neither embedded nor submitted. The GPU/BPU GIFs for the 7 motion tasks and the GIFs for the 3 navigation scenarios are all available on the demo overview page; the remaining code, text, and image outputs of the Notebooks remain intact. After re-running the navigation Notebook, the newly generated MP4 files can be played within the unit.
 
 ## Model and BPU Injection
 
-Notebook does not have a built-in large checkpoint. Use the policy you train or download yourself:
+Notebook does not have a built-in large checkpoint. Use the policy you trained or downloaded:
 
 ```powershell
 $env:MICRODUCK_ONNX = "C:\models\microduck_policy.onnx"
@@ -72,20 +72,20 @@ RDK_BPU_SMOKE_MODEL = "/opt/tros/humble/lib/dnn_benchmark_example/config/X5/mobi
 RDK_BPU_SMOKE_INPUT_BYTES = 75264
 ```
 
-MobileNet is used to check connectivity and the BPU runtime. When running the MicroDuck task, the Notebook selects the corresponding task HBM, and the RDK’s `8766` control service switches the `8765` policy service.
+MobileNet is used to check connectivity and BPU runtime. When running the MicroDuck task, the Notebook selects the corresponding task HBM, and the RDK’s `8766` control service switches the `8765` policy service.
 
-The RDK control service script is `02-可运行代码/microduck-playground-stilts/scripts/rdk_bpu_policy_supervisor.py`. Only the 7 task models registered in this topic can be switched. Each time the BPU video unit is run in the Notebook, the corresponding `*_bpu_latest.mp4` and JSON report are overwritten.
+The RDK control service script is `02-可运行代码/microduck-playground-stilts/scripts/rdk_bpu_policy_supervisor.py`. Only the 7 task models registered in this topic can be switched. Each time the BPU video unit is run in Notebook, the corresponding `*_bpu_latest.mp4` and JSON report are overwritten.
 
 ## Training and Deployment
 
-PPO/FastSAC is trained on workstations, while BPU is responsible for inference. Optional training is enabled via environment variables, and unit outputs record actual operation results; smoke validation involves sampling, updating, and export, and policy quality is checked through task evaluation. `07_RDK网页与多策略_BPU验收.ipynb` directly integrates with existing walking policies; browser perturbation is used for physical interaction; Book 8 integrates pre-trained LightNav-0 without training the navigation model.
+PPO/FastSAC is trained on the workstation, while BPU is responsible for inference. Optional training is enabled via environment variables, and unit outputs record actual operation conditions; smoke validation involves sampling, updating, and exporting, and policy quality is checked through task evaluation. `07_RDK网页与多策略_BPU验收.ipynb` directly integrates with existing walking policies; browser perturbation is used for physical interaction; Book 8 integrates pre-trained LightNav-0 without training the navigation model.
 
-The Ball Balance Notebook provides the FastSAC smoke entry point. After enabling it, perform small-scale training first, export the model as ONNX, then compile the HBM using `hb_mapper makertbin --model-type onnx` in Ubuntu Docker, and upload it to X5 for inference.
+The Ball Balance Notebook provides the FastSAC smoke entry point. After enabling it, perform small-scale training first, export ONNX, then compile HBM using `hb_mapper makertbin --model-type onnx` in Ubuntu Docker, and upload to X5 for inference.
 
-The development board side requires matching the version of HBRT/BPU runtime and the corresponding task HBM. The ONNX to HBM compilation is completed using the accompanying Ubuntu Docker toolchain, and no compiler installation on the board is required. During actual rerun, it is also necessary to start the RDK service and verify that the observation dimensions, normalization, input layout, and action post-processing of HBM and ONNX are consistent.
+The development board side requires matching the version of HBRT/BPU runtime and the corresponding task HBM. The ONNX to HBM compilation is completed using the accompanying Ubuntu Docker toolchain, and there is no need to install a compiler on the board. During actual rerun, it is also necessary to start the RDK service and verify that the observation dimensions, normalization, input layout, and action post-processing of HBM and ONNX are consistent.
 
-The GPU video script and `gpu_onnx_runtime.py` are in the companion code `scripts/`. For climbing stairs, use `bpu_official_ladder_pair_video.py` and the desk-climb environment. For model acquisition, GPU operation, and continued training, see [ Climbing Stairs Tutorial ](../01-task-information/06-microduck-tread-climbing-reinforcement-learning-guide/README.md#6-爬梯与登桌复现步骤). BPU uses RDK services and `hbm_runtime`. Before running, check the quantization of HBM, input layout, output shape, and post-processing.
+The GPU video script and `gpu_onnx_runtime.py` are in the companion code `scripts/`. For ladder climbing, use `bpu_official_ladder_pair_video.py` and the desk-climb environment. For model acquisition, GPU operation, and continued training, see [ Ladder Climbing Tutorial ](../01-task-information/06-microduck-tread-climbing-reinforcement-learning-guide/README.md#6-爬梯与登桌复现步骤). BPU uses RDK services and `hbm_runtime`. Before running, check the HBM quantization, input layout, output shape, and post-processing.
 
 ## Display Policy
 
-The GIFs saved in the Notebook are used for web pages and GitHub previews; the generated MP4/JSON files are rerun and kept in the Ubuntu `outputs/`, not committed to the repository. The physical web interactions can still run the web services in the task data directory independently.
+The GIFs saved in the Notebook are used for web pages and GitHub previews; the generated MP4/JSON files are rerun and kept in `outputs/` on Ubuntu, without being committed to the repository. The physical web interactions can still run the web service in the task data directory independently.
