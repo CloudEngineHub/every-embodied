@@ -209,8 +209,10 @@
 
   | DexJoCo 双臂河内塔 | RoboCasa365 长程装餐任务 |
   | --- | --- |
-  | [![DexJoCo 双臂河内塔动态预览](https://raw.githubusercontent.com/datawhalechina/every-embodied/amd-rocm/16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/competition_showcase/dexjoco_bimanual_hanoi_preview.gif)](https://raw.githubusercontent.com/datawhalechina/every-embodied/amd-rocm/16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/competition_showcase/dexjoco_bimanual_hanoi_amd.mp4) | [![RoboCasa365 长程装餐动态预览](https://raw.githubusercontent.com/datawhalechina/every-embodied/amd-rocm/16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/competition_showcase/robocasa_pack_identical_lunches_preview.gif)](https://raw.githubusercontent.com/datawhalechina/every-embodied/amd-rocm/16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/competition_showcase/robocasa_pack_identical_lunches_gr00t_amd.mp4) |
+  | [![DexJoCo 双臂河内塔视频封面](./16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/competition_showcase/dexjoco_bimanual_hanoi_poster.jpg)](https://ethan-chen-plus.github.io/amd-physical-ai-showcase/assets/videos/dexjoco/recovery/bimanual-hanoi.mp4) | [![RoboCasa365 长程装餐视频封面](./16-专题组队学习/04-AMD-ROCm策略复刻专题/assets/competition_showcase/robocasa_pack_identical_lunches_poster.jpg)](https://ethan-chen-plus.github.io/amd-physical-ai-showcase/assets/videos/robocasa-recovery/pack-success.mp4) |
   | Pi0.5 双臂协同，三视角，47.6 秒 | GR00T N1.5 家庭长时序操作，四视角，195 秒 |
+
+  点击封面观看完整视频。
 
   两段完整回合均在 AMD Ryzen AI MAX+ 395 上完成闭环推理和视频录制。查看 [AMD Physical AI 仿真基准与长程视频复现教程](./16-专题组队学习/04-AMD-ROCm策略复刻专题/README_09_AMD_Physical_AI仿真基准与长程视频复现.md)，继续学习 Every Embodied、RoboCasa365、DexJoCo、DISCOVERSE、RoboWits 和 Unitree G1 的任务协议、评估结果与多视角导出流程。
 

@@ -6,13 +6,13 @@ Review machine-translated technical claims before relying on them.
 -->
 # LightNav-0 Multi-scene Navigation Learning
 
-Use the officially pre-trained LightNav-0 to run visual language navigation on a GPU［graphics processor］. No navigation model is trained, and no development board is connected.
+Use the official pre-trained LightNav-0 to run visual language navigation on a GPU［graphics processor］. No navigation model is trained, and no development board is connected.
 The accompanying Notebook［interactive tutorial］, Book 8, provides default paths, model services, three scenarios, real predictions, videos, and trajectory comparisons.
-This is Day 8 of the [ 8-day study plan ](../../learning-plan.md), focusing on practices related to images, language commands, trajectory, and walking control.
+This is Day 8 of the [ 8-day learning plan ](../../learning-plan.md), focusing on practices related to images, language commands, trajectory, and walking control.
 
 ## Prepare the environment
 
-The model and simulator use two environments, with weights and environments located outside the repository. Here, Ubuntu is used as an example:
+The model and simulator use two environments, and the weights and environment are placed outside the repository. Here, Ubuntu is used as an example:
 
 ```bash
 git clone https://github.com/lightorigins/LightNav-0.git ~/projects/LightNav-0
@@ -37,7 +37,7 @@ curl -fL https://huggingface.co/pollen-robotics/microduck-policies/resolve/main/
 ```
 
 Existing environments, code, and weights are reused directly. Model inference uses the fixed `vllm==0.19.1` from the upstream, and the simulator requires MuJoCo and scene resources.
-Use the appropriate accelerated computing environment according to the official instructions, without outputting specific device models.
+Use the appropriate accelerated computing environment as per the official instructions, without specifying the device model.
 
 ## Open and Execute
 
@@ -51,11 +51,11 @@ cd '<专题路径>'
 Open `03-Notebook/08_LightNav0_视觉语言导航_GPU_多场景.ipynb`, select the above kernel, and run it from top to bottom.
 The default parameters are already filled in. For other machines, set `LIGHTNAV_ROOT`, `LIGHTNAV_MODEL_ENV`, `LIGHTNAV_MODEL_PATH`,
 `LIGHTNAV_ROBOT_MODEL`, `LIGHTNAV_WALKING_POLICY`, and `LIGHTNAV_OUTPUT`.
-The default record is stored in `/data/Data14TB/lightnav-recordings/teaching/notebook`; a copy of the small-sized video is written to
+The default record is stored in `/data/Data14TB/lightnav-recordings/teaching/notebook`; a small-sized video copy is written to
 `03-Notebook/outputs/lightnav_gpu` for web playback. This directory is not committed to the repository.
-When started, use the special topic list as the root directory for the web page, and the relative links between tutorials and supporting code will work properly.
+When started, use the special catalog as the root directory of the web page, and the relative links between tutorials and supporting code will work properly.
 
-Use for full batch execution:
+Use for complete batch execution:
 
 ```bash
 cd '<专题路径>/03-Notebook'
@@ -70,13 +70,13 @@ cd '<专题路径>/03-Notebook'
 | Scenario | Learning Content |
 | :-- | :-- |
 | Official Residence | Official ProcTHOR `val_2` multi-room scenario and model interface |
-| Self-built Living Room | Reorganize the room, armchair, sofa, and plants, observe as the target approaches |
-| Self-built Corridor | Narrow space and side furniture, observe local paths and turns |
+| Self-built Living Room | Rearrange the room, armchair, sofa, and plants to observe the target approaching |
+| Self-built Corridor | Narrow space and side furniture; observe local paths and turns |
 
-The navigation model reads the first-person view image and instructions, then returns a 10×3 plane trajectory.
-MPC［Model Predictive Control］ uses the model trajectory to output velocity, and the official walking policy outputs 14-dimensional joint actions through the CPU［Central Processing Unit］ interface of ONNX Runtime［Model Inference Runtime］. Gravity, contact, and position actuators remain using the official implementation.
+The navigation model reads the first-person view image and instructions, then outputs a 10×3 plane trajectory.
+MPC［Model Predictive Control］ uses the model trajectory to determine velocity, and the official walking policy outputs 14-dimensional joint actions through the CPU［Central Processing Unit］ interface of ONNX Runtime［Model Inference Runtime］. Gravity, contact, and position actuators remain using the official implementation.
 Simulation is paused during model inference; videos are encoded based on simulation time, and reports record the actual inference delay separately.
-The target coordinates are only used to record distance; they are not input into the model or used for planning and control.
+The target coordinates are used only for distance measurement, with no input into the model or used for planning control.
 
 Each run overwrites the `*_latest.mp4` for each scenario, retaining the corresponding predicted text, trajectory, stop flag, and experiment report.
 No large videos are embedded in the interactive tutorial; small-sized images and text outputs are retained for easy direct reading.
@@ -84,9 +84,9 @@ No large videos are embedded in the interactive tutorial; small-sized images and
 ## Files and Sources
 
 - `lightnav_lesson.py`: New scenario construction, model protocol, physical closed loop, and video recording.
-- `build_notebook.py`: Generating tutorials in a structured format; re-generation will clear the old execution output, followed by a full execution.
+- `build_notebook.py`: Generating tutorials in a structured format; re-generation will clear old execution outputs, followed by a full execution.
 - Official code: [LightNav-0](https://github.com/lightorigins/LightNav-0).
-- Scenario and robot interface: [Official simulator ](https://github.com/lightorigins/LightNav-0/blob/main/mujoco_demo/README.md).
+- Scenario and robot interface: [Official simulator](https://github.com/lightorigins/LightNav-0/blob/main/mujoco_demo/README.md).
 - Navigation weight: [LightOriginsHQ/LightNav-0](https://huggingface.co/LightOriginsHQ/LightNav-0).
 - Robot: [pollen-robotics/microduck_rl](https://github.com/pollen-robotics/microduck_rl).
 
