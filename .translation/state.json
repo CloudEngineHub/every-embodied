@@ -1914,6 +1914,24 @@
       "sourceHash": "5cbb0439fb8da9af6757355f33ca887c77f2085e9e2cdc36dc3ca4d508f24cc0",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/20-GPT6-Astra机器人弹琴与上下文工程/ASTRA.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/20-gpt6-astra-robot-playing-music-and-context-engineering/ASTRA.md",
+      "sourceHash": "3ad703a98c2cb396b8a45beab763c1551156176588607806dad61a3c1ed4c95b",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/20-GPT6-Astra机器人弹琴与上下文工程/G05.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/20-gpt6-astra-robot-playing-music-and-context-engineering/G05.md",
+      "sourceHash": "f9167973ff6f988e519032ed7175120a595048ea080c6b7a4066d0b6e8b9901a",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/20-GPT6-Astra机器人弹琴与上下文工程/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/20-gpt6-astra-robot-playing-music-and-context-engineering/README.md",
+      "sourceHash": "2c52240314491a3c70ab5ba43d25defc8835551875ca6bcc5015ad93d4247cd3",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
   }
 }
