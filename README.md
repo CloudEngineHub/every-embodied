@@ -47,6 +47,10 @@
 
   
 
+  ## G0.5 双手钢琴 Demo
+
+  新增 [G0.5 × 双手钢琴：琴位变化后的重新就位与续弹](06-策略抓取或抓取VLA/大模型控制、VLA、VLM/20-GPT6-Astra机器人弹琴与上下文工程/README.md)：公开 R1 Pro 双手演奏、G0.5 模型接入、移琴调整与续弹代码，提供本地回放、练习曲谱及运行记录。
+
   ## 🚀 快速开始 (Quick Start) ：一分钟体验 Hello Every-Embodied
 
   想要立刻在本地跑通第一个具身智能仿真 Demo？只需三步：
@@ -73,6 +77,33 @@
   <br>
 
 <table align="center">
+  <tr>
+    <td width="33%" valign="top" align="center">
+      <img src="./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/20-GPT6-Astra机器人弹琴与上下文工程/assets/piano-xiaohongshu-preview.gif" width="100%" alt="G0.5 机器人弹琴播放预览">
+      <br>
+      <strong><a href="./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/20-GPT6-Astra机器人弹琴与上下文工程/README.md">G0.5 × 机器人弹琴</a></strong>
+      <br>
+      <sub>《我爱你，中国》双手多指演奏</sub>
+      <br>
+      <a href="./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/20-GPT6-Astra机器人弹琴与上下文工程/assets/piano-xiaohongshu.mp4">带声音完整视频</a>
+    </td>
+    <td width="33%" valign="top" align="center">
+      <img src="./16-专题组队学习/05-MicroDuck运动策略与任务开发专题/01-任务资料/01-MicroDuck篮球平衡强化学习/assets/basketball-balance-preview.gif" width="100%" alt="MicroDuck 篮球平衡播放预览">
+      <br>
+      <strong><a href="./16-专题组队学习/05-MicroDuck运动策略与任务开发专题/01-任务资料/01-MicroDuck篮球平衡强化学习/README.md">MicroDuck 篮球平衡</a></strong>
+      <br>
+      <sub>机器人在篮球上保持平衡</sub>
+      <br>
+      <a href="./16-专题组队学习/05-MicroDuck运动策略与任务开发专题/01-任务资料/01-MicroDuck篮球平衡强化学习/assets/basketball-balance.mp4">完整视频</a>
+    </td>
+    <td width="33%" valign="top" align="center">
+      <a href="./15-Challenge竞赛/AgiBot_World_Model/AgiBot_World_Model比赛复现与改进教程.md"><img src="./15-Challenge竞赛/AgiBot_World_Model/assets/frame_00036_new.png" width="100%" alt="AgiBot World Model 改进方法评估结果"></a>
+      <br>
+      <strong><a href="./15-Challenge竞赛/AgiBot_World_Model/AgiBot_World_Model比赛复现与改进教程.md">AgiBot World Model 比赛评估</a></strong>
+      <br>
+      <sub>改进方法预测结果，点击查看基线对比与复现教程</sub>
+    </td>
+  </tr>
   <tr>
     <td width="33%" valign="top" align="center">
       <img src="assets/quick_start.gif" width="100%">
@@ -285,6 +316,8 @@
 
   <span id="sota"></span>
   ## 📽️视频教程
+
+  G0.5 × 机器人弹琴：[《我爱你，中国》音乐室成片](./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/20-GPT6-Astra机器人弹琴与上下文工程/assets/piano-xiaohongshu.mp4) · [钢琴移位续弹视频](./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/20-GPT6-Astra机器人弹琴与上下文工程/assets/piano-relocation-performance.mp4) · [开源复现教程](./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/20-GPT6-Astra机器人弹琴与上下文工程/README.md)
 
   Habitat导航基础复现： https://www.datawhale.cn/learn/content/258/6154
 
