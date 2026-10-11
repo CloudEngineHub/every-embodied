@@ -16,6 +16,7 @@ import socket
 import struct
 import sys
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
@@ -288,6 +289,8 @@ def main() -> None:
     parser.add_argument("--getup-port", type=int, default=8876)
     parser.add_argument("--seconds", type=float, default=40.0)
     parser.add_argument("--seed", type=int, default=123)
+    parser.add_argument("--spawn-noise-scale", type=float, default=1.0)
+    parser.add_argument("--handoff-contact-steps", type=int, default=1)
     parser.add_argument(
         "--num-envs",
         type=int,
@@ -319,6 +322,8 @@ def main() -> None:
         help="Optional npz path for selected-env observations and actions (diagnostic only).",
     )
     args = parser.parse_args()
+    if args.trace_output is None:
+        args.trace_output = args.output.with_suffix(".trace.npz")
 
     if args.backend == "bpu":
         if args.climber_hbm is None or args.getup_hbm is None:
@@ -389,6 +394,12 @@ def main() -> None:
         desk_probability=0.0,
         floor_spawn_prob=1.0,
     )
+    if not 0 <= args.spawn_noise_scale <= 1 or args.handoff_contact_steps < 1:
+        raise ValueError("Invalid spawn noise scale or handoff contact duration")
+    for name, default in {"position_noise": 0.004, "yaw_noise_deg": 5.0,
+                          "tilt_noise_deg": 2.0, "joint_noise": 0.03,
+                          "ladder_y_noise": 0.01}.items():
+        cfg.events["reset_stair_ladder"].params[name] = default * args.spawn_noise_scale
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     steps = round(args.seconds / 0.02)
@@ -416,18 +427,23 @@ def main() -> None:
     stable_frames = 0
     max_stable_frames = 0
     stable_start_step: int | None = None
+    longest_stable_start_step: int | None = None
+    eligible_frames = 0
     stable_trace: list[dict[str, object]] = []
     trace_observations: list[np.ndarray] = []
     trace_raw_actions: list[np.ndarray] = []
     trace_executed_actions: list[np.ndarray] = []
     obs, _ = recorder.reset()
     robot = env.scene["robot"]
+    initial_observation = obs["actor"][args.record_env].detach().cpu().numpy().copy()
     base_gains = [actuator.kp_scale.clone() for actuator in robot.actuators]
     try:
         for step in range(steps):
             eligible, detector = foot_desktop_eligible(
                 env, robot, mdp, floor_desk, args.record_env
             )
+            eligible_frames = eligible_frames + 1 if eligible else 0
+            eligible = eligible_frames >= args.handoff_contact_steps
             if eligible and not pair.recovering:
                 switch_events.append({"step": step, "seconds": step * 0.02, **detector})
             executed, recovering = pair.step(
@@ -471,7 +487,9 @@ def main() -> None:
                     if stable_frames == 0:
                         stable_start_step = step + 1
                     stable_frames += 1
-                    max_stable_frames = max(max_stable_frames, stable_frames)
+                    if stable_frames > max_stable_frames:
+                        max_stable_frames = stable_frames
+                        longest_stable_start_step = stable_start_step
                 else:
                     stable_frames = 0
                 if step % 25 == 0:
@@ -524,6 +542,18 @@ def main() -> None:
         json.dumps(
             {
                 "task": "ladder-official-policy-pair",
+                "run_id": os.getenv("MICRODUCK_VALIDATION_RUN_ID"),
+                "seed": args.seed,
+                "spawn_noise_scale": args.spawn_noise_scale,
+                "handoff_contact_steps": args.handoff_contact_steps,
+                "physics_device": args.physics_device,
+                "initial_observation": initial_observation.tolist(),
+                "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+                "inference_calls": len(climber.latencies_ms) + len(getup.latencies_ms),
+                "policy_validation": {
+                    "climber": climber.policy.validation(),
+                    "getup": getup.policy.validation(),
+                } if args.backend == "gpu" else None,
                 "task_id": "Mjlab-FloorDeskBlind-MicroDuck",
                 "backend": (
                     "RDK X5 BPU via hbm_runtime"
@@ -540,6 +570,8 @@ def main() -> None:
                 "getup_hbm_sha256": sha256(args.getup_hbm) if args.getup_hbm else None,
                 "climber_onnx": str(args.climber_onnx) if args.climber_onnx else None,
                 "getup_onnx": str(args.getup_onnx) if args.getup_onnx else None,
+                "climber_onnx_sha256": sha256(args.climber_onnx) if args.climber_onnx else None,
+                "getup_onnx_sha256": sha256(args.getup_onnx) if args.getup_onnx else None,
                 "trace_output": str(args.trace_output) if args.trace_output else None,
                 "official_onnx_contract": {"observation_dim": 61, "action_dim": 14, "command_slots_zero": True},
                 "runtime_contract": {"climber_filter": "none", "getup_filter_alpha_head": 0.5, "getup_filter_alpha_legs": 0.7, "getup_kp_ratio": 0.8},
@@ -550,7 +582,7 @@ def main() -> None:
                 "switch_events": switch_events,
                 "termination_steps": termination_steps,
                 "termination_terms": termination_terms,
-                "stable_start_step": stable_start_step,
+                "stable_start_step": longest_stable_start_step,
                 "max_stable_frames": max_stable_frames,
                 "stable_seconds": max_stable_frames * 0.02,
                 "handoff_success": bool(switch_events and max_stable_frames >= 100),
@@ -570,7 +602,9 @@ def main() -> None:
     )
     print(f"PASS-OFFICIAL-LADDER-PAIR-VIDEO: {args.output}")
     print(f"PASS-OFFICIAL-LADDER-PAIR-REPORT: {report}")
-    print(json.dumps({"switch_events": switch_events, "termination_steps": termination_steps}, ensure_ascii=False))
+    print(json.dumps({"switch_events": switch_events, "termination_flag_steps": len(termination_steps),
+                      "handoff_success": bool(switch_events and max_stable_frames >= 100),
+                      "stable_seconds": max_stable_frames * 0.02}, ensure_ascii=False))
 
 
 if __name__ == "__main__":

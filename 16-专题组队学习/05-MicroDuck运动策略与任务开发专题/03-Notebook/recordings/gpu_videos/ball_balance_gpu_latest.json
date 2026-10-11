@@ -1,0 +1,31 @@
+{
+  "task": "ball_balance",
+  "run_id": "9f86b834-cdd3-4a0c-a6b9-36a46c98fc77",
+  "generated_at_utc": "2026-10-11T09:04:08.085603+00:00",
+  "policy_validation": {
+    "inference_calls": 900,
+    "real_observation_parity_checks": 32,
+    "max_abs_output_error": 1.430511474609375e-06,
+    "parity_atol": 0.0001,
+    "parity_rtol": 0.0001
+  },
+  "task_id": "microduck-ball-balance",
+  "display_name": "Motrix FastSAC ball balance",
+  "backend": "GPU ONNX via Torch CUDA",
+  "policy_device": "GPU",
+  "renderer": "Ubuntu MotrixSim headless renderer",
+  "onnx_file": "/home/ubuntu/workspaces/microduck_bpu_models/converted/motrix_ball_balance_restored.opset11.onnx",
+  "onnx_sha256": "382a7692bd833f81011127cc07c4e11147205e5c7d616eda4c080a4ca909e757",
+  "observation_dim": 54,
+  "action_dim": 14,
+  "steps": 900,
+  "requested_steps": 900,
+  "video_frames": 540,
+  "resets": 0,
+  "reset_events": [],
+  "failure_resets": 0,
+  "timeout_resets": 0,
+  "mean_inference_ms": 0.7932390210529169,
+  "p95_inference_ms": 1.0114144533872602,
+  "note": "MotrixSim renders on Ubuntu; the FastSAC actor is evaluated by Torch on GPU."
+}

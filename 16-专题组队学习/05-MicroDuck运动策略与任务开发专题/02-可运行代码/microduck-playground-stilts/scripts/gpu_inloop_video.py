@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
@@ -46,6 +47,7 @@ def record_one(task_name: str, spec: dict[str, object], args: argparse.Namespace
 
     env_cfg = load_env_cfg(str(spec["task_id"]), play=True)
     env_cfg.scene.num_envs = 1
+    env_cfg.episode_length_s = max(env_cfg.episode_length_s, args.steps * 0.02 + 1.0)
     env_cfg.viewer.width = args.width
     env_cfg.viewer.height = args.height
     env_cfg.viewer.distance = args.camera_distance
@@ -72,6 +74,7 @@ def record_one(task_name: str, spec: dict[str, object], args: argparse.Namespace
     longest_uninterrupted_steps = 0
     current_uninterrupted_steps = 0
     first_termination_step: int | None = None
+    observed, executed, done_flags = [], [], []
     try:
         for step in range(args.steps):
             actor_obs = obs["actor"][0].detach().cpu().numpy()
@@ -85,6 +88,9 @@ def record_one(task_name: str, spec: dict[str, object], args: argparse.Namespace
             action = np.clip(policy.infer(actor_obs), -1.0, 1.0)
             action_tensor = torch.from_numpy(action).reshape(1, 14).to(device=env.device)
             obs, _, terminated, truncated, _ = recorder.step(action_tensor)
+            observed.append(actor_obs.copy())
+            executed.append(action.copy())
+            done_flags.append(bool(terminated[0]) or bool(truncated[0]))
             current_uninterrupted_steps += 1
             if bool(terminated[0]) or bool(truncated[0]):
                 terminated_count += 1
@@ -98,7 +104,8 @@ def record_one(task_name: str, spec: dict[str, object], args: argparse.Namespace
                 if args.stop_on_reset:
                     break
                 policy.reset()
-                obs, _ = recorder.reset()
+                if not env_cfg.auto_reset:
+                    obs, _ = recorder.reset()
     finally:
         policy.close()
         recorder.close()
@@ -110,10 +117,14 @@ def record_one(task_name: str, spec: dict[str, object], args: argparse.Namespace
     if generated != args.output:
         generated.replace(args.output)
     report = args.output.with_suffix(".json")
+    np.savez_compressed(args.output.with_suffix(".trace.npz"), obs=observed, actions=executed, done=done_flags)
     report.write_text(
         json.dumps(
             {
                 "task": task_name,
+                "run_id": os.getenv("MICRODUCK_VALIDATION_RUN_ID"),
+                "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+                "policy_validation": policy.validation(),
                 "task_id": spec["task_id"],
                 "display_name": spec["name"],
                 "backend": "GPU ONNX via Torch CUDA",
@@ -123,7 +134,8 @@ def record_one(task_name: str, spec: dict[str, object], args: argparse.Namespace
                 "observation_dim": int(spec["obs_dim"]),
                 "action_dim": 14,
                 "recurrent": bool(spec.get("recurrent", False)),
-                "steps": args.steps,
+                "steps": len(policy.latencies_ms),
+                "requested_steps": args.steps,
                 "terminated_or_truncated_resets": terminated_count,
                 "reset_steps": reset_steps,
                 "first_termination_step": first_termination_step,
@@ -134,7 +146,7 @@ def record_one(task_name: str, spec: dict[str, object], args: argparse.Namespace
                     longest_uninterrupted_steps, current_uninterrupted_steps
                 )
                 * 0.02,
-                "video_nominal_time_s": args.steps * 0.02,
+                "video_nominal_time_s": len(policy.latencies_ms) * 0.02,
                 "mean_inference_ms": float(np.mean(policy.latencies_ms)) if policy.latencies_ms else None,
                 "p95_inference_ms": float(np.percentile(policy.latencies_ms, 95)) if policy.latencies_ms else None,
                 "note": "Ubuntu runs the MuJoCo physics and renderer; the task actor is evaluated by Torch on GPU.",

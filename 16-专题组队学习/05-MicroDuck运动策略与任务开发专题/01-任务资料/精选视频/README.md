@@ -8,15 +8,15 @@ GPU 在工作站计算动作；BPU 在 RDK X5 计算动作，工作站负责仿�
 
 | Notebook 与任务 | GPU 推理 | BPU 推理 |
 | --- | --- | --- |
-| `01` 篮球平衡 | ![篮球平衡 GPU 推理](./assets/notebook-replays/basketball_gpu.gif) | ![篮球平衡 BPU 推理](./assets/notebook-replays/basketball_bpu_cached.gif) |
-| `02` 浏览器物理扰动 | ![物理扰动 GPU 推理](./assets/notebook-replays/perturbation_gpu.gif) | ![物理扰动 BPU 推理](./assets/notebook-replays/perturbation_bpu_cached.gif) |
-| `03` 高跷行走 | ![高跷行走 GPU 推理](./assets/notebook-replays/stilt_gpu.gif) | ![高跷行走 BPU 推理](./assets/notebook-replays/stilt_bpu_cached.gif) |
-| `04` 摆动旋转 | ![摆动旋转 GPU 推理](./assets/notebook-replays/swing_gpu.gif) | ![摆动旋转 BPU 推理](./assets/notebook-replays/swing_bpu_cached.gif) |
-| `05` 球平衡 FastSAC | ![球平衡 GPU 推理](./assets/notebook-replays/ball_balance_gpu.gif) | ![球平衡 BPU 推理](./assets/notebook-replays/ball_balance_bpu_cached.gif) |
-| `06` 梯面攀爬 | ![梯面攀爬与登桌 GPU 推理](./assets/notebook-replays/ladder_gpu.gif)<br>逐级爬梯，登桌站稳 | ![梯面接触 BPU 推理](./assets/notebook-replays/ladder_bpu_cached.gif)<br>梯面接触 |
-| `07` 行走策略接入 | ![行走 GPU 推理](./assets/notebook-replays/walking_gpu.gif) | ![行走 BPU 推理](./assets/notebook-replays/walking_bpu_cached.gif) |
+| `01` 篮球平衡 | ![篮球平衡 GPU 推理](./assets/notebook-replays/basketball_gpu.gif) | ![篮球平衡 BPU 推理](./assets/notebook-replays/basketball_bpu.gif) |
+| `02` 浏览器物理扰动 | ![物理扰动 GPU 推理](./assets/notebook-replays/perturbation_gpu.gif) | ![物理扰动 BPU 推理](./assets/notebook-replays/perturbation_bpu.gif) |
+| `03` 高跷行走 | ![高跷行走 GPU 推理](./assets/notebook-replays/stilt_gpu.gif) | ![高跷行走 BPU 推理](./assets/notebook-replays/stilt_bpu.gif) |
+| `04` 摆动旋转 | ![摆动旋转 GPU 推理](./assets/notebook-replays/swing_gpu.gif) | ![摆动旋转 BPU 推理](./assets/notebook-replays/swing_bpu.gif) |
+| `05` 球平衡 FastSAC | ![球平衡 GPU 推理](./assets/notebook-replays/ball_balance_gpu.gif) | ![球平衡 BPU 推理](./assets/notebook-replays/ball_balance_bpu.gif) |
+| `06` 梯面攀爬 | ![梯面攀爬与登桌 GPU 推理](./assets/notebook-replays/ladder_gpu.gif)<br>逐级爬梯，登桌站稳 | ![爬梯与登桌 BPU 推理](./assets/notebook-replays/ladder_bpu.gif)<br>双策略切换，登桌站稳 |
+| `07` 行走策略接入 | ![行走 GPU 推理](./assets/notebook-replays/walking_gpu.gif) | ![行走 BPU 推理](./assets/notebook-replays/walking_bpu.gif) |
 
-上述 7 本 Notebook 保存了 64 个代码单元的执行计数与输出；下方第 8 本导航 Notebook 新增 12 个已执行代码单元，8 本合计保存 76 个代码单元的输出。运行状态和可选步骤见 [Notebook 说明](../../03-Notebook/README.md)。原始 MP4 不提交，页面展示压缩 GIF。
+上述 7 本 Notebook 保存了 65 个代码单元的执行计数与输出，视频均来自本轮 GPU/BPU 闭环；加上导航、HelloWorld 与跨缝跳跃，00–09 共 10 本、102 个代码单元均保留运行输出。任务表现和不稳定原因见 [Notebook 说明](../../03-Notebook/README.md)。页面展示压缩 GIF，21 段完整 MP4 与报告见 [视频目录](../../03-Notebook/recordings/README.md)。
 
 ## LightNav-0 多场景导航
 
@@ -25,6 +25,12 @@ GPU 在工作站计算动作；BPU 在 RDK X5 计算动作，工作站负责仿�
 | 官方住宅 | 自建客厅 | 自建走廊 |
 | --- | --- | --- |
 | ![官方住宅语言导航](./assets/lightnav/official-apartment.gif)<br>住宅里寻找左侧桌子 | ![自建客厅语言导航](./assets/lightnav/living-room.gif)<br>客厅里接近扶手椅 | ![自建走廊语言导航](./assets/lightnav/corridor.gif)<br>走廊里寻找盆栽 |
+
+## 跨缝跳跃
+
+![MicroDuck 跨缝跳跃](../08-MicroDuck跨缝跳跃/assets/long_jump_continued.gif)
+
+高平台起跳，跨过间隙，在低平台落地站稳。[第 9 本 Notebook](../../03-Notebook/09_跨缝跳跃_PPO_GPU_ONNX.ipynb)提供原始模型、10 轮 PPO 续训和 ONNX 的完整视频；模型来源、接口与奖励见[任务教程](../08-MicroDuck跨缝跳跃/README.md)。
 
 ## 梯面攀爬与登桌
 
@@ -124,6 +130,6 @@ FastSAC 球面平衡训练。
 
 ## 素材与复现
 
-- 所有提交的视频预览均为 GIF；前 7 本 Notebook 用 GIF 相对链接展示视频，第 8 本保留小尺寸图像与轨迹图，运行后在单元内播放导航 MP4。
-- 原始 MP4 留在仿真工作站，减小克隆和浏览开销。各任务的环境、模型、指标与复现步骤见对应任务 README。
+- 页面使用 GIF 预览；Notebook 保留图像、轨迹图和本轮 MP4 播放入口。
+- 完整 MP4 与 JSON 报告独立收录在 `03-Notebook/recordings/`，不重复嵌入 Notebook。各任务的环境、模型、指标与复现步骤见对应任务 README。
 - 运行 Notebook 可生成新的任务 MP4 与评测报告。

@@ -1,0 +1,2544 @@
+{
+  "task": "ladder-official-policy-pair",
+  "run_id": "a5da86af-f6b9-43d5-9cf7-b8407998dbd9",
+  "seed": 123,
+  "spawn_noise_scale": 1.0,
+  "handoff_contact_steps": 1,
+  "physics_device": "cpu",
+  "initial_observation": [
+    0.02935747615993023,
+    -0.024272577837109566,
+    -0.01134447380900383,
+    -0.01781494915485382,
+    0.009815791621804237,
+    -1.0064888000488281,
+    -0.01734592206776142,
+    0.0014433638425543904,
+    -0.018899239599704742,
+    0.020426323637366295,
+    0.013602945022284985,
+    0.010647682473063469,
+    -0.007965189404785633,
+    -0.0007193933706730604,
+    -0.0011123912408947945,
+    0.0011069291504099965,
+    0.008441994898021221,
+    0.002181408926844597,
+    0.006230931729078293,
+    0.017762377858161926,
+    -0.21153730154037476,
+    -0.1757121980190277,
+    0.21582400798797607,
+    -0.08974358439445496,
+    0.2266668677330017,
+    0.1254495084285736,
+    0.02357909083366394,
+    -0.15868815779685974,
+    0.21879172325134277,
+    -0.06226891279220581,
+    -0.1759561002254486,
+    4.652142524719238e-05,
+    -0.1903417408466339,
+    -0.04896983504295349,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "generated_at_utc": "2026-10-11T09:19:14.937057+00:00",
+  "inference_calls": 1500,
+  "policy_validation": null,
+  "task_id": "Mjlab-FloorDeskBlind-MicroDuck",
+  "backend": "RDK X5 BPU via hbm_runtime",
+  "policy_device": "RDK BPU",
+  "bpu_host": "192.168.8.128",
+  "climber_port": 8875,
+  "getup_port": 8876,
+  "climber_hbm": "/home/ubuntu/workspaces/microduck_bpu_models/compiled/ladder_climber_recalibrated_int16_normalized_split/model_output/ladder_climber_recalibrated_int16_normalized_split.bin",
+  "getup_hbm": "/home/ubuntu/workspaces/microduck_bpu_models/compiled/ladder_getup_recalibrated_int16_normalized_split/model_output/ladder_getup_recalibrated_int16_normalized_split.bin",
+  "climber_hbm_sha256": "e4dc1b73adef9eebf3b3106de5ffc875a9fc599034120dbb8c8b0001da7eb763",
+  "getup_hbm_sha256": "c1c941be793cc9cf5ba199d2ae6ed55043973f6be89754779607155fb860bb3b",
+  "climber_onnx": null,
+  "getup_onnx": null,
+  "climber_onnx_sha256": null,
+  "getup_onnx_sha256": null,
+  "trace_output": "/home/ubuntu/workspaces/microduck-teaching/microduck-topic/16-专题组队学习/05-MicroDuck运动策略与任务开发专题/03-Notebook/outputs/bpu_videos/ladder_official_pair_bpu_latest.trace.npz",
+  "official_onnx_contract": {
+    "observation_dim": 61,
+    "action_dim": 14,
+    "command_slots_zero": true
+  },
+  "runtime_contract": {
+    "climber_filter": "none",
+    "getup_filter_alpha_head": 0.5,
+    "getup_filter_alpha_legs": 0.7,
+    "getup_kp_ratio": 0.8
+  },
+  "steps": 1500,
+  "num_envs": 64,
+  "record_env": 17,
+  "nominal_video_seconds": 30.0,
+  "switch_events": [
+    {
+      "step": 547,
+      "seconds": 10.94,
+      "feet_on_desktop": [
+        false,
+        true
+      ],
+      "root_ladder_relative": [
+        0.5242020487785339,
+        -0.023390349000692368,
+        0.7389681935310364
+      ],
+      "inside_desktop": true
+    }
+  ],
+  "termination_steps": [
+    533,
+    534,
+    535,
+    536,
+    537,
+    538,
+    547,
+    548,
+    588,
+    589,
+    590,
+    591,
+    592,
+    593,
+    594,
+    595,
+    596,
+    597,
+    598,
+    599,
+    600,
+    601,
+    602,
+    603,
+    604,
+    605,
+    606,
+    607,
+    608,
+    609,
+    610,
+    611,
+    612,
+    613,
+    614,
+    615,
+    616,
+    617,
+    618,
+    623,
+    624,
+    625,
+    626,
+    627,
+    628,
+    629,
+    630,
+    631,
+    632,
+    633,
+    634,
+    635,
+    636,
+    637
+  ],
+  "termination_terms": [
+    {
+      "step": 533,
+      "terms": [
+        "fallen"
+      ]
+    },
+    {
+      "step": 534,
+      "terms": [
+        "bad_orientation",
+        "fallen"
+      ]
+    },
+    {
+      "step": 535,
+      "terms": [
+        "bad_orientation",
+        "fallen"
+      ]
+    },
+    {
+      "step": 536,
+      "terms": [
+        "bad_orientation",
+        "fallen"
+      ]
+    },
+    {
+      "step": 537,
+      "terms": [
+        "bad_orientation",
+        "fallen"
+      ]
+    },
+    {
+      "step": 538,
+      "terms": [
+        "bad_orientation",
+        "fallen"
+      ]
+    },
+    {
+      "step": 547,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "overstep"
+      ]
+    },
+    {
+      "step": 548,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "overstep"
+      ]
+    },
+    {
+      "step": 588,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 589,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 590,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 591,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 592,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 593,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 594,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 595,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 596,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 597,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 598,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 599,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 600,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 601,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 602,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 603,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 604,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 605,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 606,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 607,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 608,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 609,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 610,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 611,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 612,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "foot_fling",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 613,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 614,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 615,
+      "terms": [
+        "bad_orientation",
+        "fallen",
+        "off_side",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 616,
+      "terms": [
+        "fallen",
+        "off_side",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 617,
+      "terms": [
+        "fallen",
+        "off_side",
+        "overstep",
+        "airborne"
+      ]
+    },
+    {
+      "step": 618,
+      "terms": [
+        "fallen",
+        "overstep"
+      ]
+    },
+    {
+      "step": 623,
+      "terms": [
+        "off_side",
+        "overstep"
+      ]
+    },
+    {
+      "step": 624,
+      "terms": [
+        "off_side",
+        "overstep"
+      ]
+    },
+    {
+      "step": 625,
+      "terms": [
+        "off_side",
+        "overstep"
+      ]
+    },
+    {
+      "step": 626,
+      "terms": [
+        "off_side",
+        "overstep"
+      ]
+    },
+    {
+      "step": 627,
+      "terms": [
+        "off_side",
+        "overstep"
+      ]
+    },
+    {
+      "step": 628,
+      "terms": [
+        "off_side",
+        "overstep"
+      ]
+    },
+    {
+      "step": 629,
+      "terms": [
+        "off_side",
+        "overstep"
+      ]
+    },
+    {
+      "step": 630,
+      "terms": [
+        "off_side",
+        "overstep"
+      ]
+    },
+    {
+      "step": 631,
+      "terms": [
+        "off_side",
+        "overstep"
+      ]
+    },
+    {
+      "step": 632,
+      "terms": [
+        "off_side",
+        "overstep"
+      ]
+    },
+    {
+      "step": 633,
+      "terms": [
+        "off_side",
+        "overstep"
+      ]
+    },
+    {
+      "step": 634,
+      "terms": [
+        "off_side",
+        "overstep"
+      ]
+    },
+    {
+      "step": 635,
+      "terms": [
+        "off_side",
+        "overstep"
+      ]
+    },
+    {
+      "step": 636,
+      "terms": [
+        "off_side",
+        "overstep"
+      ]
+    },
+    {
+      "step": 637,
+      "terms": [
+        "off_side",
+        "overstep"
+      ]
+    }
+  ],
+  "stable_start_step": 639,
+  "max_stable_frames": 862,
+  "stable_seconds": 17.240000000000002,
+  "handoff_success": true,
+  "stable_trace": [
+    {
+      "step": 551,
+      "standing": false,
+      "eligible": false,
+      "consecutive_frames": 0,
+      "gravity_z": 0.35689854621887207,
+      "linear_speed": 0.16148407757282257,
+      "angular_speed": 4.786825656890869,
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.5132691264152527,
+        -0.017121847718954086,
+        0.7422562837600708
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 576,
+      "standing": false,
+      "eligible": false,
+      "consecutive_frames": 0,
+      "gravity_z": 0.023903489112854004,
+      "linear_speed": 0.08743181824684143,
+      "angular_speed": 1.2575628757476807,
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.5181898474693298,
+        -0.12646633386611938,
+        0.7553762197494507
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 601,
+      "standing": false,
+      "eligible": false,
+      "consecutive_frames": 0,
+      "gravity_z": 0.6798087358474731,
+      "linear_speed": 0.416766494512558,
+      "angular_speed": 7.850992202758789,
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.5629543662071228,
+        -0.22068363428115845,
+        0.7209041714668274
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 626,
+      "standing": false,
+      "eligible": true,
+      "consecutive_frames": 0,
+      "gravity_z": -0.9794505834579468,
+      "linear_speed": 0.18707939982414246,
+      "angular_speed": 4.360201358795166,
+      "feet_on_desktop": [
+        false,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6626326441764832,
+        -0.28670984506607056,
+        0.7705613970756531
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 651,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 13,
+      "gravity_z": -0.9994791150093079,
+      "linear_speed": 0.034133680164813995,
+      "angular_speed": 0.30626603960990906,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6780893206596375,
+        -0.27199941873550415,
+        0.7751170992851257
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 676,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 38,
+      "gravity_z": -0.9999487400054932,
+      "linear_speed": 0.0024068059865385294,
+      "angular_speed": 0.035820502787828445,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6771113276481628,
+        -0.2724648118019104,
+        0.7760604023933411
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 701,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 63,
+      "gravity_z": -0.9999862909317017,
+      "linear_speed": 0.0024598047602921724,
+      "angular_speed": 0.013176701962947845,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6761414408683777,
+        -0.2731981873512268,
+        0.7763689756393433
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 726,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 88,
+      "gravity_z": -0.9999827742576599,
+      "linear_speed": 0.0031750055495649576,
+      "angular_speed": 0.021251065656542778,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6756858229637146,
+        -0.27341848611831665,
+        0.776658833026886
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 751,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 113,
+      "gravity_z": -0.9999576807022095,
+      "linear_speed": 0.00497802160680294,
+      "angular_speed": 0.06020825356245041,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6757494807243347,
+        -0.2729530930519104,
+        0.7768780589103699
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 776,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 138,
+      "gravity_z": -0.9999588131904602,
+      "linear_speed": 0.004225859418511391,
+      "angular_speed": 0.03720567375421524,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.675984799861908,
+        -0.27250581979751587,
+        0.7769750952720642
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 801,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 163,
+      "gravity_z": -0.9999489188194275,
+      "linear_speed": 0.0022096664179116488,
+      "angular_speed": 0.01885310187935829,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6760842204093933,
+        -0.2721472382545471,
+        0.7770459651947021
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 826,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 188,
+      "gravity_z": -0.9999481439590454,
+      "linear_speed": 0.002901093801483512,
+      "angular_speed": 0.024987194687128067,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.676419198513031,
+        -0.27198463678359985,
+        0.777127206325531
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 851,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 213,
+      "gravity_z": -0.9999484419822693,
+      "linear_speed": 0.0022116084583103657,
+      "angular_speed": 0.016537422314286232,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766564249992371,
+        -0.27165132761001587,
+        0.7772292494773865
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 876,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 238,
+      "gravity_z": -0.9999523758888245,
+      "linear_speed": 0.0003110891848336905,
+      "angular_speed": 0.00337197189219296,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.676787793636322,
+        -0.27152448892593384,
+        0.7772586941719055
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 901,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 263,
+      "gravity_z": -0.9999527931213379,
+      "linear_speed": 0.0034358734264969826,
+      "angular_speed": 0.03132644668221474,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6768402457237244,
+        -0.27148300409317017,
+        0.7772750854492188
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 926,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 288,
+      "gravity_z": -0.9999516010284424,
+      "linear_speed": 0.0006139905890449882,
+      "angular_speed": 0.0054895589128136635,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6768133044242859,
+        -0.2713537812232971,
+        0.7772983908653259
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 951,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 313,
+      "gravity_z": -0.9999523758888245,
+      "linear_speed": 0.0014385120011866093,
+      "angular_speed": 0.016872603446245193,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.676820695400238,
+        -0.2713175415992737,
+        0.7773169279098511
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 976,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 338,
+      "gravity_z": -0.9999504089355469,
+      "linear_speed": 0.0005561875877901912,
+      "angular_speed": 0.00441827904433012,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.676797091960907,
+        -0.27126795053482056,
+        0.7773287296295166
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1001,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 363,
+      "gravity_z": -0.9999487400054932,
+      "linear_speed": 0.00027222977951169014,
+      "angular_speed": 0.0020263444166630507,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6767773032188416,
+        -0.271210253238678,
+        0.7773454189300537
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1026,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 388,
+      "gravity_z": -0.9999474883079529,
+      "linear_speed": 0.0003844731254503131,
+      "angular_speed": 0.0032919789664447308,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6767627596855164,
+        -0.2711673378944397,
+        0.7773630619049072
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1051,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 413,
+      "gravity_z": -0.9999412298202515,
+      "linear_speed": 0.0007164490525610745,
+      "angular_speed": 0.005901663564145565,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6767060160636902,
+        -0.2710486054420471,
+        0.7773842215538025
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1076,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 438,
+      "gravity_z": -0.9999374747276306,
+      "linear_speed": 0.0007302334997802973,
+      "angular_speed": 0.006152638234198093,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766766905784607,
+        -0.27099424600601196,
+        0.7774022221565247
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1101,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 463,
+      "gravity_z": -0.9999319911003113,
+      "linear_speed": 0.0008420543163083494,
+      "angular_speed": 0.007027338724583387,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766392588615417,
+        -0.2709265351295471,
+        0.7774206399917603
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1126,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 488,
+      "gravity_z": -0.9999272227287292,
+      "linear_speed": 0.0006961837061680853,
+      "angular_speed": 0.005581500008702278,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766030192375183,
+        -0.27087312936782837,
+        0.7774383425712585
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1151,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 513,
+      "gravity_z": -0.9999292492866516,
+      "linear_speed": 0.0011175086256116629,
+      "angular_speed": 0.009681724943220615,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766178011894226,
+        -0.270876944065094,
+        0.7774381041526794
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1176,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 538,
+      "gravity_z": -0.999932587146759,
+      "linear_speed": 0.0005512386560440063,
+      "angular_speed": 0.004343025386333466,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766442656517029,
+        -0.2708764672279358,
+        0.7774535417556763
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1201,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 563,
+      "gravity_z": -0.999935507774353,
+      "linear_speed": 0.0005091173807159066,
+      "angular_speed": 0.0039701578207314014,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766676306724548,
+        -0.27088218927383423,
+        0.7774592041969299
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1226,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 588,
+      "gravity_z": -0.9999373555183411,
+      "linear_speed": 0.0011913523776456714,
+      "angular_speed": 0.010230526328086853,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766802668571472,
+        -0.27088409662246704,
+        0.7774645686149597
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1251,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 613,
+      "gravity_z": -0.99993896484375,
+      "linear_speed": 0.001279629534110427,
+      "angular_speed": 0.011035286821424961,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766929030418396,
+        -0.27088505029678345,
+        0.7774752974510193
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1276,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 638,
+      "gravity_z": -0.9999409317970276,
+      "linear_speed": 0.0006929634255357087,
+      "angular_speed": 0.005525278393179178,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6767024397850037,
+        -0.27088743448257446,
+        0.7774882912635803
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1301,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 663,
+      "gravity_z": -0.9999393820762634,
+      "linear_speed": 0.0011839494109153748,
+      "angular_speed": 0.010498973540961742,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766874194145203,
+        -0.2708316445350647,
+        0.7774940729141235
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1326,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 688,
+      "gravity_z": -0.9999400973320007,
+      "linear_speed": 0.0022275939118117094,
+      "angular_speed": 0.018017716705799103,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766900420188904,
+        -0.2708168625831604,
+        0.7775055170059204
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1351,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 713,
+      "gravity_z": -0.9999414682388306,
+      "linear_speed": 0.0004891834105364978,
+      "angular_speed": 0.0029755730647593737,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766933798789978,
+        -0.27080732583999634,
+        0.7775155901908875
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1376,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 738,
+      "gravity_z": -0.9999421238899231,
+      "linear_speed": 0.0007139761000871658,
+      "angular_speed": 0.005834102630615234,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766921877861023,
+        -0.2707687020301819,
+        0.7775321006774902
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1401,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 763,
+      "gravity_z": -0.9999425411224365,
+      "linear_speed": 0.0012206151150166988,
+      "angular_speed": 0.012042401358485222,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766931414604187,
+        -0.2707715630531311,
+        0.7775331139564514
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1426,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 788,
+      "gravity_z": -0.9999422430992126,
+      "linear_speed": 0.00031620493973605335,
+      "angular_speed": 0.0038942324463278055,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766828894615173,
+        -0.2707362771034241,
+        0.7775425314903259
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1451,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 813,
+      "gravity_z": -0.9999420046806335,
+      "linear_speed": 0.0009168119868263602,
+      "angular_speed": 0.00796198658645153,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766771674156189,
+        -0.27070003747940063,
+        0.7775530815124512
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1476,
+      "standing": true,
+      "eligible": true,
+      "consecutive_frames": 838,
+      "gravity_z": -0.9999432563781738,
+      "linear_speed": 0.0005169307114556432,
+      "angular_speed": 0.0035955505445599556,
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766826510429382,
+        -0.270696222782135,
+        0.7775571346282959
+      ],
+      "inside_desktop": true
+    }
+  ],
+  "contact_trace": [
+    {
+      "step": 0,
+      "recovering": false,
+      "root": [
+        3.064044952392578,
+        -5.00278377532959,
+        0.11936203390359879
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        -0.034239135682582855,
+        -0.007639464922249317,
+        0.12199999392032623
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 25,
+      "recovering": false,
+      "root": [
+        3.1526191234588623,
+        -5.009486675262451,
+        0.14349134266376495
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.05459681898355484,
+        -0.014060077257454395,
+        0.14394184947013855
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 50,
+      "recovering": false,
+      "root": [
+        3.1565897464752197,
+        -5.000497817993164,
+        0.16287705302238464
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.05909649282693863,
+        -0.0059433551505208015,
+        0.16181541979312897
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 75,
+      "recovering": false,
+      "root": [
+        3.1842217445373535,
+        -5.008533000946045,
+        0.19771058857440948
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.08616987615823746,
+        -0.013076839037239552,
+        0.19750575721263885
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 100,
+      "recovering": false,
+      "root": [
+        3.1757795810699463,
+        -5.004343509674072,
+        0.23055675625801086
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.07785097509622574,
+        -0.008940276689827442,
+        0.2290320247411728
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 125,
+      "recovering": false,
+      "root": [
+        3.2005765438079834,
+        -4.996652603149414,
+        0.25907155871391296
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.10445252805948257,
+        -0.0014544101431965828,
+        0.258627325296402
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 150,
+      "recovering": false,
+      "root": [
+        3.232959747314453,
+        -5.005982398986816,
+        0.2954652011394501
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.1284898817539215,
+        -0.010152873583137989,
+        0.2934795618057251
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 175,
+      "recovering": false,
+      "root": [
+        3.226764678955078,
+        -4.997955322265625,
+        0.313212513923645
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.12632599472999573,
+        -0.002576884813606739,
+        0.3103954792022705
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 200,
+      "recovering": false,
+      "root": [
+        3.267526865005493,
+        -5.0065717697143555,
+        0.3501727879047394
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.16959133744239807,
+        -0.011382636614143848,
+        0.3497176468372345
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 225,
+      "recovering": false,
+      "root": [
+        3.257297992706299,
+        -4.999799728393555,
+        0.38074809312820435
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.16048136353492737,
+        -0.004728374071419239,
+        0.37736594676971436
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 250,
+      "recovering": false,
+      "root": [
+        3.284482955932617,
+        -4.992546558380127,
+        0.4097386300563812
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.18874016404151917,
+        0.0005640415474772453,
+        0.40925467014312744
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 275,
+      "recovering": false,
+      "root": [
+        3.2976791858673096,
+        -4.999503135681152,
+        0.4434782564640045
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.19485583901405334,
+        -0.0035248370841145515,
+        0.441459059715271
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 300,
+      "recovering": false,
+      "root": [
+        3.3059074878692627,
+        -4.995158672332764,
+        0.4621620178222656
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.20784679055213928,
+        0.0003628162667155266,
+        0.4617501199245453
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 325,
+      "recovering": false,
+      "root": [
+        3.351372718811035,
+        -5.003492832183838,
+        0.5040485262870789
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.25346460938453674,
+        -0.008422908373177052,
+        0.5036817193031311
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 350,
+      "recovering": false,
+      "root": [
+        3.3422703742980957,
+        -4.999012470245361,
+        0.5284693837165833
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.24545112252235413,
+        -0.003362712450325489,
+        0.5271118879318237
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 375,
+      "recovering": false,
+      "root": [
+        3.372819662094116,
+        -4.994582176208496,
+        0.561972975730896
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.27797260880470276,
+        -0.001939830370247364,
+        0.5605924129486084
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 400,
+      "recovering": false,
+      "root": [
+        3.3698251247406006,
+        -4.9971842765808105,
+        0.5965267419815063
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.26938310265541077,
+        -0.0029302211478352547,
+        0.5943387150764465
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 425,
+      "recovering": false,
+      "root": [
+        3.3883817195892334,
+        -4.994145393371582,
+        0.6161777973175049
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.29010143876075745,
+        0.001115742139518261,
+        0.6161028146743774
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 450,
+      "recovering": false,
+      "root": [
+        3.43794846534729,
+        -5.0037994384765625,
+        0.6592910289764404
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.3386296331882477,
+        -0.008160647936165333,
+        0.6588584780693054
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 475,
+      "recovering": false,
+      "root": [
+        3.430316925048828,
+        -4.999292373657227,
+        0.6827442049980164
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.33005037903785706,
+        -0.002859649248421192,
+        0.6807088851928711
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 500,
+      "recovering": false,
+      "root": [
+        3.479585886001587,
+        -5.004464626312256,
+        0.711989164352417
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.3809572756290436,
+        -0.01136308629065752,
+        0.7103760242462158
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 525,
+      "recovering": false,
+      "root": [
+        3.515604257583618,
+        -5.008131504058838,
+        0.7590158581733704
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.4093555510044098,
+        -0.014989909715950489,
+        0.7607073187828064
+      ],
+      "inside_desktop": false
+    },
+    {
+      "step": 550,
+      "recovering": true,
+      "root": [
+        3.611443042755127,
+        -5.012283802032471,
+        0.7422562837600708
+      ],
+      "feet_on_desktop": [
+        false,
+        true
+      ],
+      "root_ladder_relative": [
+        0.5161096453666687,
+        -0.01745515689253807,
+        0.7412444949150085
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 575,
+      "recovering": true,
+      "root": [
+        3.616363763809204,
+        -5.121628284454346,
+        0.7553762197494507
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.5173148512840271,
+        -0.12522941827774048,
+        0.7562488913536072
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 600,
+      "recovering": true,
+      "root": [
+        3.661128282546997,
+        -5.215845584869385,
+        0.7209041714668274
+      ],
+      "feet_on_desktop": [
+        false,
+        false
+      ],
+      "root_ladder_relative": [
+        0.5586735606193542,
+        -0.21385818719863892,
+        0.7181508541107178
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 625,
+      "recovering": true,
+      "root": [
+        3.7608065605163574,
+        -5.281871795654297,
+        0.7705613970756531
+      ],
+      "feet_on_desktop": [
+        false,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6613571047782898,
+        -0.28530174493789673,
+        0.7672054767608643
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 650,
+      "recovering": true,
+      "root": [
+        3.7762632369995117,
+        -5.2671613693237305,
+        0.7751170992851257
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6785003542900085,
+        -0.27262502908706665,
+        0.77489173412323
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 675,
+      "recovering": true,
+      "root": [
+        3.775285243988037,
+        -5.267626762390137,
+        0.7760604023933411
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6771487593650818,
+        -0.27244192361831665,
+        0.7760440707206726
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 700,
+      "recovering": true,
+      "root": [
+        3.774315357208252,
+        -5.268360137939453,
+        0.7763689756393433
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6761693358421326,
+        -0.27316099405288696,
+        0.7763591408729553
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 725,
+      "recovering": true,
+      "root": [
+        3.773859739303589,
+        -5.268580436706543,
+        0.776658833026886
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6756896376609802,
+        -0.27342039346694946,
+        0.7766410112380981
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 750,
+      "recovering": true,
+      "root": [
+        3.773923397064209,
+        -5.268115043640137,
+        0.7768780589103699
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6757392287254333,
+        -0.27297741174697876,
+        0.7768732309341431
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 775,
+      "recovering": true,
+      "root": [
+        3.7741587162017822,
+        -5.267667770385742,
+        0.7769750952720642
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6760246157646179,
+        -0.27257686853408813,
+        0.7769721746444702
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 800,
+      "recovering": true,
+      "root": [
+        3.7742581367492676,
+        -5.267309188842773,
+        0.7770459651947021
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6760463118553162,
+        -0.2721119523048401,
+        0.7770410776138306
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 825,
+      "recovering": true,
+      "root": [
+        3.7745931148529053,
+        -5.267146587371826,
+        0.777127206325531
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6763882040977478,
+        -0.2720051407814026,
+        0.7771126627922058
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 850,
+      "recovering": true,
+      "root": [
+        3.7748303413391113,
+        -5.266813278198242,
+        0.7772292494773865
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766535639762878,
+        -0.27170664072036743,
+        0.7772147059440613
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 875,
+      "recovering": true,
+      "root": [
+        3.7749617099761963,
+        -5.26668643951416,
+        0.7772586941719055
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6767837405204773,
+        -0.27152448892593384,
+        0.7772600650787354
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 900,
+      "recovering": true,
+      "root": [
+        3.7750141620635986,
+        -5.2666449546813965,
+        0.7772750854492188
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.676834762096405,
+        -0.271456778049469,
+        0.7772834300994873
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 925,
+      "recovering": true,
+      "root": [
+        3.77498722076416,
+        -5.266515731811523,
+        0.7772983908653259
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6768078207969666,
+        -0.2713490128517151,
+        0.7772997617721558
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 950,
+      "recovering": true,
+      "root": [
+        3.7749946117401123,
+        -5.2664794921875,
+        0.7773169279098511
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6768202185630798,
+        -0.2713170647621155,
+        0.7773186564445496
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 975,
+      "recovering": true,
+      "root": [
+        3.7749710083007812,
+        -5.266429901123047,
+        0.7773287296295166
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6768037676811218,
+        -0.2712770104408264,
+        0.7773271799087524
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1000,
+      "recovering": true,
+      "root": [
+        3.774951219558716,
+        -5.266372203826904,
+        0.7773454189300537
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6767792105674744,
+        -0.2712145447731018,
+        0.7773442268371582
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1025,
+      "recovering": true,
+      "root": [
+        3.7749366760253906,
+        -5.266329288482666,
+        0.7773630619049072
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6767656207084656,
+        -0.27117353677749634,
+        0.7773618698120117
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1050,
+      "recovering": true,
+      "root": [
+        3.7748799324035645,
+        -5.266210556030273,
+        0.7773842215538025
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6767122149467468,
+        -0.2710595726966858,
+        0.7773820757865906
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1075,
+      "recovering": true,
+      "root": [
+        3.774850606918335,
+        -5.266156196594238,
+        0.7774022221565247
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766828894615173,
+        -0.27100569009780884,
+        0.7774004340171814
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1100,
+      "recovering": true,
+      "root": [
+        3.774813175201416,
+        -5.266088485717773,
+        0.7774206399917603
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766464114189148,
+        -0.2709394097328186,
+        0.7774185538291931
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1125,
+      "recovering": true,
+      "root": [
+        3.7747769355773926,
+        -5.266035079956055,
+        0.7774383425712585
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6765970587730408,
+        -0.27088218927383423,
+        0.7774325013160706
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1150,
+      "recovering": true,
+      "root": [
+        3.774791717529297,
+        -5.26603889465332,
+        0.7774381041526794
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.676625669002533,
+        -0.27087265253067017,
+        0.7774469256401062
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1175,
+      "recovering": true,
+      "root": [
+        3.774818181991577,
+        -5.266038417816162,
+        0.7774535417556763
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766397356987,
+        -0.2708774209022522,
+        0.7774472236633301
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1200,
+      "recovering": true,
+      "root": [
+        3.774841547012329,
+        -5.2660441398620605,
+        0.7774592041969299
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766647696495056,
+        -0.2708778977394104,
+        0.7774538993835449
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1225,
+      "recovering": true,
+      "root": [
+        3.7748541831970215,
+        -5.266046047210693,
+        0.7774645686149597
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766850352287292,
+        -0.2708764672279358,
+        0.7774733901023865
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1250,
+      "recovering": true,
+      "root": [
+        3.774866819381714,
+        -5.26604700088501,
+        0.7774752974510193
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.676703155040741,
+        -0.270879328250885,
+        0.777485191822052
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1275,
+      "recovering": true,
+      "root": [
+        3.774876356124878,
+        -5.266049385070801,
+        0.7774882912635803
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766943335533142,
+        -0.2708812355995178,
+        0.777482271194458
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1300,
+      "recovering": true,
+      "root": [
+        3.7748613357543945,
+        -5.265993595123291,
+        0.7774940729141235
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766948103904724,
+        -0.27082639932632446,
+        0.7775030136108398
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1325,
+      "recovering": true,
+      "root": [
+        3.7748639583587646,
+        -5.265978813171387,
+        0.7775055170059204
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766988635063171,
+        -0.2708283066749573,
+        0.7775105237960815
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1350,
+      "recovering": true,
+      "root": [
+        3.774867296218872,
+        -5.265969276428223,
+        0.7775155901908875
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6767029166221619,
+        -0.2707896828651428,
+        0.7775245904922485
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1375,
+      "recovering": true,
+      "root": [
+        3.7748661041259766,
+        -5.265930652618408,
+        0.7775321006774902
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766878962516785,
+        -0.27077919244766235,
+        0.7775263786315918
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1400,
+      "recovering": true,
+      "root": [
+        3.774867057800293,
+        -5.265933513641357,
+        0.7775331139564514
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6767067313194275,
+        -0.27076536417007446,
+        0.7775428891181946
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1425,
+      "recovering": true,
+      "root": [
+        3.7748568058013916,
+        -5.26589822769165,
+        0.7775425314903259
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766974329948425,
+        -0.2707286477088928,
+        0.7775512933731079
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1450,
+      "recovering": true,
+      "root": [
+        3.774851083755493,
+        -5.265861988067627,
+        0.7775530815124512
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766738295555115,
+        -0.2707057595252991,
+        0.7775465846061707
+      ],
+      "inside_desktop": true
+    },
+    {
+      "step": 1475,
+      "recovering": true,
+      "root": [
+        3.7748565673828125,
+        -5.265858173370361,
+        0.7775571346282959
+      ],
+      "feet_on_desktop": [
+        true,
+        true
+      ],
+      "root_ladder_relative": [
+        0.6766836047172546,
+        -0.27068430185317993,
+        0.7775556445121765
+      ],
+      "inside_desktop": true
+    }
+  ],
+  "mean_climber_round_trip_ms": 34.86536707306856,
+  "p95_climber_round_trip_ms": 167.52027818001804,
+  "mean_getup_round_trip_ms": 15.054815748348785,
+  "p95_getup_round_trip_ms": 69.16639353148639,
+  "note": "Ubuntu runs MuJoCo and the privileged simulator-only foot-desktop handoff detector; the selected environment is controlled by either the RDK X5 HBM pair, the GPU ONNX actor, or the CPU ONNX reference, while inert background environments preserve the official vectorized scene shape.",
+  "fresh_inference_verified": true,
+  "board_model_sha256_verified": [
+    "e4dc1b73adef9eebf3b3106de5ffc875a9fc599034120dbb8c8b0001da7eb763",
+    "c1c941be793cc9cf5ba199d2ae6ed55043973f6be89754779607155fb860bb3b"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "task": "swing",
+  "run_id": "cd61b0d7-dad1-4820-8fba-9beedda84f32",
+  "generated_at_utc": "2026-10-11T09:14:35.451713+00:00",
+  "task_id": "Mjlab-SwingPump-MicroDuck",
+  "display_name": "swing-pump",
+  "backend": "RDK X5 BPU via hbm_runtime",
+  "bpu_host": "192.168.8.128",
+  "bpu_port": 8765,
+  "hbm_file": "/home/ubuntu/workspaces/microduck_bpu_models/compiled/swing/model_output/swing.opset11.bin",
+  "hbm_sha256": "ca37bfa1720a42e488d7207d599af9f6eaefa44db60b2e60f6f46b206e295637",
+  "observation_dim_sent": 61,
+  "action_dim": 14,
+  "recurrent": false,
+  "source_root": ".",
+  "steps": 500,
+  "requested_steps": 500,
+  "terminated_or_truncated_resets": 0,
+  "failure_resets": 0,
+  "timeout_resets": 0,
+  "reset_steps": [],
+  "recurrent_state_resets": 0,
+  "physics_device": "cuda:0",
+  "mean_round_trip_ms": 22.533479204867035,
+  "p95_round_trip_ms": 124.31663530878708,
+  "note": "Ubuntu MuJoCo renders; RDK X5 BPU produces every policy action.",
+  "fresh_inference_verified": true,
+  "board_model_sha256_verified": [
+    "ca37bfa1720a42e488d7207d599af9f6eaefa44db60b2e60f6f46b206e295637"
+  ]
+}

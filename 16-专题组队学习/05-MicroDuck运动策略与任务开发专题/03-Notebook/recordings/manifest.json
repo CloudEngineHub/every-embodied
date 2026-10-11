@@ -1,0 +1,238 @@
+{
+  "archived_at_utc": "2026-10-11T10:02:31.180442+00:00",
+  "video_count": 21,
+  "total_video_bytes": 25378971,
+  "videos": [
+    {
+      "notebook_prefix": "01",
+      "backend": "GPU",
+      "video": "recordings/gpu_videos/basketball_gpu_latest.mp4",
+      "preview": "basketball_gpu.gif",
+      "report": "recordings/gpu_videos/basketball_gpu_latest.json",
+      "source_video": "outputs/gpu_videos/basketball_gpu_latest.mp4",
+      "bytes": 3837413,
+      "sha256": "761545c414faca1df840e96cc895a27b8bb9312d205b3b20aeb797e539ac04fa",
+      "run_id": "d569f5b0-c03f-4e5b-8b09-459cce110b9f"
+    },
+    {
+      "notebook_prefix": "01",
+      "backend": "BPU",
+      "video": "recordings/bpu_videos/basketball_bpu_latest.mp4",
+      "preview": "basketball_bpu.gif",
+      "report": "recordings/bpu_videos/basketball_bpu_latest.json",
+      "source_video": "outputs/bpu_videos/basketball_bpu_latest.mp4",
+      "bytes": 4177466,
+      "sha256": "a803dcfb5da6254d763a5b900de35ab9ec7641abda9da91dda49454183827b5d",
+      "run_id": "53b65a9c-0566-4462-9da5-ee27b1e4f6ff"
+    },
+    {
+      "notebook_prefix": "02",
+      "backend": "GPU",
+      "video": "recordings/gpu_videos/perturbation_gpu_latest.mp4",
+      "preview": "perturbation_gpu.gif",
+      "report": "recordings/gpu_videos/perturbation_gpu_latest.json",
+      "source_video": "outputs/gpu_videos/perturbation_gpu_latest.mp4",
+      "bytes": 1212774,
+      "sha256": "95299dfc4ba19f98a3199da9eaad38ee132ae05906896c7938626c292346a5f0",
+      "run_id": "ffc804de-2c4f-4b9b-bc3c-c62be9bee4d9"
+    },
+    {
+      "notebook_prefix": "02",
+      "backend": "BPU",
+      "video": "recordings/bpu_videos/perturbation_bpu_latest.mp4",
+      "preview": "perturbation_bpu.gif",
+      "report": "recordings/bpu_videos/perturbation_bpu_latest.json",
+      "source_video": "outputs/bpu_videos/perturbation_bpu_latest.mp4",
+      "bytes": 1276673,
+      "sha256": "75354a5c3f32c9cf4ed7456d44190d2e61c7ea91e7bda11af54f9708bbe89ec3",
+      "run_id": "f434a604-c6e8-46d1-b51c-11f5e691f08a"
+    },
+    {
+      "notebook_prefix": "03",
+      "backend": "GPU",
+      "video": "recordings/gpu_videos/stilt_gpu_latest.mp4",
+      "preview": "stilt_gpu.gif",
+      "report": "recordings/gpu_videos/stilt_gpu_latest.json",
+      "source_video": "outputs/gpu_videos/stilt_gpu_latest.mp4",
+      "bytes": 1221888,
+      "sha256": "d6b9190584884be3170da5a32fc98f3860deb66334d2a9a1f95ef5c3501eaa93",
+      "run_id": "a44edb39-a663-4da7-8d90-387471a05d58"
+    },
+    {
+      "notebook_prefix": "03",
+      "backend": "BPU",
+      "video": "recordings/bpu_videos/stilt_bpu_latest.mp4",
+      "preview": "stilt_bpu.gif",
+      "report": "recordings/bpu_videos/stilt_bpu_latest.json",
+      "source_video": "outputs/bpu_videos/stilt_bpu_latest.mp4",
+      "bytes": 1262202,
+      "sha256": "2095c8ad66a2bd99e7bbe4825a550f0db75be8668b3c1d17c27258b483ccdd15",
+      "run_id": "e9bc8d9d-2b15-4a61-a258-2d8db0c08b90"
+    },
+    {
+      "notebook_prefix": "04",
+      "backend": "GPU",
+      "video": "recordings/gpu_videos/swing_gpu_latest.mp4",
+      "preview": "swing_gpu.gif",
+      "report": "recordings/gpu_videos/swing_gpu_latest.json",
+      "source_video": "outputs/gpu_videos/swing_gpu_latest.mp4",
+      "bytes": 1372800,
+      "sha256": "8a51d4a05c340b44b732de5dd9072639a21848b36d2b1aeddefed60b0eb75a80",
+      "run_id": "3795b462-61a9-4520-9ede-eede7f0a1e6b"
+    },
+    {
+      "notebook_prefix": "04",
+      "backend": "BPU",
+      "video": "recordings/bpu_videos/swing_bpu_latest.mp4",
+      "preview": "swing_bpu.gif",
+      "report": "recordings/bpu_videos/swing_bpu_latest.json",
+      "source_video": "outputs/bpu_videos/swing_bpu_latest.mp4",
+      "bytes": 1405672,
+      "sha256": "6f0bbf8b10240f0636f3447c1e97bbcfbcd78f41d521da9767c5a37fcee07bab",
+      "run_id": "cd61b0d7-dad1-4820-8fba-9beedda84f32"
+    },
+    {
+      "notebook_prefix": "05",
+      "backend": "GPU",
+      "video": "recordings/gpu_videos/ball_balance_gpu_latest.mp4",
+      "preview": "ball_balance_gpu.gif",
+      "report": "recordings/gpu_videos/ball_balance_gpu_latest.json",
+      "source_video": "outputs/gpu_videos/ball_balance_gpu_latest.mp4",
+      "bytes": 366582,
+      "sha256": "7142c16ea485f96466af76688d77fa2c0396069d437d9a508792e07d3919b602",
+      "run_id": "9f86b834-cdd3-4a0c-a6b9-36a46c98fc77"
+    },
+    {
+      "notebook_prefix": "05",
+      "backend": "BPU",
+      "video": "recordings/bpu_videos/ball_balance_bpu_latest.mp4",
+      "preview": "ball_balance_bpu.gif",
+      "report": "recordings/bpu_videos/ball_balance_bpu_latest.json",
+      "source_video": "outputs/bpu_videos/ball_balance_bpu_latest.mp4",
+      "bytes": 233944,
+      "sha256": "33b1f17113568011a6a7b34e36af36d342c4e3139e5945123c46ccdc196b63ae",
+      "run_id": "35abe460-3cee-485e-9b3f-f7aea2bc598c"
+    },
+    {
+      "notebook_prefix": "06",
+      "backend": "GPU",
+      "video": "recordings/gpu_videos/ladder_gpu_latest.mp4",
+      "preview": "ladder_gpu.gif",
+      "report": "recordings/gpu_videos/ladder_gpu_latest.json",
+      "source_video": "outputs/gpu_videos/ladder_gpu_latest.mp4",
+      "bytes": 1180759,
+      "sha256": "02a93dccca0712d7e714cf990766fe344d3d30b6a0068553309a0a84c561a33a",
+      "run_id": "f7487165-27fc-437e-ab3a-c00d2fac5dc3"
+    },
+    {
+      "notebook_prefix": "06",
+      "backend": "BPU",
+      "video": "recordings/bpu_videos/ladder_official_pair_bpu_latest.mp4",
+      "preview": "ladder_bpu.gif",
+      "report": "recordings/bpu_videos/ladder_official_pair_bpu_latest.json",
+      "source_video": "outputs/bpu_videos/ladder_official_pair_bpu_latest.mp4",
+      "bytes": 1156345,
+      "sha256": "bb0a38d446e6a6cebb0e999aad250a1414ba795f9a36dd6a3b57e6aed7181337",
+      "run_id": "a5da86af-f6b9-43d5-9cf7-b8407998dbd9"
+    },
+    {
+      "notebook_prefix": "07",
+      "backend": "GPU",
+      "video": "recordings/gpu_videos/walking_gpu_latest.mp4",
+      "preview": "walking_gpu.gif",
+      "report": "recordings/gpu_videos/walking_gpu_latest.json",
+      "source_video": "outputs/gpu_videos/walking_gpu_latest.mp4",
+      "bytes": 1202770,
+      "sha256": "6e29bbf1f9614a8ca7e415a6c833d5fcce02e90b48e6ed74b3225acf46d7736f",
+      "run_id": "92aa7fcd-c496-4c0f-a43f-28f4abb39b45"
+    },
+    {
+      "notebook_prefix": "07",
+      "backend": "BPU",
+      "video": "recordings/bpu_videos/walking_bpu_latest.mp4",
+      "preview": "walking_bpu.gif",
+      "report": "recordings/bpu_videos/walking_bpu_latest.json",
+      "source_video": "outputs/bpu_videos/walking_bpu_latest.mp4",
+      "bytes": 1210339,
+      "sha256": "c2fcb613d5f22da3e4e44ef7c59bc5453cf2be0cf81399f2911e32755d8e70a7",
+      "run_id": "41ef9a1a-ee5c-40ef-bcc6-1176576a139c"
+    },
+    {
+      "notebook_prefix": "00",
+      "backend": "CPU",
+      "video": "recordings/control_helloworld/microduck_forward_turn_stop.mp4",
+      "preview": "forward_turn_stop.gif",
+      "report": "recordings/control_helloworld/control_report.json",
+      "source_video": "outputs/control_helloworld/microduck_forward_turn_stop.mp4",
+      "bytes": 439755,
+      "sha256": "3ba9c36c74cb3c1299cfacaf330a940763f0b4c80a5bf3ee630b6ce594dcda6d",
+      "run_id": null
+    },
+    {
+      "notebook_prefix": "08",
+      "backend": "GPU",
+      "video": "recordings/lightnav_gpu/official_apartment_latest.mp4",
+      "preview": "official-apartment.gif",
+      "report": "recordings/lightnav_gpu/lesson_summary.json",
+      "source_video": "outputs/lightnav_gpu/official_apartment_latest.mp4",
+      "bytes": 877525,
+      "sha256": "1253f6587ce66bc84fcb9e6d77032aeae841108b0fce5b5da567748f88e56f80",
+      "run_id": null
+    },
+    {
+      "notebook_prefix": "08",
+      "backend": "GPU",
+      "video": "recordings/lightnav_gpu/living_room_latest.mp4",
+      "preview": "living-room.gif",
+      "report": "recordings/lightnav_gpu/lesson_summary.json",
+      "source_video": "outputs/lightnav_gpu/living_room_latest.mp4",
+      "bytes": 400930,
+      "sha256": "440acf082e55c84c3d61312dabfb756ebe93627547dd520ba923a1077bbf9f5e",
+      "run_id": null
+    },
+    {
+      "notebook_prefix": "08",
+      "backend": "GPU",
+      "video": "recordings/lightnav_gpu/corridor_latest.mp4",
+      "preview": "corridor.gif",
+      "report": "recordings/lightnav_gpu/lesson_summary.json",
+      "source_video": "outputs/lightnav_gpu/corridor_latest.mp4",
+      "bytes": 1420963,
+      "sha256": "9bccaf5fd28e3bc7400bdbe795556a04eeea6fedeb614f8516a9a6049fed5dad",
+      "run_id": null
+    },
+    {
+      "notebook_prefix": "09",
+      "backend": "GPU",
+      "video": "recordings/long_jump/long_jump_pretrained_latest.mp4",
+      "preview": "long_jump_pretrained.gif",
+      "report": "recordings/long_jump/long_jump_pretrained_latest.json",
+      "source_video": "outputs/long_jump/long_jump_pretrained_latest.mp4",
+      "bytes": 114760,
+      "sha256": "4b38f4f2e5e1cd0ba78fa6c9d78422505ae3c8f99c4ddfa8441c8effd9b0452a",
+      "run_id": null
+    },
+    {
+      "notebook_prefix": "09",
+      "backend": "GPU",
+      "video": "recordings/long_jump/long_jump_continued_latest.mp4",
+      "preview": "long_jump_continued.gif",
+      "report": "recordings/long_jump/long_jump_continued_latest.json",
+      "source_video": "outputs/long_jump/long_jump_continued_latest.mp4",
+      "bytes": 488599,
+      "sha256": "e4cd6a2aba52154b09ca38eadbe89630b72fb1c2e03fc8adccff7b7f65daf574",
+      "run_id": null
+    },
+    {
+      "notebook_prefix": "09",
+      "backend": "CPU",
+      "video": "recordings/long_jump/long_jump_onnx_latest.mp4",
+      "preview": "long_jump_onnx.gif",
+      "report": "recordings/long_jump/long_jump_onnx_latest.json",
+      "source_video": "outputs/long_jump/long_jump_onnx_latest.mp4",
+      "bytes": 518812,
+      "sha256": "250dff467413721fb3f6dd27f6c687aef61c7f9b8836e21805e50a2f525c5ea1",
+      "run_id": null
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "official_apartment": {
+    "scene": "official_apartment",
+    "instruction": "Walk to the table on your left and stop.",
+    "navigation_backend": "LightNav-0 / vllm_local / GPU",
+    "walking_backend": "pretrained alpha_walking / ONNX Runtime CPU",
+    "time_mode": "simulation pauses during inference",
+    "training": false,
+    "prediction_count": 34,
+    "trajectory_shape": [
+      10,
+      3
+    ],
+    "termination": "model_stop",
+    "sim_seconds": 9.250000000000124,
+    "wall_seconds": 4.23938781186007,
+    "median_latency_ms": 67.29568052105606,
+    "initial_target_distance_m": 2.9464947450317975,
+    "final_target_distance_m": 2.047250424597759,
+    "final_trunk_height_m": 0.11761915105397151,
+    "video": "/data/Data14TB/lightnav-recordings/teaching/notebook/official_apartment_latest.mp4"
+  },
+  "living_room": {
+    "scene": "living_room",
+    "instruction": "Walk to the armchair in front of you and stop.",
+    "navigation_backend": "LightNav-0 / vllm_local / GPU",
+    "walking_backend": "pretrained alpha_walking / ONNX Runtime CPU",
+    "time_mode": "simulation pauses during inference",
+    "training": false,
+    "prediction_count": 12,
+    "trajectory_shape": [
+      10,
+      3
+    ],
+    "termination": "model_stop",
+    "sim_seconds": 3.749999999999931,
+    "wall_seconds": 1.3385997239965945,
+    "median_latency_ms": 62.736397492699325,
+    "initial_target_distance_m": 1.811077027627484,
+    "final_target_distance_m": 1.4681124049506373,
+    "final_trunk_height_m": 0.11724917883681665,
+    "video": "/data/Data14TB/lightnav-recordings/teaching/notebook/living_room_latest.mp4"
+  },
+  "corridor": {
+    "scene": "corridor",
+    "instruction": "Go straight down the hallway to the potted plant and stop.",
+    "navigation_backend": "LightNav-0 / vllm_local / GPU",
+    "walking_backend": "pretrained alpha_walking / ONNX Runtime CPU",
+    "time_mode": "simulation pauses during inference",
+    "training": false,
+    "prediction_count": 49,
+    "trajectory_shape": [
+      10,
+      3
+    ],
+    "termination": "model_stop",
+    "sim_seconds": 13.00000000000071,
+    "wall_seconds": 4.964753737905994,
+    "median_latency_ms": 75.70065907202661,
+    "initial_target_distance_m": 2.6999999999999993,
+    "final_target_distance_m": 1.1675422799965545,
+    "final_trunk_height_m": 0.11743712852731686,
+    "video": "/data/Data14TB/lightnav-recordings/teaching/notebook/corridor_latest.mp4"
+  }
+}

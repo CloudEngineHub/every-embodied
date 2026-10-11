@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
@@ -38,6 +39,7 @@ def record(args: argparse.Namespace) -> None:
 
     env = registry.make("microduck-ball-balance", num_envs=1, mode="play", seed=args.seed)
     output = args.output.resolve()
+    env.cfg.max_episode_seconds = max(env.cfg.max_episode_seconds or 0, args.steps * float(env.cfg.ctrl_dt) + 1.0)
     output.parent.mkdir(parents=True, exist_ok=True)
     frame_count = max(1, int(round(args.steps * float(env.cfg.ctrl_dt) * args.fps)))
     renderer = create_renderer(
@@ -64,20 +66,26 @@ def record(args: argparse.Namespace) -> None:
     if actual_obs_dim != args.obs_dim:
         raise RuntimeError(f"Motrix actor observation is {actual_obs_dim}D, expected {args.obs_dim}D")
     resets = 0
+    observed, executed, done_flags, reset_events = [], [], [], []
     try:
-        for _ in range(args.steps):
-            if not renderer.render():
-                break
+        for step in range(args.steps):
             raw_obs = state.obs.policy[0]
             if hasattr(raw_obs, "detach"):
                 raw_obs = raw_obs.detach().cpu().numpy()
             action = policy.infer(np.asarray(raw_obs, dtype=np.float32))
+            observed.append(np.asarray(raw_obs, dtype=np.float32).copy())
+            executed.append(action.copy())
             state = env.step(action.reshape(1, args.action_dim).astype(np.float32, copy=False))
-            if not renderer.render():
-                break
+            done_flags.append(bool(state.done[0]))
             if bool(state.done[0]):
                 resets += 1
+                reset_events.append({"step": step + 1, "terms": [
+                    name for name in env.termination_manager.terms if bool(state.metrics[name][0])
+                ]})
                 policy.reset()
+            # The recorder counts one control interval per render call.
+            if not renderer.render() and step + 1 < args.steps:
+                raise RuntimeError("Video recorder ended before the requested control steps")
     finally:
         policy.close()
         renderer.close()
@@ -88,10 +96,14 @@ def record(args: argparse.Namespace) -> None:
     if not output.is_file() or output.stat().st_size == 0:
         raise FileNotFoundError(f"Motrix renderer did not create {output}")
     report = output.with_suffix(".json")
+    np.savez_compressed(output.with_suffix(".trace.npz"), obs=observed, actions=executed, done=done_flags)
     report.write_text(
         json.dumps(
             {
                 "task": "ball_balance",
+                "run_id": os.getenv("MICRODUCK_VALIDATION_RUN_ID"),
+                "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+                "policy_validation": policy.validation(),
                 "task_id": "microduck-ball-balance",
                 "display_name": "Motrix FastSAC ball balance",
                 "backend": "GPU ONNX via Torch CUDA",
@@ -101,9 +113,13 @@ def record(args: argparse.Namespace) -> None:
                 "onnx_sha256": sha256(args.onnx),
                 "observation_dim": args.obs_dim,
                 "action_dim": args.action_dim,
-                "steps": args.steps,
+                "steps": len(policy.latencies_ms),
+                "requested_steps": args.steps,
                 "video_frames": frame_count,
                 "resets": resets,
+                "reset_events": reset_events,
+                "failure_resets": sum(bool(event["terms"]) for event in reset_events),
+                "timeout_resets": sum(not event["terms"] for event in reset_events),
                 "mean_inference_ms": float(np.mean(policy.latencies_ms)) if policy.latencies_ms else None,
                 "p95_inference_ms": float(np.percentile(policy.latencies_ms, 95)) if policy.latencies_ms else None,
                 "note": "MotrixSim renders on Ubuntu; the FastSAC actor is evaluated by Torch on GPU.",

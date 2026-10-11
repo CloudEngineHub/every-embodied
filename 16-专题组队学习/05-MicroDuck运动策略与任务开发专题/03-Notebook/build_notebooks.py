@@ -375,7 +375,7 @@ contract = inspect_onnx(MODEL_PATH) if MODEL_PATH else None
         md(f"""
 ## 2. ONNX 导出入口
 
-训练得到的是策略 checkpoint；导出时要把 actor 和观测归一化一起固化到 ONNX。下面是本任务命令模板。`--video` 会在本机录制仿真回放，完整视频写入 `outputs/`，不提交到 Git。
+训练得到的是策略 checkpoint；导出时要把 actor 和观测归一化一起固化到 ONNX。下面是本任务命令模板。`--video` 会录制物理仿真，新生成的视频写入 `outputs/`；本轮发布视频与运行报告保存在 `recordings/`。
 
 ```bash
 {export_template}
@@ -390,9 +390,12 @@ print("导出前后检查：观测维度、动作顺序、归一化和 action cl
         stage3_code,
         *hbm_stage,
         md("""
-## 4. 本地 ONNX 基准推理
+## 4. 检查 ONNX 的输入与动作输出
 
-这一步只验证 ONNX 图能在本机运行，以及输出形状和数值是否有限；它不是训练效果评测，也不是 BPU 验收。
+先确认模型的输入名称、维度和动作输出，为接入仿真准备接口。下方使用零输入做一次模型检查。
+随后在本任务闭环单元中读取实时观测，重新计算动作、下发执行器并更新物理状态。
+第一次接触这条流程，请先运行 [MuJoCo 策略控制 HelloWorld](./00_MuJoCo策略控制_HelloWorld.ipynb)，
+亲手执行前进、转向和停止，并查看 `data.ctrl` 与 `mujoco.mj_step()` 怎样连接策略和仿真。
 """),
         code(r'''
 def onnx_local_smoke(path):
@@ -634,14 +637,15 @@ else:
                 print("未通过：优先以第 5 节 BPU-in-the-loop 报告为准。")
 '''),
         md("""
-## 7. 直播结论
+## 7. 阅读本次运行结果
 
-- `PASS-local-onnx`：ONNX checker 和本地 ONNX Runtime 通过。
+- `PASS-local-onnx`：模型结构、输入输出形状和有限值检查通过；随后进入任务闭环。
 - `PASS-BPU-VIDEO`：Ubuntu MuJoCo 视频中的每一个动作都由 RDK X5 对应 HBM 产生。
 - `PASS-rdk-bpu-runtime-sample`：板端已安装的 X5 BPU 样例推理退出码为 0。
 - `PASS-rdk-bpu`：SSH 连通、板端明确选择 BPU、MicroDuck HBM 推理命令退出码为 0，并记录输入输出形状与延迟。
 
-没有 `PASS-BPU-VIDEO` 的任务，只能算“已有素材/接口说明”，不能算板端视频已完成。
+`BPU-CACHED-VIDEO` 表示播放之前保存的板端演示；连接 RDK 后重跑板端闭环单元可生成新视频。
+任务效果结合位移、速度、稳定时间和接触指标与视频一起阅读。修改模型、命令或场景后，重新运行对应闭环单元并保存实验记录。
 """),
     ]
 
@@ -662,12 +666,21 @@ def build(filename: str, title: str, task_id: str | None, model_hint: str | None
     notebook.metadata = {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}, "language_info": {"name": "python", "version": "3.12"}}
     notebook.cells = [
         md(f"# MicroDuck 直播 Notebook：{title}\n\n把任务、策略、ONNX、MuJoCo 和 RDK X5/BPU 验收串成一条可复用流程。"),
-        md("## 0. 运行说明\n\n建议在 `02-可运行代码/microduck-playground-stilts` 的 Python 环境中启动 Jupyter。训练模型和板端 HBM 不随 Git 提交；通过 `MICRODUCK_ONNX`、`RDK_BPU_HBM` 和 `RDK_HOST` 注入。"),
+        md("## 0. 运行说明\n\n建议在 `02-可运行代码/microduck-playground-stilts` 的 Python 环境中启动 Jupyter。训练模型和板端 HBM 不随 Git 提交；通过 `MICRODUCK_ONNX`、`RDK_BPU_HBM` 和 `RDK_HOST` 注入。\n\n第一次运行请先打开 [MuJoCo 策略控制 HelloWorld](./00_MuJoCo策略控制_HelloWorld.ipynb)：自动下载行走模型，用 Python 下发前进、转向和停止命令，完整执行观测、推理、关节目标和物理更新，再进入当前任务。"),
         code(SETUP),
     ] + task_cells(model_hint, task_id, sim_command, direct_connect=direct_connect, video_hint=video_hint, keyframe_hint=keyframe_hint, bpu_task=bpu_task)
     nbf.write(notebook, ROOT / filename)
 
 
-for item in TASKS:
-    build(*item)
-print(f"generated {len(TASKS)} notebooks in {ROOT}")
+if __name__ == "__main__":
+    import sys
+
+    if "--legacy-scaffold" not in sys.argv:
+        raise SystemExit(
+            "This historical scaffold omits the current GPU lessons. "
+            "Use the saved notebooks and validate_notebooks.py; "
+            "--legacy-scaffold explicitly replaces lessons with the old scaffold."
+        )
+    for item in TASKS:
+        build(*item)
+    print(f"generated {len(TASKS)} historical scaffolds in {ROOT}")

@@ -18,6 +18,7 @@ import socket
 import struct
 import sys
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
@@ -112,16 +113,19 @@ class BpuClient:
         magic, got_obs, got_action, got_recurrent = HELLO.unpack(
             recv_exact(self.sock, HELLO.size)
         )
-        if magic != MAGIC or got_obs != obs_dim or got_action != action_dim:
+        if (magic, got_obs, got_action, got_recurrent) != (MAGIC, obs_dim, action_dim, recurrent_flag):
             raise RuntimeError(
                 f"RDK contract mismatch: got {magic!r}/{got_obs}/{got_action}/{got_recurrent}, "
                 f"expected {obs_dim}/{action_dim}"
             )
         self.recurrent = bool(got_recurrent)
         self.latencies_ms: list[float] = []
+        self.episode_resets = 0
 
     def infer(self, observation: np.ndarray) -> np.ndarray:
         value = np.asarray(observation, dtype=np.float32).reshape(self.obs_dim)
+        if not np.isfinite(value).all():
+            raise ValueError("Non-finite actor observation")
         started = time.perf_counter()
         self.sock.sendall(COUNT.pack(1) + value.astype("<f4", copy=False).tobytes())
         (count,) = COUNT.unpack(recv_exact(self.sock, COUNT.size))
@@ -131,7 +135,21 @@ class BpuClient:
             recv_exact(self.sock, self.action_dim * 4), dtype="<f4", count=self.action_dim
         ).copy()
         self.latencies_ms.append((time.perf_counter() - started) * 1000.0)
+        if not np.isfinite(action).all():
+            raise RuntimeError("RDK returned a non-finite action")
         return np.clip(action, -1.0, 1.0)
+
+    def reset(self) -> None:
+        if self.recurrent:
+            # Each board connection owns its LSTM state.
+            self.close()
+            self.sock = socket.create_connection((self.host, self.port), timeout=15.0)
+            self.sock.settimeout(15.0)
+            self.sock.sendall(HELLO.pack(MAGIC, self.obs_dim, self.action_dim, 1))
+            ack = HELLO.unpack(recv_exact(self.sock, HELLO.size))
+            if ack != (MAGIC, self.obs_dim, self.action_dim, 1):
+                raise RuntimeError(f"RDK reset contract mismatch: {ack}")
+        self.episode_resets += 1
 
     def close(self) -> None:
         try:
@@ -208,8 +226,12 @@ def record_one(task_name: str, spec: dict[str, object], args: argparse.Namespace
     task_id = str(spec["task_id"])
     env_cfg = load_env_cfg(task_id, play=True)
     env_cfg.scene.num_envs = 1
+    env_cfg.episode_length_s = max(env_cfg.episode_length_s, args.steps * 0.02 + 1.0)
     env_cfg.viewer.width = args.width
     env_cfg.viewer.height = args.height
+    env_cfg.viewer.distance = args.camera_distance
+    env_cfg.viewer.elevation = args.camera_elevation
+    env_cfg.viewer.azimuth = args.camera_azimuth
     if args.seed is not None:
         env_cfg.seed = args.seed
     if task_name == "ladder" and args.curriculum_step is not None:
@@ -219,7 +241,7 @@ def record_one(task_name: str, spec: dict[str, object], args: argparse.Namespace
         pass
     set_command(env_cfg, tuple(spec["command"]))
 
-    env = ManagerBasedRlEnv(cfg=env_cfg, device="cpu", render_mode="rgb_array")
+    env = ManagerBasedRlEnv(cfg=env_cfg, device=args.physics_device, render_mode="rgb_array")
     recorder = VideoRecorder(
         env,
         video_folder=str(args.output.parent),
@@ -239,6 +261,10 @@ def record_one(task_name: str, spec: dict[str, object], args: argparse.Namespace
         env.common_step_counter = int(args.curriculum_step)
 
     terminated_count = 0
+    failure_resets = 0
+    timeout_resets = 0
+    reset_steps = []
+    observed, executed, done_flags = [], [], []
     try:
         for step in range(args.steps):
             actor_obs = obs["actor"][0].detach().cpu().numpy()
@@ -250,11 +276,20 @@ def record_one(task_name: str, spec: dict[str, object], args: argparse.Namespace
             if task_name == "perturbation":
                 add_perturbation(env, step)
             action = bpu.infer(actor_obs)
-            action_tensor = torch.from_numpy(action).reshape(1, 14)
+            action_tensor = torch.from_numpy(action).reshape(1, 14).to(env.device)
             obs, _, terminated, truncated, _ = recorder.step(action_tensor)
-            if bool(terminated[0]) or bool(truncated[0]):
+            done = bool(terminated[0]) or bool(truncated[0])
+            observed.append(actor_obs.copy())
+            executed.append(action.copy())
+            done_flags.append(done)
+            if done:
                 terminated_count += 1
-                obs, _ = recorder.reset()
+                failure_resets += int(bool(terminated[0]))
+                timeout_resets += int(bool(truncated[0]))
+                reset_steps.append(step + 1)
+                bpu.reset()
+                if not env_cfg.auto_reset:
+                    obs, _ = recorder.reset()
     finally:
         bpu.close()
         recorder.close()
@@ -266,10 +301,13 @@ def record_one(task_name: str, spec: dict[str, object], args: argparse.Namespace
     if generated != args.output:
         generated.replace(args.output)
     report = args.output.with_suffix(".json")
+    np.savez_compressed(args.output.with_suffix(".trace.npz"), obs=observed, actions=executed, done=done_flags)
     report.write_text(
         json.dumps(
             {
                 "task": task_name,
+                "run_id": os.getenv("MICRODUCK_VALIDATION_RUN_ID"),
+                "generated_at_utc": datetime.now(timezone.utc).isoformat(),
                 "task_id": task_id,
                 "display_name": spec["name"],
                 "backend": "RDK X5 BPU via hbm_runtime",
@@ -281,8 +319,14 @@ def record_one(task_name: str, spec: dict[str, object], args: argparse.Namespace
                 "action_dim": 14,
                 "recurrent": bool(spec.get("recurrent", False)),
                 "source_root": str(source_root) if source_root else None,
-                "steps": args.steps,
+                "steps": len(bpu.latencies_ms),
+                "requested_steps": args.steps,
                 "terminated_or_truncated_resets": terminated_count,
+                "failure_resets": failure_resets,
+                "timeout_resets": timeout_resets,
+                "reset_steps": reset_steps,
+                "recurrent_state_resets": bpu.episode_resets if bpu.recurrent else 0,
+                "physics_device": args.physics_device,
                 "mean_round_trip_ms": float(np.mean(bpu.latencies_ms)) if bpu.latencies_ms else None,
                 "p95_round_trip_ms": float(np.percentile(bpu.latencies_ms, 95)) if bpu.latencies_ms else None,
                 "note": "Ubuntu MuJoCo renders; RDK X5 BPU produces every policy action.",
@@ -309,6 +353,10 @@ def main() -> None:
     parser.add_argument("--steps", type=int, default=250)
     parser.add_argument("--width", type=int, default=640)
     parser.add_argument("--height", type=int, default=480)
+    parser.add_argument("--physics-device", choices=("cuda:0", "cpu"), default="cuda:0")
+    parser.add_argument("--camera-distance", type=float, default=1.4)
+    parser.add_argument("--camera-elevation", type=float, default=-12.0)
+    parser.add_argument("--camera-azimuth", type=float, default=90.0)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--stilt-height-cm", type=float, default=25.0)
     parser.add_argument("--curriculum-step", type=int, default=None)

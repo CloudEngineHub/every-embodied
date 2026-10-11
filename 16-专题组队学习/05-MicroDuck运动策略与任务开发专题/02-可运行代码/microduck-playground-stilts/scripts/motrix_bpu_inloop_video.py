@@ -15,6 +15,7 @@ import os
 import socket
 import struct
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
@@ -58,6 +59,8 @@ class BpuClient:
 
     def infer(self, observation: np.ndarray) -> np.ndarray:
         value = np.asarray(observation, dtype=np.float32).reshape(self.obs_dim)
+        if not np.isfinite(value).all():
+            raise ValueError("Non-finite actor observation")
         started = time.perf_counter()
         self.sock.sendall(COUNT.pack(1) + value.astype("<f4", copy=False).tobytes())
         (count,) = COUNT.unpack(recv_exact(self.sock, COUNT.size))
@@ -69,7 +72,10 @@ class BpuClient:
             count=self.action_dim,
         ).copy()
         self.latencies_ms.append((time.perf_counter() - started) * 1000.0)
-        return np.clip(action, -1.0, 1.0)
+        if not np.isfinite(action).all():
+            raise RuntimeError("RDK returned a non-finite action")
+        # FastSAC embeds joint-range scaling in the exported actor.
+        return action
 
     def close(self) -> None:
         try:
@@ -111,6 +117,7 @@ def record(args: argparse.Namespace) -> None:
         seed=args.seed,
     )
     output = args.output.resolve()
+    env.cfg.max_episode_seconds = max(env.cfg.max_episode_seconds or 0, args.steps * float(env.cfg.ctrl_dt) + 1.0)
     output.parent.mkdir(parents=True, exist_ok=True)
     frame_count = max(1, int(round(args.steps * float(env.cfg.ctrl_dt) * args.fps)))
     renderer = create_renderer(
@@ -122,6 +129,10 @@ def record(args: argparse.Namespace) -> None:
             num_frames=frame_count,
             width=args.width,
             height=args.height,
+            camera_lookat=(0.0, 0.0, 0.2),
+            camera_distance=args.camera_distance,
+            camera_elevation=args.camera_elevation,
+            camera_azimuth=args.camera_azimuth,
         ),
     )
     if renderer is None:
@@ -134,16 +145,22 @@ def record(args: argparse.Namespace) -> None:
         raise RuntimeError(f"Motrix actor observation is {actual_obs_dim}D, expected {args.obs_dim}D")
 
     resets = 0
+    observed, executed, done_flags, reset_events = [], [], [], []
     try:
-        for _ in range(args.steps):
-            if not renderer.render():
-                break
-            action = bpu.infer(state.obs.policy[0])
+        for step in range(args.steps):
+            observation = np.asarray(state.obs.policy[0], dtype=np.float32).copy()
+            action = bpu.infer(observation)
             state = env.step(action.reshape(1, args.action_dim).astype(np.float32, copy=False))
-            if not renderer.render():
-                break
+            observed.append(observation)
+            executed.append(action.copy())
+            done_flags.append(bool(state.done[0]))
             if bool(state.done[0]):
                 resets += 1
+                reset_events.append({"step": step + 1, "terms": [
+                    name for name in env.termination_manager.terms if bool(state.metrics[name][0])
+                ]})
+            if not renderer.render() and step + 1 < args.steps:
+                raise RuntimeError("Video recorder ended before the requested control steps")
     finally:
         bpu.close()
         renderer.close()
@@ -154,10 +171,13 @@ def record(args: argparse.Namespace) -> None:
     if not output.is_file() or output.stat().st_size == 0:
         raise FileNotFoundError(f"Motrix renderer did not create {output}")
     report = output.with_suffix(".json")
+    np.savez_compressed(output.with_suffix(".trace.npz"), obs=observed, actions=executed, done=done_flags)
     report.write_text(
         json.dumps(
             {
                 "task": "ball_balance",
+                "run_id": os.getenv("MICRODUCK_VALIDATION_RUN_ID"),
+                "generated_at_utc": datetime.now(timezone.utc).isoformat(),
                 "task_id": "microduck-ball-balance",
                 "display_name": "Motrix FastSAC ball balance",
                 "backend": "RDK X5 BPU via hbm_runtime",
@@ -168,9 +188,13 @@ def record(args: argparse.Namespace) -> None:
                 "hbm_sha256": sha256(Path(args.hbm)),
                 "observation_dim_sent": args.obs_dim,
                 "action_dim": args.action_dim,
-                "steps": args.steps,
+                "steps": len(bpu.latencies_ms),
+                "requested_steps": args.steps,
                 "video_frames": frame_count,
                 "resets": resets,
+                "reset_events": reset_events,
+                "failure_resets": sum(bool(event["terms"]) for event in reset_events),
+                "timeout_resets": sum(not event["terms"] for event in reset_events),
                 "mean_round_trip_ms": float(np.mean(bpu.latencies_ms)) if bpu.latencies_ms else None,
                 "p95_round_trip_ms": float(np.percentile(bpu.latencies_ms, 95)) if bpu.latencies_ms else None,
                 "note": "MotrixSim renders on Ubuntu; RDK X5 BPU produces every FastSAC actor action.",
@@ -195,6 +219,9 @@ def main() -> None:
     parser.add_argument("--fps", type=int, default=30)
     parser.add_argument("--width", type=int, default=640)
     parser.add_argument("--height", type=int, default=480)
+    parser.add_argument("--camera-distance", type=float, default=1.2)
+    parser.add_argument("--camera-elevation", type=float, default=-12.0)
+    parser.add_argument("--camera-azimuth", type=float, default=90.0)
     parser.add_argument("--obs-dim", type=int, default=54)
     parser.add_argument("--action-dim", type=int, default=14)
     parser.add_argument("--seed", type=int, default=1)

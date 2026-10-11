@@ -1,0 +1,281 @@
+{
+  "generated_at_utc": "2026-10-11T09:19:38.458089+00:00",
+  "board": {
+    "host": "192.168.8.128",
+    "control_port": 8766,
+    "policy_port": 8765,
+    "ladder_ports": [
+      8875,
+      8876
+    ],
+    "fresh_task_videos": 7
+  },
+  "ball_balance": {
+    "training_global_step": 5002,
+    "checkpoint_sha256": "d33c6870df7ec01b4efd1d50a2744f09f683f7a94ac8bcc71104d9d8aadbe85a",
+    "onnx_sha256": "382a7692bd833f81011127cc07c4e11147205e5c7d616eda4c080a4ca909e757",
+    "rollouts": {
+      "checkpoint": {
+        "steps": 250,
+        "max_abs_action_error": 1.430511474609375e-06,
+        "resets": 0,
+        "reset_events": [],
+        "termination_counts": {}
+      },
+      "onnx": {
+        "steps": 250,
+        "max_abs_action_error": 1.5497207641601562e-06,
+        "resets": 0,
+        "reset_events": [],
+        "termination_counts": {}
+      }
+    },
+    "latest": {
+      "gpu": {
+        "run_id": "9f86b834-cdd3-4a0c-a6b9-36a46c98fc77",
+        "generated_at_utc": "2026-10-11T09:04:08.085603+00:00",
+        "steps": 900,
+        "resets": 0,
+        "failure_resets": 0,
+        "timeout_resets": 0,
+        "reset_events": [],
+        "onnx_sha256": "382a7692bd833f81011127cc07c4e11147205e5c7d616eda4c080a4ca909e757"
+      },
+      "bpu": {
+        "run_id": "35abe460-3cee-485e-9b3f-f7aea2bc598c",
+        "generated_at_utc": "2026-10-11T09:04:21.310886+00:00",
+        "steps": 900,
+        "resets": 0,
+        "failure_resets": 0,
+        "timeout_resets": 0,
+        "reset_events": [],
+        "hbm_sha256": "a6bb9850cea35fdee5490921101ea64d6b08622ff84bbc7274d6e0cee85c5509",
+        "board_model_sha256_verified": [
+          "a6bb9850cea35fdee5490921101ea64d6b08622ff84bbc7274d6e0cee85c5509"
+        ]
+      }
+    },
+    "finding": "Restored the trained 5002-iteration checkpoint and normalization. Removed erroneous clipping of joint-target actions to [-1,1]. Calibrated INT16 with real GPU/BPU observations, external normalization and split dense weights. Short training outputs remain candidates, not automatic replacements."
+  },
+  "bpu_action_comparison": {
+    "basketball": {
+      "observation_samples": 1500,
+      "max_abs_action_error": 0.24037954211235046,
+      "mean_abs_action_error": 0.027830997481942177,
+      "p95_abs_action_error": 0.08370551466941833,
+      "first_action_max_error": 0.004067033529281616,
+      "float_obs_max_abs": 7.9222412109375,
+      "float_h_max_abs": 0.9172030687332153,
+      "float_c_max_abs": 5.197474002838135,
+      "fraction_action_errors_over_0_1": 0.027761904761904762,
+      "source": "same real observations, episode-aligned recurrent state, float ONNX vs recorded board actions",
+      "run_id": "53b65a9c-0566-4462-9da5-ee27b1e4f6ff",
+      "board_model_sha256": "be96cce1a17c37077511ab7247c443885fa64249d3f4696b263c2a3755e0de2e",
+      "resets": 0
+    },
+    "walking": {
+      "observation_samples": 500,
+      "max_abs_action_error": 0.35472625494003296,
+      "mean_abs_action_error": 0.04380389302968979,
+      "p95_abs_action_error": 0.11756785959005356,
+      "first_action_max_error": 0.05816365033388138,
+      "float_obs_max_abs": 9.895140647888184,
+      "float_h_max_abs": 0.0,
+      "float_c_max_abs": 0.0,
+      "fraction_action_errors_over_0_1": 0.084,
+      "source": "same real observations, episode-aligned recurrent state, float ONNX vs recorded board actions",
+      "run_id": "41ef9a1a-ee5c-40ef-bcc6-1176576a139c",
+      "board_model_sha256": "fc44b395300aa6b45e4b8e3677f669f6e275e5ce6d6c26e2a7c08c6e27129110",
+      "resets": 0
+    },
+    "perturbation": {
+      "observation_samples": 500,
+      "max_abs_action_error": 1.038285732269287,
+      "mean_abs_action_error": 0.04903880134224892,
+      "p95_abs_action_error": 0.13443683087825775,
+      "first_action_max_error": 0.08953958749771118,
+      "float_obs_max_abs": 9.821452140808105,
+      "float_h_max_abs": 0.0,
+      "float_c_max_abs": 0.0,
+      "fraction_action_errors_over_0_1": 0.10642857142857143,
+      "source": "same real observations, episode-aligned recurrent state, float ONNX vs recorded board actions",
+      "run_id": "f434a604-c6e8-46d1-b51c-11f5e691f08a",
+      "board_model_sha256": "fc44b395300aa6b45e4b8e3677f669f6e275e5ce6d6c26e2a7c08c6e27129110",
+      "resets": 1
+    },
+    "stilt": {
+      "observation_samples": 500,
+      "max_abs_action_error": 0.7634363174438477,
+      "mean_abs_action_error": 0.09121417999267578,
+      "p95_abs_action_error": 0.2601892650127411,
+      "first_action_max_error": 0.16314035654067993,
+      "float_obs_max_abs": 7.406264305114746,
+      "float_h_max_abs": 0.0,
+      "float_c_max_abs": 0.0,
+      "fraction_action_errors_over_0_1": 0.3482857142857143,
+      "source": "same real observations, episode-aligned recurrent state, float ONNX vs recorded board actions",
+      "run_id": "e9bc8d9d-2b15-4a61-a258-2d8db0c08b90",
+      "board_model_sha256": "cc2e63f0eac2e7f435d8609d540dc00bc5a3d1d40b6a21a4ff837bd2ad64b703",
+      "resets": 0
+    },
+    "swing": {
+      "observation_samples": 500,
+      "max_abs_action_error": 2.0,
+      "mean_abs_action_error": 0.06818604469299316,
+      "p95_abs_action_error": 0.4668661952018738,
+      "first_action_max_error": 0.11452502012252808,
+      "float_obs_max_abs": 15.507339477539062,
+      "float_h_max_abs": 0.0,
+      "float_c_max_abs": 0.0,
+      "fraction_action_errors_over_0_1": 0.11571428571428571,
+      "source": "same real observations, episode-aligned recurrent state, float ONNX vs recorded board actions",
+      "run_id": "cd61b0d7-dad1-4820-8fba-9beedda84f32",
+      "board_model_sha256": "ca37bfa1720a42e488d7207d599af9f6eaefa44db60b2e60f6f46b206e295637",
+      "resets": 0
+    },
+    "ball_balance": {
+      "observation_samples": 900,
+      "max_abs_action_error": 0.010148227214813232,
+      "mean_abs_action_error": 0.0008496963419020176,
+      "p95_abs_action_error": 0.0021305500995367765,
+      "first_action_max_error": 0.001420140266418457,
+      "float_obs_max_abs": 15.296284675598145,
+      "float_h_max_abs": 0.0,
+      "float_c_max_abs": 0.0,
+      "fraction_action_errors_over_0_1": 0.0,
+      "source": "same real observations, episode-aligned recurrent state, float ONNX vs recorded board actions",
+      "run_id": "35abe460-3cee-485e-9b3f-f7aea2bc598c",
+      "board_model_sha256": "a6bb9850cea35fdee5490921101ea64d6b08622ff84bbc7274d6e0cee85c5509",
+      "resets": 0
+    },
+    "ladder": {
+      "observation_samples": 1500,
+      "max_abs_action_error": 0.5002412796020508,
+      "mean_abs_action_error": 0.0027386024594306946,
+      "p95_abs_action_error": 0.011386245489120483,
+      "handoff_success": true,
+      "run_id": "a5da86af-f6b9-43d5-9cf7-b8407998dbd9",
+      "source": "same real observations and recorded previous raw actions"
+    }
+  },
+  "calibration_float_parity": {
+    "ball_balance_restored_int16_normalized_split_expanded": {
+      "samples": 100,
+      "max_abs_action_error": 2.1457672119140625e-06,
+      "source_onnx_sha256": "382a7692bd833f81011127cc07c4e11147205e5c7d616eda4c080a4ca909e757",
+      "candidate_onnx_sha256": "4d312ba073aa4dd4a72b2f688fee9d7ed27423a249f8f220a94143e8bb78124e"
+    },
+    "ladder_climber_recalibrated_int16_normalized_split": {
+      "samples": 100,
+      "max_abs_action_error": 3.814697265625e-06,
+      "source_onnx_sha256": "1f0cf6b13d4ae204bc88fbec0e591820b86df4b142a00044cb4a3ff381ca9ffa",
+      "candidate_onnx_sha256": "c33f87755fdd923352ddcb97e9a8336dcd0703d9dbf6cf4bcfbb2fe3436d4ce9"
+    },
+    "ladder_getup_recalibrated_int16_normalized_split": {
+      "samples": 100,
+      "max_abs_action_error": 1.430511474609375e-06,
+      "source_onnx_sha256": "eeff6e4e8aa7c7f708be61d355fe348971c02188b53695dcdd9b9be42fedf2a0",
+      "candidate_onnx_sha256": "3454495a27c978402e54aeda79fd234683462c998752fc91db050ac2408f806e"
+    }
+  },
+  "basketball": {
+    "calibration": "max, matched real observation/hidden/cell samples, all INT16",
+    "calibration_sample_count": 506,
+    "latest": {
+      "gpu": {
+        "run_id": "d569f5b0-c03f-4e5b-8b09-459cce110b9f",
+        "generated_at_utc": "2026-10-11T09:11:56.972060+00:00",
+        "steps": 1500,
+        "onnx_sha256": "e6b31bf53859dc928a2bc6328b9f096d25cd385501e22d48ae1f1cfe44832944"
+      },
+      "bpu": {
+        "run_id": "53b65a9c-0566-4462-9da5-ee27b1e4f6ff",
+        "generated_at_utc": "2026-10-11T09:12:54.437123+00:00",
+        "steps": 1500,
+        "failure_resets": 0,
+        "timeout_resets": 0,
+        "hbm_sha256": "be96cce1a17c37077511ab7247c443885fa64249d3f4696b263c2a3755e0de2e",
+        "board_model_sha256_verified": [
+          "be96cce1a17c37077511ab7247c443885fa64249d3f4696b263c2a3755e0de2e"
+        ]
+      }
+    },
+    "finding": "Rebuilt calibration ranges for observations and LSTM states. Recurrent outputs are dequantized and requantized with the corresponding next-input scale and dtype rather than copied as INT8."
+  },
+  "ladder": {
+    "repeat_runs": [
+      {
+        "test": "official_cpu_physics_gpu_repeat",
+        "run_id": null,
+        "generated_at_utc": "2026-10-11T08:46:33.821447+00:00",
+        "steps": 1600,
+        "handoff_success": true,
+        "stable_seconds": 17.740000000000002
+      },
+      {
+        "test": "precision_cpu_physics_bpu",
+        "run_id": null,
+        "generated_at_utc": "2026-10-11T08:58:47.629396+00:00",
+        "steps": 1600,
+        "handoff_success": true,
+        "stable_seconds": 19.240000000000002
+      }
+    ],
+    "latest": {
+      "gpu": {
+        "run_id": "f7487165-27fc-437e-ab3a-c00d2fac5dc3",
+        "generated_at_utc": "2026-10-11T09:11:41.178000+00:00",
+        "steps": 1500,
+        "handoff_success": true,
+        "stable_seconds": 15.74,
+        "physics_device": "cpu",
+        "switch_events": [
+          {
+            "step": 629,
+            "seconds": 12.58,
+            "feet_on_desktop": [
+              false,
+              true
+            ],
+            "root_ladder_relative": [
+              0.5232657790184021,
+              -0.025373514741659164,
+              0.7411186695098877
+            ],
+            "inside_desktop": true
+          }
+        ]
+      },
+      "bpu": {
+        "run_id": "a5da86af-f6b9-43d5-9cf7-b8407998dbd9",
+        "generated_at_utc": "2026-10-11T09:19:14.937057+00:00",
+        "steps": 1500,
+        "handoff_success": true,
+        "stable_seconds": 17.240000000000002,
+        "physics_device": "cpu",
+        "switch_events": [
+          {
+            "step": 547,
+            "seconds": 10.94,
+            "feet_on_desktop": [
+              false,
+              true
+            ],
+            "root_ladder_relative": [
+              0.5242020487785339,
+              -0.023390349000692368,
+              0.7389681935310364
+            ],
+            "inside_desktop": true
+          }
+        ]
+      }
+    },
+    "finding": "Retained official climber/get-up observation and contact-switch logic. Use CPU contact physics for repeatability, GPU or board BPU for actions. Externally normalized INT16 models with split dense weights reduced deployment errors; success requires climbing, handoff and stable standing on the tabletop."
+  },
+  "reset_fixes": [
+    "Reconnect recurrent BPU session on each episode reset.",
+    "Do not reset simulator twice when the environment already auto-resets.",
+    "Extend episode time limits past the video duration; report failure and timeout resets separately."
+  ]
+}

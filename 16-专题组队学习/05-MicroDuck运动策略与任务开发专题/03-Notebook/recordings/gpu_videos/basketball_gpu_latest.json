@@ -1,0 +1,32 @@
+{
+  "task": "basketball",
+  "run_id": "d569f5b0-c03f-4e5b-8b09-459cce110b9f",
+  "generated_at_utc": "2026-10-11T09:11:56.972060+00:00",
+  "policy_validation": {
+    "inference_calls": 1500,
+    "real_observation_parity_checks": 32,
+    "max_abs_output_error": 7.152557373046875e-07,
+    "parity_atol": 0.0001,
+    "parity_rtol": 0.0001
+  },
+  "task_id": "Mjlab-Basketball-MicroDuck",
+  "display_name": "basketball-balance",
+  "backend": "GPU ONNX via Torch CUDA",
+  "policy_device": "GPU",
+  "onnx_file": "/home/ubuntu/workspaces/microduck_bpu_models/converted/basketball.opset11.onnx",
+  "onnx_sha256": "e6b31bf53859dc928a2bc6328b9f096d25cd385501e22d48ae1f1cfe44832944",
+  "observation_dim": 61,
+  "action_dim": 14,
+  "recurrent": true,
+  "steps": 1500,
+  "requested_steps": 1500,
+  "terminated_or_truncated_resets": 0,
+  "reset_steps": [],
+  "first_termination_step": null,
+  "longest_uninterrupted_steps": 1500,
+  "longest_uninterrupted_time_s": 30.0,
+  "video_nominal_time_s": 30.0,
+  "mean_inference_ms": 0.39040018261099857,
+  "p95_inference_ms": 0.5495527177117764,
+  "note": "Ubuntu runs the MuJoCo physics and renderer; the task actor is evaluated by Torch on GPU."
+}

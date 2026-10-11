@@ -61,6 +61,16 @@ class TorchOnnxPolicy:
         self.latencies_ms: list[float] = []
         self.hidden: torch.Tensor | None = None
         self.cell: torch.Tensor | None = None
+        import onnxruntime as ort
+
+        options = ort.SessionOptions()
+        options.intra_op_num_threads = 1
+        options.inter_op_num_threads = 1
+        self.reference = ort.InferenceSession(
+            str(self.model_path), sess_options=options, providers=["CPUExecutionProvider"]
+        )
+        self.parity_checks = 0
+        self.max_abs_output_error = 0.0
 
     def reset(self) -> None:
         self.hidden = None
@@ -210,6 +220,21 @@ class TorchOnnxPolicy:
         values = self._run(feeds)
         torch.cuda.synchronize(self.device)
         self.latencies_ms.append((time.perf_counter() - started) * 1000.0)
+        # Compare actual rollout inputs, including the previous recurrent state.
+        if self.parity_checks < 32:
+            reference = self.reference.run(
+                self.output_names, {name: tensor.detach().cpu().numpy() for name, tensor in feeds.items()}
+            )
+            for name, expected in zip(self.output_names, reference):
+                actual = values[name].detach().cpu().numpy()
+                if actual.shape != expected.shape or not np.isfinite(actual).all():
+                    raise RuntimeError(f"GPU output contract mismatch: {name}")
+                self.max_abs_output_error = max(
+                    self.max_abs_output_error, float(np.max(np.abs(actual - expected)))
+                )
+                if not np.allclose(actual, expected, atol=1e-4, rtol=1e-4):
+                    raise RuntimeError(f"GPU/ONNX reference mismatch: {name}, error={self.max_abs_output_error}")
+            self.parity_checks += 1
         action = values[self.output_names[0]].detach().float().cpu().numpy().reshape(-1)
         if not np.isfinite(action).all():
             raise RuntimeError("GPU ONNX returned a non-finite action")
@@ -217,3 +242,12 @@ class TorchOnnxPolicy:
 
     def close(self) -> None:
         self.reset()
+
+    def validation(self) -> dict[str, object]:
+        return {
+            "inference_calls": len(self.latencies_ms),
+            "real_observation_parity_checks": self.parity_checks,
+            "max_abs_output_error": self.max_abs_output_error,
+            "parity_atol": 1e-4,
+            "parity_rtol": 1e-4,
+        }

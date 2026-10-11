@@ -1,0 +1,66 @@
+{
+  "backend": "ONNX Runtime CPU -> MuJoCo position actuators",
+  "model_revision": "ad9d41a763f30dc770817c33d92dcfec0205db1e",
+  "model_sha256": "e36332d383997d51401897734cd3e79cf5038406feddb18b4d57ecfb141daa6c",
+  "control_frequency_hz": 50,
+  "physics_frequency_hz": 200,
+  "steps": 550,
+  "phases": {
+    "settle": {
+      "steps": 50,
+      "command": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dx_m": 0.0022828656750695517,
+      "dy_m": 0.00027348090492587007,
+      "yaw_change_rad": -0.0033412745004561244,
+      "last_second_mean_abs_vx_m_s": 0.003890463522864726
+    },
+    "forward": {
+      "steps": 200,
+      "command": [
+        0.30000001192092896,
+        0.0,
+        0.0
+      ],
+      "dx_m": 0.47577012474670066,
+      "dy_m": -0.06837125114653951,
+      "yaw_change_rad": -0.2548981133027637,
+      "last_second_mean_abs_vx_m_s": 0.1349045135658651
+    },
+    "turn_left": {
+      "steps": 150,
+      "command": [
+        0.0,
+        0.0,
+        0.5
+      ],
+      "dx_m": 0.028378787782573578,
+      "dy_m": 0.01527344598930841,
+      "yaw_change_rad": 0.7711061316259764,
+      "last_second_mean_abs_vx_m_s": 0.020929177232107396
+    },
+    "stop": {
+      "steps": 150,
+      "command": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dx_m": -0.004694240651048731,
+      "dy_m": 0.0006449669485382031,
+      "yaw_change_rad": -0.06883104109147248,
+      "last_second_mean_abs_vx_m_s": 0.0005285441540205625
+    }
+  },
+  "min_height_m": 0.11289617735173263,
+  "min_upright_cos": 0.997220446320718,
+  "checks": {
+    "forward_displacement_gt_0p3_m": true,
+    "left_turn_gt_0p3_rad": true,
+    "stopped_speed_lt_0p08_m_s": true,
+    "stayed_upright": true
+  }
+}

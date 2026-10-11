@@ -1,0 +1,31 @@
+{
+  "task": "walking",
+  "run_id": "41ef9a1a-ee5c-40ef-bcc6-1176576a139c",
+  "generated_at_utc": "2026-10-11T08:58:19.299315+00:00",
+  "task_id": "Mjlab-Velocity-Flat-MicroDuck",
+  "display_name": "navigation",
+  "backend": "RDK X5 BPU via hbm_runtime",
+  "bpu_host": "192.168.8.128",
+  "bpu_port": 8765,
+  "hbm_file": "/home/ubuntu/workspaces/microduck_bpu_models/compiled/walking/model_output/walking.opset11.bin",
+  "hbm_sha256": "fc44b395300aa6b45e4b8e3677f669f6e275e5ce6d6c26e2a7c08c6e27129110",
+  "observation_dim_sent": 61,
+  "action_dim": 14,
+  "recurrent": false,
+  "source_root": ".",
+  "steps": 500,
+  "requested_steps": 500,
+  "terminated_or_truncated_resets": 0,
+  "failure_resets": 0,
+  "timeout_resets": 0,
+  "reset_steps": [],
+  "recurrent_state_resets": 0,
+  "physics_device": "cuda:0",
+  "mean_round_trip_ms": 6.231330526527017,
+  "p95_round_trip_ms": 8.222057053353634,
+  "note": "Ubuntu MuJoCo renders; RDK X5 BPU produces every policy action.",
+  "fresh_inference_verified": true,
+  "board_model_sha256_verified": [
+    "fc44b395300aa6b45e4b8e3677f669f6e275e5ce6d6c26e2a7c08c6e27129110"
+  ]
+}

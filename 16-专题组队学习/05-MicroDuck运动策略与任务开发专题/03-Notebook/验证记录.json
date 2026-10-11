@@ -1,0 +1,357 @@
+{
+  "validated_at_utc": "2026-10-11T09:57:34.417555+00:00",
+  "bpu": "fresh_closed_loop_verified",
+  "notebooks": [
+    {
+      "notebook": "00_MuJoCo策略控制_HelloWorld.ipynb",
+      "executed_code_cells": 12,
+      "cells_with_output": 12,
+      "backend": "ONNX Runtime CPU + native MuJoCo",
+      "actual_policy_calls": 550,
+      "model_sha256": "e36332d383997d51401897734cd3e79cf5038406feddb18b4d57ecfb141daa6c",
+      "phases": {
+        "settle": {
+          "steps": 50,
+          "command": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "dx_m": 0.0022828656750695517,
+          "dy_m": 0.00027348090492587007,
+          "yaw_change_rad": -0.0033412745004561244,
+          "last_second_mean_abs_vx_m_s": 0.003890463522864726
+        },
+        "forward": {
+          "steps": 200,
+          "command": [
+            0.30000001192092896,
+            0.0,
+            0.0
+          ],
+          "dx_m": 0.47577012474670066,
+          "dy_m": -0.06837125114653951,
+          "yaw_change_rad": -0.2548981133027637,
+          "last_second_mean_abs_vx_m_s": 0.1349045135658651
+        },
+        "turn_left": {
+          "steps": 150,
+          "command": [
+            0.0,
+            0.0,
+            0.5
+          ],
+          "dx_m": 0.028378787782573578,
+          "dy_m": 0.01527344598930841,
+          "yaw_change_rad": 0.7711061316259764,
+          "last_second_mean_abs_vx_m_s": 0.020929177232107396
+        },
+        "stop": {
+          "steps": 150,
+          "command": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "dx_m": -0.004694240651048731,
+          "dy_m": 0.0006449669485382031,
+          "yaw_change_rad": -0.06883104109147248,
+          "last_second_mean_abs_vx_m_s": 0.0005285441540205625
+        }
+      }
+    },
+    {
+      "notebook": "01_篮球平衡_PPO_ONNX_BPU_MuJoCo.ipynb",
+      "executed_code_cells": 9,
+      "cells_with_output": 9,
+      "task": "basketball",
+      "backend": "GPU ONNX via Torch CUDA",
+      "run_id": "d569f5b0-c03f-4e5b-8b09-459cce110b9f",
+      "actual_policy_calls": 1500,
+      "numerical_validation": {
+        "inference_calls": 1500,
+        "real_observation_parity_checks": 32,
+        "max_abs_output_error": 7.152557373046875e-07,
+        "parity_atol": 0.0001,
+        "parity_rtol": 0.0001
+      },
+      "model_sha256": "e6b31bf53859dc928a2bc6328b9f096d25cd385501e22d48ae1f1cfe44832944",
+      "task_result": {
+        "terminated_or_truncated_resets": 0,
+        "longest_uninterrupted_time_s": 30.0
+      },
+      "bpu": {
+        "run_id": "53b65a9c-0566-4462-9da5-ee27b1e4f6ff",
+        "steps": 1500,
+        "board_model_sha256_verified": [
+          "be96cce1a17c37077511ab7247c443885fa64249d3f4696b263c2a3755e0de2e"
+        ],
+        "terminated_or_truncated_resets": 0,
+        "recurrent_state_resets": 0
+      }
+    },
+    {
+      "notebook": "02_浏览器物理扰动_回放与接口.ipynb",
+      "executed_code_cells": 9,
+      "cells_with_output": 9,
+      "task": "perturbation",
+      "backend": "GPU ONNX via Torch CUDA",
+      "run_id": "ffc804de-2c4f-4b9b-bc3c-c62be9bee4d9",
+      "actual_policy_calls": 500,
+      "numerical_validation": {
+        "inference_calls": 500,
+        "real_observation_parity_checks": 32,
+        "max_abs_output_error": 4.172325134277344e-07,
+        "parity_atol": 0.0001,
+        "parity_rtol": 0.0001
+      },
+      "model_sha256": "2da8200426614e4a83ef736f80e1ecfc1ca5c11e5dd28efd3524111d03314174",
+      "task_result": {
+        "terminated_or_truncated_resets": 1,
+        "longest_uninterrupted_time_s": 7.96
+      },
+      "bpu": {
+        "run_id": "f434a604-c6e8-46d1-b51c-11f5e691f08a",
+        "steps": 500,
+        "board_model_sha256_verified": [
+          "fc44b395300aa6b45e4b8e3677f669f6e275e5ce6d6c26e2a7c08c6e27129110"
+        ],
+        "terminated_or_truncated_resets": 1,
+        "recurrent_state_resets": 0
+      }
+    },
+    {
+      "notebook": "03_高跷行走_课程与ONNX_BPU.ipynb",
+      "executed_code_cells": 9,
+      "cells_with_output": 9,
+      "task": "stilt",
+      "backend": "GPU ONNX via Torch CUDA",
+      "run_id": "a44edb39-a663-4da7-8d90-387471a05d58",
+      "actual_policy_calls": 500,
+      "numerical_validation": {
+        "inference_calls": 500,
+        "real_observation_parity_checks": 32,
+        "max_abs_output_error": 4.76837158203125e-07,
+        "parity_atol": 0.0001,
+        "parity_rtol": 0.0001
+      },
+      "model_sha256": "c65e32be3e962f13de22e9a10460b20ed1ad661921a4f54788b39e25a4a9f6a0",
+      "task_result": {
+        "terminated_or_truncated_resets": 0,
+        "longest_uninterrupted_time_s": 10.0
+      },
+      "bpu": {
+        "run_id": "e9bc8d9d-2b15-4a61-a258-2d8db0c08b90",
+        "steps": 500,
+        "board_model_sha256_verified": [
+          "cc2e63f0eac2e7f435d8609d540dc00bc5a3d1d40b6a21a4ff837bd2ad64b703"
+        ],
+        "terminated_or_truncated_resets": 0,
+        "recurrent_state_resets": 0
+      }
+    },
+    {
+      "notebook": "04_摆动旋转_ONNX_BPU_MuJoCo.ipynb",
+      "executed_code_cells": 9,
+      "cells_with_output": 9,
+      "task": "swing",
+      "backend": "GPU ONNX via Torch CUDA",
+      "run_id": "3795b462-61a9-4520-9ede-eede7f0a1e6b",
+      "actual_policy_calls": 500,
+      "numerical_validation": {
+        "inference_calls": 500,
+        "real_observation_parity_checks": 32,
+        "max_abs_output_error": 8.344650268554688e-07,
+        "parity_atol": 0.0001,
+        "parity_rtol": 0.0001
+      },
+      "model_sha256": "a8e1a0ed5a1e34c92638a0ccb6ee16474b90427a42e8a3ea11bf1e832c80a71d",
+      "task_result": {
+        "terminated_or_truncated_resets": 0,
+        "longest_uninterrupted_time_s": 10.0
+      },
+      "bpu": {
+        "run_id": "cd61b0d7-dad1-4820-8fba-9beedda84f32",
+        "steps": 500,
+        "board_model_sha256_verified": [
+          "ca37bfa1720a42e488d7207d599af9f6eaefa44db60b2e60f6f46b206e295637"
+        ],
+        "terminated_or_truncated_resets": 0,
+        "recurrent_state_resets": 0
+      }
+    },
+    {
+      "notebook": "05_球平衡_FastSAC_ONNX_BPU.ipynb",
+      "executed_code_cells": 11,
+      "cells_with_output": 11,
+      "task": "ball_balance",
+      "backend": "GPU ONNX via Torch CUDA",
+      "run_id": "9f86b834-cdd3-4a0c-a6b9-36a46c98fc77",
+      "actual_policy_calls": 900,
+      "numerical_validation": {
+        "inference_calls": 900,
+        "real_observation_parity_checks": 32,
+        "max_abs_output_error": 1.430511474609375e-06,
+        "parity_atol": 0.0001,
+        "parity_rtol": 0.0001
+      },
+      "model_sha256": "382a7692bd833f81011127cc07c4e11147205e5c7d616eda4c080a4ca909e757",
+      "task_result": {
+        "resets": 0
+      },
+      "bpu": {
+        "run_id": "35abe460-3cee-485e-9b3f-f7aea2bc598c",
+        "steps": 900,
+        "board_model_sha256_verified": [
+          "a6bb9850cea35fdee5490921101ea64d6b08622ff84bbc7274d6e0cee85c5509"
+        ],
+        "resets": 0,
+        "reset_events": []
+      }
+    },
+    {
+      "notebook": "06_梯面攀爬_接触与部署模板.ipynb",
+      "executed_code_cells": 9,
+      "cells_with_output": 9,
+      "task": "ladder",
+      "backend": "GPU ONNX via Torch CUDA",
+      "run_id": "f7487165-27fc-437e-ab3a-c00d2fac5dc3",
+      "actual_policy_calls": 1500,
+      "numerical_validation": {
+        "climber": {
+          "inference_calls": 629,
+          "real_observation_parity_checks": 32,
+          "max_abs_output_error": 1.0728836059570312e-06,
+          "parity_atol": 0.0001,
+          "parity_rtol": 0.0001
+        },
+        "getup": {
+          "inference_calls": 871,
+          "real_observation_parity_checks": 32,
+          "max_abs_output_error": 7.152557373046875e-07,
+          "parity_atol": 0.0001,
+          "parity_rtol": 0.0001
+        }
+      },
+      "model_sha256": [
+        "1f0cf6b13d4ae204bc88fbec0e591820b86df4b142a00044cb4a3ff381ca9ffa",
+        "eeff6e4e8aa7c7f708be61d355fe348971c02188b53695dcdd9b9be42fedf2a0"
+      ],
+      "task_result": {
+        "handoff_success": true,
+        "stable_seconds": 15.74
+      },
+      "bpu": {
+        "run_id": "a5da86af-f6b9-43d5-9cf7-b8407998dbd9",
+        "steps": 1500,
+        "board_model_sha256_verified": [
+          "e4dc1b73adef9eebf3b3106de5ffc875a9fc599034120dbb8c8b0001da7eb763",
+          "c1c941be793cc9cf5ba199d2ae6ed55043973f6be89754779607155fb860bb3b"
+        ],
+        "handoff_success": true,
+        "stable_seconds": 17.240000000000002
+      }
+    },
+    {
+      "notebook": "07_RDK网页与多策略_BPU验收.ipynb",
+      "executed_code_cells": 9,
+      "cells_with_output": 9,
+      "task": "walking",
+      "backend": "GPU ONNX via Torch CUDA",
+      "run_id": "92aa7fcd-c496-4c0f-a43f-28f4abb39b45",
+      "actual_policy_calls": 500,
+      "numerical_validation": {
+        "inference_calls": 500,
+        "real_observation_parity_checks": 32,
+        "max_abs_output_error": 4.172325134277344e-07,
+        "parity_atol": 0.0001,
+        "parity_rtol": 0.0001
+      },
+      "model_sha256": "2da8200426614e4a83ef736f80e1ecfc1ca5c11e5dd28efd3524111d03314174",
+      "task_result": {
+        "terminated_or_truncated_resets": 0,
+        "longest_uninterrupted_time_s": 10.0
+      },
+      "bpu": {
+        "run_id": "41ef9a1a-ee5c-40ef-bcc6-1176576a139c",
+        "steps": 500,
+        "board_model_sha256_verified": [
+          "fc44b395300aa6b45e4b8e3677f669f6e275e5ce6d6c26e2a7c08c6e27129110"
+        ],
+        "terminated_or_truncated_resets": 0,
+        "recurrent_state_resets": 0
+      }
+    },
+    {
+      "notebook": "08_LightNav0_视觉语言导航_GPU_多场景.ipynb",
+      "executed_code_cells": 12,
+      "cells_with_output": 12,
+      "backend": "LightNav GPU + walking actor",
+      "scenes": {
+        "official_apartment": {
+          "prediction_count": 34,
+          "sim_seconds": 9.250000000000124,
+          "termination": "model_stop",
+          "initial_target_distance_m": 2.9464947450317975,
+          "final_target_distance_m": 2.047250424597759
+        },
+        "living_room": {
+          "prediction_count": 12,
+          "sim_seconds": 3.749999999999931,
+          "termination": "model_stop",
+          "initial_target_distance_m": 1.811077027627484,
+          "final_target_distance_m": 1.4681124049506373
+        },
+        "corridor": {
+          "prediction_count": 49,
+          "sim_seconds": 13.00000000000071,
+          "termination": "model_stop",
+          "initial_target_distance_m": 2.6999999999999993,
+          "final_target_distance_m": 1.1675422799965545
+        }
+      }
+    },
+    {
+      "notebook": "09_跨缝跳跃_PPO_GPU_ONNX.ipynb",
+      "executed_code_cells": 13,
+      "cells_with_output": 13,
+      "backend": "PyTorch CUDA / ONNX Runtime CPU",
+      "training_iterations": 10,
+      "deployment_selection": {
+        "candidate_accepted": true,
+        "selected": "continued",
+        "checkpoint": "/home/ubuntu/workspaces/microduck-teaching/microduck-topic/16-专题组队学习/05-MicroDuck运动策略与任务开发专题/03-Notebook/outputs/long_jump/training/continued.pt",
+        "onnx": "/home/ubuntu/workspaces/microduck-teaching/microduck-topic/16-专题组队学习/05-MicroDuck运动策略与任务开发专题/03-Notebook/outputs/long_jump/training/policy.onnx",
+        "reason": "candidate_task_passed"
+      },
+      "task_result": {
+        "pretrained": {
+          "video_seconds": 0.96,
+          "termination": [
+            "fell"
+          ],
+          "landed_on_target": true,
+          "final_target_support": true
+        },
+        "continued": {
+          "video_seconds": 12.0,
+          "termination": [
+            "time_out"
+          ],
+          "landed_on_target": true,
+          "final_target_support": true
+        },
+        "onnx": {
+          "video_seconds": 12.0,
+          "termination": [
+            "time_out"
+          ],
+          "landed_on_target": true,
+          "final_target_support": true
+        }
+      }
+    }
+  ],
+  "total_executed_code_cells": 102,
+  "decoded_video_count": 21
+}

@@ -2,6 +2,8 @@
 
 本专题集中整理 MicroDuck / OpenDuck Mini V2 相关的强化学习、运动控制、物理仿真、任务编排和端侧部署材料。目录按照“先跑通基线，再理解代码，最后做任务开发”的顺序组织，适合跟着学习逐步补充实验记录。
 
+第一次运行，先打开 [MuJoCo 策略控制 HelloWorld](./03-Notebook/00_MuJoCo策略控制_HelloWorld.ipynb)。它自动下载行走模型，在同一个场景中用 Python 执行前进、转向和停止，直接展示“实时观测 → ONNX 推理 → 关节目标 → MuJoCo 物理更新”。[最小环境安装步骤](./02-可运行代码/hello-world/README.md)只需要 CPU，不要求显卡或开发板。
+
 按 [8 天学习计划](./学习计划.md)每天学习一本 Notebook，查看[任务演示总览](./01-任务资料/精选视频/README.md)，或阅读[领学员招募文案](./招募文案.md)。
 
 另有 [21 天月度组队学习招募文案](./月度组队学习招募文案.md)，每个 Task 安排 2–3 天。两套方案共用教程和 Notebook，原有 8 天短期方案保留。
@@ -17,6 +19,7 @@
 7. 需要查看 RDK X5、网页演示和多策略调度时，进入 [端侧与网页部署](./01-任务资料/07-RDK端侧与网页部署/README.md)。
 8. 需要按直播顺序运行检查时，打开 [Notebook 学习入口](./03-Notebook/README.md)。
 9. 第 8 天让小鸭子理解语言指令并在不同房间中导航，运行 [LightNav-0 多场景导航](./03-Notebook/08_LightNav0_视觉语言导航_GPU_多场景.ipynb)。使用 GPU［图形处理器］接入已有模型，不训练导航模型、不连接开发板。
+10. 拓展体验[跨缝跳跃](./01-任务资料/08-MicroDuck跨缝跳跃/README.md)：高平台起跳、低平台落地，比较原始模型、10 轮 PPO 续训与 ONNX。第 9 本 Notebook 不改动原有学习日程。
 
 ## 目录结构
 
@@ -34,6 +37,7 @@
 │   ├── 05-MotrixLab-MicroDuck球平衡与FastSAC/
 │   ├── 06-MicroDuck梯面攀爬强化学习导读/
 │   ├── 07-RDK端侧与网页部署/
+│   ├── 08-MicroDuck跨缝跳跃/
 │   └── 精选视频/
 ├── 02-可运行代码/
 │   ├── microduck-playground-stilts/
@@ -42,11 +46,15 @@
 │   │   ├── tests/        # 配置和物理不变量测试
 │   │   ├── hardware/     # 高跷参数化生成器
 │   │   └── docs/         # 训练计划和策略说明
-│   └── lightnav-learning/ # 导航服务、场景构建与闭环视频
-└── 03-Notebook/          # 8 本任务教程，GPU 导航与 RDK X5/BPU 验收
+│   ├── hello-world/     # 自动下载模型，Python 速度命令与 MuJoCo 闭环
+│   ├── lightnav-learning/ # 导航服务、场景构建与闭环视频
+│   └── long-jump-learning/ # 跨缝跳跃、训练恢复与视频
+└── 03-Notebook/          # HelloWorld、8 本主线教程和 1 本跳跃拓展
 ```
 
 ## Notebook 学习线
+
+下载仓库后，先使用 HelloWorld 的最小环境运行 `00_MuJoCo策略控制_HelloWorld.ipynb`，按顺序执行所有单元。运行完成后，修改速度命令，再观察动作、轨迹和新生成的视频。其余任务使用对应的模型、场景和训练环境，准备步骤见各任务教程；代码仓库不包含大型训练权重。
 
 Notebook 推荐运行在 Ubuntu 工作站上，Windows 本机只通过浏览器访问 Jupyter。这样 MuJoCo、训练代码和 Python 依赖都在同一环境中；运动任务可再连接 RDK X5，把开发板作为独立的 BPU 推理端。第 8 本 LightNav-0 导航教程只使用工作站 GPU，不连接开发板。Notebook 内置任务契约、模型检查和视频输出，不需要额外维护一层“Windows Notebook -> Ubuntu -> RDK”的跳转。
 
@@ -64,6 +72,7 @@ ONNX 使用与 RDK X5 SDK 匹配的工具链编译为 HBM，编译在 Ubuntu Doc
 | 梯面攀爬 | 攀爬与起身双策略、横档接触和课程训练 | GPU 推理完成爬梯、登桌与站稳 |
 | RDK X5 / 网页部署 | HBM 编译、BPU 推理、TCP 和多策略调度 | 板端推理与仿真行走 |
 | LightNav-0 视觉语言导航 | 图像与语言、轨迹预测、MPC 和多场景实验 | 住宅、客厅与走廊导航 |
+| 跨缝跳跃（拓展） | 起跳与落地奖励、PPO 续训、ONNX 对齐 | 跨过间隙，在低平台落地站稳 |
 
 ## 配套代码
 
@@ -74,7 +83,7 @@ ONNX 使用与 RDK X5 SDK 匹配的工具链编译为 HBM，编译在 Ubuntu Doc
 
 ## 视频素材
 
-每个任务在[演示总览](./01-任务资料/精选视频/README.md)中单独展示，包含 GPU 推理、BPU 推理、高跷尺寸对照、完整爬梯和多任务总览。页面使用压缩 GIF；重新运行 Notebook 会生成对应任务的 MP4 和评测报告。
+每个任务在[演示总览](./01-任务资料/精选视频/README.md)中单独展示，包含 GPU 推理、BPU 推理、高跷尺寸对照、完整爬梯和多任务总览。页面使用压缩 GIF；[本轮完整 MP4 与运行报告](./03-Notebook/recordings/README.md)随资料收录，重新运行 Notebook 会生成新的任务视频和评测报告。
 
 ## 后续记录方式
 

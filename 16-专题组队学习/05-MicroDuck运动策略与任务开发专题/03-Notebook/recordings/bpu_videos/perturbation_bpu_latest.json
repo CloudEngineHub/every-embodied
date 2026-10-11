@@ -1,0 +1,33 @@
+{
+  "task": "perturbation",
+  "run_id": "f434a604-c6e8-46d1-b51c-11f5e691f08a",
+  "generated_at_utc": "2026-10-11T08:55:57.273600+00:00",
+  "task_id": "Mjlab-Velocity-Flat-MicroDuck",
+  "display_name": "physical-perturbation",
+  "backend": "RDK X5 BPU via hbm_runtime",
+  "bpu_host": "192.168.8.128",
+  "bpu_port": 8765,
+  "hbm_file": "/home/ubuntu/workspaces/microduck_bpu_models/compiled/walking/model_output/walking.opset11.bin",
+  "hbm_sha256": "fc44b395300aa6b45e4b8e3677f669f6e275e5ce6d6c26e2a7c08c6e27129110",
+  "observation_dim_sent": 61,
+  "action_dim": 14,
+  "recurrent": false,
+  "source_root": ".",
+  "steps": 500,
+  "requested_steps": 500,
+  "terminated_or_truncated_resets": 1,
+  "failure_resets": 1,
+  "timeout_resets": 0,
+  "reset_steps": [
+    98
+  ],
+  "recurrent_state_resets": 0,
+  "physics_device": "cuda:0",
+  "mean_round_trip_ms": 6.391201829072088,
+  "p95_round_trip_ms": 8.512359333690254,
+  "note": "Ubuntu MuJoCo renders; RDK X5 BPU produces every policy action.",
+  "fresh_inference_verified": true,
+  "board_model_sha256_verified": [
+    "fc44b395300aa6b45e4b8e3677f669f6e275e5ce6d6c26e2a7c08c6e27129110"
+  ]
+}

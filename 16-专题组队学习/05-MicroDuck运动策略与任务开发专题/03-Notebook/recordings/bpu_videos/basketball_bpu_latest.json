@@ -1,0 +1,31 @@
+{
+  "task": "basketball",
+  "run_id": "53b65a9c-0566-4462-9da5-ee27b1e4f6ff",
+  "generated_at_utc": "2026-10-11T09:12:54.437123+00:00",
+  "task_id": "Mjlab-Basketball-MicroDuck",
+  "display_name": "basketball-balance",
+  "backend": "RDK X5 BPU via hbm_runtime",
+  "bpu_host": "192.168.8.128",
+  "bpu_port": 8765,
+  "hbm_file": "/home/ubuntu/workspaces/microduck_bpu_models/compiled/basketball_recalibrated_int16/model_output/basketball_recalibrated_int16.bin",
+  "hbm_sha256": "be96cce1a17c37077511ab7247c443885fa64249d3f4696b263c2a3755e0de2e",
+  "observation_dim_sent": 61,
+  "action_dim": 14,
+  "recurrent": true,
+  "source_root": "/home/ubuntu/workspaces/microduck-playground-official",
+  "steps": 1500,
+  "requested_steps": 1500,
+  "terminated_or_truncated_resets": 0,
+  "failure_resets": 0,
+  "timeout_resets": 0,
+  "reset_steps": [],
+  "recurrent_state_resets": 0,
+  "physics_device": "cuda:0",
+  "mean_round_trip_ms": 19.406301394415397,
+  "p95_round_trip_ms": 78.18972667446356,
+  "note": "Ubuntu MuJoCo renders; RDK X5 BPU produces every policy action.",
+  "fresh_inference_verified": true,
+  "board_model_sha256_verified": [
+    "be96cce1a17c37077511ab7247c443885fa64249d3f4696b263c2a3755e0de2e"
+  ]
+}

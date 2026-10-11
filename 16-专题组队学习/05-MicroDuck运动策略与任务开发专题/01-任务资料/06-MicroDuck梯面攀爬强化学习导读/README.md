@@ -160,7 +160,7 @@ Mjlab-Video-Ladder-Footstep-MicroDuck
 
 | 能力 | 当前可复现内容 | 还缺什么才算完成 |
 |---|---|---|
-| 梯面攀爬 | `climber/getup` 双策略在 GPU 上完成攀爬、登桌与站稳；V3 自建环境已有真实横档碰撞和落脚状态机 | V3 连续换档评测，以及双策略 BPU 登桌交接 |
+| 梯面攀爬 | `climber/getup` 双策略在 GPU 与 BPU 上完成攀爬、登桌与站稳；V3 自建环境已有真实横档碰撞和落脚状态机 | V3 连续换档评测，以及更多初始姿态下的成功率评测 |
 | 绕障 | `microduck-rl-lab` 已有 `walk_obstacle_entry → walk_obstacle_detour` 路线，可把行走策略送到障碍前、绕到侧面再继续 | 当前路线使用仿真器真值坐标，不是摄像头/ToF 视觉导航；要做成感知版本，需要加入障碍检测和局部目标估计 |
 | 拾取 | 官方任务 `Mjlab-GroundPick-Flat-MicroDuck` 已注册，64 环境、5 轮 CPU smoke 已完成，奖励中包含下蹲、嘴部接近、回站和接触相关项 | 仍需用完整 checkpoint 做阶段成功率、嘴部接触和回站视频验收，不能把 smoke 当成已学会拾取 |
 
@@ -506,11 +506,11 @@ uv run python /path/to/microduck-playground-stilts/scripts/bpu_official_ladder_p
   --official-root /path/to/microduck-playground/experiments/desk-climb \
   --climber-onnx /path/to/climber.onnx \
   --getup-onnx /path/to/getup.onnx \
-  --num-envs 64 --record-env 17 --seed 123 --seconds 24 \
+  --num-envs 64 --record-env 17 --seed 123 --seconds 30 --physics-device cpu \
   --output /path/to/03-Notebook/outputs/gpu_videos/ladder_gpu_latest.mp4
 ```
 
-脚本同时生成 MP4 和同名 JSON。检查 `switch_events`、`handoff_success` 和 `stable_seconds`，分别对应交接时刻、完整序列成功和桌面持续站立。本次保存的结果为第 575 步交接、站立 11.54 秒；录制过程中不在摔倒后重置场景。
+脚本同时生成 MP4 和同名 JSON。检查 `switch_events`、`handoff_success` 和 `stable_seconds`，分别对应交接时刻、完整序列成功和桌面持续站立。本轮 30 秒 GPU 推理在第 629 步交接，登桌后连续站稳 15.74 秒。策略在 GPU 上计算，接触物理使用 CPU 后端以保持同一场景的重复性；录制过程中不在摔倒后重置场景。
 
 ### 6.4 继续训练与评测
 
@@ -532,7 +532,9 @@ uv run ../training/run.py evaluate --envs 64 --seconds 60 --seed 19923 --out log
 
 分别把两个 ONNX 编译为 HBM，在 RDK 上启动攀爬和起身推理服务；Ubuntu 保留同一套物理场景和交接监督器。运行脚本时选择 `--backend bpu`，设置 `--climber-hbm`、`--getup-hbm`、`--bpu-host` 和两个服务端口，再按同一组 JSON 指标评测。
 
-当前存档的 BPU 梯面视频记录 `switch_events=[]`、`handoff_success=false`、`stable_seconds=0`，因此在演示总览中标为“梯面接触”；完整登桌视频使用本节的 GPU 结果。实体机器人需要接入等价的接触检测和任务切换。
+本轮重新校准两份 INT16 HBM：在板端按原 ONNX 的均值和标准差处理观测，使用真实攀爬与起身轨迹校准，并将全连接权重拆为主值与残差以减少量化误差。浮点变换与原 actor 的最大动作差分别约为 `3.8e-6`、`1.4e-6`。32 秒板端闭环对照中，第 547 步切换到起身策略，登桌后连续站稳 19.24 秒；Notebook 随后完整重跑了 30 秒 GPU/BPU 视频，板端同样在第 547 步交接，连续站稳 17.24 秒，`handoff_success=true`。
+
+板端同时运行 `8875` 的 climber 和 `8876` 的 get-up 服务，两套 HBM 必须分别配套输入归一化文件。保留原有原始动作观测槽、起身滤波和增益；Ubuntu 读取脚部接触、切换策略并推进物理仿真。实体机器人需要接入等价的接触检测和任务切换。
 
 
 ## 7. 参考资料

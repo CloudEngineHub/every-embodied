@@ -1,0 +1,31 @@
+{
+  "task": "stilt",
+  "run_id": "e9bc8d9d-2b15-4a61-a258-2d8db0c08b90",
+  "generated_at_utc": "2026-10-11T09:13:38.634429+00:00",
+  "task_id": "Mjlab-Stilt-Flat-MicroDuck",
+  "display_name": "stilts-25cm",
+  "backend": "RDK X5 BPU via hbm_runtime",
+  "bpu_host": "192.168.8.128",
+  "bpu_port": 8765,
+  "hbm_file": "/home/ubuntu/workspaces/microduck_bpu_models/compiled/stilts25/model_output/stilts25.opset11.bin",
+  "hbm_sha256": "cc2e63f0eac2e7f435d8609d540dc00bc5a3d1d40b6a21a4ff837bd2ad64b703",
+  "observation_dim_sent": 61,
+  "action_dim": 14,
+  "recurrent": false,
+  "source_root": ".",
+  "steps": 500,
+  "requested_steps": 500,
+  "terminated_or_truncated_resets": 0,
+  "failure_resets": 0,
+  "timeout_resets": 0,
+  "reset_steps": [],
+  "recurrent_state_resets": 0,
+  "physics_device": "cuda:0",
+  "mean_round_trip_ms": 18.618955608922988,
+  "p95_round_trip_ms": 80.26640648022274,
+  "note": "Ubuntu MuJoCo renders; RDK X5 BPU produces every policy action.",
+  "fresh_inference_verified": true,
+  "board_model_sha256_verified": [
+    "cc2e63f0eac2e7f435d8609d540dc00bc5a3d1d40b6a21a4ff837bd2ad64b703"
+  ]
+}

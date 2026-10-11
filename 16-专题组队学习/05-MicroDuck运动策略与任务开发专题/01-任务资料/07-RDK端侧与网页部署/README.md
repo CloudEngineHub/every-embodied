@@ -2,6 +2,16 @@
 
 这一节带大家拆解两代“小鸭子”开源双足机器人：[Open Duck Mini v2](https://github.com/apirrone/Open_Duck_Mini/tree/v2) 和 [Microduck](https://github.com/pollen-robotics/microduck)。我们不把它们当成同一个仓库里的两个脚本，而是把整条链路看清楚：机器人描述文件从哪里下载，强化学习环境如何组装，PPO 如何学习走路与踢球，以及 checkpoint 怎样导出为 ONNX 并在 RDK 或浏览器中运行。
 
+## 先跑通 Python 控制闭环
+
+第一次实践先打开 [MuJoCo 策略控制 HelloWorld](../../03-Notebook/00_MuJoCo策略控制_HelloWorld.ipynb)，按[最小环境步骤](../../02-可运行代码/hello-world/README.md)启动。行走模型自动下载，在同一个物理场景中依次站稳、前进、左转和停止。
+
+Notebook 展开每个控制步：读取 61 维观测 → ONNX 生成 14 维动作 → 写入 `data.ctrl` 的关节位置目标 → 执行 `mujoco.mj_step()` → 再读取更新后的状态。`sim.forward()`、`sim.turn()` 与 `sim.stop()` 修改策略读取的速度命令，视频在这一实际控制循环中生成。每段结束后保留物理状态，可以继续下发下一条命令。
+
+![Python 控制小鸭子前进、左转与停止](assets/hello_world/forward_turn_stop.gif)
+
+12 个代码单元已全部运行并保存输出，连续完成 550 个控制步，前进约 0.48 m、左转约 44°，停止后保持站立。模型校验与各阶段测量见[执行记录](assets/hello_world/validation.json)。这一入口先使用 CPU 与原生 MuJoCo，跑通后再学习下方的训练、GPU 和 RDK 部署。
+
 学完这一节后，大家应该能够：
 
 - 区分 Open Duck Mini v2、Open Duck Playground、Microduck 和 Microduck RL 四个工程的责任边界；

@@ -65,6 +65,15 @@ def find_name(names: list[str], *candidates: str) -> str:
     raise KeyError(f"Cannot find {candidates} in {names}")
 
 
+def quantized_dtype(value: object) -> type:
+    text = str(value).upper()
+    if "S16" in text or "INT16" in text:
+        return np.int16
+    if "S8" in text or "INT8" in text:
+        return np.int8
+    raise ValueError(f"Unsupported quantized tensor dtype: {value}")
+
+
 class HbmPolicy:
     def __init__(self, model_path: str | Path):
         self.model_path = str(Path(model_path).expanduser())
@@ -78,6 +87,8 @@ class HbmPolicy:
         self.output_shape = list(self.runtime.output_shapes[self.model_name][self.action_name])
         self.obs_dim = int(self.input_shape[-1])
         self.action_dim = int(self.output_shape[-1])
+        self.input_dtypes = self.runtime.input_dtypes[self.model_name]
+        self.output_dtypes = self.runtime.output_dtypes[self.model_name]
         self.recurrent = "h_in" in self.input_names and "c_in" in self.input_names
         if self.recurrent:
             self.h_in_name = find_name(self.input_names, "h_in")
@@ -85,10 +96,12 @@ class HbmPolicy:
             self.h_out_name = find_name(self.output_names, "h_out")
             self.c_out_name = find_name(self.output_names, "c_out")
             self.h_state = np.zeros(
-                self.runtime.input_shapes[self.model_name][self.h_in_name], dtype=np.int8
+                self.runtime.input_shapes[self.model_name][self.h_in_name],
+                dtype=quantized_dtype(self.input_dtypes[self.h_in_name]),
             )
             self.c_state = np.zeros(
-                self.runtime.input_shapes[self.model_name][self.c_in_name], dtype=np.int8
+                self.runtime.input_shapes[self.model_name][self.c_in_name],
+                dtype=quantized_dtype(self.input_dtypes[self.c_in_name]),
             )
 
         input_quants = self.runtime.input_quants[self.model_name]
@@ -107,7 +120,11 @@ class HbmPolicy:
 
     def quantize(self, value: np.ndarray, name: str) -> np.ndarray:
         scale = self.input_scales[name]
-        return np.clip(np.rint(value / scale), -128, 127).astype(np.int8)
+        dtype = quantized_dtype(self.input_dtypes[name])
+        limits = np.iinfo(dtype)
+        if not np.isfinite(value).all():
+            raise ValueError(f"Non-finite input tensor: {name}")
+        return np.clip(np.rint(value / scale), limits.min, limits.max).astype(dtype)
 
     def dequantize(self, value: np.ndarray, name: str) -> np.ndarray:
         return np.asarray(value, dtype=np.float32) * self.output_scales[name]
@@ -124,9 +141,11 @@ class HbmPolicy:
         outputs = self.runtime.run(feed)[self.model_name]
         action = self.dequantize(outputs[self.action_name], self.action_name)
         if self.recurrent:
-            self.h_state = np.asarray(outputs[self.h_out_name], dtype=np.int8).copy()
-            self.c_state = np.asarray(outputs[self.c_out_name], dtype=np.int8).copy()
-        return np.clip(action.reshape(self.action_dim), -1.0, 1.0).astype(np.float32)
+            # Output and input tensors may use different scales and integer widths.
+            self.h_state = self.quantize(self.dequantize(outputs[self.h_out_name], self.h_out_name), self.h_in_name)
+            self.c_state = self.quantize(self.dequantize(outputs[self.c_out_name], self.c_out_name), self.c_in_name)
+        # Action clipping belongs to the task client; ladder offsets are radians.
+        return action.reshape(self.action_dim).astype(np.float32)
 
     def describe(self) -> dict[str, object]:
         return {
@@ -141,6 +160,8 @@ class HbmPolicy:
             "output_shapes": self.runtime.output_shapes[self.model_name],
             "input_scales": self.input_scales,
             "output_scales": self.output_scales,
+            "input_dtypes": {name: str(value) for name, value in self.input_dtypes.items()},
+            "output_dtypes": {name: str(value) for name, value in self.output_dtypes.items()},
         }
 
 
