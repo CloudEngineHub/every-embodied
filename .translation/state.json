@@ -1908,6 +1908,24 @@
       "sourceHash": "2c9545937579df089a3f18318f4b1d9412c6c9aea9299e0d78d13d6647a09dba",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/08犀牛派X1系统准备.md": {
+      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/08-rhino-party-x1-system-preparation.md",
+      "sourceHash": "dcf5618a5ea824e86bfb0438a07fb54f739ba3ea1b92bf119b1186e6969a8a67",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/09犀牛派X1板卡与手柄的使用.md": {
+      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/09-use-of-rhino-party-x1-board-and-controller.md",
+      "sourceHash": "ac10fd2a030d4f18dd94ef8e5b09fd6a1b4f7ba7c7e093459c9b92fe1008eae5",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/10犀牛派X1机械臂的遥操控制.md": {
+      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/10-remote-control-of-the-10-rhino-party-x1-robotic-arm.md",
+      "sourceHash": "7fa5594ab2980c144d23deb212b74e7231f845b19ae6fd94797ff83fc9dd6422",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
   }
 }
