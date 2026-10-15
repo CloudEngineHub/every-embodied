@@ -89,7 +89,7 @@ Priority selection:
 
 - [OpenVLA reproduction ](../06-manipulation-and-vla/large-model-control-vla-vlm/02-openvla-reproduction/02-openvla-reproduction.md)
 - [MuJoCo reproduction of ACT, Pi0, and SmolVLA ](../06-manipulation-and-vla/large-model-control-vla-vlm/04-mujoco-reproduction-act-pi0-smolvla/README.md)
-- [RDK-X5 connecting LeRobot robotic arm for remote manipulation ](../03-robot-hardware-lerobot-and-rdk-x5/03-rdk-x5-connects-to-the-lerobot-robotic-arm-for-remote-manipulation.md)
+- [RDK-X5 connecting LeRobot robotic arm for remote manipulation ](../03-robot-hardware-lerobot-rdk-x5-and-rhino-pi-x1/03-rdk-x5-connects-to-the-lerobot-robotic-arm-for-remote-manipulation.md)
 - [EVA-Client real robot deployment and evaluation navigation ](../06-manipulation-and-vla/large-model-control-vla-vlm/19-eva-client-real-robot-deployment-and-evaluation-engineering-navigation/README.md)
 - [Robots That Know What to Ask reward alignment introduction ](../05-deep-and-reinforcement-learning/04-robots-that-know-what-to-ask-reward-alignment-introduction/README.md)
 

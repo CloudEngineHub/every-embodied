@@ -172,4 +172,4 @@ Theme:
 - Overview of Embodied AI fundamentals:
   [01 Overview of Embodied AI](../../01-embodied-ai-overview/01-overview-of-embodied-ai.md)
 - Related content on robot hardware and control:
-  [ Tutorial on robot hardware, lerobot, and Gudou RDK-X5 development board control](../../03-robot-hardware-lerobot-and-rdk-x5/04-lerobot-dual-arm-heterogeneous-system-remote-manipulation.md)
+  [ Tutorial on robot hardware, lerobot, and Gudou RDK-X5 development board control](../../03-robot-hardware-lerobot-rdk-x5-and-rhino-pi-x1/04-lerobot-dual-arm-heterogeneous-system-remote-manipulation.md)

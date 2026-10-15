@@ -294,7 +294,7 @@ When reporting the success rate of a policy, it is also necessary to specify the
 
 EVA-Client is most suitable at the end of the following learning chains:
 
-1. First, study the sections related to [RDK-X5 connecting the LeRobot robotic arm for remote manipulation](../../../03-robot-hardware-lerobot-and-rdk-x5/03-rdk-x5-connects-to-the-lerobot-robotic-arm-for-remote-manipulation.md) or data collection within the warehouse, and understand episode and multi-modal time alignment;
+1. First, study the sections related to [RDK-X5 connecting the LeRobot robotic arm for remote manipulation](../../../03-robot-hardware-lerobot-rdk-x5-and-rhino-pi-x1/03-rdk-x5-connects-to-the-lerobot-robotic-arm-for-remote-manipulation.md) or data collection within the warehouse, and understand episode and multi-modal time alignment;
 2. Then, complete the training and reasoning of [SmolVLA](../01SmolVLA-LIBERO/01SmolVLA-libero.md), [OpenVLA](../02-openvla-reproduction/02-openvla-reproduction.md) or [OpenPI / π0](../../../../06-策略抓取或抓取VLA/大模型控制、VLA、VLM/04mujoco复现ACT、Pi0、SmolVLA);
 3. Use EVA-Client to connect to the real ontology, handling policy services, action block scheduling, logs, and evaluation;
 4. Send failed rollouts and manual intervention data back to the LeRobot/training chain to form a closed loop.

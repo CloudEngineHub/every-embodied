@@ -288,7 +288,7 @@ eva --config configs/01_deploy/dual_agilex_piper/openpi_qpos.py
 
 EVA-Client 最适合放在以下学习链路的末端：
 
-1. 先学习 [RDK-X5 连接 LeRobot 机械臂进行遥操作](../../../03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/03RDK-X5连接lerobot机械臂进行遥操作.md) 或仓库内数据采集相关章节，理解 episode 与多模态时间对齐；
+1. 先学习 [RDK-X5 连接 LeRobot 机械臂进行遥操作](../../../03-机器人硬件、lerobot及地瓜RDK-X5与犀牛派X1开发板控制教程/03RDK-X5连接lerobot机械臂进行遥操作.md) 或仓库内数据采集相关章节，理解 episode 与多模态时间对齐；
 2. 再完成 [SmolVLA](../01SmolVLA-LIBERO/01SmolVLA-libero.md)、[OpenVLA](../02OpenVLA复现/02openvla复现.md) 或 [OpenPI / π0](../04mujoco复现ACT、Pi0、SmolVLA/) 的训练与推理；
 3. 用 EVA-Client 接入真实本体，处理策略服务、动作块调度、日志和评测；
 4. 将失败 rollout 和人工介入数据送回 LeRobot/训练链路，形成数据闭环。

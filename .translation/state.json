@@ -79,68 +79,68 @@
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
-    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/01RDKX5超新手入门教程.md": {
-      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/01-rdk-x5-beginners-guide.md",
+    "03-机器人硬件、lerobot及地瓜RDK-X5与犀牛派X1开发板控制教程/01RDKX5超新手入门教程.md": {
+      "target": "en/03-robot-hardware-lerobot-rdk-x5-and-rhino-pi-x1/01-rdk-x5-beginners-guide.md",
       "sourceHash": "94afefe5997c6edaece7eb27cea9d786519872b162e6eead8c4a94a4fde2a71e",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
-    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/02RDK X5闪连（RDK Studio使用教程）.md": {
-      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/02-rdk-x5-flash-connect-rdk-studio-guide.md",
+    "03-机器人硬件、lerobot及地瓜RDK-X5与犀牛派X1开发板控制教程/02RDK X5闪连（RDK Studio使用教程）.md": {
+      "target": "en/03-robot-hardware-lerobot-rdk-x5-and-rhino-pi-x1/02-rdk-x5-flash-connect-rdk-studio-guide.md",
       "sourceHash": "1e1de1f71f2fb7bd49bd2f825c081337cfaff025ef18738632ff69db1a7f43a8",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
-    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/03RDK-X5连接lerobot机械臂进行遥操作.md": {
-      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/03-rdk-x5-connects-to-the-lerobot-robotic-arm-for-remote-manipulation.md",
+    "03-机器人硬件、lerobot及地瓜RDK-X5与犀牛派X1开发板控制教程/03RDK-X5连接lerobot机械臂进行遥操作.md": {
+      "target": "en/03-robot-hardware-lerobot-rdk-x5-and-rhino-pi-x1/03-rdk-x5-connects-to-the-lerobot-robotic-arm-for-remote-manipulation.md",
       "sourceHash": "ac3d8ba7ff67c98de342a18f420c5a7ccc1074fade3baa5e44eda2d574989095",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
-    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/04LeRobot双臂异构系统遥操作.md": {
-      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/04-lerobot-dual-arm-heterogeneous-system-remote-manipulation.md",
+    "03-机器人硬件、lerobot及地瓜RDK-X5与犀牛派X1开发板控制教程/04LeRobot双臂异构系统遥操作.md": {
+      "target": "en/03-robot-hardware-lerobot-rdk-x5-and-rhino-pi-x1/04-lerobot-dual-arm-heterogeneous-system-remote-manipulation.md",
       "sourceHash": "7667bec3dadccef8db9a05429c32c1663037e1bc428f4bca28ba9d5fc8556f62",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
-    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/05执行器原理与选型.md": {
-      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/05-actuator-principles-and-selection.md",
+    "03-机器人硬件、lerobot及地瓜RDK-X5与犀牛派X1开发板控制教程/05执行器原理与选型.md": {
+      "target": "en/03-robot-hardware-lerobot-rdk-x5-and-rhino-pi-x1/05-actuator-principles-and-selection.md",
       "sourceHash": "0de34cdb28b21984b2b1fe443b26682732284351abc41230f62cf2ef38e4123c",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
-    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/06传感器选型与数据采集.md": {
-      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/06-sensor-selection-and-data-acquisition.md",
+    "03-机器人硬件、lerobot及地瓜RDK-X5与犀牛派X1开发板控制教程/06传感器选型与数据采集.md": {
+      "target": "en/03-robot-hardware-lerobot-rdk-x5-and-rhino-pi-x1/06-sensor-selection-and-data-acquisition.md",
       "sourceHash": "001343767576f7a69636bf450d0ec8bd113e52d02f3bc109ac78c6e08d558bf2",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
-    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/07机械臂选型.md": {
-      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/07-robotic-arm-selection.md",
+    "03-机器人硬件、lerobot及地瓜RDK-X5与犀牛派X1开发板控制教程/07机械臂选型.md": {
+      "target": "en/03-robot-hardware-lerobot-rdk-x5-and-rhino-pi-x1/07-robotic-arm-selection.md",
       "sourceHash": "3ebb72358642de2a5756eff00f01bdb158f2e4c5680301c91f1b307cbb4a6dec",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
-    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/补充01joycon控制/网页端joycon控制.md": {
-      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/supplement-01joycon-control/web-based-joycon-control.md",
+    "03-机器人硬件、lerobot及地瓜RDK-X5与犀牛派X1开发板控制教程/补充01joycon控制/网页端joycon控制.md": {
+      "target": "en/03-robot-hardware-lerobot-rdk-x5-and-rhino-pi-x1/supplement-01joycon-control/web-based-joycon-control.md",
       "sourceHash": "06f10ea728d38e1a5726453723c34998c7f69981376f260807e1e977d6e734b9",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
-    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/补充01joycon控制/robosuite-joycon-windows.md": {
-      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/supplement-01joycon-control/robosuite-joycon-windows.md",
+    "03-机器人硬件、lerobot及地瓜RDK-X5与犀牛派X1开发板控制教程/补充01joycon控制/robosuite-joycon-windows.md": {
+      "target": "en/03-robot-hardware-lerobot-rdk-x5-and-rhino-pi-x1/supplement-01joycon-control/robosuite-joycon-windows.md",
       "sourceHash": "d4abd42288a3ecc898b6c4f8c0df192d599c577b7e095ed54caf5bbfa39b0303",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
-    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/补充01joycon控制/robosuite-joycon.md": {
-      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/supplement-01joycon-control/robosuite-joycon.md",
+    "03-机器人硬件、lerobot及地瓜RDK-X5与犀牛派X1开发板控制教程/补充01joycon控制/robosuite-joycon.md": {
+      "target": "en/03-robot-hardware-lerobot-rdk-x5-and-rhino-pi-x1/supplement-01joycon-control/robosuite-joycon.md",
       "sourceHash": "6e6beb8f620cbfce8f171c859e0ac46be79975e5238187d0a4cb1187991cdb61",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
-    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/补充待完善019DTact.md": {
-      "target": "en/03-robot-hardware-lerobot-and-rdk-x5/supplement-to-be-improved-019dtact.md",
+    "03-机器人硬件、lerobot及地瓜RDK-X5与犀牛派X1开发板控制教程/补充待完善019DTact.md": {
+      "target": "en/03-robot-hardware-lerobot-rdk-x5-and-rhino-pi-x1/supplement-to-be-improved-019dtact.md",
       "sourceHash": "d0456a74556f1007e6accd522055d0d98ca8475d0227d672b2f95bfdaba0c87f",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"

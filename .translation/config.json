@@ -11,7 +11,7 @@
   "chapterMap": {
     "01-具身智能概述": "01-embodied-ai-overview",
     "02-机器人基础和控制、手眼协调": "02-robot-basics-control-and-hand-eye-coordination",
-    "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程": "03-robot-hardware-lerobot-and-rdk-x5",
+    "03-机器人硬件、lerobot及地瓜RDK-X5与犀牛派X1开发板控制教程": "03-robot-hardware-lerobot-rdk-x5-and-rhino-pi-x1",
     "04-具身场景的计算机视觉、3D重建": "04-computer-vision-and-3d-reconstruction",
     "05-具身场景的深度和强化学习": "05-deep-and-reinforcement-learning",
     "06-策略抓取或抓取VLA": "06-manipulation-and-vla",

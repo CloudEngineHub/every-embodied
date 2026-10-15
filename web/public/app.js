@@ -86,7 +86,7 @@ const homeDemos = [
     title: "LeRobot 遥操作",
     subtitle: "支持地瓜 RDK-X5 连接 SO101 机械臂实操",
     media: "assets/2025-07-02-20-50-54-image.png",
-    doc: "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/03RDK-X5连接lerobot机械臂进行遥操作.md",
+    doc: "03-机器人硬件、lerobot及地瓜RDK-X5与犀牛派X1开发板控制教程/03RDK-X5连接lerobot机械臂进行遥操作.md",
   },
   {
     title: "视觉语义感知",
@@ -357,7 +357,7 @@ const homeModules = [
         title: "RDK-X5 超新手入门教程",
         copy: "从开发板准备开始，进入具身硬件实践。",
         image: "assets/2025-07-02-20-50-54-image.png",
-        doc: "03-机器人硬件、lerobot及地瓜RDK-X5开发板控制教程/01RDKX5超新手入门教程.md",
+        doc: "03-机器人硬件、lerobot及地瓜RDK-X5与犀牛派X1开发板控制教程/01RDKX5超新手入门教程.md",
       },
       {
         title: "LIBERO 基准",
