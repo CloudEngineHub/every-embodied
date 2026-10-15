@@ -39,6 +39,7 @@
     <img src="./assets/damo2.png" height="50" style="margin: 0 10px;"> 
     <img src="./assets/aup-logo.svg" height="34" style="margin: 0 12px;" alt="AUP — AMD University Program">
     <img src="./assets/rocm-logo.png" height="34" style="margin: 0 12px;" alt="ROCm">
+    <img src="./assets/aplux.png" height="40" style="margin: 0 12px;" alt="阿加犀 APLUX">
   </div>
 
 </div>
