@@ -1956,6 +1956,18 @@
       "sourceHash": "7fa5594ab2980c144d23deb212b74e7231f845b19ae6fd94797ff83fc9dd6422",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "07-机器人操作、运动控制/Locomotion/03-BeyondRetarget单目视频动作复现/README.md": {
+      "target": "en/07-robot-operation-and-motion-control/Locomotion/03-beyondretarget-monocular-video-action-reproduction/README.md",
+      "sourceHash": "334865978456c27ec1a604eca92609b71767236e4a275eda5ecc79e81b22e419",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "07-机器人操作、运动控制/Locomotion/03-BeyondRetarget单目视频动作复现/results/validation.md": {
+      "target": "en/07-robot-operation-and-motion-control/Locomotion/03-beyondretarget-monocular-video-action-reproduction/results/validation.md",
+      "sourceHash": "8b59bf77c7dbc9828fd0ce849e2644b5ce384878ffe2d40984d30d927499ee29",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
   }
 }
