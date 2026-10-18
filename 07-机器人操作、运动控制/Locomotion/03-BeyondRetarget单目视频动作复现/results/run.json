@@ -1,0 +1,19 @@
+{
+  "timestamp_utc": "2026-10-18T12:24:47.582355+00:00",
+  "mode": "official_hosted_inference",
+  "space": "bear-ty/BeyondRetarget",
+  "input_sha256": "4f425867086a0eede218a671748ce14666a1fbf53b21e767f7e3be6fa0bb2d69",
+  "input_duration_seconds": 6.0,
+  "status": "completed",
+  "outputs": {
+    "eight_robots.mp4": {
+      "bytes": 3276479,
+      "sha256": "b960275c79ad6615c763b26fd1545529563003dd5750d755298d932cdb6dfaa8"
+    },
+    "motions.zip": {
+      "bytes": 212005,
+      "sha256": "ab7ee841d7e4f28a9d9794b78f4d6ce69eabd2d46898fa1893ec9e2391c476cf"
+    }
+  },
+  "elapsed_seconds": 179.78
+}

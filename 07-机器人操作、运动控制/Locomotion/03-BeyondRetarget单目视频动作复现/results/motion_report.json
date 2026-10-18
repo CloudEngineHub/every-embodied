@@ -1,0 +1,296 @@
+{
+  "passed": true,
+  "files": [
+    {
+      "file": "g1_raw_pred.npz",
+      "errors": [],
+      "arrays": {
+        "fps": [
+          1
+        ],
+        "root_trans": [
+          180,
+          3
+        ],
+        "root_rot_quat": [
+          180,
+          4
+        ],
+        "root_rot_6d": [
+          180,
+          6
+        ],
+        "dof": [
+          180,
+          29
+        ]
+      },
+      "schema": "root_and_dof",
+      "frames": 180,
+      "dofs": 29,
+      "fps": 30.0,
+      "duration_seconds": 6.0,
+      "passed": true
+    },
+    {
+      "file": "r1_raw_pred.npz",
+      "errors": [],
+      "arrays": {
+        "fps": [
+          1
+        ],
+        "robot_name": [
+          1
+        ],
+        "xml_path": [
+          1
+        ],
+        "root_trans": [
+          180,
+          3
+        ],
+        "root_rot_quat": [
+          180,
+          4
+        ],
+        "root_rot_6d": [
+          180,
+          6
+        ],
+        "dof": [
+          180,
+          26
+        ]
+      },
+      "schema": "root_and_dof",
+      "frames": 180,
+      "dofs": 26,
+      "fps": 30.0,
+      "duration_seconds": 6.0,
+      "passed": true
+    },
+    {
+      "file": "gr1t1_raw_pred.npz",
+      "errors": [],
+      "arrays": {
+        "fps": [
+          1
+        ],
+        "robot_name": [
+          1
+        ],
+        "xml_path": [
+          1
+        ],
+        "root_trans": [
+          180,
+          3
+        ],
+        "root_rot_quat": [
+          180,
+          4
+        ],
+        "root_rot_6d": [
+          180,
+          6
+        ],
+        "dof": [
+          180,
+          32
+        ]
+      },
+      "schema": "root_and_dof",
+      "frames": 180,
+      "dofs": 32,
+      "fps": 30.0,
+      "duration_seconds": 6.0,
+      "passed": true
+    },
+    {
+      "file": "gr2v3_raw_pred.npz",
+      "errors": [],
+      "arrays": {
+        "fps": [
+          1
+        ],
+        "robot_name": [
+          1
+        ],
+        "xml_path": [
+          1
+        ],
+        "root_trans": [
+          180,
+          3
+        ],
+        "root_rot_quat": [
+          180,
+          4
+        ],
+        "root_rot_6d": [
+          180,
+          6
+        ],
+        "dof": [
+          180,
+          29
+        ]
+      },
+      "schema": "root_and_dof",
+      "frames": 180,
+      "dofs": 29,
+      "fps": 30.0,
+      "duration_seconds": 6.0,
+      "passed": true
+    },
+    {
+      "file": "h1_raw_pred.npz",
+      "errors": [],
+      "arrays": {
+        "fps": [
+          1
+        ],
+        "robot_name": [
+          1
+        ],
+        "xml_path": [
+          1
+        ],
+        "root_trans": [
+          180,
+          3
+        ],
+        "root_rot_quat": [
+          180,
+          4
+        ],
+        "root_rot_6d": [
+          180,
+          6
+        ],
+        "dof": [
+          180,
+          21
+        ]
+      },
+      "schema": "root_and_dof",
+      "frames": 180,
+      "dofs": 21,
+      "fps": 30.0,
+      "duration_seconds": 6.0,
+      "passed": true
+    },
+    {
+      "file": "tienkung_raw_pred.npz",
+      "errors": [],
+      "arrays": {
+        "fps": [
+          1
+        ],
+        "robot_name": [
+          1
+        ],
+        "xml_path": [
+          1
+        ],
+        "root_trans": [
+          180,
+          3
+        ],
+        "root_rot_quat": [
+          180,
+          4
+        ],
+        "root_rot_6d": [
+          180,
+          6
+        ],
+        "dof": [
+          180,
+          20
+        ]
+      },
+      "schema": "root_and_dof",
+      "frames": 180,
+      "dofs": 20,
+      "fps": 30.0,
+      "duration_seconds": 6.0,
+      "passed": true
+    },
+    {
+      "file": "t1_serial_raw_pred.npz",
+      "errors": [],
+      "arrays": {
+        "fps": [
+          1
+        ],
+        "robot_name": [
+          1
+        ],
+        "xml_path": [
+          1
+        ],
+        "root_trans": [
+          180,
+          3
+        ],
+        "root_rot_quat": [
+          180,
+          4
+        ],
+        "root_rot_6d": [
+          180,
+          6
+        ],
+        "dof": [
+          180,
+          23
+        ]
+      },
+      "schema": "root_and_dof",
+      "frames": 180,
+      "dofs": 23,
+      "fps": 30.0,
+      "duration_seconds": 6.0,
+      "passed": true
+    },
+    {
+      "file": "atlas_v4_raw_pred.npz",
+      "errors": [],
+      "arrays": {
+        "fps": [
+          1
+        ],
+        "robot_name": [
+          1
+        ],
+        "xml_path": [
+          1
+        ],
+        "root_trans": [
+          180,
+          3
+        ],
+        "root_rot_quat": [
+          180,
+          4
+        ],
+        "root_rot_6d": [
+          180,
+          6
+        ],
+        "dof": [
+          180,
+          30
+        ]
+      },
+      "schema": "root_and_dof",
+      "frames": 180,
+      "dofs": 30,
+      "fps": 30.0,
+      "duration_seconds": 6.0,
+      "passed": true
+    }
+  ],
+  "note": "Array validity does not establish dynamic executability."
+}
