@@ -1,0 +1,5 @@
+.venv/
+outputs/
+models/
+*.onnx
+*.onnx.part

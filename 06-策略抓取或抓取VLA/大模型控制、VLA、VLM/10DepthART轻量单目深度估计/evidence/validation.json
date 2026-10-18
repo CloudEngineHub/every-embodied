@@ -1,0 +1,35 @@
+{
+  "date_local": "2026-10-18",
+  "timezone": "Asia/Shanghai",
+  "cpu_model": "AMD Ryzen 7 5800H with Radeon Graphics",
+  "checks": {
+    "official_224_onnx_sha256": "pass",
+    "official_448_onnx_sha256": "pass",
+    "cpu_inference_224_and_448": "pass",
+    "original_image_size_output": "427x640, finite and nonconstant for both resolutions",
+    "restore_reference": "torch.nn.functional.interpolate, bilinear, align_corners=True",
+    "restore_test_input": "NumPy default_rng(42), shape 1x1x17x23, float32",
+    "restore_test_output_hw": [[69, 91], [1, 1], [17, 23], [5, 7]],
+    "restore_max_absolute_error": 8.344650268554688e-7,
+    "offline_missing_model_rejected": "pass",
+    "corrupt_cached_model_rejected": "pass",
+    "clean_environment_requirements_install": "pass; new Python 3.12.3 venv, no system site packages",
+    "clean_environment_offline_inference": "pass; 224, warmup=1, samples=3; separate smoke check, not the published timing run",
+    "clean_environment_output_vs_original_224": "pass; numpy.allclose(rtol=1e-6, atol=1e-6)",
+    "clean_environment_packages": {
+      "flatbuffers": "25.12.19",
+      "numpy": "2.2.6",
+      "onnxruntime": "1.29.0",
+      "opencv-python-headless": "4.12.0.88",
+      "packaging": "26.3",
+      "protobuf": "7.36.2"
+    }
+  },
+  "not_evaluated": [
+    "depth accuracy against ground truth",
+    "full PyTorch versus ONNX model numerical parity",
+    "camera streaming and transport",
+    "Jetson, TensorRT, ROCm GPU, NPU and BPU",
+    "metric depth, training and robot control"
+  ]
+}

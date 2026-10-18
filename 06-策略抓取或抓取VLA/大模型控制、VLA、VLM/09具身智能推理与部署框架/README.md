@@ -298,6 +298,8 @@ APXInf 的价值是把 NVIDIA 端侧的具身模型推理做深；Embodied.cpp �
 
 ## 参考资料
 
+配套感知实验：[DepthART 轻量单目深度估计](../10DepthART轻量单目深度估计/README.md)。从约 6M 参数的视觉模型入手，运行标准 ONNX 并分别测量模型与含前后处理的耗时，再衔接端侧部署。
+
 1. [APXinf-robo 官方仓库](https://github.com/RLinf/APXinf-robo)
 2. [RLinf 官方仓库](https://github.com/RLinf/RLinf)
 3. [OpenPI 官方仓库](https://github.com/Physical-Intelligence/openpi)
