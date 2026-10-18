@@ -1959,13 +1959,19 @@
     },
     "07-机器人操作、运动控制/Locomotion/03-BeyondRetarget单目视频动作复现/README.md": {
       "target": "en/07-robot-operation-and-motion-control/Locomotion/03-beyondretarget-monocular-video-action-reproduction/README.md",
-      "sourceHash": "334865978456c27ec1a604eca92609b71767236e4a275eda5ecc79e81b22e419",
+      "sourceHash": "6e4318da5d740f17446a908e454b85e2d6392493fd8da95d4ab10d0428ad5038",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
     "07-机器人操作、运动控制/Locomotion/03-BeyondRetarget单目视频动作复现/results/validation.md": {
       "target": "en/07-robot-operation-and-motion-control/Locomotion/03-beyondretarget-monocular-video-action-reproduction/results/validation.md",
-      "sourceHash": "8b59bf77c7dbc9828fd0ce849e2644b5ce384878ffe2d40984d30d927499ee29",
+      "sourceHash": "c1d6a560757206fd4ed5b5105b70df832533445dad62444bcfc0e650129e8f8c",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "07-机器人操作、运动控制/Locomotion/03-BeyondRetarget单目视频动作复现/comparison.md": {
+      "target": "en/07-robot-operation-and-motion-control/Locomotion/03-beyondretarget-monocular-video-action-reproduction/comparison.md",
+      "sourceHash": "dfda21f576e5750e9d3aa6e3efdb2b437e1c0a550450a6753556b781820ad613",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }

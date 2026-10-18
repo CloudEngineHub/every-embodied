@@ -383,6 +383,7 @@
     "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/20-GPT6-Astra机器人弹琴与上下文工程/VIDEO_CREDITS.md": "en/06-manipulation-and-vla/large-model-control-vla-vlm/20-gpt6-astra-robot-playing-music-and-context-engineering/VIDEO_CREDITS.md",
     "07-机器人操作、运动控制/Locomotion/01春晚舞蹈机器人复刻.md": "en/07-robot-operation-and-motion-control/Locomotion/01-spring-festival-gala-dance-robot-recreated.md",
     "07-机器人操作、运动控制/Locomotion/02-BoosterK1-mjlab-AMP/README.md": "en/07-robot-operation-and-motion-control/Locomotion/02-BoosterK1-mjlab-AMP/README.md",
+    "07-机器人操作、运动控制/Locomotion/03-BeyondRetarget单目视频动作复现/comparison.md": "en/07-robot-operation-and-motion-control/Locomotion/03-beyondretarget-monocular-video-action-reproduction/comparison.md",
     "07-机器人操作、运动控制/Locomotion/03-BeyondRetarget单目视频动作复现/README.md": "en/07-robot-operation-and-motion-control/Locomotion/03-beyondretarget-monocular-video-action-reproduction/README.md",
     "07-机器人操作、运动控制/Locomotion/03-BeyondRetarget单目视频动作复现/results/validation.md": "en/07-robot-operation-and-motion-control/Locomotion/03-beyondretarget-monocular-video-action-reproduction/results/validation.md",
     "07-机器人操作、运动控制/Locomotion/补充01seeddanceAPI获取.md": "en/07-robot-operation-and-motion-control/Locomotion/supplement-01seeddanceapi-to-obtain.md",
