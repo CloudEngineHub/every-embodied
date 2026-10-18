@@ -2,6 +2,8 @@
 
 日期：2026-10-18。结论：**官方在线服务的视频到八机器人动作生成已跑通；本地 GPU 推理、训练、SONIC 动力学跟踪和真机控制未验证。**
 
+[新增方法对比页](../comparison.md)使用作者论文数据与官方演示，并给出本地基线复跑流程；四条 GVHMR/WHAM → GMR/NMR 基线尚未实跑。已核对 GMR 的 GVHMR 输入入口、NMR 输入输出文档及其在线接口，不把这些接口核查当成基线实验完成。
+
 ## 输入及来源
 
 - 输入来源：[用户提供的视频号演示](https://weixin.qq.com/sph/A9gBA1DBZ6)，研究工作为南京大学等团队的 [BeyondRetarget](https://bear-ty.github.io/Beyondretarget_page/)。
