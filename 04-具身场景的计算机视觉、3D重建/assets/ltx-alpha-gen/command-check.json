@@ -1,0 +1,38 @@
+{
+  "checked_date": "2026-10-21",
+  "scope": "CPU preprocessing and alpha export with synthetic video and constant gray matte; no Alpha Gen inference",
+  "input": {
+    "codec_name": "h264",
+    "profile": "High",
+    "width": 960,
+    "height": 544,
+    "pix_fmt": "yuv420p",
+    "r_frame_rate": "24/1",
+    "nb_read_frames": "121"
+  },
+  "synthetic_matte": {
+    "codec_name": "h264",
+    "profile": "High",
+    "width": 960,
+    "height": 544,
+    "pix_fmt": "yuv420p",
+    "r_frame_rate": "24/1",
+    "nb_read_frames": "121"
+  },
+  "output": {
+    "codec_name": "prores",
+    "profile": "4444",
+    "width": 960,
+    "height": 544,
+    "pix_fmt": "yuva444p12le",
+    "r_frame_rate": "24/1",
+    "nb_read_frames": "121"
+  },
+  "alpha_plane_statistics": [
+    "frame:0    pts:0       pts_time:0",
+    "lavfi.signalstats.YMIN=2017",
+    "lavfi.signalstats.YAVG=2017",
+    "lavfi.signalstats.YMAX=2017"
+  ],
+  "ffmpeg_version": "ffmpeg version 8.0.1 Copyright (c) 2000-2025 the FFmpeg developers"
+}

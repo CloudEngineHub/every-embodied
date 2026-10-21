@@ -1,0 +1,42 @@
+{
+  "checked_date": "2026-10-21",
+  "workflow": {
+    "file": "LTX-2.5_V2V_ICLoRA_Single_Stage_Distilled.json",
+    "source_repository": "https://github.com/Lightricks/ComfyUI-LTXVideo",
+    "commit": "220e1d45aa0469f518e982102fca4dca92a61862",
+    "source_url": "https://github.com/Lightricks/ComfyUI-LTXVideo/blob/220e1d45aa0469f518e982102fca4dca92a61862/example_workflows/2.5/LTX-2.5_V2V_ICLoRA_Single_Stage_Distilled.json",
+    "sha256": "7b04426fd7215bdbb2e5b2207f1974d03d61569f5758161849270692255d202a",
+    "modified": false
+  },
+  "python_source_commit": "e98f6d927d83c92ef2be6aec76c8440b19306e39",
+  "model_card_revision": "6184df14b1b560bf9b6447d3ee126bd7e4a88513",
+  "diagram": {
+    "file": "pipeline.svg",
+    "author": "Every Embodied tutorial",
+    "type": "conceptual illustration; not model output"
+  },
+  "verification": {
+    "gpu_inference": false,
+    "dimension_expression_probe": {
+      "scope": "static shape-expression probe; no model inference",
+      "cli_requested_wh": [
+        3840,
+        2176
+      ],
+      "documented_native_output_wh": [
+        1920,
+        1088
+      ],
+      "target_assignment_line": 726,
+      "target_wh": [
+        1920,
+        1088
+      ],
+      "chunk_assignment_line": 740,
+      "chunk_target_wh": [
+        1920,
+        1088
+      ]
+    }
+  }
+}

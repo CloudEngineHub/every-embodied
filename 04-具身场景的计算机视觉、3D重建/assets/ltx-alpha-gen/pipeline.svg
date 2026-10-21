@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="440" viewBox="0 0 1200 440" role="img" aria-labelledby="title desc">
+<title id="title">LTX Alpha Gen：RGB 视频、参考条件、透明度生成与合成</title>
+<desc id="desc">RGB 视频经过 VAE 编码作为持续参考，LTX-2.5 与 Alpha Gen IC-LoRA 生成灰度透明度视频，再与原 RGB 和新背景合成。</desc>
+<defs><linearGradient id="alpha"><stop offset="0" stop-color="#000"/><stop offset=".5" stop-color="#888"/><stop offset="1" stop-color="#fff"/></linearGradient><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L9 3L0 6Z" fill="#187c88"/></marker></defs>
+<rect width="1200" height="440" rx="18" fill="#f4f8fb"/>
+<g font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" fill="#19364e">
+<text x="40" y="48" font-size="25" font-weight="700">LTX Alpha Gen：让视频模型生成透明度</text>
+<text x="40" y="79" font-size="16" fill="#5a6f83">机制示意 · 灰度表示透明程度 · 图中无模型实测结果</text>
+<g fill="#fff" stroke="#b9d4df" stroke-width="2"><rect x="40" y="130" width="220" height="150" rx="12"/><rect x="330" y="130" width="240" height="150" rx="12"/><rect x="640" y="130" width="240" height="150" rx="12"/><rect x="950" y="130" width="210" height="150" rx="12"/></g>
+<g text-anchor="middle"><text x="150" y="171" font-size="21" font-weight="600">RGB 输入视频</text><text x="150" y="207" font-size="17">视频 VAE 编码</text><text x="150" y="240" font-size="16">时空参考 tokens</text>
+<text x="450" y="171" font-size="21" font-weight="600">持续参考 + 目标噪声</text><text x="450" y="207" font-size="17">LTX-2.5 Transformer</text><text x="450" y="240" font-size="16">Alpha Gen IC-LoRA</text>
+<text x="760" y="171" font-size="21" font-weight="600">灰度 matte 视频</text><text x="760" y="205" font-size="17">VAE 解码 · 逐帧对应</text>
+<text x="1055" y="171" font-size="21" font-weight="600">透明合成</text><text x="1055" y="207" font-size="17">原 RGB + alpha</text><text x="1055" y="240" font-size="16">替换背景 / 导出 RGBA</text></g>
+<rect x="685" y="226" width="150" height="24" rx="4" fill="url(#alpha)" stroke="#8094a5"/>
+<g stroke="#187c88" stroke-width="3" marker-end="url(#arrow)"><path d="M270 205H318"/><path d="M580 205H628"/><path d="M890 205H938"/></g>
+<path d="M150 290V337H1055V290" fill="none" stroke="#829eb1" stroke-width="2" stroke-dasharray="7 5"/>
+<rect x="420" y="320" width="370" height="32" rx="6" fill="#f4f8fb"/>
+<text x="605" y="343" font-size="17" text-anchor="middle">原始 RGB 保留颜色，matte 提供透明度</text>
+<text x="600" y="402" font-size="19" text-anchor="middle">output = source_rgb × alpha + new_background × (1 − alpha)</text>
+</g></svg>
