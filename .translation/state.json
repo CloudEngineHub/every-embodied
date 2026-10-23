@@ -1863,7 +1863,7 @@
     },
     "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/09具身智能推理与部署框架/README.md": {
       "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/09-embodied-ai-reasoning-and-deployment-framework/README.md",
-      "sourceHash": "98b0a8e84ccfe0df3d017b35fc6a99d4c41d394539e5bfad42f75253805646d2",
+      "sourceHash": "f65817bf8241c8c1ede65fed1d8882664a6c0de425225bae815bfe6d61c44bf3",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -1990,6 +1990,12 @@
     "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/21-TurboVLA轻量视觉语言动作模型精读/README.md": {
       "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/21-turbovla-lightweight-vision-language-action-model-deep-reading/README.md",
       "sourceHash": "434395b2dc473ab5e7616ae1afdcc1751d4d7036a7476d78cf0eede8c573dc90",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/11Agnes-Harness多设备Demo/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/11-agnes-harness-multi-device-demo/README.md",
+      "sourceHash": "b7825dd9a1cefff097ed9f1562efd1ff2a6a7c31155e2d243bbd080d39908b67",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
