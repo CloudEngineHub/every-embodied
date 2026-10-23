@@ -1,0 +1,864 @@
+[
+  {
+    "device": "hopper-01",
+    "tool": "take_off",
+    "arguments": {
+      "alt": 10
+    },
+    "result": {
+      "job": "j1",
+      "device": "hopper-01",
+      "tool": "take_off",
+      "notes": [],
+      "status": "done",
+      "detail": "took off, hovering at 10 m with 92 % propellant",
+      "after": {
+        "pose": {
+          "map": "base",
+          "x": 27,
+          "y": -8,
+          "yaw": 180,
+          "ok": true
+        },
+        "odometry": {
+          "x": 0,
+          "y": 0,
+          "yaw": 0,
+          "v": 0,
+          "w": 0
+        }
+      },
+      "time": 1792748795.817,
+      "text": "hopper-01: took off, hovering at 10 m with 92 % propellant. Now at (27, -8) facing 180 degrees."
+    },
+    "elapsed_ms": 6013
+  },
+  {
+    "device": "hopper-01",
+    "tool": "survey",
+    "arguments": {
+      "area": "west field"
+    },
+    "result": {
+      "job": "j2",
+      "device": "hopper-01",
+      "tool": "survey",
+      "notes": [],
+      "status": "done",
+      "detail": "surveyed the west field: unusual rock rock-1 at (-46, -44), 4 boulders, 1 astronaut, a rover route from the dock to beside rock-1 in 4 legs keeps 5 m from boulders and people",
+      "data": {
+        "area": "west field",
+        "found": [
+          {
+            "id": "monolith-01",
+            "label": "robot",
+            "x": 3.4,
+            "y": -15.4,
+            "size_m": 0.7
+          },
+          {
+            "id": "boulder-2",
+            "label": "boulder",
+            "x": -27,
+            "y": -23.5,
+            "size_m": 5.1
+          },
+          {
+            "id": "suit-01",
+            "label": "astronaut",
+            "x": -30.29,
+            "y": -25.84,
+            "size_m": 1
+          },
+          {
+            "id": "boulder-1",
+            "label": "boulder",
+            "x": -34.5,
+            "y": -30.5,
+            "size_m": 8.6
+          },
+          {
+            "id": "boulder-4",
+            "label": "boulder",
+            "x": -41.5,
+            "y": -39,
+            "size_m": 4.5
+          },
+          {
+            "id": "rock-1",
+            "label": "unusual rock",
+            "x": -46,
+            "y": -44,
+            "size_m": 0.1
+          },
+          {
+            "id": "boulder-3",
+            "label": "boulder",
+            "x": -36,
+            "y": -23,
+            "size_m": 6.3
+          }
+        ],
+        "route": [
+          {
+            "x": -21.5,
+            "y": -30.5
+          },
+          {
+            "x": -27.5,
+            "y": -38.5
+          },
+          {
+            "x": -38.5,
+            "y": -46.5
+          },
+          {
+            "x": -46,
+            "y": -46.2
+          }
+        ]
+      },
+      "after": {
+        "pose": {
+          "map": "base",
+          "x": -37.75,
+          "y": -35.99,
+          "yaw": 182,
+          "ok": true
+        },
+        "odometry": {
+          "x": 64.75,
+          "y": 27.99,
+          "yaw": -358,
+          "v": 0,
+          "w": 0
+        }
+      },
+      "time": 1792748836.113,
+      "text": "hopper-01: surveyed the west field: unusual rock rock-1 at (-46, -44), 4 boulders, 1 astronaut, a rover route from the dock to beside rock-1 in 4 legs keeps 5 m from boulders and people. Data: {\"area\":\"west field\",\"found\":[{\"id\":\"monolith-01\",\"label\":\"robot\",\"x\":3.4,\"y\":-15.4,\"size_m\":0.7},{\"id\":\"boulder-2\",\"label\":\"boulder\",\"x\":-27,\"y\":-23.5,\"size_m\":5.1},{\"id\":\"suit-01\",\"label\":\"astronaut\",\"x\":-30.29,\"y\":-25.84,\"size_m\":1},{\"id\":\"boulder-1\",\"label\":\"boulder\",\"x\":-34.5,\"y\":-30.5,\"size_m\":8.6},{\"id\":\"boulder-4\",\"label\":\"boulder\",\"x\":-41.5,\"y\":-39,\"size_m\":4.5},{\"id\":\"rock-1\",\"label\":\"unusual rock\",\"x\":-46,\"y\":-44,\"size_m\":0.1},{\"id\":\"boulder-3\",\"label\":\"boulder\",\"x\":-36,\"y\":-23,\"size_m\":6.3}],\"route\":[{\"x\":-21.5,\"y\":-30.5},{\"x\":-27.5,\"y\":-38.5},{\"x\":-38.5,\"y\":-46.5},{\"x\":-46,\"y\":-46.2}]} Now at (-37.75, -35.99) facing 182 degrees."
+    },
+    "elapsed_ms": 40295
+  },
+  {
+    "device": "hopper-01",
+    "tool": "land",
+    "arguments": {
+      "pad": "hopper pad"
+    },
+    "result": {
+      "job": "j3",
+      "device": "hopper-01",
+      "tool": "land",
+      "notes": [],
+      "status": "done",
+      "detail": "landed on the hopper pad with 55 % propellant; refueling",
+      "after": {
+        "pose": {
+          "map": "base",
+          "x": 26.75,
+          "y": -8.11,
+          "yaw": 23.4,
+          "ok": true
+        },
+        "odometry": {
+          "x": 0.25,
+          "y": 0.11,
+          "yaw": -516.6,
+          "v": 0,
+          "w": 0
+        }
+      },
+      "time": 1792748854.298,
+      "text": "hopper-01: landed on the hopper pad with 55 % propellant; refueling. Now at (26.75, -8.11) facing 23 degrees."
+    },
+    "elapsed_ms": 18278
+  },
+  {
+    "device": "monolith-01",
+    "tool": "follow",
+    "arguments": {
+      "target": "suit-01"
+    },
+    "result": {
+      "job": "j4",
+      "device": "monolith-01",
+      "tool": "follow",
+      "notes": [],
+      "status": "done",
+      "detail": "reached suit-01 at (-29.83, -27.97), 0.4 m from it; walked 34.6 m, now at (-28.87, -27.33)",
+      "data": {
+        "target": "suit-01",
+        "gap_m": 0.4,
+        "distance_m": 34.6,
+        "target_at": {
+          "x": -29.83,
+          "y": -27.97
+        }
+      },
+      "after": {
+        "pose": {
+          "map": "base",
+          "x": -28.87,
+          "y": -27.33,
+          "yaw": 184.5,
+          "ok": true
+        },
+        "odometry": {
+          "x": -3.3,
+          "y": -34.24,
+          "yaw": -111.3,
+          "v": 0,
+          "w": 0
+        }
+      },
+      "time": 1792748890.388,
+      "text": "monolith-01: reached suit-01 at (-29.83, -27.97), 0.4 m from it; walked 34.6 m, now at (-28.87, -27.33). Data: {\"target\":\"suit-01\",\"gap_m\":0.4,\"distance_m\":34.6,\"target_at\":{\"x\":-29.83,\"y\":-27.97}} Now at (-28.87, -27.33) facing 185 degrees."
+    },
+    "elapsed_ms": 36077
+  },
+  {
+    "device": "monolith-01",
+    "tool": "carry",
+    "arguments": {
+      "target": "suit-01"
+    },
+    "result": {
+      "job": "j5",
+      "device": "monolith-01",
+      "tool": "carry",
+      "notes": [],
+      "status": "done",
+      "detail": "picked up the astronaut (suit-01) at (-28.87, -27.33); holding them. Said: \"I have you. Hold still; the walk to the airlock is bumpy. Walking is slower, but it is good for my image.\"",
+      "data": {
+        "carrying": "astronaut",
+        "target": "suit-01",
+        "said": "I have you. Hold still; the walk to the airlock is bumpy. Walking is slower, but it is good for my image."
+      },
+      "after": {
+        "pose": {
+          "map": "base",
+          "x": -28.87,
+          "y": -27.33,
+          "yaw": 213.7,
+          "ok": true
+        },
+        "odometry": {
+          "x": -3.3,
+          "y": -34.24,
+          "yaw": -82,
+          "v": 0,
+          "w": 0
+        }
+      },
+      "time": 1792748892.851,
+      "text": "monolith-01: picked up the astronaut (suit-01) at (-28.87, -27.33); holding them. Said: \"I have you. Hold still; the walk to the airlock is bumpy. Walking is slower, but it is good for my image.\". Data: {\"carrying\":\"astronaut\",\"target\":\"suit-01\",\"said\":\"I have you. Hold still; the walk to the airlock is bumpy. Walking is slower, but it is good for my image.\"} Now at (-28.87, -27.33) facing 214 degrees."
+    },
+    "elapsed_ms": 2255
+  },
+  {
+    "device": "airlock-01",
+    "tool": "cycle_out",
+    "arguments": {},
+    "result": {
+      "job": "j6",
+      "device": "airlock-01",
+      "tool": "cycle_out",
+      "notes": [],
+      "status": "done",
+      "detail": "chamber at 0.7 kPa; the outer door may open",
+      "time": 1792748908.472,
+      "text": "airlock-01: chamber at 0.7 kPa; the outer door may open."
+    },
+    "elapsed_ms": 11519
+  },
+  {
+    "device": "airlock-01",
+    "tool": "open_outer",
+    "arguments": {},
+    "result": {
+      "job": "j7",
+      "device": "airlock-01",
+      "tool": "open_outer",
+      "notes": [],
+      "status": "done",
+      "detail": "the outer door is open",
+      "time": 1792748910.908,
+      "text": "airlock-01: the outer door is open."
+    },
+    "elapsed_ms": 2254
+  },
+  {
+    "device": "monolith-01",
+    "tool": "go_to",
+    "arguments": {
+      "x": 0,
+      "y": -12.2,
+      "gait": "walk"
+    },
+    "result": {
+      "job": "j8",
+      "device": "monolith-01",
+      "tool": "go_to",
+      "notes": [],
+      "status": "done",
+      "detail": "walked 31.4 m in 27 s to (-0.96, -14.09), 2 m short of (0, -12.2), which is blocked",
+      "data": {
+        "gait": "walk",
+        "distance_m": 31.4,
+        "seconds": 27,
+        "legs": 2,
+        "route": [
+          {
+            "x": -24.5,
+            "y": -27.5
+          },
+          {
+            "x": -0.8,
+            "y": -14
+          }
+        ]
+      },
+      "after": {
+        "pose": {
+          "map": "base",
+          "x": -0.96,
+          "y": -14.09,
+          "yaw": 29.5,
+          "ok": true
+        },
+        "odometry": {
+          "x": -3.08,
+          "y": -3.35,
+          "yaw": 93.7,
+          "v": 0,
+          "w": 0
+        }
+      },
+      "time": 1792748937.963,
+      "text": "monolith-01: walked 31.4 m in 27 s to (-0.96, -14.09), 2 m short of (0, -12.2), which is blocked. Data: {\"gait\":\"walk\",\"distance_m\":31.4,\"seconds\":27,\"legs\":2,\"route\":[{\"x\":-24.5,\"y\":-27.5},{\"x\":-0.8,\"y\":-14}]} Now at (-0.96, -14.09) facing 30 degrees."
+    },
+    "elapsed_ms": 27035
+  },
+  {
+    "device": "monolith-01",
+    "tool": "put_down",
+    "arguments": {},
+    "result": {
+      "job": "j9",
+      "device": "monolith-01",
+      "tool": "put_down",
+      "notes": [],
+      "status": "done",
+      "detail": "set the astronaut (suit-01) into the airlock chamber; airlock-01 is occupied: close_outer, then cycle_in brings them into the habitat. Said: \"You are in the airlock. Not my most graceful delivery. I would roll there, but someone has to keep the dust company.\"",
+      "data": {
+        "put": "suit-01",
+        "at": "airlock",
+        "said": "You are in the airlock. Not my most graceful delivery. I would roll there, but someone has to keep the dust company."
+      },
+      "after": {
+        "pose": {
+          "map": "base",
+          "x": -0.96,
+          "y": -14.09,
+          "yaw": 29.5,
+          "ok": true
+        },
+        "odometry": {
+          "x": -3.08,
+          "y": -3.35,
+          "yaw": 93.7,
+          "v": 0,
+          "w": 0
+        }
+      },
+      "time": 1792748939.632,
+      "text": "monolith-01: set the astronaut (suit-01) into the airlock chamber; airlock-01 is occupied: close_outer, then cycle_in brings them into the habitat. Said: \"You are in the airlock. Not my most graceful delivery. I would roll there, but someone has to keep the dust company.\". Data: {\"put\":\"suit-01\",\"at\":\"airlock\",\"said\":\"You are in the airlock. Not my most graceful delivery. I would roll there, but someone has to keep the dust company.\"} Now at (-0.96, -14.09) facing 30 degrees."
+    },
+    "elapsed_ms": 1754
+  },
+  {
+    "device": "airlock-01",
+    "tool": "close_outer",
+    "arguments": {},
+    "result": {
+      "job": "j10",
+      "device": "airlock-01",
+      "tool": "close_outer",
+      "notes": [],
+      "status": "done",
+      "detail": "the outer door is closed",
+      "time": 1792748945.52,
+      "text": "airlock-01: the outer door is closed."
+    },
+    "elapsed_ms": 2257
+  },
+  {
+    "device": "airlock-01",
+    "tool": "cycle_in",
+    "arguments": {},
+    "result": {
+      "job": "j11",
+      "device": "airlock-01",
+      "tool": "cycle_in",
+      "notes": [],
+      "status": "done",
+      "detail": "chamber at 101.3 kPa; the inner door is open; the astronaut (suit-01) stepped into the habitat",
+      "data": {
+        "pressure": 101,
+        "came_in": "suit-01"
+      },
+      "time": 1792748955.803,
+      "text": "airlock-01: chamber at 101.3 kPa; the inner door is open; the astronaut (suit-01) stepped into the habitat. Data: {\"pressure\":101,\"came_in\":\"suit-01\"}"
+    },
+    "elapsed_ms": 10262
+  },
+  {
+    "device": "hopper-01",
+    "tool": "take_off",
+    "arguments": {
+      "alt": 10
+    },
+    "result": {
+      "job": "j12",
+      "device": "hopper-01",
+      "tool": "take_off",
+      "notes": [],
+      "status": "done",
+      "detail": "took off, hovering at 10 m with 92 % propellant",
+      "after": {
+        "pose": {
+          "map": "base",
+          "x": 27,
+          "y": -8,
+          "yaw": 180,
+          "ok": true
+        },
+        "odometry": {
+          "x": 0,
+          "y": 0,
+          "yaw": 0,
+          "v": 0,
+          "w": 0
+        }
+      },
+      "time": 1792748963.052,
+      "text": "hopper-01: took off, hovering at 10 m with 92 % propellant. Now at (27, -8) facing 180 degrees."
+    },
+    "elapsed_ms": 5757
+  },
+  {
+    "device": "hopper-01",
+    "tool": "survey",
+    "arguments": {
+      "area": "west field"
+    },
+    "result": {
+      "job": "j13",
+      "device": "hopper-01",
+      "tool": "survey",
+      "notes": [],
+      "status": "done",
+      "detail": "surveyed the west field: unusual rock rock-1 at (-46, -44), 4 boulders, 1 astronaut, a rover route from the dock to beside rock-1 in 4 legs keeps 5 m from boulders and people",
+      "data": {
+        "area": "west field",
+        "found": [
+          {
+            "id": "monolith-01",
+            "label": "robot",
+            "x": 3.4,
+            "y": -15.4,
+            "size_m": 0.7
+          },
+          {
+            "id": "boulder-2",
+            "label": "boulder",
+            "x": -27,
+            "y": -23.5,
+            "size_m": 5.1
+          },
+          {
+            "id": "suit-01",
+            "label": "astronaut",
+            "x": -29.98,
+            "y": -27.27,
+            "size_m": 1
+          },
+          {
+            "id": "boulder-1",
+            "label": "boulder",
+            "x": -34.5,
+            "y": -30.5,
+            "size_m": 8.6
+          },
+          {
+            "id": "boulder-4",
+            "label": "boulder",
+            "x": -41.5,
+            "y": -39,
+            "size_m": 4.5
+          },
+          {
+            "id": "rock-1",
+            "label": "unusual rock",
+            "x": -46,
+            "y": -44,
+            "size_m": 0.1
+          },
+          {
+            "id": "boulder-3",
+            "label": "boulder",
+            "x": -36,
+            "y": -23,
+            "size_m": 6.3
+          }
+        ],
+        "route": [
+          {
+            "x": -21.5,
+            "y": -30.5
+          },
+          {
+            "x": -27.5,
+            "y": -38.5
+          },
+          {
+            "x": -38.5,
+            "y": -46.5
+          },
+          {
+            "x": -46,
+            "y": -46.2
+          }
+        ]
+      },
+      "after": {
+        "pose": {
+          "map": "base",
+          "x": -37.75,
+          "y": -35.99,
+          "yaw": 182.1,
+          "ok": true
+        },
+        "odometry": {
+          "x": 64.75,
+          "y": 27.99,
+          "yaw": -357.9,
+          "v": 0,
+          "w": 0
+        }
+      },
+      "time": 1792749002.438,
+      "text": "hopper-01: surveyed the west field: unusual rock rock-1 at (-46, -44), 4 boulders, 1 astronaut, a rover route from the dock to beside rock-1 in 4 legs keeps 5 m from boulders and people. Data: {\"area\":\"west field\",\"found\":[{\"id\":\"monolith-01\",\"label\":\"robot\",\"x\":3.4,\"y\":-15.4,\"size_m\":0.7},{\"id\":\"boulder-2\",\"label\":\"boulder\",\"x\":-27,\"y\":-23.5,\"size_m\":5.1},{\"id\":\"suit-01\",\"label\":\"astronaut\",\"x\":-29.98,\"y\":-27.27,\"size_m\":1},{\"id\":\"boulder-1\",\"label\":\"boulder\",\"x\":-34.5,\"y\":-30.5,\"size_m\":8.6},{\"id\":\"boulder-4\",\"label\":\"boulder\",\"x\":-41.5,\"y\":-39,\"size_m\":4.5},{\"id\":\"rock-1\",\"label\":\"unusual rock\",\"x\":-46,\"y\":-44,\"size_m\":0.1},{\"id\":\"boulder-3\",\"label\":\"boulder\",\"x\":-36,\"y\":-23,\"size_m\":6.3}],\"route\":[{\"x\":-21.5,\"y\":-30.5},{\"x\":-27.5,\"y\":-38.5},{\"x\":-38.5,\"y\":-46.5},{\"x\":-46,\"y\":-46.2}]} Now at (-37.75, -35.99) facing 182 degrees."
+    },
+    "elapsed_ms": 39552
+  },
+  {
+    "device": "hopper-01",
+    "tool": "land",
+    "arguments": {
+      "pad": "hopper pad"
+    },
+    "result": {
+      "job": "j14",
+      "device": "hopper-01",
+      "tool": "land",
+      "notes": [],
+      "status": "done",
+      "detail": "landed on the hopper pad with 55 % propellant; refueling",
+      "after": {
+        "pose": {
+          "map": "base",
+          "x": 26.77,
+          "y": -8.1,
+          "yaw": 23.4,
+          "ok": true
+        },
+        "odometry": {
+          "x": 0.23,
+          "y": 0.1,
+          "yaw": -516.6,
+          "v": 0,
+          "w": 0
+        }
+      },
+      "time": 1792749019.81,
+      "text": "hopper-01: landed on the hopper pad with 55 % propellant; refueling. Now at (26.77, -8.1) facing 23 degrees."
+    },
+    "elapsed_ms": 17272
+  },
+  {
+    "device": "rover-01",
+    "tool": "follow_route",
+    "arguments": {
+      "points": [
+        {
+          "x": -21.5,
+          "y": -30.5
+        },
+        {
+          "x": -27.5,
+          "y": -38.5
+        },
+        {
+          "x": -38.5,
+          "y": -46.5
+        },
+        {
+          "x": -46,
+          "y": -46.2
+        }
+      ]
+    },
+    "result": {
+      "job": "j15",
+      "device": "rover-01",
+      "tool": "follow_route",
+      "notes": [],
+      "status": "done",
+      "detail": "followed 4 legs, arrived at (-45.75, -46.21)",
+      "after": {
+        "pose": {
+          "map": "base",
+          "x": -45.75,
+          "y": -46.21,
+          "yaw": 178.7,
+          "ok": true
+        },
+        "odometry": {
+          "x": -30.31,
+          "y": 30.25,
+          "yaw": 88.7,
+          "v": 0,
+          "w": 0
+        }
+      },
+      "time": 1792749051.144,
+      "text": "rover-01: followed 4 legs, arrived at (-45.75, -46.21). Now at (-45.75, -46.21) facing 179 degrees."
+    },
+    "elapsed_ms": 31296
+  },
+  {
+    "device": "rover-01",
+    "tool": "collect_sample",
+    "arguments": {
+      "target": "rock-1"
+    },
+    "result": {
+      "job": "j16",
+      "device": "rover-01",
+      "tool": "collect_sample",
+      "notes": [],
+      "status": "done",
+      "detail": "collected a sample of rock-1; 1 on board",
+      "data": {
+        "sample": "rock-1"
+      },
+      "after": {
+        "pose": {
+          "map": "base",
+          "x": -45.75,
+          "y": -46.21,
+          "yaw": 178.7,
+          "ok": true
+        },
+        "odometry": {
+          "x": -30.31,
+          "y": 30.25,
+          "yaw": 88.7,
+          "v": 0,
+          "w": 0
+        }
+      },
+      "time": 1792749055.612,
+      "text": "rover-01: collected a sample of rock-1; 1 on board. Data: {\"sample\":\"rock-1\"} Now at (-45.75, -46.21) facing 179 degrees."
+    },
+    "elapsed_ms": 4512
+  },
+  {
+    "device": "rover-01",
+    "tool": "dock",
+    "arguments": {},
+    "result": {
+      "job": "j17",
+      "device": "rover-01",
+      "tool": "dock",
+      "notes": [],
+      "status": "done",
+      "detail": "docked; charging",
+      "after": {
+        "pose": {
+          "map": "base",
+          "x": -15.51,
+          "y": -16.14,
+          "yaw": 88.6,
+          "ok": true
+        },
+        "odometry": {
+          "x": -0.24,
+          "y": 0.01,
+          "yaw": 358.6,
+          "v": 0,
+          "w": 0
+        }
+      },
+      "time": 1792749093.156,
+      "text": "rover-01: docked; charging. Now at (-15.51, -16.14) facing 89 degrees."
+    },
+    "elapsed_ms": 32548
+  },
+  {
+    "device": "lab-01",
+    "tool": "unload_rover",
+    "arguments": {},
+    "result": {
+      "job": "j18",
+      "device": "lab-01",
+      "tool": "unload_rover",
+      "notes": [],
+      "status": "done",
+      "detail": "unloaded rock-1; 1 waiting for analysis",
+      "data": {
+        "samples": [
+          "rock-1"
+        ]
+      },
+      "time": 1792749097.241,
+      "text": "lab-01: unloaded rock-1; 1 waiting for analysis. Data: {\"samples\":[\"rock-1\"]}"
+    },
+    "elapsed_ms": 4008
+  },
+  {
+    "device": "lab-01",
+    "tool": "analyze",
+    "arguments": {
+      "sample": "rock-1"
+    },
+    "result": {
+      "job": "j19",
+      "device": "lab-01",
+      "tool": "analyze",
+      "notes": [],
+      "status": "done",
+      "detail": "rock-1: olivine-rich basalt with carbonate veins: water once flowed through it; a candidate for return to Earth (olivine 41 %, pyroxene 22 %, carbonate 9 %, plagioclase 18 %, other 10 %)",
+      "data": {
+        "sample": "rock-1",
+        "minerals": {
+          "olivine": 41,
+          "pyroxene": 22,
+          "carbonate": 9,
+          "plagioclase": 18,
+          "other": 10
+        },
+        "verdict": "olivine-rich basalt with carbonate veins: water once flowed through it; a candidate for return to Earth"
+      },
+      "time": 1792749104.863,
+      "text": "lab-01: rock-1: olivine-rich basalt with carbonate veins: water once flowed through it; a candidate for return to Earth (olivine 41 %, pyroxene 22 %, carbonate 9 %, plagioclase 18 %, other 10 %). Data: {\"sample\":\"rock-1\",\"minerals\":{\"olivine\":41,\"pyroxene\":22,\"carbonate\":9,\"plagioclase\":18,\"other\":10},\"verdict\":\"olivine-rich basalt with carbonate veins: water once flowed through it; a candidate for return to Earth\"}"
+    },
+    "elapsed_ms": 7508
+  },
+  {
+    "device": "comms-01",
+    "tool": "point",
+    "arguments": {
+      "target": "earth"
+    },
+    "result": {
+      "job": "j20",
+      "device": "comms-01",
+      "tool": "point",
+      "notes": [],
+      "status": "done",
+      "detail": "pointed at Earth; link up",
+      "time": 1792749112.635,
+      "text": "comms-01: pointed at Earth; link up."
+    },
+    "elapsed_ms": 2757
+  },
+  {
+    "device": "comms-01",
+    "tool": "send",
+    "arguments": {
+      "report": "rock-1: olivine-rich basalt with carbonate veins: water once flowed through it; a candidate for return to Earth (olivine 41 %, pyroxene 22 %, carbonate 9 %, plagioclase 18 %, other 10 %)"
+    },
+    "result": {
+      "job": "j21",
+      "device": "comms-01",
+      "tool": "send",
+      "notes": [],
+      "status": "done",
+      "detail": "sent 186 characters to Earth",
+      "data": {
+        "characters": 186
+      },
+      "time": 1792749114.778,
+      "text": "comms-01: sent 186 characters to Earth. Data: {\"characters\":186}"
+    },
+    "elapsed_ms": 2003
+  },
+  {
+    "device": "power-01",
+    "tool": "stow_array",
+    "arguments": {},
+    "result": {
+      "job": "j22",
+      "device": "power-01",
+      "tool": "stow_array",
+      "notes": [],
+      "status": "done",
+      "detail": "array stowed; producing 730 W",
+      "time": 1792749121.58,
+      "text": "power-01: array stowed; producing 730 W."
+    },
+    "elapsed_ms": 5261
+  },
+  {
+    "device": "rover-01",
+    "tool": "dock",
+    "arguments": {},
+    "result": {
+      "job": "j23",
+      "device": "rover-01",
+      "tool": "dock",
+      "notes": [],
+      "status": "done",
+      "detail": "docked; charging",
+      "after": {
+        "pose": {
+          "map": "base",
+          "x": -15.5,
+          "y": -16.14,
+          "yaw": 90,
+          "ok": true
+        },
+        "odometry": {
+          "x": -0.24,
+          "y": 0,
+          "yaw": -360,
+          "v": 0,
+          "w": 0
+        }
+      },
+      "time": 1792749134.882,
+      "text": "rover-01: docked; charging. Now at (-15.5, -16.14) facing 90 degrees."
+    },
+    "elapsed_ms": 13267
+  },
+  {
+    "device": "habitat-01",
+    "tool": "set_mode",
+    "arguments": {
+      "mode": "storm_shelter"
+    },
+    "result": {
+      "job": "j24",
+      "device": "habitat-01",
+      "tool": "set_mode",
+      "notes": [],
+      "status": "done",
+      "detail": "habitat set to storm shelter: crew inside, non-essential loads off",
+      "time": 1792749136.446,
+      "text": "habitat-01: habitat set to storm shelter: crew inside, non-essential loads off."
+    },
+    "elapsed_ms": 1753
+  }
+]

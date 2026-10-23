@@ -246,6 +246,8 @@
 
   ## 🔥 News & Highlights
 
+  - **[2026-10-23]** 新增 [Agnes Harness 多设备 Demo 实践](./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/11Agnes-Harness多设备Demo/README.md)：在 Ubuntu 上运行 MHS 四设备、火星基地与三个插件示例，提供固定版本启动器、自动验证脚本和实机运行截图；手动与模拟模型路线无需 API Key。
+
   - **[2026-10-23]** 新增 [TurboVLA 轻量视觉语言动作模型精读](./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/21-TurboVLA轻量视觉语言动作模型精读/README.md)：拆解 DINOv3、BERT、双向交互与 ACT 动作块，整理 v3 的 LIBERO / RoboTwin 结果、关键消融、推理计时口径，以及多卡训练和单卡梯度累积复现路线。
   - **[2026-10-21]** 新增 [LTX Alpha Gen 视频抠像与透明合成教程](./04-具身场景的计算机视觉、3D重建/05-LTX-Alpha-Gen视频抠像与透明合成.md)：从连续透明度、IC-LoRA 参考条件讲到官方 ComfyUI 工作流、Python 推理和透明视频导出，并说明显存需求与离线处理的时间量级。
   - **[2026-10-18]** 新增 [DepthART 轻量单目深度估计教程](./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/10DepthART轻量单目深度估计/README.md)：复现约 6M 参数的 MobileNetV4-M-slim-SPF，提供 CPU ONNX 运行脚本、224/448 深度图和完整测速记录，区分参数量、文件大小与端侧实时部署条件。

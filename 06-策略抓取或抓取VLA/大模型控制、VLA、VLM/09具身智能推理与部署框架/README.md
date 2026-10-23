@@ -1,5 +1,7 @@
 # 具身智能推理与部署框架：从 APXInf 到 Jetson-PI、Embodied.cpp
 
+配套实践：[Agnes Harness 多设备 Demo](../11Agnes-Harness多设备Demo/README.md)，学习用 Agent、MHS 与 AgnesHub 编排虚拟设备，包含无需模型 API 的手动路线和火星基地任务。
+
 ## 这一章解决什么问题
 
 VLA/WAM 模型训练完成，并不等于机器人已经能够稳定运行。真实部署还要处理模型前向、flow/diffusion 采样、相机和本体状态同步、action chunk 调度、通信、IK、控制周期、数据记录以及多机器人资源分配。

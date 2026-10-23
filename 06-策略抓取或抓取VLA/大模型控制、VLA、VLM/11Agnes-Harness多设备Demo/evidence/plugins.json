@@ -1,0 +1,27 @@
+{
+  "stage": "disable/remove",
+  "passed": [
+    "built CLI help",
+    "daemon cold start and sessions list",
+    "save loopback fixture provider (no real account)",
+    "CLI model loop against deterministic local fixture",
+    "default MCP helper invoked through CLI/daemon/worker without manual installation",
+    "default Plugin Helper: guide/create/native approval/install/actual status/new tool through daemon and worker",
+    "serve loopback HTML over HTTP",
+    "page-advertised WebSocket connects directly to daemon and reads session projection",
+    "tool: inspect/install/trust/enable",
+    "panel: inspect/install/trust/enable",
+    "service-v1: inspect/install/trust/enable",
+    "installed backend tool invoked through CLI/daemon/worker",
+    "frontend and linked service packages projected to client roster",
+    "linked query through daemon/worker/Host (no browser)",
+    "real HTTP BFF query and wrong-Origin refusal",
+    "linked service update v1 → v2",
+    "rollback denies calls until explicit trust/enable restores v1",
+    "browser panel v1 and linked backend v1/v2 rendered",
+    "disable/remove clears roster and denies stale service calls",
+    "isolated daemon stopped"
+  ],
+  "ok": true,
+  "method": "upstream loopback simulated model with browser checkpoints"
+}

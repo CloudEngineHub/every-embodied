@@ -1,0 +1,36 @@
+{
+  "mode": "office",
+  "method": "scripted Hub API calls, real virtual-device execution, no language model",
+  "checks": [
+    {
+      "name": "office writable lamp state",
+      "pass": true,
+      "evidence": {
+        "problem": null,
+        "faults": [],
+        "on": true,
+        "brightness": 30,
+        "color": "cool",
+        "power": 4.2
+      }
+    },
+    {
+      "name": "office motion and camera read",
+      "pass": true,
+      "evidence": {
+        "position": {
+          "trust": "trusted",
+          "map": "office",
+          "x": 4.6,
+          "y": 3.7,
+          "yaw": 30,
+          "age": 0.7,
+          "zone": "hall"
+        },
+        "image_received": true
+      }
+    }
+  ],
+  "ok": true,
+  "page_exceptions": []
+}

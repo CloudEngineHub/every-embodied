@@ -1,0 +1,76 @@
+{
+  "mode": "mars",
+  "method": "scripted Hub API calls, real virtual-device execution, no language model",
+  "checks": [
+    {
+      "name": "Mars 11 devices connected",
+      "pass": true,
+      "evidence": [
+        "habitat-01",
+        "airlock-01",
+        "suit-01",
+        "rover-01",
+        "hopper-01",
+        "monolith-01",
+        "lab-01",
+        "power-01",
+        "comms-01",
+        "weather-01",
+        "cam-base"
+      ]
+    },
+    {
+      "name": "Mars rescue through pressurized airlock",
+      "pass": true,
+      "evidence": "chamber at 101.3 kPa; the inner door is open; the astronaut (suit-01) stepped into the habitat"
+    },
+    {
+      "name": "Mars survey/sample/lab/Earth report",
+      "pass": true,
+      "evidence": {
+        "sample": "rock-1",
+        "finding": {
+          "sample": "rock-1",
+          "minerals": {
+            "olivine": 41,
+            "pyroxene": 22,
+            "carbonate": 9,
+            "plagioclase": 18,
+            "other": 10
+          },
+          "verdict": "olivine-rich basalt with carbonate veins: water once flowed through it; a candidate for return to Earth"
+        },
+        "sent": "sent 186 characters to Earth"
+      }
+    },
+    {
+      "name": "Mars storm preparation actions",
+      "pass": true,
+      "evidence": {
+        "power": {
+          "problem": null,
+          "faults": [],
+          "storage": 73,
+          "production": 730,
+          "load": 4900,
+          "dust": 12,
+          "panels": "stowed",
+          "shed": "none",
+          "priority": "life_support"
+        },
+        "habitat": {
+          "problem": null,
+          "faults": [],
+          "mode": "storm_shelter",
+          "o2": 20.9,
+          "co2": 910,
+          "pressure": 101.3,
+          "temperature": 21.5
+        },
+        "hopper": "landed"
+      }
+    }
+  ],
+  "ok": true,
+  "page_exceptions": []
+}

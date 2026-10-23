@@ -41,6 +41,8 @@ This repository collects and organizes tutorial materials related to AI hardware
 
 ## ✨ Latest Highlights
 
+- **[2026-10-23]** [Agnes Harness device demos (Chinese guide)](./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/11Agnes-Harness多设备Demo/README.md): pinned source, Ubuntu setup, real virtual-device checks, plugin tests, and focused screenshots. Manual and simulated-model routes require no API key.
+
 ### 🍳 Smart Home Assistant
 
 Our new home robot module can perform multiple kitchen tasks, including:
