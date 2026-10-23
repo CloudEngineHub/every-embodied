@@ -1986,6 +1986,12 @@
       "sourceHash": "e2eaa23d1fa9e176cd9a572928b098e2b95a8f4088157d430e31b09888f8f05c",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/21-TurboVLA轻量视觉语言动作模型精读/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/21-turbovla-lightweight-vision-language-action-model-deep-reading/README.md",
+      "sourceHash": "434395b2dc473ab5e7616ae1afdcc1751d4d7036a7476d78cf0eede8c573dc90",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
   }
 }
