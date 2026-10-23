@@ -246,6 +246,12 @@ const homeModules = [
         doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/18-DM0.5高性能推理与OpenDM导读/README.md",
       },
       {
+        title: "TurboVLA 轻量 VLA 精读",
+        copy: "拆解双向视觉语言交互、连续动作块与单卡训练路线。",
+        image: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/21-TurboVLA轻量视觉语言动作模型精读/assets/turbovla-architecture.svg",
+        doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/21-TurboVLA轻量视觉语言动作模型精读/README.md",
+      },
+      {
         title: "Robots That Know What to Ask 奖励对齐",
         copy: "理解机器人如何识别欠指定奖励特征，并用解释引导人类补充示教。",
         image: "05-具身场景的深度和强化学习/04-Robots-That-Know-What-to-Ask奖励对齐导读/assets/method_overview.png",
