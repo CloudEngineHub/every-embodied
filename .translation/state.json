@@ -213,7 +213,7 @@
     },
     "05-具身场景的深度和强化学习/README.md": {
       "target": "en/05-deep-and-reinforcement-learning/README.md",
-      "sourceHash": "8556650dfa2cd56b62912ae634f80589b7c223dff0fdc34cbbe68998ec3ba192",
+      "sourceHash": "15b93f93d9e35cf8e5fa2945ab4febc425cf5dbaee04ed5365994005252c8660",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -2008,6 +2008,12 @@
     "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/12SmolWAM轻量世界动作模型/assets/SOURCES.md": {
       "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/12-smolwam-lightweight-world-action-model/assets/SOURCES.md",
       "sourceHash": "69cffb4a0907b96edcf23d1cd32a8827773d135e019b9b8f69222ab7aa703a37",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "05-具身场景的深度和强化学习/08-HIL-SERL人机协同强化学习与MuJoCo插孔/README.md": {
+      "target": "en/05-deep-and-reinforcement-learning/08-hil-serl-human-machine-reinforcement-learning-and-mujoco-jack/README.md",
+      "sourceHash": "3ec4570f4db2a001d1f473c841123fe1de1ca6b0f9a19b223f79b4ae9628ce92",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
