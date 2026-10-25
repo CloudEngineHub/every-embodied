@@ -115,6 +115,10 @@ The new reinforcement learning module supports:
   </table>
   </div>
 
+## Lightweight World-Action Models
+
+- [SmolWAM (Chinese guide)](./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/12SmolWAM轻量世界动作模型/README.md): five interface changes distilled from Cosmos Policy, with three official figures, LIBERO results, and inference and training entry points.
+
 ## 🚀 Learning Path Suggestion
 
 ### Embodied AI Robot

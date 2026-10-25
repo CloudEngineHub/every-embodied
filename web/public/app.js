@@ -246,6 +246,12 @@ const homeModules = [
         doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/18-DM0.5高性能推理与OpenDM导读/README.md",
       },
       {
+        title: "SmolWAM 轻量世界动作模型",
+        copy: "从 Cosmos Policy 蒸馏，单次前向预测动作与未来潜在表示，附官方图解与代码入口。",
+        image: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/12SmolWAM轻量世界动作模型/assets/architecture.svg",
+        doc: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/12SmolWAM轻量世界动作模型/README.md",
+      },
+      {
         title: "TurboVLA 轻量 VLA 精读",
         copy: "拆解双向视觉语言交互、连续动作块与单卡训练路线。",
         image: "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/21-TurboVLA轻量视觉语言动作模型精读/assets/turbovla-architecture.svg",

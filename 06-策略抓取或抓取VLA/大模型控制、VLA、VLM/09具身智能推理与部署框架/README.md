@@ -2,6 +2,8 @@
 
 配套实践：[Agnes Harness 多设备 Demo](../11Agnes-Harness多设备Demo/README.md)，学习用 Agent、MHS 与 AgnesHub 编排虚拟设备，包含无需模型 API 的手动路线和火星基地任务。
 
+模型侧延伸：[SmolWAM 轻量世界动作模型](../12SmolWAM轻量世界动作模型/README.md)，学习如何重建 Cosmos Policy 的视觉、文本与动作接口，在单次前向中保留动作和未来潜在预测，并理解模型压缩与运行时优化的衔接。
+
 ## 这一章解决什么问题
 
 VLA/WAM 模型训练完成，并不等于机器人已经能够稳定运行。真实部署还要处理模型前向、flow/diffusion 采样、相机和本体状态同步、action chunk 调度、通信、IK、控制周期、数据记录以及多机器人资源分配。
