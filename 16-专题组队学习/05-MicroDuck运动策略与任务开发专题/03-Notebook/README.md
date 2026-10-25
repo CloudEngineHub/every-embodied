@@ -34,6 +34,12 @@ Notebook 保存了单元输出，适合在 GitHub 上先阅读结果，再在 Ub
 - 爬梯保留原有接触、原始动作槽、滤波与增益规则；物理接触使用 CPU 后端，策略分别由 GPU/BPU 计算。两套模型移出固定归一化，拆分全连接权重为主值与残差后校准 INT16。两次板端对照均完成登桌与站稳。
 - 回合结束时清空 BPU LSTM 记忆，避免仿真自动重置后再次手动重置；视频的回合时限延长到录制结束之后，失败重置与超时重置分别计数。
 
+## MotrixLab 启动入口更新（2026-10-25）
+
+新版 MotrixLab 使用 `mxlab train`、`mxlab play` 和 `mxlab export-onnx`，不再通过 `scripts/train.py` 等脚本启动。05 号 Notebook 和生成模板已适配，配套启动器会自动选择当前环境的新旧入口，不需要改用 Windows，也不需要补建 `train.py`。安装、Ubuntu/WSL 与 PowerShell 命令、10 轮训练示例和视频录制见[球平衡教程第 4 节](../01-任务资料/05-MotrixLab-MicroDuck球平衡与FastSAC/README.md#4-安装与运行使用-mxlab-入口)。已有视频与运行记录保留其原始结果。
+
+版本对照：新版命令固定为 **MotrixLab `0.4.0` / 提交 `24796cff1c00`**；已有训练与视频使用的旧版代码基线为 **`0.4.0b0` / 提交 `d093f94fbd87`**。完整提交号、Python 要求、依赖锁定及版本检查命令见[版本与复现基线](../01-任务资料/05-MotrixLab-MicroDuck球平衡与FastSAC/README.md#版本与复现基线)。
+
 ## 第一次运行：Python 控制小鸭子
 
 先运行 [00_MuJoCo策略控制_HelloWorld.ipynb](./00_MuJoCo策略控制_HelloWorld.ipynb)，再进入任务 Notebook。它是入门练习，不改变原有 8 天或月度学习安排。

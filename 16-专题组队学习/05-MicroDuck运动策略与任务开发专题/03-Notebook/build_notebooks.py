@@ -79,7 +79,7 @@ if MODEL_PATH is None or not MODEL_PATH.exists():
         stage3_md = md("""
 ## 3. FastSAC smoke 训练与 ONNX 导出
 
-球平衡使用 MotrixLab 的 FastSAC，不复用 PPO/LSTM。默认在 Ubuntu 的 MotrixLab `.venv` 中用 64 个并行环境做 5 个 smoke iteration，并把本次 run 导出为 `outputs/motrix_ball_balance_latest.onnx`。若重新训练后要生成新的板端视频，需要同步重新执行 X5 HBM 编译单元，不能继续使用旧 HBM。
+球平衡使用 MotrixLab 的 FastSAC，不复用 PPO/LSTM。默认在 Ubuntu 的 MotrixLab `.venv` 中用 64 个并行环境做 10 个 smoke iteration，并把本次 run 导出为 `outputs/motrix_ball_balance_latest.onnx`。配套启动器自动选择新版 `mxlab` 模块入口或旧版脚本入口。若重新训练后要生成新的板端视频，需要同步重新执行 X5 HBM 编译单元，不能继续使用旧 HBM。
 """)
         stage3_code = code(r'''
 import shutil
@@ -89,7 +89,7 @@ MOTRIX_ROOT = Path(os.getenv("MOTRIX_ROOT", "/home/ubuntu/workspaces/MotrixLab")
 MOTRIX_PYTHON = Path(os.getenv("MOTRIX_PYTHON", str(MOTRIX_ROOT / ".venv/bin/python"))).expanduser()
 MOTRIX_RUNNER = PLAYGROUND_ROOT / "scripts" / "motrix_runner.py"
 FASTSAC_ENVS = int(os.getenv("MICRODUCK_FASTSAC_ENVS", "64"))
-FASTSAC_ITERATIONS = int(os.getenv("MICRODUCK_FASTSAC_ITERATIONS", "5"))
+FASTSAC_ITERATIONS = int(os.getenv("MICRODUCK_FASTSAC_ITERATIONS", "10"))
 RUN_FASTSAC_SMOKE = os.getenv("MICRODUCK_RUN_FASTSAC_SMOKE", "1") == "1"
 FASTSAC_ONNX = OUTPUT_ROOT / "motrix_ball_balance_latest.onnx"
 print("MotrixLab:", MOTRIX_ROOT)
@@ -102,7 +102,7 @@ elif not MOTRIX_ROOT.is_dir() or not MOTRIX_PYTHON.is_file():
     print("找不到 MotrixLab 或其 Python 环境；请先在 Ubuntu 完成 MotrixLab 环境安装。")
 else:
     train_cmd = [
-        str(MOTRIX_PYTHON), str(MOTRIX_RUNNER), "train", str(MOTRIX_ROOT / "scripts/train.py"),
+        str(MOTRIX_PYTHON), str(MOTRIX_RUNNER), "train",
         "task=microduck-ball-balance/motrix.fastsac",
         f"num_envs={FASTSAC_ENVS}",
         "play=false", "render=false", "algo.asynchronous=false",
@@ -123,7 +123,7 @@ else:
     run_dir = run_dirs[-1]
     motrix_export = Path("outputs") / "motrix_ball_balance_latest.onnx"
     export_cmd = [
-        str(MOTRIX_PYTHON), str(MOTRIX_RUNNER), "export", str(MOTRIX_ROOT / "scripts/export_onnx.py"),
+        str(MOTRIX_PYTHON), str(MOTRIX_RUNNER), "export",
         f"run_dir={run_dir}", f"output={motrix_export.as_posix()}", "opset=11",
     ]
     print("导出 FastSAC ONNX:", " ".join(shlex.quote(x) for x in export_cmd))
@@ -320,13 +320,15 @@ model_parameters:
         hbm_stage = []
 
     if is_fastsac:
-        export_template = "python scripts/export_onnx.py run_dir=<FASTSAC_RUN_DIR> output=outputs/motrix_ball_balance_latest.onnx opset=11"
+        export_template = "mxlab export-onnx run_dir=<FASTSAC_RUN_DIR> output=outputs/motrix_ball_balance_latest.onnx opset=11"
+        recording_note = "使用 `mxlab play env=microduck-ball-balance num_envs=1 record_video=true record_seconds=10` 录制策略推理视频，结果写入选中训练目录的 `play_video.mp4`。本轮发布视频与运行报告保存在 `recordings/`。"
     else:
         export_template = (
             "uv run python scripts/export.py "
             + (task_id or "<TASK_ID>")
             + "\\\n  --checkpoint-file <CHECKPOINT.pt>\\\n  --onnx-file outputs/policy.onnx\\\n  --num-envs 1 --video --video-length 250"
         )
+        recording_note = "`--video` 会录制物理仿真，新生成的视频写入 `outputs/`；本轮发布视频与运行报告保存在 `recordings/`。"
 
     return [
         md(f"""
@@ -375,14 +377,14 @@ contract = inspect_onnx(MODEL_PATH) if MODEL_PATH else None
         md(f"""
 ## 2. ONNX 导出入口
 
-训练得到的是策略 checkpoint；导出时要把 actor 和观测归一化一起固化到 ONNX。下面是本任务命令模板。`--video` 会录制物理仿真，新生成的视频写入 `outputs/`；本轮发布视频与运行报告保存在 `recordings/`。
+训练得到的是策略 checkpoint；导出时要把 actor 和观测归一化一起固化到 ONNX。下面是本任务命令模板。{recording_note}
 
 ```bash
 {export_template}
 ```
 """),
         code(r'''
-EXPORT_COMMAND = "python scripts/export_onnx.py run_dir=<FASTSAC_RUN_DIR> output=outputs/motrix_ball_balance_latest.onnx opset=11" if TASK_ID == "microduck-ball-balance" else ("uv run python scripts/export.py " + (TASK_ID or "<TASK_ID>") + " --checkpoint-file <CHECKPOINT.pt> --onnx-file outputs/policy.onnx --num-envs 1 --video --video-length 250")
+EXPORT_COMMAND = "mxlab export-onnx run_dir=<FASTSAC_RUN_DIR> output=outputs/motrix_ball_balance_latest.onnx opset=11" if TASK_ID == "microduck-ball-balance" else ("uv run python scripts/export.py " + (TASK_ID or "<TASK_ID>") + " --checkpoint-file <CHECKPOINT.pt> --onnx-file outputs/policy.onnx --num-envs 1 --video --video-length 250")
 print(EXPORT_COMMAND)
 print("导出前后检查：观测维度、动作顺序、归一化和 action clip。")
 '''),
@@ -655,7 +657,7 @@ TASKS = [
     ("02_浏览器物理扰动_回放与接口.ipynb", "浏览器物理扰动 / MuJoCo Web", None, None, "python 任务资料/02 的 serve_mjswan.py", False, None, None, "perturbation"),
     ("03_高跷行走_课程与ONNX_BPU.ipynb", "高跷行走 / 形态课程", "Mjlab-Stilt-Flat-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <STILT.onnx> --new-cmd-obs", False, None, None, "stilt"),
     ("04_摆动旋转_ONNX_BPU_MuJoCo.ipynb", "摆动旋转 / 自激摆动", "Mjlab-SwingPump-MicroDuck", "01-任务资料/04-MicroDuck摆动旋转强化学习复现/assets/microduck_swing_alpha050.onnx", "uv run python scripts/infer_policy.py --walking outputs/policy.onnx", False, None, None, "swing"),
-    ("05_球平衡_FastSAC_ONNX_BPU.ipynb", "球平衡 / FastSAC", "microduck-ball-balance", None, "python scripts/export_onnx.py run_dir=<FASTSAC_RUN_DIR> output=outputs/motrix_ball_balance_latest.onnx opset=11", False, None, None, "ball_balance"),
+    ("05_球平衡_FastSAC_ONNX_BPU.ipynb", "球平衡 / FastSAC", "microduck-ball-balance", None, "mxlab export-onnx run_dir=<FASTSAC_RUN_DIR> output=outputs/motrix_ball_balance_latest.onnx opset=11", False, None, None, "ball_balance"),
     ("06_梯面攀爬_接触与部署模板.ipynb", "梯面攀爬 / 接触课程", "Mjlab-Video-Ladder-Footstep-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <LADDER.onnx> --new-cmd-obs", False, None, None, "ladder"),
     ("07_RDK网页与多策略_BPU验收.ipynb", "导航 / RDK网页 / 多策略部署", "Mjlab-Velocity-Flat-MicroDuck", None, "uv run python scripts/infer_policy.py --walking <WALKING.onnx> --new-cmd-obs", True, None, None, "walking"),
 ]
