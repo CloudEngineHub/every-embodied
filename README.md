@@ -196,6 +196,30 @@
 
 
 
+  <tr>
+    <td width="33%" valign="top" align="center">
+      <a href="./16-专题组队学习/07-Jumper螃蟹机器人专题/assets/tripod-fresh999.mp4"><img src="./16-专题组队学习/07-Jumper螃蟹机器人专题/assets/posters/walk.gif" width="100%" alt="Jumper 螃蟹机器人三足步态行走仿真预览"></a>
+      <br>
+      <strong><a href="./16-专题组队学习/07-Jumper螃蟹机器人专题/03-Notebook/03_动作训练与评估.ipynb">Jumper 螃蟹机器人：三足步态行走</a></strong>
+      <br>
+      <sub>训练策略 · MuJoCo 仿真</sub> · <a href="./16-专题组队学习/07-Jumper螃蟹机器人专题/assets/tripod-fresh999.mp4">完整视频</a>
+    </td>
+    <td width="33%" valign="top" align="center">
+      <a href="./16-专题组队学习/07-Jumper螃蟹机器人专题/assets/jump-trained.mp4"><img src="./16-专题组队学习/07-Jumper螃蟹机器人专题/assets/posters/jump.gif" width="100%" alt="Jumper 螃蟹机器人参考动作跳跃仿真预览"></a>
+      <br>
+      <strong><a href="./16-专题组队学习/07-Jumper螃蟹机器人专题/03-Notebook/06_跳跃_参考动作训练与评估.ipynb">Jumper 螃蟹机器人：参考动作跳跃</a></strong>
+      <br>
+      <sub>训练策略 · MuJoCo 仿真</sub> · <a href="./16-专题组队学习/07-Jumper螃蟹机器人专题/assets/jump-trained.mp4">完整视频</a>
+    </td>
+    <td width="33%" valign="top" align="center">
+      <a href="./16-专题组队学习/07-Jumper螃蟹机器人专题/assets/dance-final.mp4"><img src="./16-专题组队学习/07-Jumper螃蟹机器人专题/assets/posters/dance.gif" width="100%" alt="Jumper 螃蟹机器人参考动作舞蹈仿真预览"></a>
+      <br>
+      <strong><a href="./16-专题组队学习/07-Jumper螃蟹机器人专题/03-Notebook/07_舞蹈_参考动作训练与评估.ipynb">Jumper 螃蟹机器人：参考动作舞蹈</a></strong>
+      <br>
+      <sub>训练策略 · MuJoCo 仿真</sub> · <a href="./16-专题组队学习/07-Jumper螃蟹机器人专题/assets/dance-final.mp4">完整视频</a>
+    </td>
+  </tr>
+
 </table>
 
 
@@ -246,7 +270,9 @@
 
   ## 🔥 News & Highlights
 
-  - **[2026-10-29]** 新增 [BladeMaster 与 DexLab 柔体切割仿真入门](./10-具身智能其他仿真工具及仿真前沿/13-BladeMaster与DexLab柔体切割/README.md)：介绍持久切割历史、刀具接触与香蕉和豆腐实验入口。
+  - **[2026-10-29]** 新增 [Jumper 螃蟹机器人专题](./16-专题组队学习/07-Jumper螃蟹机器人专题/README.md)：整理开源模型与动作资源，提供 7 篇 Notebook、Ubuntu 工作站训练和评估记录，以及三足行走、跳跃和舞蹈仿真视频。
+  - **[2026-10-29]** 新增 [BladeMaster 与 DexLab 柔体切割仿真入门](./10-具身智能其他仿真工具及仿真前沿/13-BladeMaster与DexLab柔体切割/README.md)：补充 CPU 仿真实测与动画：豆腐切成两块，香蕉三刀得到四块，并记录刀具接触与切割结果。
+  - **[2026-10-25]** 更新 [MicroDuck 球平衡与 FastSAC](./16-专题组队学习/05-MicroDuck运动策略与任务开发专题/01-任务资料/05-MotrixLab-MicroDuck球平衡与FastSAC/README.md)：固定 MotrixLab 版本与依赖，更新训练、回放及 ONNX 导出命令，并保留旧版 Notebook 和视频的版本说明。
   - **[2026-10-25]** 新增 [HIL-SERL 人机协同强化学习与 MuJoCo 插孔](./05-具身场景的深度和强化学习/08-HIL-SERL人机协同强化学习与MuJoCo插孔/README.md)：配图讲解干预动作如何进入双回放缓冲区，并提供官方 Panda 仿真、示范采集、actor/learner 启动与插孔任务移植路线。
 
   - **[2026-10-25]** 新增 [SmolWAM 轻量世界动作模型](./06-策略抓取或抓取VLA/大模型控制、VLA、VLM/12SmolWAM轻量世界动作模型/README.md)：以三张官方图拆解单帧适配、注意力汇、边界层剪枝、状态条件动作查询和单步整流流，整理 LIBERO 结果、布局蒸馏与官方代码入口。
@@ -388,6 +414,7 @@
 
 | 专题 | 关键内容 | 状态 |
 | :--- | :--- | :--- |
+| **Jumper 螃蟹机器人专题** | [专题首页](./16-专题组队学习/07-Jumper螃蟹机器人专题/README.md)、[三足行走](./16-专题组队学习/07-Jumper螃蟹机器人专题/03-Notebook/03_动作训练与评估.ipynb)、[跳跃](./16-专题组队学习/07-Jumper螃蟹机器人专题/03-Notebook/06_跳跃_参考动作训练与评估.ipynb)、[舞蹈](./16-专题组队学习/07-Jumper螃蟹机器人专题/03-Notebook/07_舞蹈_参考动作训练与评估.ipynb) | ✅ |
 | **19. Datawhale 每月组队学习路径** | [具身智能零基础入门 v6](./19-Datawhale每月组队学习/06组队学习路径v6.md)、[v5 旧版路径](./19-Datawhale每月组队学习/05组队学习路径v5.md) | ✅ |
 | **16. 达摩院组队学习专题** | [专题导航](./16-专题组队学习/01-达摩院组队学习/README.md)、[Task01 理论与趋势](./16-专题组队学习/01-达摩院组队学习/Task%2001_理论与趋势.md)、[Task02 技术透视](./16-专题组队学习/01-达摩院组队学习/Task%2002_技术透视.md)、[Task03 演示实操](./16-专题组队学习/01-达摩院组队学习/Task%2003_详细演示实操%20-%20从想法到实现.md)、[Task04 总结分享](./16-专题组队学习/01-达摩院组队学习/Task%2004_总结分享.md) | ✅ |
 
@@ -463,4 +490,5 @@
   <br />
   你可以自由分享与改编本项目内容，但需保留来源署名。详细条款见 <a href="LICENSE">LICENSE</a>。
   </div>
+
 
