@@ -2,6 +2,16 @@
 
 从金钢科技的 22 自由度螃蟹机器人 Jumper（跳跳）出发，一起学习机器人模型、六足步态、强化学习、仿真评估和外观场景创作。专题参考 [MicroDuck 专题](../05-MicroDuck运动策略与任务开发专题/README.md) 的组队学习与 Notebook 形式，先读懂并运行公开工具，再设计自己的动作和场景。
 
+## 先看跳跳的动作
+
+下面三段视频均来自 Ubuntu 工作站的 MuJoCo 仿真，使用本专题基于上游开源任务训练的策略。动图是视频片段，点击动图或下方链接可观看完整视频。
+
+| 三足行走 | 蓄力跳跃 | 螃蟹舞 |
+| --- | --- | --- |
+| [![三足行走预览](./assets/posters/walk.gif)](./assets/tripod-fresh999.mp4)<br>[▶ 打开行走视频](./assets/tripod-fresh999.mp4)<br>GPU 从零训练的三足策略；0.3 m/s 指令下，10 秒回放平均前向速度约 0.278 m/s。[训练与评估](./03-Notebook/03_动作训练与评估.ipynb) | [![跳跃预览](./assets/posters/jump.gif)](./assets/jump-trained.mp4)<br>[▶ 打开跳跃视频](./assets/jump-trained.mp4)<br>参考动作残差策略的仿真回放；上游单环境评估的基座升高约 0.158–0.160 m。[训练与评估](./03-Notebook/06_跳跃_参考动作训练与评估.ipynb) | [![螃蟹舞预览](./assets/posters/dance.gif)](./assets/dance-final.mp4)<br>[▶ 打开舞蹈视频](./assets/dance-final.mp4)<br>GPU 训练 500 次迭代后的无声回放，展示约 20 秒参考编舞片段。[训练与评估](./03-Notebook/07_舞蹈_参考动作训练与评估.ipynb) |
+
+视频里的动作和测量来自仿真；跳跃评估与录像是不同回放。上游预训练动作包的行走、跳跃和舞蹈见[动作包 Notebook](./03-Notebook/05_官方动作包_跳跃与舞蹈.ipynb)。
+
 ## 学习路线
 
 | 阶段 | 内容 | Notebook | 产出 |
