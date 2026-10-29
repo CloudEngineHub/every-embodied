@@ -44,7 +44,7 @@ python scripts/bounded_run.py --profile adaptive \
 python -m dexlab.cutting_score "$RUN"
 ```
 
-项目记录中的豆腐基线包含 3 秒模拟过程：下刀、撤刀，然后向一侧施加诊断冲量。运行完成后查看 `$RUN/manifest.json`、`states.npz`、`trace.npz` 和 `score.json`。以独立评分器退出状态及 `score.json` 为准：完整切割应形成两个连通分量，并满足项目定义的位移、接触和数值检查。运行器成功退出只表明记录过程结束。
+项目记录中的豆腐基线包含 3 秒模拟过程：下刀、撤刀，然后向一侧施加诊断冲量。运行完成后查看 `$RUN/manifest.json`、`states.npz`、`trace.npz` 和 `score.json`。以独立评分器退出状态及 `score.json` 为准：完整切割应形成两个连通分量，并满足项目定义的位移、接触和数值检查。运行器成功退出只表明记录过程结束。本机使用现有 Windows Python 环境直接运行豆腐求解器和独立评分，得到两个分量且评分通过；下述 Linux 有界执行链尚未在本机验证。
 
 ## 4. 运行香蕉连续三刀
 
@@ -65,7 +65,7 @@ python -m dexlab.cutting_score "$RUN"
 
 ## 5. 生成并查看回放
 
-以下以刚完成的香蕉记录为例。渲染读取已有物理状态，不重新运行仿真；官方建议在单独的受限后处理窗口执行。VTK 渲染需要可用的图形环境或离屏渲染支持；结束后在输出目录查找视频和图片，与第 1 节官方粒子视频对照：
+以下以刚完成的香蕉记录为例。渲染读取已有物理状态，不重新运行仿真；官方建议在单独的受限后处理窗口执行。当前源码使用 `vtkEGLRenderWindow`，需要带 EGL 支持的 VTK 和可用的 EGL 图形环境。可以先运行 `python -c "import vtk; print(hasattr(vtk, 'vtkEGLRenderWindow'))"` 检查；若输出 `False`，需安装支持 EGL 的 VTK 环境后再渲染。本机 Windows 现有 VTK 未提供该类，预览未跑通。渲染结束后在输出目录查找视频和图片，与第 1 节官方粒子视频对照：
 
 ```bash
 MEDIA="$CUT_ROOT/banana-media-01"
