@@ -1,0 +1,10 @@
+{
+  "task": "jumper.dance",
+  "upstream_commit": "b2e58669848a3ba4f209597cd6bebdfe9d0533a4",
+  "training": {"backend": "warp:cuda", "num_envs": 1024, "iterations_completed": 500, "environment_steps": 12288000, "training_time": "00:10:34", "seed": null, "reference_duration_s_approx": 235.7},
+  "checkpoint": "../02-可运行代码/checkpoints/dance-model-499.pt",
+  "checkpoint_sha256": "5791a7797c4519e60b3e5b92a780c80611559b66e4f8b59c72502f984a83f0a7",
+  "training_metrics_at_iteration_499": {"mean_reward": 41.53, "joint_position_error_l2_rad": 0.3505, "mean_body_position_error_m": 0.0123},
+  "evaluation": {"backend": "native:cpu", "physics_hz": 200, "control_hz": 50, "observation_noise": true, "steps_requested": 1000, "steps_completed": 1000, "early_termination": false, "duration_s": 20.0, "note": "A short reference-start replay, not the full choreography."},
+  "video": "../assets/dance-final.mp4"
+}

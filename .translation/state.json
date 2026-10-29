@@ -213,7 +213,7 @@
     },
     "05-具身场景的深度和强化学习/README.md": {
       "target": "en/05-deep-and-reinforcement-learning/README.md",
-      "sourceHash": "8556650dfa2cd56b62912ae634f80589b7c223dff0fdc34cbbe68998ec3ba192",
+      "sourceHash": "15b93f93d9e35cf8e5fa2945ab4febc425cf5dbaee04ed5365994005252c8660",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -1863,7 +1863,7 @@
     },
     "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/09具身智能推理与部署框架/README.md": {
       "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/09-embodied-ai-reasoning-and-deployment-framework/README.md",
-      "sourceHash": "98b0a8e84ccfe0df3d017b35fc6a99d4c41d394539e5bfad42f75253805646d2",
+      "sourceHash": "2187b8f8e74f7c1af870badff6770d1019ed90b1f1ac224d8b37f72fcc1c7204",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
@@ -1984,6 +1984,54 @@
     "04-具身场景的计算机视觉、3D重建/05-LTX-Alpha-Gen视频抠像与透明合成.md": {
       "target": "en/04-computer-vision-and-3d-reconstruction/05-ltx-alpha-gen-video-cutout-and-transparent-synthesis.md",
       "sourceHash": "e2eaa23d1fa9e176cd9a572928b098e2b95a8f4088157d430e31b09888f8f05c",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/21-TurboVLA轻量视觉语言动作模型精读/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/21-turbovla-lightweight-vision-language-action-model-deep-reading/README.md",
+      "sourceHash": "434395b2dc473ab5e7616ae1afdcc1751d4d7036a7476d78cf0eede8c573dc90",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/11Agnes-Harness多设备Demo/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/11-agnes-harness-multi-device-demo/README.md",
+      "sourceHash": "b7825dd9a1cefff097ed9f1562efd1ff2a6a7c31155e2d243bbd080d39908b67",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/12SmolWAM轻量世界动作模型/README.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/12-smolwam-lightweight-world-action-model/README.md",
+      "sourceHash": "b4ffe7e97865b46ca5fcffab7a9190ff2a309f49c9b323462e02439e3696ccc2",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "06-策略抓取或抓取VLA/大模型控制、VLA、VLM/12SmolWAM轻量世界动作模型/assets/SOURCES.md": {
+      "target": "en/06-manipulation-and-vla/large-model-control-vla-vlm/12-smolwam-lightweight-world-action-model/assets/SOURCES.md",
+      "sourceHash": "69cffb4a0907b96edcf23d1cd32a8827773d135e019b9b8f69222ab7aa703a37",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "05-具身场景的深度和强化学习/08-HIL-SERL人机协同强化学习与MuJoCo插孔/README.md": {
+      "target": "en/05-deep-and-reinforcement-learning/08-hil-serl-human-machine-reinforcement-learning-and-mujoco-jack/README.md",
+      "sourceHash": "3ec4570f4db2a001d1f473c841123fe1de1ca6b0f9a19b223f79b4ae9628ce92",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/13-BladeMaster与DexLab柔体切割/README.md": {
+      "target": "en/10-simulation-tools-and-frontiers/13-blademaster-and-dexlab-soft-body-cutting/README.md",
+      "sourceHash": "0bf8a389b8ea33bb365961904c59483334848fe09845a4b08ff293940427fbc7",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/07-Jumper螃蟹机器人专题/01-学习资料/跳跃与舞蹈实跑记录.md": {
+      "target": "en/16-study-programs/07-jumper-crab-robot-special-topic/01-learning-materials/jumping-and-dancing-sprint-records.md",
+      "sourceHash": "6be372421e929295fd26321ab3f57336ec966a7bae8cdafc37ff73fbef26ba1c",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/07-Jumper螃蟹机器人专题/README.md": {
+      "target": "en/16-study-programs/07-jumper-crab-robot-special-topic/README.md",
+      "sourceHash": "39082c2307ee00b07c70eeab5b1eecd2471a6dc16028f9f78a5cb9d82932871d",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }

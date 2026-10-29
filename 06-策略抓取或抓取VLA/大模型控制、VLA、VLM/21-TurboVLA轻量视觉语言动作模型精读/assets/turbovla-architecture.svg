@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
+  <title id="title">TurboVLA：轻量视觉与语言交互到连续动作块</title>
+  <desc id="desc">多视角图像经可训练 DINOv3、指令经冻结 BERT，投影到256维后经过六层双向交互。机器人状态单独投影为两个状态token，与融合特征一起送入三层ACT风格解码器，由H个动作query预测连续动作块。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#52667a" stroke-width="1.6"/></marker>
+    <style>
+      text {font-family:'Microsoft YaHei','Noto Sans CJK SC',sans-serif;fill:#17324d}
+      .label {font-size:21px;font-weight:600;text-anchor:middle}
+      .small {font-size:16px;text-anchor:middle;fill:#476079}
+      .line {fill:none;stroke:#52667a;stroke-width:2.4;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1200" height="560" rx="20" fill="#f7f9fc"/>
+  <text x="44" y="48" font-size="28" font-weight="700">TurboVLA · 从任务条件到连续动作</text>
+  <text x="44" y="80" font-size="16" fill="#476079">教学示意：状态在动作解码阶段加入；视觉与文本先进行直接双向交互</text>
+  <rect x="36" y="130" width="170" height="82" rx="14" fill="#e0edff" stroke="#8caee0"/>
+  <text x="121" y="165" class="label">多视角 RGB</text><text x="121" y="192" class="small">2 / 3 路相机</text>
+  <rect x="260" y="130" width="210" height="82" rx="14" fill="#e0edff" stroke="#8caee0"/>
+  <text x="365" y="165" class="label">DINOv3 + 投影</text><text x="365" y="192" class="small">可训练 · 空间 token</text>
+  <rect x="36" y="275" width="170" height="82" rx="14" fill="#e8e2fb" stroke="#b3a0da"/>
+  <text x="121" y="310" class="label">自然语言指令</text><text x="121" y="337" class="small">任务目标与关系</text>
+  <rect x="260" y="275" width="210" height="82" rx="14" fill="#e8e2fb" stroke="#b3a0da"/>
+  <text x="365" y="310" class="label">BERT + 投影</text><text x="365" y="337" class="small">BERT 冻结 · 在线前向</text>
+  <rect x="535" y="130" width="230" height="227" rx="16" fill="#dcf2ef" stroke="#74b8ad"/>
+  <text x="650" y="167" class="label">双向视觉—语言交互</text>
+  <text x="650" y="197" class="small">共享维度 d = 256</text>
+  <rect x="560" y="220" width="180" height="40" rx="8" fill="#fff"/>
+  <text x="650" y="247" class="small">视觉查询语言</text>
+  <rect x="560" y="274" width="180" height="40" rx="8" fill="#fff"/>
+  <text x="650" y="301" class="small">语言查询视觉</text>
+  <text x="650" y="341" class="small">堆叠 6 层</text>
+  <rect x="835" y="200" width="325" height="157" rx="16" fill="#fff0dc" stroke="#d5a66c"/>
+  <text x="997" y="236" class="label">ACT 风格动作解码器</text>
+  <text x="997" y="266" class="small">3 层 · H 个可学习 action query</text>
+  <text x="997" y="298" class="label">并行预测 H × 动作维度</text>
+  <text x="997" y="330" class="small">MLP + tanh → 连续动作块</text>
+  <rect x="260" y="419" width="505" height="70" rx="14" fill="#eef0f4" stroke="#a7b1be"/>
+  <text x="512" y="449" class="label">当前机器人状态 → 2 个状态 token</text>
+  <text x="512" y="475" class="small">单独编码，与视觉—语言特征拼接</text>
+  <path d="M206 171 H250" class="line"/><path d="M206 316 H250" class="line"/>
+  <path d="M470 171 H525" class="line"/><path d="M470 316 H525" class="line"/>
+  <path d="M765 244 H825" class="line"/>
+  <path d="M765 454 H998 V367" class="line"/>
+  <text x="44" y="532" font-size="15" fill="#476079">LIBERO：H = 12，7 维动作　｜　RoboTwin 2.0：H = 50，14 维动作　｜　训练：masked L1 行为克隆</text>
+</svg>

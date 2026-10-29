@@ -1,0 +1,1008 @@
+[mjrl] backend=native device=cpu num_envs=1 threads=1 (forced)
+[mjrl] task=jumper.jump model=/data/Data14TB/robotics_shared/repos/jumper-everyembodied/assets/jumper/jumper.xml
+[mjrl] checkpoint logs/jumper/jumper.jump/2026-10-29_14-48-03/model_300.pt
+[mjrl] obs-noise: training levels, from the task (actor: corruption False -> True)
+[mjrl]   actor: base_ang_vel, joint_pos, joint_vel, projected_gravity
+/data/Data14TB/robotics_shared/repos/jumper-everyembodied/rl/mjlab/scene/scene.py:66: UserWarning: Entity 'robot' has non-default <option> fields (integrator, timestep) that will not be propagated by MjSpec.attach(). Use MujocoCfg instead.
+  self._add_entities()
+WARNING: Attach conflict when attaching 'jumper' to 'mjlab scene', policy is 'warning'
+timestep: parent has 0.002 (default), child has 0.001, keeping parent value
+integrator: parent has 0 (default), child has 3, keeping parent value
+
+/data/Data14TB/robotics_shared/repos/jumper-everyembodied/rl/mjrl/backend/native_sim.py:485: UserWarning: Attach conflict when attaching 'jumper' to 'mjlab scene', policy is 'warning'
+timestep: parent has 0.002 (default), child has 0.001, keeping parent value
+integrator: parent has 0 (default), child has 3, keeping parent value
+  full_model = spec.compile()
+/data/Data14TB/robotics_shared/repos/jumper-everyembodied/rl/mjrl/backend/native_sim.py:607: UserWarning: Attach conflict when attaching 'jumper' to 'mjlab scene', policy is 'warning'
+timestep: parent has 0.002 (default), child has 0.001, keeping parent value
+integrator: parent has 0 (default), child has 3, keeping parent value
+  mj_model = spec.compile()
+Warp 1.18.0 initialized:
+   CUDA Toolkit 13.4, Driver 13.0
+   Devices:
+     "cpu"      : "x86_64"
+     "cuda:0"   : "NVIDIA RTX PRO 6000 Blackwell Workstation Edition" (95 GiB, sm_120, mempool enabled)
+   Kernel cache:
+     /home/ubuntu/.cache/warp/1.18.0
+
++---------------------------------+
+|         Base Environment        |
++------------------------+--------+
+| Property               | Value  |
++------------------------+--------+
+| Number of environments | 1      |
+| Environment device     | cpu    |
+| Environment seed       | None   |
+| Physics step-size      | 0.0025 |
+| Environment step-size  | 0.005  |
++------------------------+--------+
+
+[INFO] <EventManager> contains 2 active terms.
++-------------------------------------+
+| Active Event Terms in Mode: 'reset' |
++--------+----------------------------+
+| Index  | Name                       |
++--------+----------------------------+
+|   0    | reset_to_default           |
+|   1    | reset_from_reference       |
++--------+----------------------------+
++---------------------------------------+
+| Active Event Terms in Mode: 'startup' |
++-----------+---------------------------+
+|   Index   | Name                      |
++-----------+---------------------------+
+|     0     | foot_friction             |
+|     1     | encoder_bias              |
+|     2     | base_com                  |
++-----------+---------------------------+
++-----------------------------+
+| Domain Randomization Fields |
++-------+---------------------+
+| Index | Field Name          |
++-------+---------------------+
+|   0   | geom_friction       |
+|   1   | body_ipos           |
+|   2   | body_subtreemass    |
+|   3   | dof_invweight0      |
+|   4   | body_invweight0     |
+|   5   | tendon_length0      |
+|   6   | tendon_invweight0   |
+|   7   | actuator_acc0       |
++-------+---------------------+
+
+[jump-ref] high_jump_flat.npz: 368 frames @ 250 Hz, 1.47 s (go at 0.30 s, phase spans 1.17 s), stand base_z 0.0942 m
+[INFO] <CommandManager> contains 1 active terms.
++----------------------------------+
+|       Active Command Terms       |
++-------+------+-------------------+
+| Index | Name |        Type       |
++-------+------+-------------------+
+|   0   | jump | JumpMotionCommand |
++-------+------+-------------------+
+
+[INFO] <ActionManager> contains 1 active terms.
++---------------------------------+
+| Active Action Terms (shape: 20) |
++-------+-----------+-------------+
+| Index | Name      |   Dimension |
++-------+-----------+-------------+
+|   0   | joint_pos |          20 |
++-------+-----------+-------------+
+
+[INFO] <ObservationManager> contains 2 groups.
++------------------------------------------------------------+
+| Active Observation Terms in Group: 'actor' (shape: (167,)) |
++-----------+---------------------------------+--------------+
+|   Index   | Name                            |    Shape     |
++-----------+---------------------------------+--------------+
+|     0     | base_ang_vel                    |     (3,)     |
+|     1     | projected_gravity               |     (3,)     |
+|     2     | joint_pos                       |    (20,)     |
+|     3     | joint_vel                       |    (20,)     |
+|     4     | actions                         |    (20,)     |
+|     5     | jump_phase                      |     (1,)     |
+|     6     | ref_future                      |    (100,)    |
++-----------+---------------------------------+--------------+
++-------------------------------------------------------------+
+| Active Observation Terms in Group: 'critic' (shape: (170,)) |
++-----------+----------------------------------+--------------+
+|   Index   | Name                             |    Shape     |
++-----------+----------------------------------+--------------+
+|     0     | base_lin_vel                     |     (3,)     |
+|     1     | base_ang_vel                     |     (3,)     |
+|     2     | projected_gravity                |     (3,)     |
+|     3     | joint_pos                        |    (20,)     |
+|     4     | joint_vel                        |    (20,)     |
+|     5     | actions                          |    (20,)     |
+|     6     | jump_phase                       |     (1,)     |
+|     7     | ref_future                       |    (100,)    |
++-----------+----------------------------------+--------------+
+
+[INFO] <TerminationManager> contains 3 active terms.
++---------------------------------------+
+|        Active Termination Terms       |
++-------+--------------------+----------+
+| Index | Name               | Time Out |
++-------+--------------------+----------+
+|   0   | time_out           |   True   |
+|   1   | fell_over          |  False   |
+|   2   | reference_diverged |  False   |
++-------+--------------------+----------+
+
+[INFO] <RewardManager> contains 11 active terms.
++--------------------------------------+
+|         Active Reward Terms          |
++-------+--------------------+---------+
+| Index | Name               |  Weight |
++-------+--------------------+---------+
+|   0   | ref_joint_pos      |     3.0 |
+|   1   | ref_base_height    |     3.0 |
+|   2   | ref_base_lin_vel   |     2.0 |
+|   3   | ref_foot_pos       |     2.0 |
+|   4   | ref_base_ori       |     1.5 |
+|   5   | ref_contact        |     2.5 |
+|   6   | ref_joint_vel      |     1.0 |
+|   7   | alive              |     0.5 |
+|   8   | dof_pos_limits     |    -1.0 |
+|   9   | undesired_contacts |    -1.0 |
+|   10  | action_rate_l2     | -0.0144 |
++-------+--------------------+---------+
+
+[INFO] <NullCurriculumManager> (inactive)
+[INFO] <MetricsManager> contains 1 active terms.
++-------------------------+
+|   Active Metrics Terms  |
++-------+-----------------+
+| Index | Name            |
++-------+-----------------+
+|   0   | mean_action_acc |
++-------+-----------------+
+
+[INFO] <NullRecorderManager> (inactive)
+[mjrl] replay: 11 reward terms are not evaluated (nothing in a replay reads them)
+--------------------------------------------------------------------------------
+Resolved observation sets:
+	 actor :  ('actor',)
+	 critic :  ('critic',)
+--------------------------------------------------------------------------------
+Actor Model: MLPModel(
+  (obs_normalizer): EmpiricalNormalization()
+  (distribution): GaussianDistribution()
+  (mlp): MLP(
+    (0): Linear(in_features=167, out_features=512, bias=True)
+    (1): ELU(alpha=1.0)
+    (2): Linear(in_features=512, out_features=256, bias=True)
+    (3): ELU(alpha=1.0)
+    (4): Linear(in_features=256, out_features=128, bias=True)
+    (5): ELU(alpha=1.0)
+    (6): Linear(in_features=128, out_features=20, bias=True)
+  )
+)
+Critic Model: MLPModel(
+  (obs_normalizer): EmpiricalNormalization()
+  (mlp): MLP(
+    (0): Linear(in_features=170, out_features=512, bias=True)
+    (1): ELU(alpha=1.0)
+    (2): Linear(in_features=512, out_features=256, bias=True)
+    (3): ELU(alpha=1.0)
+    (4): Linear(in_features=256, out_features=128, bias=True)
+    (5): ELU(alpha=1.0)
+    (6): Linear(in_features=128, out_features=1, bias=True)
+  )
+)
+[measure] no toolkit here can open a window, so the live view is a table (`pip install PyQt5` in the venv is usually enough). The plot is still written at the end
+joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.476    -0.71     1.94    0.272   0.719
+LF_J1_joint                -1.173    -1.02     0.01    0.197   0.951
+LF_J2_joint                -0.391    -0.68     1.48    0.181   0.436
+LF_J3_joint                -1.542    -1.11     0.32    0.256   0.402
+LF_J4_joint                 0.000    -0.00     0.00   -0.002   0.003
+RF_J0_joint                 0.490    -1.74     1.17   -0.179   0.608
+RF_J1_joint                -1.177    -1.01     0.05    0.470   0.778
+RF_J2_joint                 0.403    -2.24     0.83   -0.260   0.316
+RF_J3_joint                 1.547    -0.03     1.36   -0.115   0.326
+RF_J4_joint                -0.000    -0.00     0.00    0.003   0.003
+LM_J0_joint                -0.049    -2.08     0.75    0.118   1.083
+LM_J1_joint                 0.820     0.22     3.32   -0.283   0.658
+LM_J2_joint                -2.098    -3.26    -0.42   -0.405   0.709
+RM_J0_joint                 0.038    -0.90     1.47   -0.031   0.621
+RM_J1_joint                -0.832    -4.15     0.63    0.081   0.623
+RM_J2_joint                 2.109    -0.07     4.33    0.158   0.841
+LR_J0_joint                 0.618    -0.72     0.71   -0.098   0.365
+LR_J1_joint                 0.815    -0.37     1.41   -0.222   0.703
+LR_J2_joint                -2.156    -2.36    -0.68   -0.060   0.783
+RR_J0_joint                -0.631    -0.65     0.93    0.320   0.468
+RR_J1_joint                -0.802    -1.39     0.54    0.092   0.561
+RR_J2_joint                 2.128     0.63     1.46    0.145   0.543
+
+[play]  49.8 fps   0.25x real time   speed 0.02 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.365    -0.71     1.94   -0.066   0.719
+LF_J1_joint                -1.235    -1.02     0.01    0.011   0.951
+LF_J2_joint                -0.436    -1.02     1.48    0.066   0.436
+LF_J3_joint                -1.578    -1.11     0.32   -0.019   0.402
+LF_J4_joint                 0.000    -0.00     0.00   -0.004   0.004
+RF_J0_joint                 0.391    -1.74     1.17    0.208   0.608
+RF_J1_joint                -1.242    -1.01     0.05    0.168   0.778
+RF_J2_joint                 0.471    -2.24     1.52   -0.013   0.441
+RF_J3_joint                 1.564    -0.26     1.36    0.049   0.326
+RF_J4_joint                -0.000    -0.00     0.00    0.003   0.003
+LM_J0_joint                -0.024    -2.08     0.75   -0.067   1.083
+LM_J1_joint                 1.010     0.22     3.32   -0.105   0.691
+LM_J2_joint                -2.238    -3.26    -0.42   -0.136   0.709
+RM_J0_joint                 0.026    -0.90     1.47    0.163   0.621
+RM_J1_joint                -1.021    -4.15     0.63   -0.004   0.623
+RM_J2_joint                 2.240    -0.07     4.33    0.111   0.841
+LR_J0_joint                 0.592    -0.78     0.71   -0.432   0.432
+LR_J1_joint                 0.979    -0.37     2.57   -0.241   0.703
+LR_J2_joint                -2.240    -2.36    -0.43   -0.004   0.783
+RR_J0_joint                -0.596    -0.65     0.93    0.120   0.468
+RR_J1_joint                -0.966    -2.62     0.54    0.187   0.561
+RR_J2_joint                 2.211     0.46     1.46   -0.055   0.543
+
+[play]  35.5 fps   0.18x real time   speed 0.00 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.363    -1.20     1.94   -0.028   0.719
+LF_J1_joint                -1.262    -1.02     0.30    0.368   0.951
+LF_J2_joint                -0.455    -2.77     2.11    0.142   0.436
+LF_J3_joint                -1.552    -1.15     2.29    0.136   0.402
+LF_J4_joint                 0.000    -0.00     0.00   -0.003   0.004
+RF_J0_joint                 0.383    -1.74     1.17   -0.078   0.608
+RF_J1_joint                -1.270    -1.11     0.44    0.469   0.778
+RF_J2_joint                 0.489    -2.24     1.98   -0.217   0.441
+RF_J3_joint                 1.540    -1.70     1.36   -0.120   0.467
+RF_J4_joint                -0.000    -0.00     0.00    0.003   0.004
+LM_J0_joint                -0.033    -2.08     0.75   -0.169   1.083
+LM_J1_joint                 1.068    -0.87     3.32   -0.517   0.691
+LM_J2_joint                -2.244    -3.26     1.27   -0.544   0.709
+RM_J0_joint                 0.034    -0.90     1.47    0.127   0.621
+RM_J1_joint                -1.077    -4.15     0.64    0.440   0.623
+RM_J2_joint                 2.243    -1.15     4.33    0.516   0.841
+LR_J0_joint                 0.576    -0.78     0.71    0.150   0.432
+LR_J1_joint                 1.050    -1.00     2.57   -0.321   0.703
+LR_J2_joint                -2.275    -2.36     0.56   -0.170   0.783
+RR_J0_joint                -0.583    -0.65     0.94   -0.149   0.468
+RR_J1_joint                -1.044    -2.62     0.78    0.261   0.561
+RR_J2_joint                 2.250    -0.39     1.46    0.145   0.543
+
+[play]  49.9 fps   0.25x real time   speed 0.19 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.738    -9.41     1.94    1.746   1.746
+LF_J1_joint                -0.815    -1.02    11.26   -1.746   1.746
+LF_J2_joint                -0.520    -4.68     3.08    1.278   1.278
+LF_J3_joint                -1.115    -1.15    13.31   -1.360   1.492
+LF_J4_joint                 0.001    -0.01     0.10   -0.026   0.086
+RF_J0_joint                 0.763    -1.74     9.95   -1.746   1.746
+RF_J1_joint                -0.818    -1.11    11.43   -1.746   1.746
+RF_J2_joint                 0.537    -3.01     4.64   -1.257   1.257
+RF_J3_joint                 1.117   -13.42     1.36    1.427   1.536
+RF_J4_joint                -0.001    -0.08     0.02    0.017   0.074
+LM_J0_joint                -0.096    -2.08     1.41    0.085   1.083
+LM_J1_joint                -0.096   -33.15     3.32   -1.603   1.746
+LM_J2_joint                -1.413    -3.26    32.04    1.744   1.746
+RM_J0_joint                 0.085    -1.27     1.86   -0.021   0.673
+RM_J1_joint                 0.132    -4.15    33.86    1.552   1.746
+RM_J2_joint                 1.397   -32.52     4.33   -1.712   1.746
+LR_J0_joint                 0.627    -0.78     5.29    1.112   1.746
+LR_J1_joint                 0.113   -26.04     2.57    1.488   1.746
+LR_J2_joint                -1.572    -2.36    23.65   -0.649   1.746
+RR_J0_joint                -0.658    -5.45     0.94   -0.474   1.746
+RR_J1_joint                -0.098    -2.62    26.08   -1.438   1.746
+RR_J2_joint                 1.546   -23.96     1.46    0.792   1.746
+
+[play]  36.9 fps   0.18x real time   speed 0.06 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.747    -9.41     5.03    0.120   1.746
+LF_J1_joint                -1.447   -13.31    11.26    0.056   1.746
+LF_J2_joint                 0.140    -4.68    13.50   -0.030   1.746
+LF_J3_joint                -1.822   -16.36    13.31    0.036   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.002   0.086
+RF_J0_joint                 0.758    -5.30     9.95   -0.120   1.746
+RF_J1_joint                -1.454   -13.21    11.43    0.089   1.746
+RF_J2_joint                -0.119   -13.32     4.64    0.029   1.654
+RF_J3_joint                 1.822   -13.42    16.31   -0.062   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.002   0.081
+LM_J0_joint                -0.037    -3.71     2.38    0.001   1.451
+LM_J1_joint                -0.143   -33.26    17.06   -0.246   1.746
+LM_J2_joint                -0.225    -3.26    33.90   -0.140   1.746
+RM_J0_joint                 0.031    -2.35     3.67    0.032   1.284
+RM_J1_joint                 0.143   -17.67    33.95    0.298   1.746
+RM_J2_joint                 0.218   -34.98     4.33    0.142   1.746
+LR_J0_joint                 1.175    -0.78     8.71   -0.164   1.746
+LR_J1_joint                -0.013   -26.04     6.21    0.016   1.746
+LR_J2_joint                -0.200    -2.36    25.00   -0.127   1.746
+RR_J0_joint                -1.192    -8.26     0.94    0.182   1.746
+RR_J1_joint                 0.017    -6.31    26.08   -0.018   1.746
+RR_J2_joint                 0.174   -24.99     1.46    0.127   1.746
+
+[play]  41.9 fps   0.21x real time   speed 0.12 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.668    -9.41     5.03   -0.243   1.746
+LF_J1_joint                -1.565   -13.31    11.26    0.067   1.746
+LF_J2_joint                 0.158    -4.68    13.50   -0.108   1.746
+LF_J3_joint                -1.866   -16.36    13.31   -0.004   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.687    -5.30     9.95    0.233   1.746
+RF_J1_joint                -1.562   -13.21    11.43    0.026   1.746
+RF_J2_joint                -0.142   -13.32     4.64    0.089   1.654
+RF_J3_joint                 1.866   -13.42    16.31    0.014   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.004   0.081
+LM_J0_joint                 0.001    -3.71     2.38    0.052   1.451
+LM_J1_joint                -0.021   -33.26    17.06   -0.046   1.746
+LM_J2_joint                -0.342   -10.75    33.90    0.131   1.746
+RM_J0_joint                -0.009    -2.35     3.67   -0.026   1.284
+RM_J1_joint                 0.013   -17.67    33.95    0.028   1.746
+RM_J2_joint                 0.334   -34.98    10.70   -0.121   1.746
+LR_J0_joint                 1.124    -3.05     8.71   -0.332   1.746
+LR_J1_joint                 0.043   -26.04     6.21   -0.102   1.746
+LR_J2_joint                -0.289   -11.02    25.00   -0.046   1.746
+RR_J0_joint                -1.138    -8.26     2.96    0.267   1.746
+RR_J1_joint                -0.043    -6.31    26.08    0.206   1.746
+RR_J2_joint                 0.262   -24.99    10.94    0.071   1.746
+
+[play]  43.8 fps   0.22x real time   speed 0.32 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.409    -9.41     5.03   -0.102   1.746
+LF_J1_joint                -1.316   -13.31    11.26   -0.360   1.746
+LF_J2_joint                -0.388    -7.26    13.50    0.084   1.746
+LF_J3_joint                -1.569   -16.36    13.31   -0.231   1.746
+LF_J4_joint                -0.000    -0.18     0.10   -0.010   0.086
+RF_J0_joint                 0.422    -5.30     9.95    0.136   1.746
+RF_J1_joint                -1.323   -13.21    11.43   -0.159   1.746
+RF_J2_joint                 0.411   -13.32     7.29   -0.109   1.654
+RF_J3_joint                 1.571   -13.42    16.31    0.078   1.746
+RF_J4_joint                 0.000    -0.08     0.16   -0.001   0.081
+LM_J0_joint                -0.031    -3.71     2.38   -0.117   1.451
+LM_J1_joint                 0.987   -33.26    17.06   -0.209   1.746
+LM_J2_joint                -2.114   -22.66    33.90    0.356   1.746
+RM_J0_joint                 0.030    -2.35     3.67    0.052   1.284
+RM_J1_joint                -0.997   -17.67    33.95    0.143   1.746
+RM_J2_joint                 2.110   -34.98    22.66   -0.359   1.746
+LR_J0_joint                 0.632    -5.98     8.71    0.064   1.746
+LR_J1_joint                 0.966   -26.04    11.09   -0.186   1.746
+LR_J2_joint                -2.128   -23.66    25.00    0.360   1.746
+RR_J0_joint                -0.641    -8.26     6.11   -0.123   1.746
+RR_J1_joint                -0.961   -11.30    26.08    0.182   1.746
+RR_J2_joint                 2.101   -24.99    23.61   -0.366   1.746
+
+[play]  42.0 fps   0.21x real time   speed 0.09 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.417    -9.41     5.03    0.056   1.746
+LF_J1_joint                -1.256   -13.31    11.26    0.407   1.746
+LF_J2_joint                -0.457    -7.26    13.50    0.346   1.746
+LF_J3_joint                -1.561   -16.36    13.31    0.755   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.001   0.086
+RF_J0_joint                 0.423    -5.30     9.95   -0.603   1.746
+RF_J1_joint                -1.266   -13.21    11.43    0.501   1.746
+RF_J2_joint                 0.475   -13.32     7.29   -0.631   1.654
+RF_J3_joint                 1.560   -13.42    16.31   -0.216   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.004   0.081
+LM_J0_joint                -0.075    -3.71     2.38   -0.033   1.746
+LM_J1_joint                 0.964   -33.26    17.06   -0.228   1.746
+LM_J2_joint                -2.153   -22.66    33.90   -0.046   1.746
+RM_J0_joint                 0.056    -2.35     3.67   -0.442   1.284
+RM_J1_joint                -0.984   -17.67    33.95    0.070   1.746
+RM_J2_joint                 2.152   -34.98    22.66    0.184   1.746
+LR_J0_joint                 0.559    -5.98     8.71    0.189   1.746
+LR_J1_joint                 0.906   -26.04    11.09    0.110   1.746
+LR_J2_joint                -2.147   -23.66    25.00   -0.198   1.746
+RR_J0_joint                -0.580    -8.26     6.11   -0.399   1.746
+RR_J1_joint                -0.904   -11.30    26.08   -0.232   1.746
+RR_J2_joint                 2.125   -24.99    23.61    0.086   1.746
+joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.454    -9.41     5.03    0.048   1.746
+LF_J1_joint                -1.196   -13.31    11.26    0.491   1.746
+LF_J2_joint                -0.413    -7.26    13.50   -0.002   1.746
+LF_J3_joint                -1.539   -16.36    13.31   -0.063   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.004   0.086
+RF_J0_joint                 0.463    -5.30     9.95   -0.171   1.746
+RF_J1_joint                -1.202   -13.21    11.43    0.519   1.746
+RF_J2_joint                 0.438   -13.32     7.29   -0.136   1.654
+RF_J3_joint                 1.548   -13.42    16.31   -0.222   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.004   0.081
+LM_J0_joint                -0.058    -3.71     2.38    0.518   1.746
+LM_J1_joint                 0.889   -33.26    17.06   -0.442   1.746
+LM_J2_joint                -2.119   -22.66    33.90   -0.264   1.746
+RM_J0_joint                 0.044    -2.35     3.67    0.281   1.284
+RM_J1_joint                -0.911   -17.67    33.95    0.398   1.746
+RM_J2_joint                 2.134   -34.98    22.66    0.453   1.746
+LR_J0_joint                 0.603    -5.98     8.71    0.519   1.746
+LR_J1_joint                 0.893   -26.04    11.09   -0.256   1.746
+LR_J2_joint                -2.140   -23.66    25.00   -0.297   1.746
+RR_J0_joint                -0.624    -8.26     6.11   -0.054   1.746
+RR_J1_joint                -0.887   -11.30    26.08    0.346   1.746
+RR_J2_joint                 2.118   -24.99    23.61    0.051   1.746
+
+[play]  35.9 fps   0.18x real time   speed 0.00 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.447    -9.41     5.03    0.034   1.746
+LF_J1_joint                -1.187   -13.31    11.26    0.282   1.746
+LF_J2_joint                -0.408    -7.26    13.50    0.002   1.746
+LF_J3_joint                -1.547   -16.36    13.31   -0.118   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.004   0.086
+RF_J0_joint                 0.447    -5.30     9.95    0.231   1.746
+RF_J1_joint                -1.197   -13.21    11.43    0.056   1.746
+RF_J2_joint                 0.431   -13.32     7.29    0.055   1.654
+RF_J3_joint                 1.554   -13.42    16.31   -0.235   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.054    -3.71     2.38   -0.025   1.746
+LM_J1_joint                 0.886   -33.26    17.06   -0.415   1.746
+LM_J2_joint                -2.130   -22.66    33.90   -0.333   1.746
+RM_J0_joint                 0.038    -2.35     3.67    0.160   1.284
+RM_J1_joint                -0.922   -17.67    33.95    0.153   1.746
+RM_J2_joint                 2.155   -34.98    22.66    0.257   1.746
+LR_J0_joint                 0.612    -5.98     8.71   -0.051   1.746
+LR_J1_joint                 0.894   -26.04    11.09   -0.424   1.746
+LR_J2_joint                -2.160   -23.66    25.00   -0.214   1.746
+RR_J0_joint                -0.621    -8.26     6.11    0.306   1.746
+RR_J1_joint                -0.891   -11.30    26.08    0.106   1.746
+RR_J2_joint                 2.128   -24.99    23.61    0.044   1.746
+
+[play]  42.9 fps   0.21x real time   speed 0.05 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.439    -9.41     5.03    0.320   1.746
+LF_J1_joint                -1.184   -13.31    11.26    0.652   1.746
+LF_J2_joint                -0.413    -7.26    13.50   -0.050   1.746
+LF_J3_joint                -1.546   -16.36    13.31   -0.011   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.450    -5.30     9.95   -0.168   1.746
+RF_J1_joint                -1.193   -13.21    11.43    0.896   1.746
+RF_J2_joint                 0.423   -13.32     7.29    0.122   1.654
+RF_J3_joint                 1.557   -13.42    16.31    0.325   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.049    -3.71     2.38    0.611   1.746
+LM_J1_joint                 0.887   -33.26    17.06   -0.163   1.746
+LM_J2_joint                -2.137   -22.66    33.90   -0.172   1.746
+RM_J0_joint                 0.035    -2.35     3.67   -0.834   1.284
+RM_J1_joint                -0.916   -17.67    33.95    0.342   1.746
+RM_J2_joint                 2.161   -34.98    22.66    0.071   1.746
+LR_J0_joint                 0.609    -5.98     8.71    0.462   1.746
+LR_J1_joint                 0.895   -26.04    11.09    0.085   1.746
+LR_J2_joint                -2.165   -23.66    25.00   -0.216   1.746
+RR_J0_joint                -0.622    -8.26     6.11   -0.314   1.746
+RR_J1_joint                -0.890   -11.30    26.08   -0.100   1.746
+RR_J2_joint                 2.133   -24.99    23.61    0.159   1.746
+
+[play]  43.0 fps   0.21x real time   speed 0.02 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.449    -9.41     5.03   -0.295   1.746
+LF_J1_joint                -1.186   -13.31    11.26    0.204   1.746
+LF_J2_joint                -0.400    -7.26    13.50   -0.066   1.746
+LF_J3_joint                -1.544   -16.36    13.31   -0.081   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.466    -5.30     9.95   -0.016   1.746
+RF_J1_joint                -1.196   -13.21    11.43    0.197   1.746
+RF_J2_joint                 0.425   -13.32     7.29   -0.148   1.654
+RF_J3_joint                 1.545   -13.42    16.31   -0.352   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.054    -3.71     2.38   -0.015   1.746
+LM_J1_joint                 0.883   -33.26    17.06   -0.468   1.746
+LM_J2_joint                -2.135   -22.66    33.90   -0.233   1.746
+RM_J0_joint                 0.039    -2.35     3.67    0.255   1.284
+RM_J1_joint                -0.915   -17.67    33.95    0.392   1.746
+RM_J2_joint                 2.167   -34.98    22.66    0.249   1.746
+LR_J0_joint                 0.598    -5.98     8.71    0.285   1.746
+LR_J1_joint                 0.893   -26.04    11.09   -0.309   1.746
+LR_J2_joint                -2.171   -23.66    25.00   -0.278   1.746
+RR_J0_joint                -0.616    -8.26     6.11    0.661   1.746
+RR_J1_joint                -0.883   -11.30    26.08    0.237   1.746
+RR_J2_joint                 2.135   -24.99    23.61    0.018   1.746
+joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.442    -9.41     5.03    0.093   1.746
+LF_J1_joint                -1.182   -13.31    11.26    0.131   1.746
+LF_J2_joint                -0.407    -7.26    13.50    0.009   1.746
+LF_J3_joint                -1.540   -16.36    13.31   -0.009   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.465    -5.30     9.95    0.456   1.746
+RF_J1_joint                -1.188   -13.21    11.43    0.076   1.746
+RF_J2_joint                 0.414   -13.32     7.29    0.019   1.654
+RF_J3_joint                 1.554   -13.42    16.31   -0.358   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.048    -3.71     2.38   -0.411   1.746
+LM_J1_joint                 0.876   -33.26    17.06   -0.434   1.746
+LM_J2_joint                -2.139   -22.66    33.90   -0.364   1.746
+RM_J0_joint                 0.032    -2.35     3.67    0.464   1.284
+RM_J1_joint                -0.916   -17.67    33.95    0.132   1.746
+RM_J2_joint                 2.167   -34.98    22.66    0.088   1.746
+LR_J0_joint                 0.602    -5.98     8.71   -0.134   1.746
+LR_J1_joint                 0.892   -26.04    11.09   -0.674   1.746
+LR_J2_joint                -2.176   -23.66    25.00   -0.053   1.746
+RR_J0_joint                -0.613    -8.26     6.11    0.509   1.746
+RR_J1_joint                -0.893   -11.30    26.08    0.376   1.746
+RR_J2_joint                 2.142   -24.99    23.61    0.118   1.746
+
+[play]  42.3 fps   0.21x real time   speed 0.02 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.457    -9.41     5.03   -0.500   1.746
+LF_J1_joint                -1.181   -13.31    11.26   -0.042   1.746
+LF_J2_joint                -0.394    -7.26    13.50   -0.114   1.746
+LF_J3_joint                -1.542   -16.36    13.31   -0.033   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.464    -5.30     9.95    0.914   1.746
+RF_J1_joint                -1.194   -13.21    11.43   -0.162   1.746
+RF_J2_joint                 0.417   -13.32     7.29    0.505   1.654
+RF_J3_joint                 1.546   -13.42    16.31    0.105   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.004   0.081
+LM_J0_joint                -0.050    -3.71     2.38   -0.639   1.746
+LM_J1_joint                 0.876   -33.26    17.06   -0.289   1.746
+LM_J2_joint                -2.136   -22.66    33.90   -0.092   1.746
+RM_J0_joint                 0.035    -2.35     3.67    0.510   1.284
+RM_J1_joint                -0.919   -17.67    33.95    0.172   1.746
+RM_J2_joint                 2.171   -34.98    22.66    0.277   1.746
+LR_J0_joint                 0.602    -5.98     8.71   -0.546   1.746
+LR_J1_joint                 0.892   -26.04    11.09   -0.665   1.746
+LR_J2_joint                -2.177   -23.66    25.00   -0.217   1.746
+RR_J0_joint                -0.611    -8.26     6.11    0.565   1.746
+RR_J1_joint                -0.884   -11.30    26.08    0.659   1.746
+RR_J2_joint                 2.135   -24.99    23.61    0.152   1.746
+
+[play]  42.0 fps   0.21x real time   speed 0.01 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.445    -9.41     5.03   -0.551   1.746
+LF_J1_joint                -1.182   -13.31    11.26    0.305   1.746
+LF_J2_joint                -0.399    -7.26    13.50   -0.155   1.746
+LF_J3_joint                -1.542   -16.36    13.31   -0.187   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.455    -5.30     9.95   -0.288   1.746
+RF_J1_joint                -1.189   -13.21    11.43    0.276   1.746
+RF_J2_joint                 0.423   -13.32     7.29   -0.325   1.654
+RF_J3_joint                 1.551   -13.42    16.31   -0.225   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.045    -3.71     2.38   -0.212   1.746
+LM_J1_joint                 0.878   -33.26    17.06   -0.620   1.746
+LM_J2_joint                -2.137   -22.66    33.90   -0.250   1.746
+RM_J0_joint                 0.038    -2.35     3.67    0.032   1.284
+RM_J1_joint                -0.916   -17.67    33.95    0.250   1.746
+RM_J2_joint                 2.176   -34.98    22.66    0.015   1.746
+LR_J0_joint                 0.601    -5.98     8.71   -0.015   1.746
+LR_J1_joint                 0.896   -26.04    11.09   -0.568   1.746
+LR_J2_joint                -2.179   -23.66    25.00   -0.102   1.746
+RR_J0_joint                -0.611    -8.26     6.11    0.285   1.746
+RR_J1_joint                -0.884   -11.30    26.08    0.207   1.746
+RR_J2_joint                 2.138   -24.99    23.61    0.124   1.746
+
+[play]  44.3 fps   0.22x real time   speed 0.03 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.445    -9.41     5.03   -0.014   1.746
+LF_J1_joint                -1.180   -13.31    11.26    0.525   1.746
+LF_J2_joint                -0.399    -7.26    13.50   -0.087   1.746
+LF_J3_joint                -1.543   -16.36    13.31    0.167   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.452    -5.30     9.95   -0.322   1.746
+RF_J1_joint                -1.187   -13.21    11.43    0.496   1.746
+RF_J2_joint                 0.427   -13.32     7.29   -0.226   1.654
+RF_J3_joint                 1.549   -13.42    16.31   -0.008   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.039    -3.71     2.38   -0.375   1.746
+LM_J1_joint                 0.881   -33.26    17.06   -0.174   1.746
+LM_J2_joint                -2.138   -22.66    33.90    0.014   1.746
+RM_J0_joint                 0.034    -2.35     3.67   -0.073   1.284
+RM_J1_joint                -0.917   -17.67    33.95    0.445   1.746
+RM_J2_joint                 2.178   -34.98    22.66    0.162   1.746
+LR_J0_joint                 0.603    -5.98     8.71   -0.211   1.746
+LR_J1_joint                 0.896   -26.04    11.09   -0.121   1.746
+LR_J2_joint                -2.174   -23.66    25.00   -0.115   1.746
+RR_J0_joint                -0.618    -8.26     6.11   -0.326   1.746
+RR_J1_joint                -0.884   -11.30    26.08    0.087   1.746
+RR_J2_joint                 2.136   -24.99    23.61    0.265   1.746
+joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.433    -9.41     5.03   -0.222   1.746
+LF_J1_joint                -1.179   -13.31    11.26    0.137   1.746
+LF_J2_joint                -0.396    -7.26    13.50   -0.383   1.746
+LF_J3_joint                -1.554   -16.36    13.31    0.059   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.439    -5.30     9.95   -0.164   1.746
+RF_J1_joint                -1.185   -13.21    11.43    0.276   1.746
+RF_J2_joint                 0.422   -13.32     7.29    0.011   1.654
+RF_J3_joint                 1.558   -13.42    16.31   -0.250   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.004   0.081
+LM_J0_joint                -0.042    -3.71     2.38   -0.098   1.746
+LM_J1_joint                 0.885   -33.26    17.06   -0.452   1.746
+LM_J2_joint                -2.145   -22.66    33.90   -0.238   1.746
+RM_J0_joint                 0.034    -2.35     3.67    0.209   1.284
+RM_J1_joint                -0.919   -17.67    33.95    0.320   1.746
+RM_J2_joint                 2.176   -34.98    22.66    0.147   1.746
+LR_J0_joint                 0.605    -5.98     8.71   -0.016   1.746
+LR_J1_joint                 0.896   -26.04    11.09   -0.309   1.746
+LR_J2_joint                -2.173   -23.66    25.00   -0.165   1.746
+RR_J0_joint                -0.619    -8.26     6.11    0.232   1.746
+RR_J1_joint                -0.888   -11.30    26.08    0.140   1.746
+RR_J2_joint                 2.137   -24.99    23.61    0.221   1.746
+
+[play]  42.2 fps   0.21x real time   speed 0.02 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.440    -9.41     5.03   -0.555   1.746
+LF_J1_joint                -1.180   -13.31    11.26   -0.007   1.746
+LF_J2_joint                -0.409    -7.26    13.50   -0.061   1.746
+LF_J3_joint                -1.542   -16.36    13.31   -0.050   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.445    -5.30     9.95   -0.350   1.746
+RF_J1_joint                -1.187   -13.21    11.43    0.240   1.746
+RF_J2_joint                 0.423   -13.32     7.29   -0.202   1.654
+RF_J3_joint                 1.552   -13.42    16.31    0.012   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.048    -3.71     2.38   -0.332   1.746
+LM_J1_joint                 0.881   -33.26    17.06   -0.017   1.746
+LM_J2_joint                -2.146   -22.66    33.90   -0.260   1.746
+RM_J0_joint                 0.029    -2.35     3.67    0.133   1.284
+RM_J1_joint                -0.919   -17.67    33.95    0.417   1.746
+RM_J2_joint                 2.168   -34.98    22.66    0.310   1.746
+LR_J0_joint                 0.608    -5.98     8.71   -0.202   1.746
+LR_J1_joint                 0.893   -26.04    11.09   -0.412   1.746
+LR_J2_joint                -2.171   -23.66    25.00   -0.155   1.746
+RR_J0_joint                -0.620    -8.26     6.11    0.148   1.746
+RR_J1_joint                -0.890   -11.30    26.08    0.464   1.746
+RR_J2_joint                 2.135   -24.99    23.61    0.188   1.746
+
+[play]  43.9 fps   0.22x real time   speed 0.01 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.442    -9.41     5.03    0.142   1.746
+LF_J1_joint                -1.184   -13.31    11.26    0.654   1.746
+LF_J2_joint                -0.408    -7.26    13.50    0.180   1.746
+LF_J3_joint                -1.546   -16.36    13.31    0.093   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.443    -5.30     9.95    0.240   1.746
+RF_J1_joint                -1.190   -13.21    11.43    0.596   1.746
+RF_J2_joint                 0.428   -13.32     7.29   -0.123   1.654
+RF_J3_joint                 1.548   -13.42    16.31   -0.048   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.045    -3.71     2.38    0.073   1.746
+LM_J1_joint                 0.888   -33.26    17.06   -0.025   1.746
+LM_J2_joint                -2.147   -22.66    33.90   -0.245   1.746
+RM_J0_joint                 0.030    -2.35     3.67   -0.404   1.284
+RM_J1_joint                -0.913   -17.67    33.95    0.267   1.746
+RM_J2_joint                 2.171   -34.98    22.66    0.195   1.746
+LR_J0_joint                 0.603    -5.98     8.71   -0.051   1.746
+LR_J1_joint                 0.892   -26.04    11.09   -0.084   1.746
+LR_J2_joint                -2.169   -23.66    25.00   -0.112   1.746
+RR_J0_joint                -0.619    -8.26     6.11   -0.236   1.746
+RR_J1_joint                -0.883   -11.30    26.08    0.011   1.746
+RR_J2_joint                 2.134   -24.99    23.61    0.257   1.746
+
+[play]  44.4 fps   0.22x real time   speed 0.03 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.437    -9.41     5.03    0.008   1.746
+LF_J1_joint                -1.181   -13.31    11.26    0.393   1.746
+LF_J2_joint                -0.404    -7.26    13.50   -0.012   1.746
+LF_J3_joint                -1.542   -16.36    13.31    0.086   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.450    -5.30     9.95   -0.040   1.746
+RF_J1_joint                -1.188   -13.21    11.43    0.390   1.746
+RF_J2_joint                 0.428   -13.32     7.29   -0.293   1.654
+RF_J3_joint                 1.545   -13.42    16.31   -0.133   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.042    -3.71     2.38    0.009   1.746
+LM_J1_joint                 0.883   -33.26    17.06   -0.428   1.746
+LM_J2_joint                -2.140   -22.66    33.90   -0.231   1.746
+RM_J0_joint                 0.039    -2.35     3.67   -0.046   1.284
+RM_J1_joint                -0.912   -17.67    33.95    0.112   1.746
+RM_J2_joint                 2.171   -34.98    22.66    0.256   1.746
+LR_J0_joint                 0.601    -5.98     8.71   -0.022   1.746
+LR_J1_joint                 0.892   -26.04    11.09   -0.400   1.746
+LR_J2_joint                -2.169   -23.66    25.00   -0.127   1.746
+RR_J0_joint                -0.611    -8.26     6.11    0.076   1.746
+RR_J1_joint                -0.886   -11.30    26.08   -0.020   1.746
+RR_J2_joint                 2.138   -24.99    23.61    0.151   1.746
+joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.439    -9.41     5.03    0.664   1.746
+LF_J1_joint                -1.179   -13.31    11.26    0.554   1.746
+LF_J2_joint                -0.394    -7.26    13.50    0.268   1.746
+LF_J3_joint                -1.551   -16.36    13.31    0.067   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.445    -5.30     9.95    0.028   1.746
+RF_J1_joint                -1.187   -13.21    11.43    0.432   1.746
+RF_J2_joint                 0.419   -13.32     7.29    0.152   1.654
+RF_J3_joint                 1.557   -13.42    16.31    0.169   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.043    -3.71     2.38    0.107   1.746
+LM_J1_joint                 0.890   -33.26    17.06   -0.387   1.746
+LM_J2_joint                -2.147   -22.66    33.90   -0.327   1.746
+RM_J0_joint                 0.031    -2.35     3.67   -0.128   1.284
+RM_J1_joint                -0.911   -17.67    33.95    0.516   1.746
+RM_J2_joint                 2.170   -34.98    22.66    0.253   1.746
+LR_J0_joint                 0.599    -5.98     8.71    0.052   1.746
+LR_J1_joint                 0.896   -26.04    11.09   -0.103   1.746
+LR_J2_joint                -2.168   -23.66    25.00   -0.110   1.746
+RR_J0_joint                -0.619    -8.26     6.11   -0.212   1.746
+RR_J1_joint                -0.888   -11.30    26.08    0.162   1.746
+RR_J2_joint                 2.141   -24.99    23.61    0.280   1.746
+
+[play]  42.6 fps   0.21x real time   speed 0.02 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.436    -9.41     5.03   -0.152   1.746
+LF_J1_joint                -1.182   -13.31    11.26    0.028   1.746
+LF_J2_joint                -0.401    -7.26    13.50    0.151   1.746
+LF_J3_joint                -1.551   -16.36    13.31    0.293   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.441    -5.30     9.95    0.090   1.746
+RF_J1_joint                -1.191   -13.21    11.43   -0.116   1.746
+RF_J2_joint                 0.434   -13.32     7.29    0.152   1.654
+RF_J3_joint                 1.552   -13.42    16.31    0.057   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.042    -3.71     2.38   -0.279   1.746
+LM_J1_joint                 0.888   -33.26    17.06   -0.198   1.746
+LM_J2_joint                -2.148   -22.66    33.90   -0.217   1.746
+RM_J0_joint                 0.030    -2.35     3.67    0.029   1.284
+RM_J1_joint                -0.918   -17.67    33.95    0.431   1.746
+RM_J2_joint                 2.175   -34.98    22.66    0.158   1.746
+LR_J0_joint                 0.603    -5.98     8.71   -0.423   1.746
+LR_J1_joint                 0.896   -26.04    11.09   -0.321   1.746
+LR_J2_joint                -2.170   -23.66    25.00    0.215   1.746
+RR_J0_joint                -0.619    -8.26     6.11   -0.132   1.746
+RR_J1_joint                -0.883   -11.30    26.08    0.319   1.746
+RR_J2_joint                 2.135   -24.99    23.61    0.137   1.746
+
+[play]  45.0 fps   0.23x real time   speed 0.03 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.446    -9.41     5.03   -0.310   1.746
+LF_J1_joint                -1.179   -13.31    11.26    1.074   1.746
+LF_J2_joint                -0.400    -7.26    13.50   -0.101   1.746
+LF_J3_joint                -1.545   -16.36    13.31   -0.080   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.002   0.086
+RF_J0_joint                 0.443    -5.30     9.95    0.118   1.746
+RF_J1_joint                -1.187   -13.21    11.43    0.544   1.746
+RF_J2_joint                 0.429   -13.32     7.29   -0.096   1.654
+RF_J3_joint                 1.546   -13.42    16.31    0.248   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.038    -3.71     2.38    0.176   1.746
+LM_J1_joint                 0.881   -33.26    17.06   -0.438   1.746
+LM_J2_joint                -2.143   -22.66    33.90   -0.296   1.746
+RM_J0_joint                 0.033    -2.35     3.67   -0.708   1.284
+RM_J1_joint                -0.918   -17.67    33.95    0.168   1.746
+RM_J2_joint                 2.175   -34.98    22.66   -0.133   1.746
+LR_J0_joint                 0.605    -5.98     8.71    0.494   1.746
+LR_J1_joint                 0.890   -26.04    11.09   -0.123   1.746
+LR_J2_joint                -2.168   -23.66    25.00   -0.206   1.746
+RR_J0_joint                -0.617    -8.26     6.11   -0.371   1.746
+RR_J1_joint                -0.889   -11.30    26.08   -0.075   1.746
+RR_J2_joint                 2.136   -24.99    23.61    0.138   1.746
+
+[play]  45.1 fps   0.23x real time   speed 0.01 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.447    -9.41     5.03    0.118   1.746
+LF_J1_joint                -1.179   -13.31    11.26    0.250   1.746
+LF_J2_joint                -0.398    -7.26    13.50    0.456   1.746
+LF_J3_joint                -1.548   -16.36    13.31   -0.027   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.451    -5.30     9.95    0.334   1.746
+RF_J1_joint                -1.189   -13.21    11.43    0.291   1.746
+RF_J2_joint                 0.425   -13.32     7.29    0.090   1.654
+RF_J3_joint                 1.552   -13.42    16.31    0.130   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.039    -3.71     2.38    0.264   1.746
+LM_J1_joint                 0.880   -33.26    17.06   -0.326   1.746
+LM_J2_joint                -2.140   -22.66    33.90   -0.323   1.746
+RM_J0_joint                 0.036    -2.35     3.67    0.239   1.284
+RM_J1_joint                -0.915   -17.67    33.95    0.326   1.746
+RM_J2_joint                 2.172   -34.98    22.66    0.244   1.746
+LR_J0_joint                 0.607    -5.98     8.71   -0.010   1.746
+LR_J1_joint                 0.893   -26.04    11.09   -0.124   1.746
+LR_J2_joint                -2.171   -23.66    25.00   -0.080   1.746
+RR_J0_joint                -0.617    -8.26     6.11   -0.025   1.746
+RR_J1_joint                -0.889   -11.30    26.08    0.210   1.746
+RR_J2_joint                 2.137   -24.99    23.61    0.195   1.746
+joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.444    -9.41     5.03    0.478   1.746
+LF_J1_joint                -1.175   -13.31    11.26    0.504   1.746
+LF_J2_joint                -0.399    -7.26    13.50    0.079   1.746
+LF_J3_joint                -1.549   -16.36    13.31    0.352   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.451    -5.30     9.95   -0.602   1.746
+RF_J1_joint                -1.185   -13.21    11.43    0.587   1.746
+RF_J2_joint                 0.437   -13.32     7.29   -0.139   1.654
+RF_J3_joint                 1.543   -13.42    16.31   -0.087   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.034    -3.71     2.38    0.331   1.746
+LM_J1_joint                 0.879   -33.26    17.06   -0.494   1.746
+LM_J2_joint                -2.138   -22.66    33.90    0.227   1.746
+RM_J0_joint                 0.031    -2.35     3.67   -0.194   1.284
+RM_J1_joint                -0.917   -17.67    33.95    0.453   1.746
+RM_J2_joint                 2.176   -34.98    22.66    0.039   1.746
+LR_J0_joint                 0.609    -5.98     8.71   -0.149   1.746
+LR_J1_joint                 0.898   -26.04    11.09   -0.304   1.746
+LR_J2_joint                -2.174   -23.66    25.00   -0.114   1.746
+RR_J0_joint                -0.618    -8.26     6.11   -0.160   1.746
+RR_J1_joint                -0.890   -11.30    26.08    0.394   1.746
+RR_J2_joint                 2.135   -24.99    23.61    0.147   1.746
+
+[play]  44.5 fps   0.22x real time   speed 0.03 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.449    -9.41     5.03   -0.448   1.746
+LF_J1_joint                -1.184   -13.31    11.26    0.181   1.746
+LF_J2_joint                -0.403    -7.26    13.50    0.055   1.746
+LF_J3_joint                -1.539   -16.36    13.31    0.558   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.449    -5.30     9.95    0.075   1.746
+RF_J1_joint                -1.193   -13.21    11.43    0.300   1.746
+RF_J2_joint                 0.423   -13.32     7.29   -0.056   1.654
+RF_J3_joint                 1.545   -13.42    16.31   -0.017   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.054    -3.71     2.38   -0.546   1.746
+LM_J1_joint                 0.881   -33.26    17.06   -0.243   1.746
+LM_J2_joint                -2.140   -22.66    33.90   -0.250   1.746
+RM_J0_joint                 0.030    -2.35     3.67    0.358   1.284
+RM_J1_joint                -0.911   -17.67    33.95    0.631   1.746
+RM_J2_joint                 2.168   -34.98    22.66    0.224   1.746
+LR_J0_joint                 0.598    -5.98     8.71   -0.461   1.746
+LR_J1_joint                 0.890   -26.04    11.09   -0.219   1.746
+LR_J2_joint                -2.172   -23.66    25.00    0.085   1.746
+RR_J0_joint                -0.615    -8.26     6.11   -0.146   1.746
+RR_J1_joint                -0.882   -11.30    26.08    0.627   1.746
+RR_J2_joint                 2.134   -24.99    23.61    0.270   1.746
+
+[play]  46.0 fps   0.23x real time   speed 0.01 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.431    -9.41     5.03   -0.391   1.746
+LF_J1_joint                -1.180   -13.31    11.26    0.151   1.746
+LF_J2_joint                -0.401    -7.26    13.50    0.529   1.746
+LF_J3_joint                -1.549   -16.36    13.31   -0.308   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.449    -5.30     9.95    0.281   1.746
+RF_J1_joint                -1.188   -13.21    11.43   -0.137   1.746
+RF_J2_joint                 0.425   -13.32     7.29   -0.187   1.654
+RF_J3_joint                 1.551   -13.42    16.31   -0.073   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.038    -3.71     2.38   -0.228   1.746
+LM_J1_joint                 0.886   -33.26    17.06   -0.647   1.746
+LM_J2_joint                -2.144   -22.66    33.90   -0.222   1.746
+RM_J0_joint                 0.034    -2.35     3.67    0.486   1.284
+RM_J1_joint                -0.916   -17.67    33.95    0.040   1.746
+RM_J2_joint                 2.176   -34.98    22.66    0.282   1.746
+LR_J0_joint                 0.609    -5.98     8.71   -0.030   1.746
+LR_J1_joint                 0.892   -26.04    11.09   -0.642   1.746
+LR_J2_joint                -2.167   -23.66    25.00   -0.230   1.746
+RR_J0_joint                -0.612    -8.26     6.11    0.314   1.746
+RR_J1_joint                -0.888   -11.30    26.08    0.103   1.746
+RR_J2_joint                 2.137   -24.99    23.61    0.021   1.746
+
+[play]  45.6 fps   0.23x real time   speed 0.03 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.431    -9.41     5.03    0.398   1.746
+LF_J1_joint                -1.180   -13.31    11.26    0.845   1.746
+LF_J2_joint                -0.402    -7.26    13.50    0.238   1.746
+LF_J3_joint                -1.547   -16.36    13.31    0.015   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.444    -5.30     9.95    0.487   1.746
+RF_J1_joint                -1.189   -13.21    11.43    0.949   1.746
+RF_J2_joint                 0.429   -13.32     7.29    0.046   1.654
+RF_J3_joint                 1.551   -13.42    16.31    0.087   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.044    -3.71     2.38    0.291   1.746
+LM_J1_joint                 0.883   -33.26    17.06   -0.428   1.746
+LM_J2_joint                -2.143   -22.66    33.90   -0.101   1.746
+RM_J0_joint                 0.030    -2.35     3.67   -0.083   1.284
+RM_J1_joint                -0.914   -17.67    33.95    0.303   1.746
+RM_J2_joint                 2.172   -34.98    22.66    0.142   1.746
+LR_J0_joint                 0.601    -5.98     8.71    0.470   1.746
+LR_J1_joint                 0.893   -26.04    11.09   -0.219   1.746
+LR_J2_joint                -2.165   -23.66    25.00   -0.305   1.746
+RR_J0_joint                -0.621    -8.26     6.11    0.159   1.746
+RR_J1_joint                -0.887   -11.30    26.08   -0.035   1.746
+RR_J2_joint                 2.137   -24.99    23.61    0.113   1.746
+joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.446    -9.41     5.03    0.080   1.746
+LF_J1_joint                -1.179   -13.31    11.26    0.398   1.746
+LF_J2_joint                -0.394    -7.26    13.50   -0.175   1.746
+LF_J3_joint                -1.552   -16.36    13.31   -0.095   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.447    -5.30     9.95   -0.278   1.746
+RF_J1_joint                -1.190   -13.21    11.43    0.216   1.746
+RF_J2_joint                 0.422   -13.32     7.29   -0.005   1.654
+RF_J3_joint                 1.552   -13.42    16.31    0.083   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.045    -3.71     2.38    0.093   1.746
+LM_J1_joint                 0.880   -33.26    17.06   -0.352   1.746
+LM_J2_joint                -2.145   -22.66    33.90   -0.048   1.746
+RM_J0_joint                 0.037    -2.35     3.67   -0.390   1.284
+RM_J1_joint                -0.921   -17.67    33.95    0.222   1.746
+RM_J2_joint                 2.173   -34.98    22.66    0.215   1.746
+LR_J0_joint                 0.606    -5.98     8.71    0.304   1.746
+LR_J1_joint                 0.892   -26.04    11.09   -0.149   1.746
+LR_J2_joint                -2.173   -23.66    25.00   -0.205   1.746
+RR_J0_joint                -0.613    -8.26     6.11   -0.155   1.746
+RR_J1_joint                -0.891   -11.30    26.08    0.053   1.746
+RR_J2_joint                 2.138   -24.99    23.61    0.008   1.746
+
+[play]  43.7 fps   0.22x real time   speed 0.03 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.441    -9.41     5.03   -0.236   1.746
+LF_J1_joint                -1.179   -13.31    11.26    0.391   1.746
+LF_J2_joint                -0.399    -7.26    13.50   -0.027   1.746
+LF_J3_joint                -1.549   -16.36    13.31   -0.148   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.443    -5.30     9.95   -0.247   1.746
+RF_J1_joint                -1.188   -13.21    11.43    0.219   1.746
+RF_J2_joint                 0.427   -13.32     7.29   -0.219   1.654
+RF_J3_joint                 1.549   -13.42    16.31   -0.299   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.004   0.081
+LM_J0_joint                -0.041    -3.71     2.38   -0.010   1.746
+LM_J1_joint                 0.878   -33.26    17.06   -0.610   1.746
+LM_J2_joint                -2.141   -22.66    33.90   -0.282   1.746
+RM_J0_joint                 0.034    -2.35     3.67    0.095   1.284
+RM_J1_joint                -0.921   -17.67    33.95    0.130   1.746
+RM_J2_joint                 2.176   -34.98    22.66    0.190   1.746
+LR_J0_joint                 0.610    -5.98     8.71    0.144   1.746
+LR_J1_joint                 0.890   -26.04    11.09   -0.587   1.746
+LR_J2_joint                -2.171   -23.66    25.00   -0.112   1.746
+RR_J0_joint                -0.614    -8.26     6.11    0.236   1.746
+RR_J1_joint                -0.889   -11.30    26.08   -0.085   1.746
+RR_J2_joint                 2.133   -24.99    23.61    0.096   1.746
+
+[play]  44.6 fps   0.22x real time   speed 0.01 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.437    -9.41     5.03    0.054   1.746
+LF_J1_joint                -1.181   -13.31    11.26    0.286   1.746
+LF_J2_joint                -0.400    -7.26    13.50    0.019   1.746
+LF_J3_joint                -1.550   -16.36    13.31   -0.137   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.447    -5.30     9.95   -0.336   1.746
+RF_J1_joint                -1.189   -13.21    11.43    0.456   1.746
+RF_J2_joint                 0.422   -13.32     7.29   -0.111   1.654
+RF_J3_joint                 1.552   -13.42    16.31    0.024   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.041    -3.71     2.38    0.174   1.746
+LM_J1_joint                 0.889   -33.26    17.06   -0.330   1.746
+LM_J2_joint                -2.149   -22.66    33.90   -0.278   1.746
+RM_J0_joint                 0.037    -2.35     3.67   -0.022   1.284
+RM_J1_joint                -0.917   -17.67    33.95    0.373   1.746
+RM_J2_joint                 2.175   -34.98    22.66    0.099   1.746
+LR_J0_joint                 0.607    -5.98     8.71    0.171   1.746
+LR_J1_joint                 0.895   -26.04    11.09   -0.489   1.746
+LR_J2_joint                -2.169   -23.66    25.00   -0.167   1.746
+RR_J0_joint                -0.615    -8.26     6.11    0.022   1.746
+RR_J1_joint                -0.890   -11.30    26.08    0.168   1.746
+RR_J2_joint                 2.140   -24.99    23.61    0.171   1.746
+
+[play]  46.2 fps   0.23x real time   speed 0.02 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.433    -9.41     5.03    0.533   1.746
+LF_J1_joint                -1.181   -13.31    11.26    0.354   1.746
+LF_J2_joint                -0.398    -7.26    13.50    0.193   1.746
+LF_J3_joint                -1.554   -16.36    13.31    0.402   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.003   0.086
+RF_J0_joint                 0.444    -5.30     9.95    0.424   1.746
+RF_J1_joint                -1.188   -13.21    11.43    0.267   1.746
+RF_J2_joint                 0.421   -13.32     7.29    0.145   1.654
+RF_J3_joint                 1.561   -13.42    16.31   -0.067   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.042    -3.71     2.38   -0.203   1.746
+LM_J1_joint                 0.889   -33.26    17.06    0.056   1.746
+LM_J2_joint                -2.148   -22.66    33.90   -0.277   1.746
+RM_J0_joint                 0.029    -2.35     3.67    0.056   1.284
+RM_J1_joint                -0.918   -17.67    33.95    0.637   1.746
+RM_J2_joint                 2.177   -34.98    22.66    0.142   1.746
+LR_J0_joint                 0.610    -5.98     8.71   -0.548   1.746
+LR_J1_joint                 0.898   -26.04    11.09   -0.022   1.746
+LR_J2_joint                -2.173   -23.66    25.00   -0.029   1.746
+RR_J0_joint                -0.619    -8.26     6.11   -0.187   1.746
+RR_J1_joint                -0.889   -11.30    26.08    0.511   1.746
+RR_J2_joint                 2.136   -24.99    23.61    0.331   1.746
+joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.426    -9.41     5.03   -0.970   1.746
+LF_J1_joint                -1.182   -13.31    11.26    0.118   1.746
+LF_J2_joint                -0.403    -7.26    13.50   -0.512   1.746
+LF_J3_joint                -1.553   -16.36    13.31   -0.241   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.004   0.086
+RF_J0_joint                 0.442    -5.30     9.95   -0.132   1.746
+RF_J1_joint                -1.191   -13.21    11.43    0.138   1.746
+RF_J2_joint                 0.420   -13.32     7.29   -0.221   1.654
+RF_J3_joint                 1.557   -13.42    16.31   -0.140   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.043    -3.71     2.38   -0.194   1.746
+LM_J1_joint                 0.879   -33.26    17.06   -0.099   1.746
+LM_J2_joint                -2.144   -22.66    33.90   -0.209   1.746
+RM_J0_joint                 0.031    -2.35     3.67    0.310   1.284
+RM_J1_joint                -0.920   -17.67    33.95    0.283   1.746
+RM_J2_joint                 2.173   -34.98    22.66    0.430   1.746
+LR_J0_joint                 0.610    -5.98     8.71    0.118   1.746
+LR_J1_joint                 0.884   -26.04    11.09   -0.215   1.746
+LR_J2_joint                -2.166   -23.66    25.00   -0.290   1.746
+RR_J0_joint                -0.616    -8.26     6.11    0.266   1.746
+RR_J1_joint                -0.886   -11.30    26.08    0.442   1.746
+RR_J2_joint                 2.133   -24.99    23.61    0.027   1.746
+
+[play]  43.1 fps   0.22x real time   speed 0.03 m/s   joint                     pos rad  vel min  vel max   torque    peak
+LF_J0_joint                -0.439    -9.41     5.03   -0.488   1.746
+LF_J1_joint                -1.178   -13.31    11.26    0.073   1.746
+LF_J2_joint                -0.405    -7.26    13.50   -0.397   1.746
+LF_J3_joint                -1.546   -16.36    13.31    0.143   1.746
+LF_J4_joint                 0.000    -0.18     0.10   -0.004   0.086
+RF_J0_joint                 0.441    -5.30     9.95   -0.048   1.746
+RF_J1_joint                -1.187   -13.21    11.43   -0.008   1.746
+RF_J2_joint                 0.422   -13.32     7.29    0.030   1.654
+RF_J3_joint                 1.556   -13.42    16.31   -0.210   1.746
+RF_J4_joint                -0.000    -0.08     0.16    0.003   0.081
+LM_J0_joint                -0.047    -3.71     2.38   -0.512   1.746
+LM_J1_joint                 0.879   -33.26    17.06   -0.154   1.746
+LM_J2_joint                -2.143   -22.66    33.90   -0.138   1.746
+RM_J0_joint                 0.024    -2.35     3.67    0.386   1.284
+RM_J1_joint                -0.914   -17.67    33.95    0.354   1.746
+RM_J2_joint                 2.170   -34.98    22.66    0.290   1.746
+LR_J0_joint                 0.606    -5.98     8.71   -0.366   1.746
+LR_J1_joint                 0.889   -26.04    11.09   -0.363   1.746
+LR_J2_joint                -2.167   -23.66    25.00   -0.204   1.746
+RR_J0_joint                -0.625    -8.26     6.11    0.164   1.746
+RR_J1_joint                -0.885   -11.30    26.08    0.484   1.746
+RR_J2_joint                 2.135   -24.99    23.61    0.182   1.746
+
+[play]  44.1 fps   0.22x real time   speed 0.00 m/s
+[mjrl] the episode ended at step 700; stopping (--stop-on-done)
+[mjrl] replay settings /data/Data14TB/envs/jumper-everyembodied/jump300-info.json
+[mjrl] video /data/Data14TB/envs/jumper-everyembodied/jump300.mp4 (105 frames at 30 fps)
+
+[measure] 699 steps -> logs/jumper/jumper.jump/2026-10-29_14-48-03/measure/measure.csv  logs/jumper/jumper.jump/2026-10-29_14-48-03/measure/measure.png

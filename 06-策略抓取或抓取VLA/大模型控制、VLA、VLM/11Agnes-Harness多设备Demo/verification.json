@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-23",
+  "upstream_commit": "98bc11572ba162bcdf6ce2b29612a44508faf951",
+  "environment": {
+    "os": "Ubuntu Linux x86_64",
+    "node": "24.19.0",
+    "pnpm": "10.34.5",
+    "python": "3.12.3",
+    "browser": "Google Chrome 155.0.8059.39",
+    "rendering": "headless SwiftShader, Mars quality=low, 1600x900 viewport"
+  },
+  "setup": {
+    "dependencies": "pnpm install --frozen-lockfile: pass, 481 packages",
+    "resource_files": 39,
+    "resource_bytes": 26504508,
+    "resource_integrity": "all sizes and MD5 hashes match upstream manifest",
+    "download_route": "isolated Liangxin wrapper; npm process verified on proxy",
+    "mhs_build": "pnpm --filter @agnes/mhs build:plugin: pass",
+    "full_build": "pnpm --filter @agnes/cli build:local: pass"
+  },
+  "verification": {
+    "component_command": "pnpm exec vitest run tools/public-docs/examples.test.ts examples/mars-world/test --maxWorkers=1",
+    "component_files_passed": 6,
+    "component_tests_passed": 23,
+    "original_smoke_command": "node --import tsx tools/public-docs/smoke.mjs",
+    "original_smoke": "pass on Linux",
+    "browser_plugin_checks_passed": 20,
+    "office": "evidence/office.json",
+    "mars": "evidence/mars.json",
+    "mars_calls": "evidence/mars-calls.json",
+    "plugins": "evidence/plugins.json",
+    "published_screenshots": 11,
+    "screenshot_scope": "isolated synthetic demo webpages only; no desktop or personal account",
+    "cleanup": "owned services stopped; ports 4180, 4191 and 4200 released",
+    "launcher_dry_runs": 17,
+    "successful_mars_calls": 24,
+    "ebook_build": "pass; 332 documents",
+    "reader_page": "evidence/reader.json; all 11 images loaded, no page exceptions"
+  },
+  "model_scope": "scripted Hub tasks and loopback simulated-model plugin flow; no external model API called"
+}

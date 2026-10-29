@@ -1,0 +1,19 @@
+{
+  "schema": "replay_info/1",
+  "task": "jumper.dance",
+  "checkpoint": "/data/Data14TB/robotics_shared/repos/jumper-everyembodied/logs/jumper/jumper.dance/2026-10-29_14-54-46/model_499.pt",
+  "physics_hz": 200.0,
+  "control_hz": 50.0,
+  "control_dt": 0.02,
+  "observation_noise": true,
+  "control_steps": 1000,
+  "scene": "task default",
+  "simulated_seconds": 20.0,
+  "supports_velocity_command": false,
+  "command_ranges": {
+    "status": "not_requested",
+    "source": "replay_task_config",
+    "curriculum_level": null,
+    "ranges": null
+  }
+}

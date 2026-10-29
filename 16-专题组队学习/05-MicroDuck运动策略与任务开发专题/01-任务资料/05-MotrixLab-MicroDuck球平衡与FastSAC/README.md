@@ -109,44 +109,103 @@ MotrixLab 这个任务不是盲球 actor。actor 会读取球相对机器人坐�
 
 终止条件包括基座过低、姿态严重倾斜、球滚出脚底范围、关节角/速度异常。默认回合长度是 20 秒。物理域没有做质量、摩擦和执行器增益随机化；这里的随机性主要来自初始状态和 actor 观察噪声，因此不能直接把训练结果当成 sim-to-real 保证。
 
-## 4. 在 Windows 上安装和运行
+## 4. 安装与运行：使用 mxlab 入口
 
-MotrixLab 要求 Python 3.10.x 和 `uv`。Windows 下从仓库根目录执行：
+**2026-10-25 更新：MotrixLab 已将训练、推理和导出迁移到统一的 `mxlab` 命令。** 新版仓库没有 `scripts/train.py`，遇到 `can't open file .../scripts/train.py` 时，应更新启动命令，不需要换到 Windows，也不需要补建这个文件。Linux、Ubuntu 和 WSL 都可以训练。
+
+以下命令对照 MotrixLab `0.4.0` 源码整理。在 MotrixLab 仓库根目录操作，避免混用其它项目的虚拟环境。建议使用 Python 3.10；当前框架声明支持 Python 3.10–3.13。
+
+### 版本与复现基线
+
+| 项目 | 本节新版命令 | 已有 Notebook 环境与视频基线 |
+|---|---|---|
+| MotrixLab 版本 | `0.4.0` | `0.4.0b0` |
+| 固定 Git 提交 | [`24796cff1c00`](https://github.com/Motphys/MotrixLab/tree/24796cff1c00591bd327378df93461e1c4a9f89c) | [`d093f94fbd87`](https://github.com/Motphys/MotrixLab/tree/d093f94fbd8770e1d98a222de84915caafed40e6) |
+| Python 要求 | `>=3.10,<3.14`，入门建议 `3.10` | `3.10.x` |
+| MotrixSim | 该版 `motrixlab` 依赖固定为 `0.10.1` | 使用旧提交配套的 `uv.lock` |
+| 训练入口 | `mxlab train` | `python scripts/train.py` |
+| 策略推理入口 | `mxlab play` | `python scripts/play.py` |
+| ONNX 导出入口 | `mxlab export-onnx` | `python scripts/export_onnx.py` |
+| 本教程记录 | 新版命令按上述固定源码核对，启动器兼容新旧入口 | 已有训练模型、GPU/BPU 视频及旧环境入口检查 |
+
+**新建环境按左列安装，复用已有模型与视频环境时按右列保留。** 不把两版的依赖和启动命令混用。下方安装步骤固定 Git 提交，并使用 `--frozen` 读取该提交的锁文件，避免直接跟随 `main` 更新导致入口再次变化。
+
+先获取代码和安装 CUDA 环境，PowerShell 与 Bash 都使用下面这组命令：
 
 ```powershell
 git clone https://github.com/Motphys/MotrixLab.git
 cd MotrixLab
+git checkout --detach 24796cff1c00591bd327378df93461e1c4a9f89c
 git lfs pull
-uv sync --all-packages --extra cuda
+uv sync --frozen --all-packages --extra cuda
 ```
 
-这里的 `cuda` extra 很重要。直接 `uv sync` 会安装默认的 CPU PyTorch；而默认 FastSAC 配置的异步 collector 会请求 CUDA，表现为：
+这里的 `cuda` extra 很重要。默认 FastSAC 的异步 collector 会请求 CUDA。依赖没有安装为 CUDA 配置时，可能出现：
 
 ```text
 collector_inference_device='cuda' requested CUDA, but CUDA is unavailable
 ```
 
-如果只想检查 Python 依赖而不训练，可先确认：
+接着激活虚拟环境。Ubuntu / Linux / WSL：
 
-```powershell
-.\\.venv\\Scripts\\python.exe -c "import torch; print(torch.__version__); print(torch.cuda.is_available())"
+```bash
+source .venv/bin/activate
 ```
 
-Windows 有一个容易踩到的坑：仓库把 CUDA wheel 放在 `cuda` extra 中，而 Windows 下没有可用的官方 Triton wheel。若沿用默认的 `torch.compile` 配置，collector 可能在预热阶段报 `TritonMissing`。本教程的 Windows 复现命令关闭两个编译开关，仍然使用 CUDA 做 eager 前向；Linux + CUDA + Triton 环境可以保留默认编译配置。
+Windows PowerShell：
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+激活后检查入口与 CUDA：
+
+```bash
+git rev-parse HEAD
+python --version
+mxlab --version
+python -c "import sys, torch; print(sys.executable); print(torch.__version__); print(torch.cuda.is_available())"
+mxlab --help
+```
+
+按上方安装的新环境，Git 提交应为 `24796cff1c00591bd327378df93461e1c4a9f89c`，`mxlab --version` 应显示 `mxlab 0.4.0`。旧版没有 `mxlab` 命令，按表中的 Git 提交识别版本。交流报错时附上 Git 提交、Python 和 PyTorch 版本，便于对照环境。
+
+若终端找不到 `mxlab`，可在同一环境中使用 `python -m motrixlab.cli --help`。二者调用相同入口；如果模块也找不到，先检查是否激活了上一步安装的 `.venv`。
+
+| 操作 | 新版命令 |
+|---|---|
+| 查看环境 | `mxlab view env=microduck-ball-balance` |
+| 训练球平衡 | `mxlab train task=microduck-ball-balance/motrix.fastsac` |
+| 策略闭环推理 | `mxlab play env=microduck-ball-balance` |
+| 导出 ONNX | `mxlab export-onnx run_dir=<训练目录> output=outputs/ball_balance.onnx opset=11` |
+
+以下训练示例关闭两个 `torch.compile` 开关，使用 CUDA eager 路径，便于 Windows 和 WSL 入门。Linux 上也可以使用；安装好兼容的 Triton 后，可以恢复默认编译配置。
 
 ### 4.1 直接训练官方任务
 
-用户给出的命令在仓库根目录执行。Windows 下建议直接调用已经同步好的虚拟环境 Python，并关闭依赖 Triton 的编译路径：
+Ubuntu / Linux / WSL，激活环境后运行：
+
+```bash
+mxlab train \
+  task=microduck-ball-balance/motrix.fastsac \
+  play=true \
+  algo.agent.compile=false \
+  algo.trainer.async_options.collector_compile=false
+```
+
+Windows PowerShell 的续行符是反引号，不是 Bash 的反斜杠：
 
 ```powershell
-.\\.venv\\Scripts\\python.exe scripts\\train.py `
+mxlab train `
   task=microduck-ball-balance/motrix.fastsac `
   play=true `
   algo.agent.compile=false `
   algo.trainer.async_options.collector_compile=false
 ```
 
-不要在已经安装 CUDA extra 后直接执行不带 extra 的 `uv run`：`uv` 可能按默认依赖重新同步 CPU 版 PyTorch，随后又出现 “CUDA is unavailable”。如果必须使用 `uv run`，写成 `uv run --extra cuda ...`，或者像上面一样直接使用 `.\\.venv\\Scripts\\python.exe`。
+`play=true` 表示**训练结束后**载入策略并打开仿真窗口，不是跳过训练直接推理。远程服务器没有图形桌面时使用 `play=false`，再按 4.3 节录制视频。
+
+不要在已经安装 CUDA extra 后直接执行不带 extra 的 `uv run`，它可能重新同步默认依赖。需要由 `uv` 启动时，写成 `uv run --no-sync mxlab train ...`，复用已安装环境；需要同步 CUDA 依赖时写 `uv run --extra cuda mxlab train ...`。
 
 默认配置位于：
 
@@ -169,22 +228,45 @@ configs/task/microduck-ball-balance/motrix.fastsac.yaml
 
 ### 4.2 先做小规模 smoke test
 
-完整训练前建议把环境和迭代数降下来，先验证场景、奖励、collector 和 checkpoint 写盘：
+完整训练前，先运行 64 个环境、10 轮更新，观察训练日志与模型保存。Ubuntu / Linux / WSL：
+
+```bash
+mxlab train \
+  task=microduck-ball-balance/motrix.fastsac \
+  num_envs=64 \
+  play_num_envs=4 \
+  algo.asynchronous=false \
+  algo.agent.learning_starts=0 \
+  algo.agent.buffer_size=8 \
+  algo.agent.batch_size=64 \
+  algo.agent.num_updates=1 \
+  algo.trainer.num_learning_iterations=10 \
+  algo.agent.compile=false \
+  algo.trainer.async_options.collector_compile=false \
+  play=false
+```
+
+Windows PowerShell：
 
 ```powershell
-.\\.venv\\Scripts\\python.exe scripts\\train.py `
+mxlab train `
   task=microduck-ball-balance/motrix.fastsac `
   num_envs=64 `
   play_num_envs=4 `
-  algo.trainer.num_learning_iterations=5 `
+  algo.asynchronous=false `
+  algo.agent.learning_starts=0 `
+  algo.agent.buffer_size=8 `
+  algo.agent.batch_size=64 `
+  algo.agent.num_updates=1 `
+  algo.trainer.num_learning_iterations=10 `
   algo.agent.compile=false `
   algo.trainer.async_options.collector_compile=false `
   play=false
 ```
 
-这个 smoke test 只证明数据加载、前向、反向和优化器能走通，不证明球平衡已经学会。本机实测该命令返回码为 0，并写出了 `checkpoints/latest.pt`。
+这组参数缩小经验池并取消前 10 轮预热等待，让短程运行就能进入参数更新；同步模式便于观察日志。完整训练时移除这些小规模覆盖项，使用官方默认配置。本教程此前的旧版环境曾完成 5 轮检查并写出 `checkpoints/latest.pt`；上方表格和视频记录的是另一次训练到约 5000 轮的模型。
 
-### 4.3 回放和结果目录
+### 4.3 策略推理、录制与导出
 
 训练产物写入：
 
@@ -192,13 +274,36 @@ configs/task/microduck-ball-balance/motrix.fastsac.yaml
 runs/microduck-ball-balance/motrix/torch/fastsac/<timestamp>/
 ```
 
-训练结束后可以直接回放最近一次带 metadata 的策略：
+训练结束后，载入最近一次带 `metadata.json` 的策略，持续读取仿真观测、计算动作并推进物理仿真：
 
-```powershell
-.\\.venv\\Scripts\\python.exe scripts\\play.py env=microduck-ball-balance num_envs=16
+```bash
+mxlab play env=microduck-ball-balance num_envs=16
 ```
 
-如果需要记录视频，先查看当前版本 `configs/play.yaml` 和 `scripts/play.py` 支持的字段，再使用 `record_video=true`；不要手动改成旧版本的参数名。最终视频应标注为 MotrixLab 的回放结果，并记录 checkpoint、环境数量和 seed。
+录制 10 秒、640×480 的真实推理视频，无需打开桌面窗口：
+
+```bash
+mxlab play env=microduck-ball-balance num_envs=1 record_video=true record_seconds=10 record_width=640 record_height=480
+```
+
+视频写入本次选中的训练目录 `play_video.mp4`。要指定某个 checkpoint，给 `mxlab play` 增加 `policy=/实际训练目录/checkpoints/latest.pt`，并保留训练目录中的 `metadata.json`。单独复制一个 `.pt` 文件可能缺少环境和归一化配置。
+
+导出时指定实际训练目录，不是 checkpoint 文件：
+
+```bash
+mxlab export-onnx run_dir=runs/microduck-ball-balance/motrix/torch/fastsac/<本次训练目录> output=outputs/motrix_ball_balance_latest.onnx opset=11
+```
+
+将 `<本次训练目录>` 替换成训练输出的目录名；导出报告会打印输入输出形状和 PyTorch/ONNX 数值误差。
+
+### 4.4 常见启动问题
+
+- **找不到 `scripts/train.py`：** 新版改用 `mxlab train`；同样把旧 `scripts/play.py`、`scripts/export_onnx.py` 命令改为 `mxlab play`、`mxlab export-onnx`。
+- **出现 `collector booting...`、`learner ready`：** 表示已进入异步训练启动流程。首次运行会编译 Numba 环境内核；继续观察 collector 日志及训练计数，不要把启动等待当成文件缺失。
+- **`if-necessary-or-explicit` 警告：** 这是 `uv` 对上游预发布配置的弃用提醒，不是本次找不到文件的原因。
+- **画面变成弹球示例：** `scripts/test_all_demos.py --demos bounce_ball` 启动的是另一项任务。球平衡使用 `task=microduck-ball-balance/motrix.fastsac`，平地行走使用 `task=microduck-walk-flat/motrix.fastsac`，不要混用。
+
+本专题 [05 号 Notebook](../../03-Notebook/05_球平衡_FastSAC_ONNX_BPU.ipynb) 通过配套 `motrix_runner.py` 自动选择新版模块入口或旧版脚本入口，无需手动补建文件。已有的训练结果和视频保留；新运行使用当前 MotrixLab 环境。
 
 ## 5. 和已有篮球教程如何对照
 
@@ -231,5 +336,6 @@ runs/microduck-ball-balance/motrix/torch/fastsac/<timestamp>/
 - [MotrixLab 源码](https://github.com/Motphys/MotrixLab)
 - [MotrixLab 球平衡任务源码](https://github.com/Motphys/MotrixLab/blob/main/motrix_envs/src/motrix_envs/locomotion/ball_balance/microduck.py)
 - [MotrixLab FastSAC 配置](https://github.com/Motphys/MotrixLab/blob/main/configs/task/microduck-ball-balance/motrix.fastsac.yaml)
+- [MotrixLab 统一 CLI 入口](https://github.com/Motphys/MotrixLab/blob/main/motrixlab/src/motrixlab/cli.py)
 - [Every Embodied：MicroDuck 篮球平衡 PPO 教程](../01-MicroDuck篮球平衡强化学习/README.md)
 - [Pollen Robotics MicroDuck](https://github.com/pollen-robotics/microduck)
