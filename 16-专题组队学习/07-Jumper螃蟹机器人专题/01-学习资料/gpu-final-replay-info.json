@@ -1,0 +1,51 @@
+{
+  "schema": "replay_info/1",
+  "task": "jumper.tripod",
+  "checkpoint": "/data/Data14TB/robotics_shared/repos/jumper-everyembodied/logs/jumper/jumper.tripod/2026-10-29_11-31-32/model_1298.pt",
+  "physics_hz": 200.0,
+  "control_hz": 50.0,
+  "control_dt": 0.02,
+  "observation_noise": true,
+  "control_steps": 500,
+  "scene": "task default",
+  "simulated_seconds": 10.0,
+  "supports_velocity_command": true,
+  "command_ranges": {
+    "status": "matched",
+    "source": "checkpoint_curriculum",
+    "curriculum_level": 1,
+    "ranges": {
+      "lin_vel_x": [
+        -0.35,
+        0.35
+      ],
+      "lin_vel_y": [
+        -0.35,
+        0.35
+      ],
+      "ang_vel_z": [
+        -0.5,
+        0.5
+      ]
+    },
+    "resolved_ranges": {
+      "lin_vel_x": [
+        0.3,
+        0.3
+      ],
+      "lin_vel_y": [
+        0.0,
+        0.0
+      ],
+      "ang_vel_z": [
+        0.0,
+        0.0
+      ]
+    },
+    "fixed_body_command": [
+      0.3,
+      0.0,
+      0.0
+    ]
+  }
+}

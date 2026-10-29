@@ -1,0 +1,90 @@
+{
+  "schema": "fixed_body_command_evaluation/1",
+  "frame": "body",
+  "axes": [
+    "vx",
+    "vy",
+    "yaw_rate"
+  ],
+  "units": [
+    "m/s",
+    "m/s",
+    "rad/s"
+  ],
+  "command": [
+    0.3,
+    0.0,
+    0.0
+  ],
+  "command_ranges": {
+    "status": "matched",
+    "source": "checkpoint_curriculum",
+    "curriculum_level": 3,
+    "ranges": {
+      "lin_vel_x": [
+        -0.5,
+        0.5
+      ],
+      "lin_vel_y": [
+        -0.5,
+        0.5
+      ],
+      "ang_vel_z": [
+        -0.75,
+        0.75
+      ]
+    },
+    "resolved_ranges": {
+      "lin_vel_x": [
+        0.3,
+        0.3
+      ],
+      "lin_vel_y": [
+        0.0,
+        0.0
+      ],
+      "ang_vel_z": [
+        0.0,
+        0.0
+      ]
+    },
+    "fixed_body_command": [
+      0.3,
+      0.0,
+      0.0
+    ]
+  },
+  "control_steps": 500,
+  "num_envs": 1,
+  "simulated_seconds": 10.0,
+  "valid_samples": 500,
+  "excluded_reset_samples": 0,
+  "episode_resets": 0,
+  "episode_resets_per_env": [
+    0
+  ],
+  "sampling": "post-step body velocities; auto-reset states excluded; no warmup exclusion",
+  "actual_velocity_mean": [
+    0.3005592194646597,
+    -0.0007293088445439935,
+    -0.004391573054366745
+  ],
+  "mean_absolute_error": [
+    0.01572961679995062,
+    0.013646548542194069,
+    0.13057929932663684
+  ],
+  "root_mean_square_error": [
+    0.02641315330113256,
+    0.016164802327230138,
+    0.1631526033902434
+  ],
+  "mean_xy_tracking_error": 0.023189551383359264,
+  "task": "jumper.tripod",
+  "checkpoint": "/data/Data14TB/robotics_shared/repos/jumper-everyembodied/logs/jumper/jumper.tripod/2026-10-29_11-43-57/model_400.pt",
+  "physics_hz": 200.0,
+  "control_hz": 50.0,
+  "control_dt": 0.02,
+  "observation_noise": true,
+  "scene": "task default"
+}
