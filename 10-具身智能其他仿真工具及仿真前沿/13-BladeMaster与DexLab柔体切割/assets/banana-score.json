@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "task": "banana",
+  "mode": "full",
+  "passed": true,
+  "checks": {
+    "complete_duration": true,
+    "initially_connected": true,
+    "persistent_cut_labels": true,
+    "momentum_balance": true,
+    "frame_momentum_matches": true,
+    "external_impulse_matches": true,
+    "blade_reaction_feedback": true,
+    "positive_jacobian": true,
+    "bounded_overlap": true,
+    "blade_withdrawn": true,
+    "independent_motion": true,
+    "nonzero_material_reaction": true,
+    "four_mechanical_components": true,
+    "piece_mass_inventory": true,
+    "progressive_separation": true,
+    "knife_supplies_push_impulse": true,
+    "no_new_cuts_during_push": true
+  },
+  "component_mass_fractions": [
+    0.3278236914600551,
+    0.3278236914600551,
+    0.1721763085399449,
+    0.1721763085399449
+  ],
+  "progressive_components": [
+    2,
+    3,
+    4
+  ],
+  "scoring_side_counts": [],
+  "scoring_maximum_depth_m": [],
+  "initial_components": 1,
+  "final_components": 4,
+  "mass_kg": 0.0431244,
+  "particle_count": 1452,
+  "momentum_error_ns": 2.190088388420719e-17,
+  "frame_momentum_error_ns": 0.0,
+  "external_impulse_error_ns": 1.3552527156068805e-20,
+  "blade_impulse_error_ns": 5.55653613398821e-18,
+  "relative_motion_m": 0.010208697968593125,
+  "left_displacement_m": [
+    8.89070318962279e-05,
+    2.642160332194564e-05,
+    -7.061171562463067e-06
+  ],
+  "right_displacement_m": [
+    0.010297605000489353,
+    0.0014042339908392632,
+    -2.853342789277402e-05
+  ],
+  "piece_displacements_m": [
+    [
+      1.8893523052808392e-05,
+      1.5760161523954447e-05,
+      7.420001959593248e-07
+    ],
+    [
+      5.83184404014149e-05,
+      2.9167828067527823e-05,
+      1.3458435520797424e-05
+    ],
+    [
+      0.0001895091322344604,
+      3.433682037435465e-05,
+      -3.538395040414595e-05
+    ],
+    [
+      0.010297605000489353,
+      0.0014042339908392632,
+      -2.853342789277402e-05
+    ]
+  ],
+  "cut_planes_m_in_execution_order": [
+    -0.030047129116726724,
+    9.850460552813052e-06,
+    0.03004464838616474
+  ],
+  "cut_geometry_complete": true,
+  "peak_material_reaction_n": 0.030712698262803467,
+  "motion_protocol": "cut-push",
+  "push_direction_knife_impulse_ns": 0.020999604666183554,
+  "maximum_proxy_overlap_m": 0.0007544935317429082,
+  "det_f_range": [
+    0.8508911223919139,
+    1.055129950275317
+  ],
+  "evidence_scope": "DexLab synthetic task values; independent CPU implementation, not measured food or author code"
+}

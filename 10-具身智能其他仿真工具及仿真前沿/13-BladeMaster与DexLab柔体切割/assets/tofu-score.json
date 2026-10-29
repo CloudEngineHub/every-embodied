@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "task": "tofu",
+  "mode": "full",
+  "passed": true,
+  "checks": {
+    "complete_duration": true,
+    "initially_connected": true,
+    "persistent_cut_labels": true,
+    "two_mechanical_components": true,
+    "half_mass": true,
+    "momentum_balance": true,
+    "frame_momentum_matches": true,
+    "external_impulse_matches": true,
+    "blade_reaction_feedback": true,
+    "positive_jacobian": true,
+    "bounded_overlap": true,
+    "blade_withdrawn": true,
+    "independent_motion": true,
+    "nonzero_material_reaction": true
+  },
+  "component_mass_fractions": [
+    0.5,
+    0.5
+  ],
+  "progressive_components": [],
+  "scoring_side_counts": [],
+  "scoring_maximum_depth_m": [],
+  "initial_components": 1,
+  "final_components": 2,
+  "mass_kg": 0.05939999999999999,
+  "particle_count": 1024,
+  "momentum_error_ns": 1.3742262536253769e-17,
+  "frame_momentum_error_ns": 0.0,
+  "external_impulse_error_ns": 2.710505431213761e-20,
+  "blade_impulse_error_ns": 1.395910297075087e-18,
+  "relative_motion_m": 0.0032205312024383356,
+  "left_displacement_m": [
+    2.052598542834176e-05,
+    1.5788694136820158e-18,
+    -5.6953622202555315e-06
+  ],
+  "right_displacement_m": [
+    0.0032410571878666774,
+    -1.6666220270175613e-17,
+    -1.3541532473855533e-05
+  ],
+  "piece_displacements_m": [
+    [
+      2.052598542834176e-05,
+      1.5788694136820158e-18,
+      -5.6953622202555315e-06
+    ],
+    [
+      0.0032410571878666774,
+      -1.6666220270175613e-17,
+      -1.3541532473855533e-05
+    ]
+  ],
+  "peak_material_reaction_n": 0.07661317355271842,
+  "maximum_proxy_overlap_m": 0.0006327110433346024,
+  "det_f_range": [
+    0.9619579984461619,
+    1.0264993463499066
+  ],
+  "evidence_scope": "DexLab synthetic task values; independent CPU implementation, not measured food or author code"
+}
