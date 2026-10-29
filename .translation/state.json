@@ -2016,6 +2016,12 @@
       "sourceHash": "3ec4570f4db2a001d1f473c841123fe1de1ca6b0f9a19b223f79b4ae9628ce92",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "10-具身智能其他仿真工具及仿真前沿/13-BladeMaster与DexLab柔体切割/README.md": {
+      "target": "en/10-simulation-tools-and-frontiers/13-blademaster-and-dexlab-soft-body-cutting/README.md",
+      "sourceHash": "d06ee3bcfde4833509c288731a726062aaa615b6377ec05a11f6760d357a15ff",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
   }
 }
