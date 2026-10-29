@@ -1,0 +1,24 @@
+{
+  "task": "jumper.jump",
+  "upstream_commit": "b2e58669848a3ba4f209597cd6bebdfe9d0533a4",
+  "training": {"backend": "warp:cuda", "num_envs": 4096, "planned_iterations": 1000, "checkpoint_iteration": 300, "stopped_early": true, "seed": null},
+  "checkpoint": "../02-可运行代码/checkpoints/jump-model-300.pt",
+  "checkpoint_sha256": "03a568f4e0201bd5b1be977fbd8c94b5d9d9c88f9411cfa4e0ac9c4caeaec9bc",
+  "evaluation": {
+    "tool": "tools/checks/jump_eval.py",
+    "observation_noise": false,
+    "num_envs": 1,
+    "episodes_reported": 3,
+    "threshold": "All foot contact force norms <= 1 N",
+    "reference_apex_z_m": 0.235,
+    "reference_rise_m": 0.141,
+    "reference_airborne_s": 0.319,
+    "episodes": [
+      {"apex_z_m": 0.254, "rise_m": 0.159, "airborne_s": 0.325, "push_off_vz_m_s": 1.60},
+      {"apex_z_m": 0.252, "rise_m": 0.158, "airborne_s": 0.320, "push_off_vz_m_s": 1.60},
+      {"apex_z_m": 0.254, "rise_m": 0.160, "airborne_s": 0.325, "push_off_vz_m_s": 1.61}
+    ],
+    "caveat": "Upstream script samples after auto-reset and counts done waves; these are one-environment reported episodes."
+  },
+  "video": {"path": "../assets/jump-trained.mp4", "backend": "native:cpu", "physics_hz": 400, "control_hz": 200, "observation_noise": true, "steps": 700, "duration_s": 3.5, "termination": "episode ended at step 700"}
+}
