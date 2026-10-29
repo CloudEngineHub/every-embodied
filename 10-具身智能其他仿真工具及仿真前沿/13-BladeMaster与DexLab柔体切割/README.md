@@ -54,9 +54,27 @@ python (Join-Path $Tutorial "windows_render.py") $Banana --output (Join-Path $Ou
 
 本机豆腐实验的独立评分通过，最终为两个连通分量，各占质量 50%，相对位移约 3.221 mm；切后运动包含诊断冲量。香蕉默认 `cut-push` 实验也通过独立评分，三刀后分量依次为 2、3、4，刀面推移检查通过，受推段相对位移约 10.209 mm。以下视频由本次仿真状态和 Windows 离屏适配生成。
 
-[豆腐表面视频](assets/tofu-surface.mp4) · [豆腐粒子视频](assets/tofu-particles.mp4) · [豆腐评分结果](assets/tofu-score.json)
+#### 豆腐对半切
 
-[香蕉表面视频](assets/banana-surface.mp4) · [香蕉粒子视频](assets/banana-particles.mp4) · [香蕉评分结果](assets/banana-score.json)
+[![豆腐对半切：表面视图](assets/tofu-surface.gif)](assets/tofu-surface.mp4)
+
+表面视图：下刀、撤刀后施加诊断冲量。点击画面可打开 [MP4 视频](assets/tofu-surface.mp4)。
+
+[![豆腐对半切：粒子视图](assets/tofu-particles.gif)](assets/tofu-particles.mp4)
+
+粒子视图：[MP4 视频](assets/tofu-particles.mp4) · [评分结果](assets/tofu-score.json)。
+
+#### 香蕉连续三刀与刀面推移
+
+[![香蕉连续三刀：表面视图](assets/banana-surface.gif)](assets/banana-surface.mp4)
+
+表面视图：三刀后用刀面推移切下的一段。点击画面可打开 [MP4 视频](assets/banana-surface.mp4)。
+
+[![香蕉连续三刀：粒子视图](assets/banana-particles.gif)](assets/banana-particles.mp4)
+
+粒子视图：[MP4 视频](assets/banana-particles.mp4) · [评分结果](assets/banana-score.json)。
+
+动画用于快速预览，播放速度与仿真时间不同；画面内标注的是仿真时间，MP4 按采样帧率播放。
 
 ## 3. Linux / WSL 官方环境
 
