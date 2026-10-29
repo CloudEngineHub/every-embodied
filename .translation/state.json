@@ -2031,7 +2031,7 @@
     },
     "16-专题组队学习/07-Jumper螃蟹机器人专题/README.md": {
       "target": "en/16-study-programs/07-jumper-crab-robot-special-topic/README.md",
-      "sourceHash": "39082c2307ee00b07c70eeab5b1eecd2471a6dc16028f9f78a5cb9d82932871d",
+      "sourceHash": "a696f893ac3737cd44603be6d9d9fd0f1811106cd137ffa29accf0841dab6e95",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     },
