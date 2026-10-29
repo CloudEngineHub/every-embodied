@@ -2022,6 +2022,18 @@
       "sourceHash": "0bf8a389b8ea33bb365961904c59483334848fe09845a4b08ff293940427fbc7",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/07-Jumper螃蟹机器人专题/01-学习资料/跳跃与舞蹈实跑记录.md": {
+      "target": "en/16-study-programs/07-jumper-crab-robot-special-topic/01-learning-materials/jumping-and-dancing-sprint-records.md",
+      "sourceHash": "6be372421e929295fd26321ab3f57336ec966a7bae8cdafc37ff73fbef26ba1c",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "16-专题组队学习/07-Jumper螃蟹机器人专题/README.md": {
+      "target": "en/16-study-programs/07-jumper-crab-robot-special-topic/README.md",
+      "sourceHash": "39082c2307ee00b07c70eeab5b1eecd2471a6dc16028f9f78a5cb9d82932871d",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
   }
 }
