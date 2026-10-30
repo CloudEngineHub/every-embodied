@@ -2040,6 +2040,12 @@
       "sourceHash": "ce627babb08044b951497ea0fe752be963722c4a01612926cf7570e22014b158",
       "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
       "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
+    },
+    "13-其他前沿项目复现/清华校园3D地图技术分析与Prompt教程/README.md": {
+      "target": "en/13-frontier-project-reproduction/tsinghua-campus-3d-map-technology-analysis-and-prompt-tutorial/README.md",
+      "sourceHash": "51deb7e2c2600c7252adbd93f8c3a1d231ffe7834e04dce02e72b9b903d0b837",
+      "model": "tencent/Hy-MT2-1.8B-GGUF:Q4_K_M",
+      "modelRevision": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699"
     }
   }
 }
